@@ -9,7 +9,7 @@ namespace Script.Editor
     [InitializeOnLoad]
     public static class MainSceneAutoLoader
     {
-        private const string MAIN_PATH = "Assets/Scenes/Init.unity";
+        private const string MAIN_PATH = "Assets/Scenes/Boot.unity";
         private const string PREV_KEY_PREV_SCENE = "PREVIOUS SCENE";
 
         static MainSceneAutoLoader()
