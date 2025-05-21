@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 namespace Script.Editor
 {
+    /*
     [InitializeOnLoad]
     public static class MainSceneAutoLoader
     {
@@ -45,5 +46,5 @@ namespace Script.Editor
                 }
             }
         }
-    }
+    }*/
 }

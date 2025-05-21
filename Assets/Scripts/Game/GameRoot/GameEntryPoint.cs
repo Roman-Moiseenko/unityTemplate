@@ -1,5 +1,6 @@
 using System.Collections;
 using Game.GamePlay.Root;
+using Game.MainMenu.Root;
 using Scripts.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -49,7 +50,11 @@ namespace Scripts.Game.GameRoot
                 _coroutines.StartCoroutine(LoadAndStartGameplay());
                 return;
             }
-
+            if (sceneName == Scenes.MAINMENU)
+            {
+                _coroutines.StartCoroutine(LoadAndStartMainMenu());
+                return;
+            }
             if (sceneName != Scenes.BOOT)
             {
                 return;
@@ -69,11 +74,34 @@ namespace Scripts.Game.GameRoot
             
             //Контейнер
             var sceneEntryPoint = Object.FindFirstObjectByType<GameplayEntryPoint>();
-            sceneEntryPoint.Run();
-            
+            sceneEntryPoint.Run(_uiRoot);
+            sceneEntryPoint.GoToMainMenuSceneRequested += () =>
+            {
+                _coroutines.StartCoroutine(LoadAndStartMainMenu());
+            };
+
             _uiRoot.HideLoadingScreen();
         }
 
+        private IEnumerator LoadAndStartMainMenu()
+        {
+            _uiRoot.ShowLoadingScreen();
+            yield return LoadScene(Scenes.BOOT);
+            yield return LoadScene(Scenes.MAINMENU);
+
+            yield return new WaitForSeconds(2);
+            
+            //Контейнер
+            var sceneEntryPoint = Object.FindFirstObjectByType<MainMenuEntryPoint>();
+            sceneEntryPoint.Run(_uiRoot);
+            sceneEntryPoint.GoToGameplaySceneRequested += () =>
+            {
+                _coroutines.StartCoroutine(LoadAndStartGameplay());
+            };
+            _uiRoot.HideLoadingScreen();
+        }
+        
+        
         private IEnumerator LoadScene(string sceneName)
         {
             yield return SceneManager.LoadSceneAsync(sceneName);
