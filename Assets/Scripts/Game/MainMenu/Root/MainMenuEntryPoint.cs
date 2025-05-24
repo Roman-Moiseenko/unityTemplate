@@ -1,4 +1,5 @@
 ﻿using System;
+using DI;
 using Game.GamePlay.Root;
 using Game.GamePlay.Root.View;
 using Game.MainMenu.Root.View;
@@ -15,8 +16,17 @@ namespace Game.MainMenu.Root
         
         [SerializeField] private UIMainMenuRootBinder _sceneUIRootPrefab;
 
-        public Observable<MainMenuExitParams> Run(UIRootView uiRoot, MainMenuEnterParams enterParams)
+        public Observable<MainMenuExitParams> Run(DIContainer mainMenuContainer, MainMenuEnterParams enterParams)
         {
+            MainMenuRegistrations.Register(mainMenuContainer, enterParams); //Регистрируем все сервисы сцены меню
+            var mainMenuViewModelsContainer = new DIContainer(mainMenuContainer); //Создаем контейнер для view-моделей
+            MainMenuViewModelsRegistrations.Register(mainMenuViewModelsContainer);
+
+
+            mainMenuViewModelsContainer.Resolve<UIMainMenuRootViewModel>();
+            
+            
+            var uiRoot = mainMenuContainer.Resolve<UIRootView>();
             var uiScene = Instantiate(_sceneUIRootPrefab);
         //    Debug.Log(_sceneUIRootPrefab.gameObject.name);
             uiRoot.AttachSceneUI(uiScene.gameObject);
