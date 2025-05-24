@@ -3,6 +3,11 @@ using UnityEngine;
 
 namespace Scripts.Game.GameRoot
 {
+    /**
+     * Класс для прехаба UIRoot
+     * содержит загрузочный UI для перехода между сценами
+     * И контейнер для UI сцен
+     */
     public class UIRootView :MonoBehaviour
     {
         [SerializeField] private GameObject _loadingScreen;
@@ -15,7 +20,7 @@ namespace Scripts.Game.GameRoot
 
         public void ShowLoadingScreen()
         {
-            _loadingScreen.SetActive(true);
+            _loadingScreen.SetActive(true); //Показать UI перехода
         }
         
         public void HideLoadingScreen()
