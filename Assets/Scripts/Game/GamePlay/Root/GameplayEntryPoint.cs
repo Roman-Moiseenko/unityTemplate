@@ -1,10 +1,15 @@
 ﻿using System;
 using DI;
+using Game.GamePlay.Commands;
 using Game.GamePlay.Root.View;
 using Game.MainMenu.Root;
+using Game.State;
+using Game.State.CMD;
+using ObservableCollections;
 using R3;
 using Scripts.Game.GameRoot;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game.GamePlay.Root
 {
@@ -19,7 +24,30 @@ namespace Game.GamePlay.Root
             var gameplayViewModelsContainer = new DIContainer(gameplayContainer); //Создаем контейнер для view-моделей
             GameplayViewModelsRegistrations.Register(gameplayViewModelsContainer);
 
+            ///
+            var gameStateProvider = gameplayContainer.Resolve<IGameStateProvider>();
 
+            gameStateProvider.GameState.Buildings.ObserveAdd().Subscribe(e =>
+            {
+                var building = e.Value;
+                Debug.Log("Здание размещено. TypeId " + building.TypeId + 
+                          " Id = " + building.Id + 
+                          "Position = " + building.Position.Value);
+            });
+            
+            var cmd = new CommandProcessor(gameStateProvider);
+            cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameStateProvider.GameState));
+
+            //var cmdPlaceBuilding = new CommandPlaceBuilding("Здание 77", GetRandomPosition());
+            ///
+            /// 
+            cmd.Process(new CommandPlaceBuilding("Здание 77", GetRandomPosition()));
+            cmd.Process(new CommandPlaceBuilding("Здание 78", GetRandomPosition()));
+            cmd.Process(new CommandPlaceBuilding("Здание 79", GetRandomPosition()));
+            
+            ////
+            
+            //для теста
             gameplayViewModelsContainer.Resolve<UIGameplayRootViewModel>();
             gameplayViewModelsContainer.Resolve<WorldGameplayRootViewModel>();
             
@@ -38,6 +66,13 @@ namespace Game.GamePlay.Root
             //Формируем сигнал для подписки
             var exitToMainMenuSignal = exitSceneSignalSubj.Select(_ => exitParams);
             return exitToMainMenuSignal;
+        }
+
+        private Vector3Int GetRandomPosition()
+        {
+            var rX = Random.Range(-10, 10);
+            var rY = Random.Range(-10, 10);
+            return new Vector3Int(rY, rY, 0);
         }
     }
 }

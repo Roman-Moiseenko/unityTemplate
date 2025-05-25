@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Game.State.Buildings;
+using Game.State.Entities.Buildings;
 using Game.State.Root;
 using ObservableCollections;
 using R3;
@@ -22,9 +22,11 @@ namespace Game.GamePlay.Services
             _someCommonService = someCommonService;
             _gameState = gameState;
             Debug.Log(GetType().Name + " был создан");
-            
+         /*   
             gameState.Buildings.ForEach(
                 b => Debug.Log($"Building: {b.TypeId}"));
+            
+            
             gameState.Buildings.ObserveAdd().Subscribe(e => Debug.Log($"Building added: {e.Value.TypeId}"));
             gameState.Buildings.ObserveRemove().Subscribe(e => Debug.Log($"Building removeded: {e.Value.TypeId}"));
             
@@ -33,6 +35,8 @@ namespace Game.GamePlay.Services
             AddBuilding("Здание 2");
             AddBuilding("Здание 3");
             RemoveBuilding("Здание 2");
+            
+            */
         }
 
         public void Dispose()
