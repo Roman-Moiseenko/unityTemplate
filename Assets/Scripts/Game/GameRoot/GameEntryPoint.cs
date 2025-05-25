@@ -2,6 +2,7 @@ using System.Collections;
 using DI;
 using Game.GamePlay.Root;
 using Game.MainMenu.Root;
+using Game.State;
 using R3;
 using Scripts.Game.GameRoot.Services;
 using Scripts.Utils;
@@ -44,6 +45,13 @@ namespace Scripts.Game.GameRoot
             _uiRoot = Object.Instantiate(prefabUIRoot);
             Object.DontDestroyOnLoad(_uiRoot.gameObject);
             _rootContainer.RegisterInstance(_uiRoot);
+
+            var gameStateProvider = new PlayerPrefsGameStateProvider(); //Заменить конструктор на другой - из облака
+            gameStateProvider.LoadSettingsState(); //Загрузили настройки игры
+            //Применяем настройки к окружению - звук, вибрация и т.п.
+            
+            _rootContainer.RegisterInstance<IGameStateProvider>(gameStateProvider);
+            
             _rootContainer.RegisterFactory(c => new SomeCommonService()).AsSingle(); //Сервис ... создастся при первом вызове
             //Положить в контейнер настройки игры ....
             //Сервисы аналитики, платежки, 
@@ -81,7 +89,12 @@ namespace Scripts.Game.GameRoot
             yield return LoadScene(Scenes.GAMEPLAY);
 
             yield return new WaitForSeconds(1);
-            
+            //Ждем когда загрузится сохранение игры
+            var isGameStateLoaded = false; //не загружено
+            //При загрузке, по подписке поменяем флажок на Загружено
+            _rootContainer.Resolve<IGameStateProvider>().LoadGameState().Subscribe(_ => isGameStateLoaded = true);
+            yield return new WaitUntil(() => isGameStateLoaded);
+ 
             //Контейнер
             var sceneEntryPoint = Object.FindFirstObjectByType<GameplayEntryPoint>();
             var gameplayContainer = _cachedSceneContainer = new DIContainer(_rootContainer);
