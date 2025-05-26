@@ -2,6 +2,7 @@
 using DI;
 using Game.GamePlay.Commands;
 using Game.GamePlay.Root.View;
+using Game.GamePlay.Services;
 using Game.MainMenu.Root;
 using Game.State;
 using Game.State.CMD;
@@ -34,18 +35,12 @@ namespace Game.GamePlay.Root
                           " Id = " + building.Id + 
                           "Position = " + building.Position.Value);
             });
-            
-            var cmd = new CommandProcessor(gameStateProvider);
-            cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameStateProvider.GameState));
 
-            //var cmdPlaceBuilding = new CommandPlaceBuilding("Здание 77", GetRandomPosition());
-            ///
-            /// 
-            cmd.Process(new CommandPlaceBuilding("Здание 77", GetRandomPosition()));
-            cmd.Process(new CommandPlaceBuilding("Здание 78", GetRandomPosition()));
-            cmd.Process(new CommandPlaceBuilding("Здание 79", GetRandomPosition()));
-            
-            ////
+            var buildingService = gameplayContainer.Resolve<BuildingsService>();
+
+            buildingService.PlaceBuilding("Здание 77", GetRandomPosition());
+            buildingService.PlaceBuilding("Здание 78", GetRandomPosition());
+            buildingService.PlaceBuilding("Здание 79", GetRandomPosition());
             
             //для теста
             gameplayViewModelsContainer.Resolve<UIGameplayRootViewModel>();

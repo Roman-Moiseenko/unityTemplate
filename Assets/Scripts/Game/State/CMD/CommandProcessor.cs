@@ -8,6 +8,7 @@ namespace Game.State.CMD
         private readonly IGameStateProvider _gameStateProvider;
         private readonly Dictionary<Type, object> _handlesMap = new();
 
+        //Командный процессор получает ссылку на репозиторий, для сохранения данных в процесссе обработки команд
         public CommandProcessor(IGameStateProvider gameStateProvider)
         {
             _gameStateProvider = gameStateProvider; //для сохранения игры
