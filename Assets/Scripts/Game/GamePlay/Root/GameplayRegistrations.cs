@@ -1,4 +1,6 @@
-﻿using DI;
+﻿using System;
+using System.Linq;
+using DI;
 using Game.GamePlay.Commands;
 using Game.GamePlay.Services;
 using Game.Settings;
@@ -22,14 +24,30 @@ namespace Game.GamePlay.Root
             var cmd = new CommandProcessor(gameStateProvider); //Создаем обработчик команд
             container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
             cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
-            
+            cmd.RegisterHandler(new CommandCreateMapStateHandler(gameState, gameSettings)); //Регистрируем команды обработки зданий
+
+            //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
+            var loadingMapId = gameplayEnterParams.MapId;
+            var loadingMap = gameState.Maps.FirstOrDefault(m => m.Id == loadingMapId);
+            if (loadingMap == null)
+            {
+                var command = new CommandCreateMapState(loadingMapId);
+                var success = cmd.Process(command);
+                if (!success)
+                {
+                    throw new Exception($"Карта не создалась с id = {loadingMapId}");
+                }
+
+                loadingMap = gameState.Maps.First(m => m.Id == loadingMapId); //??
+            }
+
             //Регистрируем сервис по Зданиями
-            container.RegisterFactory(_ => new BuildingsService(
-                gameState.Buildings, 
-                gameSettings.BuildingsSettings, 
-                cmd)
-            ).AsSingle();
-            
+               container.RegisterFactory(_ => new BuildingsService(
+                   loadingMap.Buildings,
+                   gameSettings.BuildingsSettings,
+                   cmd)
+               ).AsSingle();
+
             //Добавить сервисы и команды для
             /// Дорог
             /// Земли

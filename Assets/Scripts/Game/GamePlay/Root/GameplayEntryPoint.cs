@@ -25,23 +25,8 @@ namespace Game.GamePlay.Root
             GameplayRegistrations.Register(gameplayContainer, enterParams); //Регистрируем все сервисы сцены
             var gameplayViewModelsContainer = new DIContainer(gameplayContainer); //Создаем контейнер для view-моделей
             GameplayViewModelsRegistrations.Register(gameplayViewModelsContainer);
-
-            ///
-            var gameStateProvider = gameplayContainer.Resolve<IGameStateProvider>();
-
-            gameStateProvider.GameState.Buildings.ObserveAdd().Subscribe(e =>
-            {
-                var building = e.Value;
-                Debug.Log("Здание размещено. TypeId " + building.TypeId + 
-                          " Id = " + building.Id + 
-                          "Position = " + building.Position.Value);
-            });
-
-            var buildingService = gameplayContainer.Resolve<BuildingsService>();
-
-            buildingService.PlaceBuilding("Tower", GetRandomPosition());
-            buildingService.PlaceBuilding("Tower", GetRandomPosition());
-            buildingService.PlaceBuilding("Tower", GetRandomPosition());
+            
+            
             
             //для теста
             _worldRootBinder.Bind(gameplayViewModelsContainer.Resolve<WorldGameplayRootViewModel>());
@@ -56,7 +41,7 @@ namespace Game.GamePlay.Root
             var exitSceneSignalSubj = new Subject<Unit>();
             uiScene.Bind(exitSceneSignalSubj);
             
-            Debug.Log($"MAIN MENU ENTER POINT: Results {enterParams?.SaveFileName} and Level {enterParams?.LevelNumber}");
+            Debug.Log($"MAIN MENU ENTER POINT: Results MapId {enterParams?.MapId}");
 
                 //Создаем выходные параметры для входа в Меню
             var mainMenuEnterParams = new MainMenuEnterParams("Fatality");

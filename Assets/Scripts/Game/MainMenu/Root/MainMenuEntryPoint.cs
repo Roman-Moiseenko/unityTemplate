@@ -35,9 +35,8 @@ namespace Game.MainMenu.Root
             uiScene.Bind(exitSceneSignalSubj);
             
             Debug.Log($"MAIN MENU ENTER POINT: Results {enterParams?.Result}");
-            var saveFileName = "file.save";
-            var levelNumber = Random.Range(0, 100);
-            var gameplayEnterParams = new GameplayEnterParams(saveFileName, levelNumber);
+            
+            var gameplayEnterParams = new GameplayEnterParams(0); //Имитация выбора уровня 0
             var mainMenuExitParams = new MainMenuExitParams(gameplayEnterParams);
             var exitToGameplaySceneSignale = exitSceneSignalSubj.Select(_ => mainMenuExitParams);
             return exitToGameplaySceneSignale;

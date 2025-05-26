@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.State.Entities.Buildings;
+using Game.State.Maps;
 using Game.State.Root;
 using R3;
 using UnityEngine;
@@ -60,11 +61,9 @@ namespace Game.State
         {
             _gameStateOrigin = new GameState
             {
-                Buildings = new List<BuildingEntity>
-                {
-
-                }
+                Maps = new List<MapState>()
             };
+            
 
             return new GameStateProxy(_gameStateOrigin);
         }

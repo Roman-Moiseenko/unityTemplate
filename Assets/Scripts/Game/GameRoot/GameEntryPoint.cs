@@ -71,7 +71,7 @@ namespace Scripts.Game.GameRoot
             var sceneName = SceneManager.GetActiveScene().name;
             if (sceneName == Scenes.GAMEPLAY)
             {
-                var enterParams = new GameplayEnterParams("dddd", 0);
+                var enterParams = new GameplayEnterParams(0);
                 _coroutines.StartCoroutine(LoadAndStartGameplay(enterParams));
                 return;
             }

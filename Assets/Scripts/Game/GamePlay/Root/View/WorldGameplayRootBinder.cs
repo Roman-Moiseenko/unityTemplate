@@ -42,7 +42,7 @@ namespace Game.GamePlay.Root.View
 
         private void CreateBuilding(BuildingViewModel buildingViewModel)
         {
-            var buildingLevel = Random.Range(1, 4);
+            var buildingLevel = buildingViewModel.Level;
             var buildingType = buildingViewModel.TypeId;
            // var prefabName = buildingViewModel.GetLevelSettings(buildingLevel).prefab;
             

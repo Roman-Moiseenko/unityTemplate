@@ -1,6 +1,8 @@
-﻿using Game.State.CMD;
+﻿using System.Linq;
+using Game.State.CMD;
 using Game.State.Entities.Buildings;
 using Game.State.Root;
+using UnityEngine;
 
 namespace Game.GamePlay.Commands
 {
@@ -15,7 +17,14 @@ namespace Game.GamePlay.Commands
         
         public bool Handle(CommandPlaceBuilding command)
         {
-            var entityId = _gameState.getEntityID(); //Получаем уникальный ID
+            var currentMap = _gameState.Maps.FirstOrDefault(m => m.Id == _gameState.CurrentMapId.CurrentValue);
+            if (currentMap == null)
+            {
+                Debug.Log($" Карта не найдена { _gameState.CurrentMapId.CurrentValue}");
+                return false;
+            }
+            
+            var entityId = _gameState.CreateEntityID(); //Получаем уникальный ID
             var newBuildingEntity = new BuildingEntity //Создаем сущность игрового объекта
             {
                 Id = entityId,
@@ -23,7 +32,8 @@ namespace Game.GamePlay.Commands
                 TypeId = command.BuildingTypeId
             };
             var newBuildingEntityProxy = new BuildingEntityProxy(newBuildingEntity); //Оборачиваем его Прокси
-            _gameState.Buildings.Add(newBuildingEntityProxy); //Добавляем в список объектов игрового мира
+            currentMap.Buildings.Add(newBuildingEntityProxy);//Добавляем в список объектов карты
+            //_gameState.Buildings.Add(newBuildingEntityProxy); 
             return true;
         }
     }

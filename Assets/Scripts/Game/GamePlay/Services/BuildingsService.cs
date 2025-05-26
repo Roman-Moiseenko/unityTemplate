@@ -33,11 +33,11 @@ namespace Game.GamePlay.Services
             _cmd = cmd;
 
             //Кешируем настройки зданий / обектов
-            foreach (var buildingSettings in buildingsSettings.AllBuildings)
+    /*        foreach (var buildingSettings in buildingsSettings.AllBuildings)
             {
                 _buildingSettingsMap[buildingSettings.TypeId] = buildingSettings;
             }
-            
+            */
             foreach (var buildingEntity in buildings)
             {
                 CreateBuildingViewModel(buildingEntity);

@@ -16,6 +16,7 @@ namespace Game.GamePlay.View.Buildins
         private readonly Dictionary<int, BuildingLevelSettings> _buildingLevelSettingsMap = new();
 
         public readonly int BuildingEntityId;
+        public ReadOnlyReactiveProperty<int> Level { get; }
         public readonly string TypeId;
         
         public ReadOnlyReactiveProperty<Vector3Int> Position { get; }
@@ -28,6 +29,7 @@ namespace Game.GamePlay.View.Buildins
         {
             BuildingEntityId = buildingEntity.Id;
             TypeId = buildingEntity.TypeId;
+            Level = buildingEntity.Level;
             _buildingEntity = buildingEntity;
             _buildingSettings = buildingSettings;
             _buildingsService = buildingsService;
