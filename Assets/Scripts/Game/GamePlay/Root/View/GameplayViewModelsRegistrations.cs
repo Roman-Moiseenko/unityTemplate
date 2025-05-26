@@ -1,4 +1,5 @@
 ﻿using DI;
+using Game.GamePlay.Services;
 using Scripts.Game.GameRoot.Services;
 
 namespace Game.GamePlay.Root.View
@@ -12,7 +13,9 @@ namespace Game.GamePlay.Root.View
         {
             //Добавить сервис если нужен в UIGameplayRootViewModel и WorldGameplayRootViewModel
             container.RegisterFactory(c => new UIGameplayRootViewModel()).AsSingle();
-            container.RegisterFactory(c => new WorldGameplayRootViewModel()).AsSingle();
+            container.RegisterFactory(c => new WorldGameplayRootViewModel(
+                c.Resolve<BuildingsService>()
+                )).AsSingle();
         }
     }
 }

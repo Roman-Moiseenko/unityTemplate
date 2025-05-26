@@ -19,6 +19,7 @@ namespace Game.GamePlay.Root
         
         [SerializeField] private UIGameplayRootBinder _sceneUIRootPrefab;
 
+        [SerializeField] private WorldGameplayRootBinder _worldRootBinder;
         public Observable<GameplayExitParams> Run(DIContainer gameplayContainer, GameplayEnterParams enterParams)
         {
             GameplayRegistrations.Register(gameplayContainer, enterParams); //Регистрируем все сервисы сцены
@@ -43,8 +44,10 @@ namespace Game.GamePlay.Root
             buildingService.PlaceBuilding("Здание 79", GetRandomPosition());
             
             //для теста
+            _worldRootBinder.Bind(gameplayViewModelsContainer.Resolve<WorldGameplayRootViewModel>());
+            
             gameplayViewModelsContainer.Resolve<UIGameplayRootViewModel>();
-            gameplayViewModelsContainer.Resolve<WorldGameplayRootViewModel>();
+            
             
             var uiScene = Instantiate(_sceneUIRootPrefab); //Загружаем UI из префаба
             var uiRoot = gameplayContainer.Resolve<UIRootView>(); //Находим рутовый контейнер с UI и присоединем загруженный UI
@@ -67,7 +70,7 @@ namespace Game.GamePlay.Root
         {
             var rX = Random.Range(-10, 10);
             var rY = Random.Range(-10, 10);
-            return new Vector3Int(rY, rY, 0);
+            return new Vector3Int(rX, rY, 0);
         }
     }
 }
