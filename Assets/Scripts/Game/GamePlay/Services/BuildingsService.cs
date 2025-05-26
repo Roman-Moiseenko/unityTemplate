@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Game.GamePlay.Commands;
 using Game.GamePlay.View.Buildins;
+using Game.Settings.Gameplay.Buildings;
 using Game.State.CMD;
 using Game.State.Entities.Buildings;
 using ObservableCollections;
@@ -15,15 +16,27 @@ namespace Game.GamePlay.Services
 
         private readonly ObservableList<BuildingViewModel> _allBuildings = new();
         private readonly Dictionary<int, BuildingViewModel> _buildingsMap = new();
+        private readonly Dictionary<string, BuildingSettings> _buildingSettingsMap = new();
         public IObservableCollection<BuildingViewModel> AllBuildings => _allBuildings; //Интерфейс менять нельзя, возвращаем через динамический массив
         
         /**
          * При загрузке создаем все view-модели из реактивного списка всех строений 
          * Подписываемся на событие добавления в массив Proxy сущностей 
          */
-        public BuildingsService(IObservableCollection<BuildingEntityProxy> buildings, ICommandProcessor cmd)
+        public BuildingsService(
+            IObservableCollection<BuildingEntityProxy> buildings,
+            BuildingsSettings buildingsSettings, 
+            ICommandProcessor cmd
+            )
         {
+            
             _cmd = cmd;
+
+            //Кешируем настройки зданий / обектов
+            foreach (var buildingSettings in buildingsSettings.AllBuildings)
+            {
+                _buildingSettingsMap[buildingSettings.TypeId] = buildingSettings;
+            }
             
             foreach (var buildingEntity in buildings)
             {
@@ -70,7 +83,7 @@ namespace Game.GamePlay.Services
          */
         private void CreateBuildingViewModel(BuildingEntityProxy buildingEntity)
         {
-            var buildingViewModel = new BuildingViewModel(buildingEntity, this); //3
+            var buildingViewModel = new BuildingViewModel(buildingEntity, _buildingSettingsMap[buildingEntity.TypeId], this); //3
             _allBuildings.Add(buildingViewModel); //4
             _buildingsMap[buildingEntity.Id] = buildingViewModel;
         }

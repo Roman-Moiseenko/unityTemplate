@@ -2,6 +2,7 @@ using System.Collections;
 using DI;
 using Game.GamePlay.Root;
 using Game.MainMenu.Root;
+using Game.Settings;
 using Game.State;
 using R3;
 using Scripts.Game.GameRoot.Services;
@@ -45,6 +46,11 @@ namespace Scripts.Game.GameRoot
             _uiRoot = Object.Instantiate(prefabUIRoot);
             Object.DontDestroyOnLoad(_uiRoot.gameObject);
             _rootContainer.RegisterInstance(_uiRoot);
+            
+            //Настройки приложения
+            var settingsProvider = new SettingsProvider();
+            _rootContainer.RegisterInstance<ISettingsProvider>(settingsProvider);
+            
 
             var gameStateProvider = new PlayerPrefsGameStateProvider(); //Заменить конструктор на другой - из облака
             gameStateProvider.LoadSettingsState(); //Загрузили настройки игры
@@ -57,8 +63,10 @@ namespace Scripts.Game.GameRoot
             //Сервисы аналитики, платежки, 
         }
         
-        private void RunGame()
+        private async void RunGame()
         {
+            await _rootContainer.Resolve<ISettingsProvider>().LoadGameSettings();
+            
 #if UNITY_EDITOR
             var sceneName = SceneManager.GetActiveScene().name;
             if (sceneName == Scenes.GAMEPLAY)

@@ -39,9 +39,9 @@ namespace Game.GamePlay.Root
 
             var buildingService = gameplayContainer.Resolve<BuildingsService>();
 
-            buildingService.PlaceBuilding("Здание 77", GetRandomPosition());
-            buildingService.PlaceBuilding("Здание 78", GetRandomPosition());
-            buildingService.PlaceBuilding("Здание 79", GetRandomPosition());
+            buildingService.PlaceBuilding("Tower", GetRandomPosition());
+            buildingService.PlaceBuilding("Tower", GetRandomPosition());
+            buildingService.PlaceBuilding("Tower", GetRandomPosition());
             
             //для теста
             _worldRootBinder.Bind(gameplayViewModelsContainer.Resolve<WorldGameplayRootViewModel>());
