@@ -18,10 +18,14 @@ namespace Game.GamePlay.Commands
         {
             _gameState = gameState;
             _gameSettings = gameSettings;
+       //     Debug.Log("BuildingsSettings - " + JsonUtility.ToJson(_gameSettings.BuildingsSettings));
+
+//            Debug.Log("MapsSettings - " + JsonUtility.ToJson(_gameSettings));
         }
 
         public bool Handle(CommandCreateMapState command)
         {
+            Debug.Log("Создаем карту - ");
             var isMapAlreadyExisted = _gameState.Maps.Any(m => m.Id == command.MapId);
             if (isMapAlreadyExisted) //Если карта была создано, то ошибка
             {
@@ -33,6 +37,7 @@ namespace Game.GamePlay.Commands
             var newMapInitialStateSettings = newMapSettings.InitialStateSettings;
             var initialBuildings = new List<BuildingEntity>(); //Создаем список зданий
 
+            Debug.Log("newMapSettings " + JsonUtility.ToJson(newMapSettings));
             foreach (var buildingSettings in newMapInitialStateSettings.Buildings) //Берем список зданий из настроек карты (конфиг)
             {
                 var initialBuilding = new BuildingEntity // .. и создаем все здания

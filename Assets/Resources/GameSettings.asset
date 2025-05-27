@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   BuildingsSettings: {fileID: 11400000, guid: 1308c14217b2005478fa31ec921b6409, type: 2}
+  MapsSettings: {fileID: 11400000, guid: 10e8e4e8ebbd3244b989ae50a5ecce16, type: 2}

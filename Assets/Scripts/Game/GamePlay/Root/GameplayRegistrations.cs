@@ -7,6 +7,7 @@ using Game.Settings;
 using Game.State;
 using Game.State.CMD;
 using Scripts.Game.GameRoot.Services;
+using UnityEngine;
 
 namespace Game.GamePlay.Root
 {
@@ -21,16 +22,24 @@ namespace Game.GamePlay.Root
             var gameState = gameStateProvider.GameState;
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
+            
+          //  Debug.Log("gameSettings - " + JsonUtility.ToJson(gameSettings.BuildingsSettings.AllBuildings.First()));
+            
             var cmd = new CommandProcessor(gameStateProvider); //Создаем обработчик команд
             container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
             cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
             cmd.RegisterHandler(new CommandCreateMapStateHandler(gameState, gameSettings)); //Регистрируем команды обработки зданий
 
+            
             //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
             var loadingMapId = gameplayEnterParams.MapId;
             var loadingMap = gameState.Maps.FirstOrDefault(m => m.Id == loadingMapId);
+            Debug.Log("loadingMapId " + loadingMapId);
+            Debug.Log("loadingMap: " + JsonUtility.ToJson(loadingMap));
             if (loadingMap == null)
             {
+                Debug.Log("loadingMap == null ");
+
                 var command = new CommandCreateMapState(loadingMapId);
                 var success = cmd.Process(command);
                 if (!success)

@@ -7,6 +7,6 @@ namespace Game.Settings.Gameplay.Buildings
         menuName = "Game Settings/Buildings/New Buildings Settings")]
     public class BuildingsSettings : ScriptableObject
     {
-        public List<BuildingSettings> AllBuildins;
+        public List<BuildingSettings> AllBuildings;
     }
 }
