@@ -30,6 +30,10 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
             cmd.RegisterHandler(new CommandCreateMapStateHandler(gameState, gameSettings)); //Регистрируем команды обработки зданий
 
+            //TODO CommandProcessor и команды Resources регистрировать раньше, т.к. используются в меню 
+            //TODO либо делать 2 уровня ресурсов - ОбщеИгровые и Игровые (сессионные) 
+            cmd.RegisterHandler(new CommandResourcesAddHandler(gameState));
+            cmd.RegisterHandler(new CommandResourcesSpendHandler(gameState));
             
             //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
             var loadingMapId = gameplayEnterParams.MapId;
@@ -57,11 +61,13 @@ namespace Game.GamePlay.Root
                    cmd)
                ).AsSingle();
 
-            //Добавить сервисы и команды для
-            /// Дорог
-            /// Земли
-            /// Монстров
-            /// Башни вместо Здания
+               container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
+               
+               //Добавить сервисы и команды для
+               /// Дорог
+               /// Земли
+               /// Монстров
+               /// Башни вместо Здания
         }
     }
 }

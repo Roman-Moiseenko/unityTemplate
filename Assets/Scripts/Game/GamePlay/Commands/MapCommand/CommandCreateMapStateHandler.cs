@@ -18,9 +18,6 @@ namespace Game.GamePlay.Commands
         {
             _gameState = gameState;
             _gameSettings = gameSettings;
-       //     Debug.Log("BuildingsSettings - " + JsonUtility.ToJson(_gameSettings.BuildingsSettings));
-
-//            Debug.Log("MapsSettings - " + JsonUtility.ToJson(_gameSettings));
         }
 
         public bool Handle(CommandCreateMapState command)
