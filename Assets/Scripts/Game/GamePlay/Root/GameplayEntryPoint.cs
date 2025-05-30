@@ -16,15 +16,16 @@ namespace Game.GamePlay.Root
 {
     public class GameplayEntryPoint : MonoBehaviour
     {
-        
-        [SerializeField] private UIGameplayRootBinder _sceneUIRootPrefab;
+        //Преваб интерфейса UI текущей сцены 
+        [SerializeField] private UIGameplayRootBinder _sceneUIRootPrefab; 
 
-        [SerializeField] private WorldGameplayRootBinder _worldRootBinder;
+        //Объект сцены, куда будут вставляться/создаваться объекты игры из префабов
+        [SerializeField] private WorldGameplayRootBinder _worldRootBinder; 
         public Observable<GameplayExitParams> Run(DIContainer gameplayContainer, GameplayEnterParams enterParams)
         {
             GameplayRegistrations.Register(gameplayContainer, enterParams); //Регистрируем все сервисы сцены
             var gameplayViewModelsContainer = new DIContainer(gameplayContainer); //Создаем контейнер для view-моделей
-            GameplayViewModelsRegistrations.Register(gameplayViewModelsContainer);
+            GameplayViewModelsRegistrations.Register(gameplayViewModelsContainer); //Регистрируем все View-модели сцены Gameplay
             
             
             

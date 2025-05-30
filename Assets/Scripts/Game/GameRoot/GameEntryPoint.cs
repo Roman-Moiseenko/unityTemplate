@@ -45,7 +45,7 @@ namespace Scripts.Game.GameRoot
             var prefabUIRoot = Resources.Load<UIRootView>("UIRoot");
             _uiRoot = Object.Instantiate(prefabUIRoot);
             Object.DontDestroyOnLoad(_uiRoot.gameObject);
-            _rootContainer.RegisterInstance(_uiRoot);
+            _rootContainer.RegisterInstance(_uiRoot); //Регистрируем в корневом контейнере
             
             //Настройки приложения
             var settingsProvider = new SettingsProvider();
