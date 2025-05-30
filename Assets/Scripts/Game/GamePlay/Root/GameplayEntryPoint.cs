@@ -1,8 +1,10 @@
 ﻿using System;
 using DI;
+using Game.Common;
 using Game.GamePlay.Commands;
 using Game.GamePlay.Root.View;
 using Game.GamePlay.Services;
+using Game.GamePlay.View.UI;
 using Game.MainMenu.Root;
 using Game.State;
 using Game.State.CMD;
@@ -27,20 +29,8 @@ namespace Game.GamePlay.Root
             var gameplayViewModelsContainer = new DIContainer(gameplayContainer); //Создаем контейнер для view-моделей
             GameplayViewModelsRegistrations.Register(gameplayViewModelsContainer); //Регистрируем все View-модели сцены Gameplay
             
-            
-            
-            //для теста
-            _worldRootBinder.Bind(gameplayViewModelsContainer.Resolve<WorldGameplayRootViewModel>());
-            
-            gameplayViewModelsContainer.Resolve<UIGameplayRootViewModel>();
-            
-            
-            var uiScene = Instantiate(_sceneUIRootPrefab); //Загружаем UI из префаба
-            var uiRoot = gameplayContainer.Resolve<UIRootView>(); //Находим рутовый контейнер с UI и присоединем загруженный UI
-            uiRoot.AttachSceneUI(uiScene.gameObject);
-            
-            var exitSceneSignalSubj = new Subject<Unit>();
-            uiScene.Bind(exitSceneSignalSubj);
+            InitWorld(gameplayViewModelsContainer);
+            InitUI(gameplayViewModelsContainer);
             
             Debug.Log($"MAIN MENU ENTER POINT: Results MapId {enterParams?.MapId}");
 
@@ -48,15 +38,29 @@ namespace Game.GamePlay.Root
             var mainMenuEnterParams = new MainMenuEnterParams("Fatality");
             var exitParams = new GameplayExitParams(mainMenuEnterParams);
             //Формируем сигнал для подписки
-            var exitToMainMenuSignal = exitSceneSignalSubj.Select(_ => exitParams);
+            var exitSceneRequest = gameplayContainer.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            var exitToMainMenuSignal = exitSceneRequest.Select(_ => exitParams);//В сигнал кладем выходные параметры
             return exitToMainMenuSignal;
         }
 
-        private Vector3Int GetRandomPosition()
+        private void InitWorld(DIContainer viewsDiContainer)
         {
-            var rX = Random.Range(-10, 10);
-            var rY = Random.Range(-10, 10);
-            return new Vector3Int(rX, rY, 0);
+            _worldRootBinder.Bind(viewsDiContainer.Resolve<WorldGameplayRootViewModel>());
+        }
+
+        private void InitUI(DIContainer viewsDiContainer)
+        {
+            var uiRoot = viewsDiContainer.Resolve<UIRootView>(); //Находим рутовый контейнер с UI и присоединем загруженный UI
+            var uiSceneRootBinder = Instantiate(_sceneUIRootPrefab); //Загружаем UI из префаба
+            uiRoot.AttachSceneUI(uiSceneRootBinder.gameObject);
+
+            var uiSceneRootViewModel = viewsDiContainer.Resolve<UIGameplayRootViewModel>();
+            uiSceneRootBinder.Bind(uiSceneRootViewModel);
+            
+            //можно открывать окошки
+            var uiManager = viewsDiContainer.Resolve<GameplayUIManager>();
+            uiManager.OpenScreenGameplay();
+
         }
     }
 }

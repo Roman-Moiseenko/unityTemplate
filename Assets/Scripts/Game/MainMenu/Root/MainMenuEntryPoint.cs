@@ -38,8 +38,8 @@ namespace Game.MainMenu.Root
             
             var gameplayEnterParams = new GameplayEnterParams(0); //Имитация выбора уровня 0
             var mainMenuExitParams = new MainMenuExitParams(gameplayEnterParams);
-            var exitToGameplaySceneSignale = exitSceneSignalSubj.Select(_ => mainMenuExitParams);
-            return exitToGameplaySceneSignale;
+            var exitToGameplaySceneSignal = exitSceneSignalSubj.Select(_ => mainMenuExitParams);
+            return exitToGameplaySceneSignal;
 
         }
     }

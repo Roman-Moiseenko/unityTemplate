@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using DI;
+using Game.Common;
 using Game.GamePlay.Commands;
 using Game.GamePlay.Services;
 using Game.Settings;
 using Game.State;
 using Game.State.CMD;
+using R3;
 using Scripts.Game.GameRoot.Services;
 using UnityEngine;
 
@@ -22,6 +24,8 @@ namespace Game.GamePlay.Root
             var gameState = gameStateProvider.GameState;
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
+            
+            container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG, new Subject<Unit>()); //Событие, требующее смены сцены
             
           //  Debug.Log("gameSettings - " + JsonUtility.ToJson(gameSettings.BuildingsSettings.AllBuildings.First()));
             
