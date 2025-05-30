@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5552899240762563459}
   - component: {fileID: 1340599913305223147}
+  - component: {fileID: 7769997027864501960}
   m_Layer: 0
   m_Name: GamePlayUI
   m_TagString: Untagged
@@ -51,6 +52,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea51407a9ab4f5e4ba1f7211e014876e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _windowsContainer: {fileID: 7769997027864501960}
+--- !u!114 &7769997027864501960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1367937131268014485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b75801fe4d7d4393b180ac264f183a53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _screensContainer: {fileID: 1735220120730218863}
+  _popupsContainer: {fileID: 2382793987598199213}
 --- !u!1 &2673242278126728396
 GameObject:
   m_ObjectHideFlags: 0

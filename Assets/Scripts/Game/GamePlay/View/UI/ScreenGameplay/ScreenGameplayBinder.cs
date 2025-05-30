@@ -27,17 +27,17 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         private void OnPopupBButtonClicked()
         {
-            ViewModel.RequestOpenPopupA();
+            ViewModel.RequestOpenPopupB();
         }
 
         private void OnGoToMenuButtonClicked()
         {
-            ViewModel.RequestOpenPopupB();
+            ViewModel.RequestGoToMainMenu();
         }
 
         private void OnPopupAButtonClicked()
         {
-            ViewModel.RequestGoToMainMenu();
+            ViewModel.RequestOpenPopupA();
         }
     }
 }

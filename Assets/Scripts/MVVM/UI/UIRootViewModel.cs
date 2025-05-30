@@ -29,7 +29,7 @@ namespace MVVM.UI
         
         public void OpenScreen(WindowViewModel screenViewModel)
         {
-            _openedScreen?.Value.Dispose(); //Если текущий экран существует/открыт, то закрываем
+            _openedScreen.Value?.Dispose(); //Если текущий экран существует/открыт, то закрываем
             _openedScreen.Value = screenViewModel;
         }
 
