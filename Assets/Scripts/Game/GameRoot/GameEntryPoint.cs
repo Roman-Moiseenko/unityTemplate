@@ -4,6 +4,7 @@ using Game.GamePlay.Root;
 using Game.MainMenu.Root;
 using Game.Settings;
 using Game.State;
+using Game.State.CMD;
 using R3;
 using Scripts.Game.GameRoot.Services;
 using Scripts.Utils;
@@ -59,6 +60,10 @@ namespace Scripts.Game.GameRoot
             _rootContainer.RegisterInstance<IGameStateProvider>(gameStateProvider);
             
             _rootContainer.RegisterFactory(c => new SomeCommonService()).AsSingle(); //Сервис ... создастся при первом вызове
+            
+            var cmd = new CommandProcessor(gameStateProvider); //Создаем обработчик команд
+            _rootContainer.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
+            
             //Положить в контейнер настройки игры ....
             //Сервисы аналитики, платежки, 
         }

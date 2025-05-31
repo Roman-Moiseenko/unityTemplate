@@ -47,7 +47,8 @@ namespace MVVM.UI
         
         private string GetPrefabPath(WindowViewModel viewModel)
         {
-            return $"Prefabs/UI/{viewModel.Id}";
+            var categoryName = viewModel.Path ?? "";
+            return $"Prefabs/UI/{categoryName}{viewModel.Id}";
         }
     }
 }

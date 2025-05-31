@@ -26,11 +26,10 @@ namespace Game.GamePlay.Root
             var gameSettings = settingsProvider.GameSettings;
             
             container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG, new Subject<Unit>()); //Событие, требующее смены сцены
+
+            var cmd = container.Resolve<ICommandProcessor>(); // new CommandProcessor(gameStateProvider); //Создаем обработчик команд
+            //container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
             
-          //  Debug.Log("gameSettings - " + JsonUtility.ToJson(gameSettings.BuildingsSettings.AllBuildings.First()));
-            
-            var cmd = new CommandProcessor(gameStateProvider); //Создаем обработчик команд
-            container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
             cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
             cmd.RegisterHandler(new CommandCreateMapStateHandler(gameState, gameSettings)); //Регистрируем команды обработки зданий
 

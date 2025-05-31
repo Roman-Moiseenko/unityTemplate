@@ -32,7 +32,7 @@ namespace MVVM.UI
             _openedScreen.Value?.Dispose(); //Если текущий экран существует/открыт, то закрываем
             _openedScreen.Value = screenViewModel;
         }
-
+        
         public void OpenPopup(WindowViewModel popupViewModel)
         {
             if (_openedPopups.Contains(popupViewModel)) 
@@ -45,8 +45,6 @@ namespace MVVM.UI
             var subscription = popupViewModel.CloseRequested.Subscribe(ClosePopup);
             _popupSubscriptions.Add(popupViewModel, subscription);
             _openedPopups.Add(popupViewModel);
-            
-            
         }
 
         public void ClosePopup(WindowViewModel popupViewModel)

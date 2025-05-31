@@ -7,6 +7,7 @@ namespace MVVM.UI
     {
         public Observable<WindowViewModel> CloseRequested => _closeRequested;
         public abstract string Id { get; }
+        public abstract string Path { get; }
 
         private readonly Subject<WindowViewModel> _closeRequested = new();
 

@@ -11,6 +11,7 @@ namespace MVVM.UI
 
         protected virtual void Start()
         {
+            Debug.Log("PopupBinder Start");
             _btnClose?.onClick.AddListener(OnCloseButtonClick);
             _btnCloseAlt?.onClick.AddListener(OnCloseButtonClick);
         }

@@ -1,6 +1,4 @@
 using MVVM.UI;
-using R3;
-using UnityEngine;
 
 namespace Game.GamePlay.View.UI
 {

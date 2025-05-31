@@ -8,7 +8,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         private readonly GameplayUIManager _uiManager;
         private readonly Subject<Unit> _exitSceneRequest;
         public override string Id => "ScreenGameplay";
-
+        public override string Path => "";
         public ScreenGameplayViewModel(GameplayUIManager uiManager, Subject<Unit> exitSceneRequest)
         {
             _uiManager = uiManager;
