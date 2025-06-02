@@ -11,11 +11,11 @@ namespace Game.State.Entities
         public EntityType Type => Origin.Type;
         public readonly ReactiveProperty<Vector2Int> Position;
 
-        public Entity(EntityData data)
+        public Entity(EntityData entityData)
         {
-            Origin = data;
-            Position = new ReactiveProperty<Vector2Int>(data.Position);
-            Position.Subscribe(newPosition => data.Position = newPosition); //При изменении позиции Position.Value меняем в данных
+            Origin = entityData;
+            Position = new ReactiveProperty<Vector2Int>(entityData.Position);
+            Position.Subscribe(newPosition => entityData.Position = newPosition); //При изменении позиции Position.Value меняем в данных
         }
     }
 }

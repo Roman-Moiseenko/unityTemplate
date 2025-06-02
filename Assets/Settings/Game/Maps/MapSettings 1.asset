@@ -17,13 +17,25 @@ MonoBehaviour:
     Buildings:
     - TypeId: Tower
       Level: 1
-      Position: {x: 5, y: 0, z: 4}
+      Position: {x: 0, y: 2}
     - TypeId: Tower
       Level: 2
-      Position: {x: 0, y: 5, z: 10}
+      Position: {x: 1, y: 1}
     - TypeId: Tower
       Level: 3
-      Position: {x: 2, y: 3, z: -5}
-    - TypeId: Tower
-      Level: 2
-      Position: {x: 10, y: -20, z: -5}
+      Position: {x: 4, y: 0}
+    Grounds:
+    - Position: {x: 0, y: 0}
+    - Position: {x: 1, y: 0}
+    - Position: {x: 2, y: 0}
+    - Position: {x: 3, y: 0}
+    - Position: {x: 4, y: 0}
+    - Position: {x: 0, y: 1}
+    - Position: {x: 1, y: 1}
+    - Position: {x: 2, y: 1}
+    - Position: {x: 3, y: 1}
+    - Position: {x: 4, y: 1}
+    - Position: {x: 0, y: 2}
+    - Position: {x: 3, y: 2}
+    - Position: {x: 4, y: 2}
+    GroundDefault: Grass01

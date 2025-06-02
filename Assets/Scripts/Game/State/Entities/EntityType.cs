@@ -7,6 +7,8 @@
         Resource = 2,
         Road = 3,
         Base = 4,
+        Ground = 5,
+        
         ////
         Building = 15,
     }

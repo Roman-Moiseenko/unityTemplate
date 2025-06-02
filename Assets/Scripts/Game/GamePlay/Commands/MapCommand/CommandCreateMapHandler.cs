@@ -4,6 +4,7 @@ using Game.Settings;
 using Game.State.CMD;
 using Game.State.Entities;
 using Game.State.Maps;
+using Game.State.Maps.Grounds;
 using Game.State.Mergeable.Buildings;
 using Game.State.Root;
 using Newtonsoft.Json;
@@ -25,7 +26,6 @@ namespace Game.GamePlay.Commands.MapCommand
 
         public bool Handle(CommandCreateMap command)
         {
-            Debug.Log("Создаем карту - ");
             var isMapAlreadyExisted = _gameState.Maps.Any(m => m.Id == command.MapId);
             if (isMapAlreadyExisted) //Если карта была создано, то ошибка
             {
@@ -34,10 +34,29 @@ namespace Game.GamePlay.Commands.MapCommand
             }
             //Находим настройки карты по ее Id
             var newMapSettings = _gameSettings.MapsSettings.Maps.First(m => m.MapId == command.MapId);
+            
             var newMapInitialStateSettings = newMapSettings.InitialStateSettings;
             var initialEntities = new List<EntityData>(); //Создаем список зданий
-
-            Debug.Log("newMapSettings " + JsonConvert.SerializeObject(newMapSettings, Formatting.Indented));
+            
+            foreach (var ground in newMapInitialStateSettings.Grounds)
+            {
+                var initialGround = new GroundEntityData
+                {
+                    Type = EntityType.Ground,
+                    UniqueId = _gameState.CreateEntityID(),
+                    ConfigId = newMapInitialStateSettings.GroundDefault,
+                    Position = ground.Position,
+                    Enabled = ground.Enabled,
+                    
+                };
+                initialEntities.Add(initialGround);
+                
+            }
+            //Рисуем дорогу
+            
+            //Добавляем Волны и Список врагов, по Волнам
+            
+            
             foreach (var buildingSettings in newMapInitialStateSettings.Buildings) //Берем список зданий из настроек карты (конфиг)
             {
                 var initialBuilding = new BuildingEntityData // .. и создаем все здания
@@ -53,6 +72,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 initialEntities.Add(initialBuilding);
             }
             
+            
             //Создаем другие ресурсы карты 
             /// ..... 
             
@@ -61,7 +81,6 @@ namespace Game.GamePlay.Commands.MapCommand
             {
                 Id = command.MapId,
                 Entities = initialEntities,
-             //   Buildings = initialBuildings,
             };
             // ... затем оборачиваем прокис
             var newMapStateProxy = new Map(newMapState);

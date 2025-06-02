@@ -42,22 +42,23 @@ namespace Game.GamePlay.Root
             return exitToMainMenuSignal;
         }
 
-        private void InitWorld(DIContainer viewsDiContainer)
+        private void InitWorld(DIContainer viewContainer)
         {
-            _worldRootBinder.Bind(viewsDiContainer.Resolve<WorldGameplayRootViewModel>());
+            //Строим мир сцены по параметрам
+            _worldRootBinder.Bind(viewContainer.Resolve<WorldGameplayRootViewModel>());
         }
 
-        private void InitUI(DIContainer viewsDiContainer)
+        private void InitUI(DIContainer viewContainer)
         {
-            var uiRoot = viewsDiContainer.Resolve<UIRootView>(); //Находим рутовый контейнер с UI и присоединем загруженный UI
+            var uiRoot = viewContainer.Resolve<UIRootView>(); //Находим рутовый контейнер с UI и присоединем загруженный UI
             var uiSceneRootBinder = Instantiate(_sceneUIRootPrefab); //Загружаем UI из префаба
             uiRoot.AttachSceneUI(uiSceneRootBinder.gameObject);
 
-            var uiSceneRootViewModel = viewsDiContainer.Resolve<UIGameplayRootViewModel>();
+            var uiSceneRootViewModel = viewContainer.Resolve<UIGameplayRootViewModel>();
             uiSceneRootBinder.Bind(uiSceneRootViewModel);
             
             //можно открывать окошки
-            var uiManager = viewsDiContainer.Resolve<GameplayUIManager>();
+            var uiManager = viewContainer.Resolve<GameplayUIManager>();
             uiManager.OpenScreenGameplay();
 
         }

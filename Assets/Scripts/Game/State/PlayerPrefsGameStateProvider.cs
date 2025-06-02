@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.State.GameResources;
 using Game.State.Inventory;
 //using Game.State.Entities.Buildings;
@@ -29,19 +30,20 @@ namespace Game.State
             
             if (!PlayerPrefs.HasKey(GAME_STATE_KEY))
             {
+                //throw new Exception("1");
                 GameState = CreateGameStateFromSettings();
-                Debug.Log("Игра загружена из настроек " + JsonConvert.SerializeObject(_gameStateOrigin, Formatting.Indented));
+           //     Debug.Log("Игра загружена из настроек " + JsonConvert.SerializeObject(_gameStateOrigin, Formatting.Indented));
                 SaveGameState(); //Сохраняем дефолтное состояние
             }
             else
             {
                 //Загружаем
                 var json = PlayerPrefs.GetString(GAME_STATE_KEY);
-                Debug.Log("json = " + json);
+          //      Debug.Log("json = " + json);
                 _gameStateOrigin = JsonConvert.DeserializeObject<GameState>(json);
-                Debug.Log("_gameStateOrigin = " + _gameStateOrigin);
+          //      Debug.Log("_gameStateOrigin = " + _gameStateOrigin);
                 GameState = new GameStateProxy(_gameStateOrigin);
-                Debug.Log("Игра Загружена " + json);
+        //        Debug.Log("Игра Загружена " + json);
             }
             return Observable.Return(GameState);
         }
@@ -53,7 +55,7 @@ namespace Game.State
             if (!PlayerPrefs.HasKey(GAME_SETTINGS_STATE_KEY))
             {
                 SettingsState = CreateSettingsStateDefault();
-                Debug.Log("Настройки установлены по-умолчанию " + JsonUtility.ToJson(_settingsStateOrigin, true));
+          //      Debug.Log("Настройки установлены по-умолчанию " + JsonUtility.ToJson(_settingsStateOrigin, true));
                 SaveSettingsState(); //Сохраняем дефолтное состояние
             }
             else
@@ -62,7 +64,7 @@ namespace Game.State
                 var json = PlayerPrefs.GetString(GAME_SETTINGS_STATE_KEY);
                 _settingsStateOrigin = JsonConvert.DeserializeObject<GameSettingsState>(json);
                 SettingsState = new GameSettingsStateProxy(_settingsStateOrigin);
-                Debug.Log("Настройки Загружены " + json);
+            //    Debug.Log("Настройки Загружены " + json);
             }
             return Observable.Return(SettingsState);
             
@@ -80,8 +82,7 @@ namespace Game.State
                 },
                 Inventory = new List<InventoryData>(),
             };
-            
-            Debug.Log("_gameStateOrigin = " + JsonUtility.ToJson(_gameStateOrigin));
+       //     Debug.Log("_gameStateOrigin = " + JsonUtility.ToJson(_gameStateOrigin));
 
             return new GameStateProxy(_gameStateOrigin);
         }

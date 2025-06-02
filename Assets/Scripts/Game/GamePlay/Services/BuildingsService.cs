@@ -1,10 +1,11 @@
-﻿/*
+﻿
 using System.Collections.Generic;
 using Game.GamePlay.Commands;
-using Game.GamePlay.View.Buildins;
+using Game.GamePlay.View.Buildings;
 using Game.Settings.Gameplay.Buildings;
 using Game.State.CMD;
-using Game.State.Entities.Buildings;
+using Game.State.Entities;
+using Game.State.Mergeable.Buildings;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -24,9 +25,9 @@ namespace Game.GamePlay.Services
          * При загрузке создаем все view-модели из реактивного списка всех строений 
          * Подписываемся на событие добавления в массив Proxy сущностей
         */
-         /*
+         
         public BuildingsService(
-            IObservableCollection<BuildingEntityProxy> buildings,
+            IObservableCollection<Entity> entities,
             BuildingsSettings buildingsSettings, 
             ICommandProcessor cmd
             )
@@ -40,20 +41,20 @@ namespace Game.GamePlay.Services
                 _buildingSettingsMap[buildingSettings.TypeId] = buildingSettings;
             }
             
-            foreach (var buildingEntity in buildings)
+            foreach (var entity in entities)
             {
-                CreateBuildingViewModel(buildingEntity);
+                if (entity is BuildingEntity buildingEntity) CreateBuildingViewModel(buildingEntity);
             }
             
             //Подписка на добавление новых view-моделей текущего класса
-            buildings.ObserveAdd().Subscribe(e =>
+            entities.ObserveAdd().Subscribe(e =>
             {
-                CreateBuildingViewModel(e.Value);
+                if (e.Value is BuildingEntity buildingEntity) CreateBuildingViewModel(buildingEntity);
             });
             // и на удаление
-            buildings.ObserveRemove().Subscribe(e =>
+            entities.ObserveRemove().Subscribe(e =>
             {
-                RemoveBuildingViewModel(e.Value);
+                if (e.Value is BuildingEntity buildingEntity) RemoveBuildingViewModel(buildingEntity);
             });
 
         }
@@ -84,26 +85,25 @@ namespace Game.GamePlay.Services
          * 5. Кешируем Id и view-модели
          */
 
-/*
-        private void CreateBuildingViewModel(BuildingEntityProxy buildingEntity)
+
+        private void CreateBuildingViewModel(BuildingEntity buildingEntity)
         {
-            var buildingViewModel = new BuildingViewModel(buildingEntity, _buildingSettingsMap[buildingEntity.TypeId], this); //3
+            var buildingViewModel = new BuildingViewModel(buildingEntity, _buildingSettingsMap[buildingEntity.ConfigId], this); //3
             _allBuildings.Add(buildingViewModel); //4
-            _buildingsMap[buildingEntity.Id] = buildingViewModel;
+            _buildingsMap[buildingEntity.UniqueId] = buildingViewModel;
         }
 
         /**
          * Удаляем объект из списка моделей и из кеша
          */
-/*
-        private void RemoveBuildingViewModel(BuildingEntityProxy buildingEntity)
+
+        private void RemoveBuildingViewModel(BuildingEntity buildingEntity)
         {
-            if (_buildingsMap.TryGetValue(buildingEntity.Id, out var buildingViewModel))
+            if (_buildingsMap.TryGetValue(buildingEntity.UniqueId, out var buildingViewModel))
             {
                 _allBuildings.Remove(buildingViewModel);
-                _buildingsMap.Remove(buildingEntity.Id);
+                _buildingsMap.Remove(buildingEntity.UniqueId);
             }
         }
     }
 }
-*/

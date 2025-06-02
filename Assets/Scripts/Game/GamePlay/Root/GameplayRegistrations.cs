@@ -8,6 +8,7 @@ using Game.GamePlay.Services;
 using Game.Settings;
 using Game.State;
 using Game.State.CMD;
+using Newtonsoft.Json;
 using R3;
 using Scripts.Game.GameRoot.Services;
 using UnityEngine;
@@ -42,8 +43,8 @@ namespace Game.GamePlay.Root
             //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
             var loadingMapId = gameplayEnterParams.MapId;
             var loadingMap = gameState.Maps.FirstOrDefault(m => m.Id == loadingMapId);
-            Debug.Log("loadingMapId " + loadingMapId);
-            Debug.Log("loadingMap: " + JsonUtility.ToJson(loadingMap));
+           // Debug.Log("loadingMapId " + loadingMapId);
+            
             if (loadingMap == null)
             {
                 Debug.Log("loadingMap == null ");
@@ -56,15 +57,20 @@ namespace Game.GamePlay.Root
                 }
 
                 loadingMap = gameState.Maps.First(m => m.Id == loadingMapId); //??
+                Debug.Log("loadingMap: " + JsonConvert.SerializeObject(loadingMap, Formatting.Indented));
             }
 
             //Регистрируем сервис по Зданиями
-  /*             container.RegisterFactory(_ => new BuildingsService(
-                   loadingMap.Buildings,
+               container.RegisterFactory(_ => new BuildingsService(
+                   loadingMap.Entities,
                    gameSettings.BuildingsSettings,
                    cmd)
                ).AsSingle();
-*/
+               container.RegisterFactory(_ => new GroundsService(
+                   loadingMap.Entities,
+                   cmd)
+               ).AsSingle();
+
                container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
                
                //Добавить сервисы и команды для

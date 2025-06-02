@@ -75,6 +75,7 @@ namespace Scripts.Game.GameRoot
         {
             await _rootContainer.Resolve<ISettingsProvider>().LoadGameSettings();
             
+            
 #if UNITY_EDITOR
             var sceneName = SceneManager.GetActiveScene().name;
             if (sceneName == Scenes.GAMEPLAY)

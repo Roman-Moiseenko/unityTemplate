@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.Settings.Gameplay.Buildings;
+using Game.Settings.Gameplay.Grounds;
+using Game.State.Maps.Grounds;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -10,6 +12,9 @@ namespace Game.Settings.Gameplay.Maps
     public class MapInitialStateSettings
     {
         public List<BuildingInitialSettings> Buildings;
+        public List<GroundInitialSettings> Grounds;
+
+        public string GroundDefault;
         //Доп.настройки карты
     }
 }
