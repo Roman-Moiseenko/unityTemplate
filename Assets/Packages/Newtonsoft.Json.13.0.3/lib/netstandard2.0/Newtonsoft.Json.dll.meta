@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
 guid: 1babbf5632a87ab4986123b7c3426228
-=======
-guid: fbdcebf2a65ce8b4eab4e380e2777091
->>>>>>> d0bdc81b730848b311b5ac2d0fa7f3e4d24655ff
 labels:
 - NuGetForUnity
 PluginImporter:

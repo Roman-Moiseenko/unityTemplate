@@ -14,7 +14,7 @@ namespace Game.MainMenu.Root.View
     /**
      * Регистрируем View-модели сцены
      */
-    public class MainMenuViewModelsRegistrations
+    public static class MainMenuViewModelsRegistrations
     {
         public static void Register(DIContainer container)
         {

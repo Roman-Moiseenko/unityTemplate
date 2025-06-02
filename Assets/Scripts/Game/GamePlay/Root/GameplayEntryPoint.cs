@@ -1,5 +1,4 @@
-﻿using System;
-using DI;
+﻿using DI;
 using Game.Common;
 using Game.GamePlay.Commands;
 using Game.GamePlay.Root.View;
@@ -39,7 +38,7 @@ namespace Game.GamePlay.Root
             var exitParams = new GameplayExitParams(mainMenuEnterParams);
             //Формируем сигнал для подписки
             var exitSceneRequest = gameplayContainer.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
-            var exitToMainMenuSignal = exitSceneRequest.Select(_ => exitParams);//В сигнал кладем выходные параметры
+            var exitToMainMenuSignal = exitSceneRequest.Select(_ => exitParams);//В сигнал кладем в выходные параметры
             return exitToMainMenuSignal;
         }
 

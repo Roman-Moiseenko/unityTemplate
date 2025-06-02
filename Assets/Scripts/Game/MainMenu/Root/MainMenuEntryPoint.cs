@@ -10,8 +10,6 @@ using R3;
 using Scripts.Game.GameRoot;
 using UnityEngine;
 
-
-
 namespace Game.MainMenu.Root
 {
     public class MainMenuEntryPoint : MonoBehaviour
