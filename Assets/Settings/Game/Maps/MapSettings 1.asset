@@ -12,5 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad07908cd8ea439c87b4cb9bb6c08c82, type: 3}
   m_Name: MapSettings 1
   m_EditorClassIdentifier: 
+  MapId: 0
   InitialStateSettings:
-    Buildings: []
+    Buildings:
+    - TypeId: Tower
+      Level: 1
+      Position: {x: 5, y: 0, z: 4}
+    - TypeId: Tower
+      Level: 2
+      Position: {x: 0, y: 5, z: 10}
+    - TypeId: Tower
+      Level: 3
+      Position: {x: 2, y: 3, z: -5}
+    - TypeId: Tower
+      Level: 2
+      Position: {x: 10, y: -20, z: -5}

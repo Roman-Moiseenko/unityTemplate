@@ -18,6 +18,7 @@ namespace Game.GamePlay.Root.View
 
         public void Bind(WorldGameplayRootViewModel viewModel)
         {
+            /*
             foreach (var buildingViewModel in viewModel.AllBuildings)
             {
                 CreateBuilding(buildingViewModel);
@@ -33,6 +34,7 @@ namespace Game.GamePlay.Root.View
                     e => DestroyBuilding(e.Value)
                 )
             );
+            */
         }
 
         private void OnDestroy()

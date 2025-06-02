@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
-using Game.State.Entities.Buildings;
+using Game.State.GameResources;
+using Game.State.Inventory;
+//using Game.State.Entities.Buildings;
 using Game.State.Maps;
 using Game.State.Root;
+using Newtonsoft.Json;
 using R3;
 using UnityEngine;
 
@@ -18,17 +21,25 @@ namespace Game.State
         
         public Observable<GameStateProxy> LoadGameState()
         {
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
+            }; 
+            
             if (!PlayerPrefs.HasKey(GAME_STATE_KEY))
             {
                 GameState = CreateGameStateFromSettings();
-                Debug.Log("Игра загружена из настроек " + JsonUtility.ToJson(_gameStateOrigin, true));
+                Debug.Log("Игра загружена из настроек " + JsonConvert.SerializeObject(_gameStateOrigin, Formatting.Indented));
                 SaveGameState(); //Сохраняем дефолтное состояние
             }
             else
             {
                 //Загружаем
                 var json = PlayerPrefs.GetString(GAME_STATE_KEY);
-                _gameStateOrigin = JsonUtility.FromJson<GameState>(json);
+                Debug.Log("json = " + json);
+                _gameStateOrigin = JsonConvert.DeserializeObject<GameState>(json);
+                Debug.Log("_gameStateOrigin = " + _gameStateOrigin);
                 GameState = new GameStateProxy(_gameStateOrigin);
                 Debug.Log("Игра Загружена " + json);
             }
@@ -49,7 +60,7 @@ namespace Game.State
             {
                 //Загружаем
                 var json = PlayerPrefs.GetString(GAME_SETTINGS_STATE_KEY);
-                _settingsStateOrigin = JsonUtility.FromJson<GameSettingsState>(json);
+                _settingsStateOrigin = JsonConvert.DeserializeObject<GameSettingsState>(json);
                 SettingsState = new GameSettingsStateProxy(_settingsStateOrigin);
                 Debug.Log("Настройки Загружены " + json);
             }
@@ -61,23 +72,30 @@ namespace Game.State
         {
             _gameStateOrigin = new GameState
             {
-                Maps = new List<MapState>()
+                Maps = new List<MapData>(),
+                Resources = new List<ResourceData>()
+                {
+                    new() { Amount = 0, ResourceType = ResourceType.SoftCurrency },
+                    new() { Amount = 0, ResourceType = ResourceType.HardCurrency },
+                },
+                Inventory = new List<InventoryData>(),
             };
             
+            Debug.Log("_gameStateOrigin = " + JsonUtility.ToJson(_gameStateOrigin));
 
             return new GameStateProxy(_gameStateOrigin);
         }
 
         public Observable<bool> SaveGameState()
         {
-            var json = JsonUtility.ToJson(_gameStateOrigin, true);
+            var json = JsonConvert.SerializeObject(_gameStateOrigin, Formatting.Indented);
             PlayerPrefs.SetString(GAME_STATE_KEY, json);
             return Observable.Return(true);
         }
 
         public Observable<bool> SaveSettingsState()
         {
-            var json = JsonUtility.ToJson(_settingsStateOrigin, true);
+            var json = JsonConvert.SerializeObject(_settingsStateOrigin, Formatting.Indented);
             PlayerPrefs.SetString(GAME_SETTINGS_STATE_KEY, json);
             return Observable.Return(true);
         }

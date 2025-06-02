@@ -4,6 +4,7 @@ using Game.GamePlay.Root;
 using Game.MainMenu.Root;
 using Game.Settings;
 using Game.State;
+using Game.State.CMD;
 using R3;
 using Scripts.Game.GameRoot.Services;
 using Scripts.Utils;
@@ -33,6 +34,7 @@ namespace Scripts.Game.GameRoot
             
             
             _instance = new GameEntryPoint();
+            
             _instance.RunGame();
             
         }
@@ -41,11 +43,13 @@ namespace Scripts.Game.GameRoot
         {
             _coroutines = new GameObject("[COROUTINES]").AddComponent<Coroutines>();
             Object.DontDestroyOnLoad(_coroutines.gameObject);
+          //  _coroutines.StartCoroutine(LoadFirstBoot());
+            
             //Находим прехаб UIRoot и присоединяем его к проекту
             var prefabUIRoot = Resources.Load<UIRootView>("UIRoot");
             _uiRoot = Object.Instantiate(prefabUIRoot);
             Object.DontDestroyOnLoad(_uiRoot.gameObject);
-            _rootContainer.RegisterInstance(_uiRoot);
+            _rootContainer.RegisterInstance(_uiRoot); //Регистрируем в корневом контейнере
             
             //Настройки приложения
             var settingsProvider = new SettingsProvider();
@@ -59,6 +63,10 @@ namespace Scripts.Game.GameRoot
             _rootContainer.RegisterInstance<IGameStateProvider>(gameStateProvider);
             
             _rootContainer.RegisterFactory(c => new SomeCommonService()).AsSingle(); //Сервис ... создастся при первом вызове
+            
+            var cmd = new CommandProcessor(gameStateProvider); //Создаем обработчик команд
+            _rootContainer.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
+            
             //Положить в контейнер настройки игры ....
             //Сервисы аналитики, платежки, 
         }
@@ -75,7 +83,8 @@ namespace Scripts.Game.GameRoot
                 _coroutines.StartCoroutine(LoadAndStartGameplay(enterParams));
                 return;
             }
-            if (sceneName == Scenes.MAINMENU)
+      
+         /*   if (sceneName == Scenes.MAINMENU)
             {
                 _coroutines.StartCoroutine(LoadAndStartMainMenu());
                 return;
@@ -83,7 +92,7 @@ namespace Scripts.Game.GameRoot
             if (sceneName != Scenes.BOOT)
             {
                 return;
-            }
+            }*/
             
 #endif
             _coroutines.StartCoroutine(LoadAndStartMainMenu());
@@ -141,7 +150,13 @@ namespace Scripts.Game.GameRoot
             
             _uiRoot.HideLoadingScreen();
         }
-        
+
+        private IEnumerator LoadFirstBoot()
+        {
+            yield return LoadScene(Scenes.FIRST_BOOT);
+            yield return new WaitForSeconds(1);
+            _instance.RunGame();
+        }
         
         private IEnumerator LoadScene(string sceneName)
         {

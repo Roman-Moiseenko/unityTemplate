@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.Settings.Gameplay.Buildings;
-using Game.State.Entities.Buildings;
 using R3;
 using UnityEngine;
 
@@ -9,9 +8,9 @@ namespace Game.GamePlay.View.Buildins
 {
     public class BuildingViewModel
     {
-        private readonly BuildingEntityProxy _buildingEntity;
+    //    private readonly BuildingEntityProxy _buildingEntity;
         private readonly BuildingSettings _buildingSettings;
-        private readonly BuildingsService _buildingsService;
+     //   private readonly BuildingsService _buildingsService;
 
         private readonly Dictionary<int, BuildingLevelSettings> _buildingLevelSettingsMap = new();
 
@@ -21,7 +20,7 @@ namespace Game.GamePlay.View.Buildins
         
         public ReadOnlyReactiveProperty<Vector3Int> Position { get; }
 
-        public BuildingViewModel(
+    /*    public BuildingViewModel(
             BuildingEntityProxy buildingEntity,
             BuildingSettings buildingSettings,
             BuildingsService buildingsService
@@ -41,7 +40,7 @@ namespace Game.GamePlay.View.Buildins
 
             Position = buildingEntity.Position;
         }
-
+*/
         public BuildingLevelSettings GetLevelSettings(int level)
         {
             return _buildingLevelSettingsMap[level];

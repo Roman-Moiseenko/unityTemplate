@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using ObservableCollections;
+using R3;
+
+namespace MVVM.UI
+{
+    /**
+     * Контейнер, в котором будут открыте popup и окно
+     */
+    public class UIRootViewModel : IDisposable
+    {
+        //Публичные поля, для подписки и чтения 
+        public IObservableCollection<WindowViewModel> OpenedPopups => _openedPopups;
+        public ReadOnlyReactiveProperty<WindowViewModel> OpenedScreen => _openedScreen;
+        
+        //Приватные поля для изменения
+        private readonly ReactiveProperty<WindowViewModel> _openedScreen = new(null);
+        private readonly ObservableList<WindowViewModel> _openedPopups = new(); //Массив открытых окон
+
+        private readonly Dictionary<WindowViewModel, IDisposable> _popupSubscriptions = new ();
+
+        public void Dispose()
+        {
+            CloseAllPopups();
+            _openedScreen.Value?.Dispose();
+        }
+        
+        public void OpenScreen(WindowViewModel screenViewModel)
+        {
+            _openedScreen.Value?.Dispose(); //Если текущий экран существует/открыт, то закрываем
+            _openedScreen.Value = screenViewModel;
+        }
+        
+        public void OpenPopup(WindowViewModel popupViewModel)
+        {
+            if (_openedPopups.Contains(popupViewModel)) 
+            {
+                //Ошибка или дебаг, тек.окно уже открыто
+                return;
+            }
+
+            //Подписка на закрытие окна
+            var subscription = popupViewModel.CloseRequested.Subscribe(ClosePopup);
+            _popupSubscriptions.Add(popupViewModel, subscription);
+            _openedPopups.Add(popupViewModel);
+        }
+
+        public void ClosePopup(WindowViewModel popupViewModel)
+        {
+            //При закрытии Popup, если оно открыто
+            if (_openedPopups.Contains(popupViewModel))
+            {
+                popupViewModel.Dispose(); //Освобождаем ресурсы окна popup
+                _openedPopups.Remove(popupViewModel); //удаляем окно из списка открытых окон
+                _popupSubscriptions[popupViewModel]?.Dispose();
+                _popupSubscriptions.Remove(popupViewModel); //Удаляем из кеша подписки
+            }
+        }
+
+        public void ClosePopup(string popupId)
+        {
+            var openedPopupViewModal = _openedPopups.FirstOrDefault(p => p.Id == popupId);
+            ClosePopup(openedPopupViewModal);
+        }
+
+        public void CloseAllPopups()
+        {
+            foreach (var openedPopup in _openedPopups)
+            {
+                ClosePopup(openedPopup);
+            }
+        }
+    }
+}

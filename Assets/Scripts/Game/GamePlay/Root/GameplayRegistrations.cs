@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq;
 using DI;
+using Game.Common;
 using Game.GamePlay.Commands;
+using Game.GamePlay.Commands.MapCommand;
 using Game.GamePlay.Services;
 using Game.Settings;
 using Game.State;
 using Game.State.CMD;
+using R3;
 using Scripts.Game.GameRoot.Services;
 using UnityEngine;
 
@@ -23,13 +26,18 @@ namespace Game.GamePlay.Root
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
             
-          //  Debug.Log("gameSettings - " + JsonUtility.ToJson(gameSettings.BuildingsSettings.AllBuildings.First()));
-            
-            var cmd = new CommandProcessor(gameStateProvider); //Создаем обработчик команд
-            container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
-            cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
-            cmd.RegisterHandler(new CommandCreateMapStateHandler(gameState, gameSettings)); //Регистрируем команды обработки зданий
+            container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG, new Subject<Unit>()); //Событие, требующее смены сцены
 
+            var cmd = container.Resolve<ICommandProcessor>(); // new CommandProcessor(gameStateProvider); //Создаем обработчик команд
+            //container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
+            
+          //  cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
+            cmd.RegisterHandler(new CommandCreateMapHandler(gameState, gameSettings)); //Регистрируем команды обработки зданий
+
+            //TODO CommandProcessor и команды Resources регистрировать раньше, т.к. используются в меню 
+            //TODO либо делать 2 уровня ресурсов - ОбщеИгровые и Игровые (сессионные) 
+            cmd.RegisterHandler(new CommandResourcesAddHandler(gameState));
+            cmd.RegisterHandler(new CommandResourcesSpendHandler(gameState));
             
             //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
             var loadingMapId = gameplayEnterParams.MapId;
@@ -40,7 +48,7 @@ namespace Game.GamePlay.Root
             {
                 Debug.Log("loadingMap == null ");
 
-                var command = new CommandCreateMapState(loadingMapId);
+                var command = new CommandCreateMap(loadingMapId);
                 var success = cmd.Process(command);
                 if (!success)
                 {
@@ -51,17 +59,19 @@ namespace Game.GamePlay.Root
             }
 
             //Регистрируем сервис по Зданиями
-               container.RegisterFactory(_ => new BuildingsService(
+  /*             container.RegisterFactory(_ => new BuildingsService(
                    loadingMap.Buildings,
                    gameSettings.BuildingsSettings,
                    cmd)
                ).AsSingle();
-
-            //Добавить сервисы и команды для
-            /// Дорог
-            /// Земли
-            /// Монстров
-            /// Башни вместо Здания
+*/
+               container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
+               
+               //Добавить сервисы и команды для
+               /// Дорог
+               /// Земли
+               /// Монстров
+               /// Башни вместо Здания
         }
     }
 }

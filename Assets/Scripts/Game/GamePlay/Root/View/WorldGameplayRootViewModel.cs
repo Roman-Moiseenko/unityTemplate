@@ -6,11 +6,14 @@ namespace Game.GamePlay.Root.View
 {
     public class WorldGameplayRootViewModel
     {
-        public readonly IObservableCollection<BuildingViewModel> AllBuildings;
+        private readonly ResourcesService _resourcesService;
+        //public readonly IObservableCollection<BuildingViewModel> AllBuildings;
 
-        public WorldGameplayRootViewModel(BuildingsService buildingsService)
+        public WorldGameplayRootViewModel(/*BuildingsService buildingsService,*/ ResourcesService resourcesService)
         {
-            AllBuildings = buildingsService.AllBuildings;
+            _resourcesService = resourcesService;
+            
+            //AllBuildings = buildingsService.AllBuildings;
         }
 
     }
