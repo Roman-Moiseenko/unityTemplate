@@ -2,10 +2,10 @@
 
 namespace Game.State.GameResources
 {
-	[Serializable]
+	//[Serializable]
     public class ResourceData
     {
-        public ResourceType ResourceType;
-		public int Amount;
+        public ResourceType ResourceType { get; set; }
+		public int Amount { get; set; }
     }
 }

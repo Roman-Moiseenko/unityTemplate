@@ -34,6 +34,7 @@ namespace Scripts.Game.GameRoot
             
             
             _instance = new GameEntryPoint();
+            
             _instance.RunGame();
             
         }
@@ -42,6 +43,8 @@ namespace Scripts.Game.GameRoot
         {
             _coroutines = new GameObject("[COROUTINES]").AddComponent<Coroutines>();
             Object.DontDestroyOnLoad(_coroutines.gameObject);
+          //  _coroutines.StartCoroutine(LoadFirstBoot());
+            
             //Находим прехаб UIRoot и присоединяем его к проекту
             var prefabUIRoot = Resources.Load<UIRootView>("UIRoot");
             _uiRoot = Object.Instantiate(prefabUIRoot);
@@ -80,7 +83,8 @@ namespace Scripts.Game.GameRoot
                 _coroutines.StartCoroutine(LoadAndStartGameplay(enterParams));
                 return;
             }
-            if (sceneName == Scenes.MAINMENU)
+      
+         /*   if (sceneName == Scenes.MAINMENU)
             {
                 _coroutines.StartCoroutine(LoadAndStartMainMenu());
                 return;
@@ -88,7 +92,7 @@ namespace Scripts.Game.GameRoot
             if (sceneName != Scenes.BOOT)
             {
                 return;
-            }
+            }*/
             
 #endif
             _coroutines.StartCoroutine(LoadAndStartMainMenu());
@@ -146,7 +150,13 @@ namespace Scripts.Game.GameRoot
             
             _uiRoot.HideLoadingScreen();
         }
-        
+
+        private IEnumerator LoadFirstBoot()
+        {
+            yield return LoadScene(Scenes.FIRST_BOOT);
+            yield return new WaitForSeconds(1);
+            _instance.RunGame();
+        }
         
         private IEnumerator LoadScene(string sceneName)
         {

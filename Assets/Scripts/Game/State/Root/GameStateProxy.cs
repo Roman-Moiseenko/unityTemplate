@@ -1,9 +1,9 @@
 ﻿using System.Linq;
-using Game.State.Entities.Buildings;
 using Game.State.GameResources;
 using Game.State.Maps;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 
 namespace Game.State.Root
 {
@@ -46,6 +46,7 @@ namespace Game.State.Root
 
         private void InitResource(GameState gameState)
         {
+           // Debug.Log(" ** " + JsonUtility.ToJson(gameState.Resources));
             gameState.Resources.ForEach(originResource => Resources.Add(new Resource(originResource)));
             Resources.ObserveAdd().Subscribe(e => gameState.Resources.Add(e.Value.Origin));
 

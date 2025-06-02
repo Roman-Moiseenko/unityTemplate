@@ -2,7 +2,11 @@
 {
     public enum ResourceType
     {
-        SoftCurrency,
-        HardCurrency,
+        SoftCurrency, //Монетки
+        HardCurrency, //Кристаллы
+        SilverKey,
+        GoldKey,
+        /****/
+
     }
 }

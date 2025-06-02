@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿/*
+using System.Collections.Generic;
 using Game.GamePlay.Commands;
 using Game.GamePlay.View.Buildins;
 using Game.Settings.Gameplay.Buildings;
@@ -21,8 +22,9 @@ namespace Game.GamePlay.Services
         
         /**
          * При загрузке создаем все view-модели из реактивного списка всех строений 
-         * Подписываемся на событие добавления в массив Proxy сущностей 
-         */
+         * Подписываемся на событие добавления в массив Proxy сущностей
+        */
+         /*
         public BuildingsService(
             IObservableCollection<BuildingEntityProxy> buildings,
             BuildingsSettings buildingsSettings, 
@@ -81,6 +83,8 @@ namespace Game.GamePlay.Services
          * 4. Модель добавляем в словарь всех моделей данного класса
          * 5. Кешируем Id и view-модели
          */
+
+/*
         private void CreateBuildingViewModel(BuildingEntityProxy buildingEntity)
         {
             var buildingViewModel = new BuildingViewModel(buildingEntity, _buildingSettingsMap[buildingEntity.TypeId], this); //3
@@ -91,6 +95,7 @@ namespace Game.GamePlay.Services
         /**
          * Удаляем объект из списка моделей и из кеша
          */
+/*
         private void RemoveBuildingViewModel(BuildingEntityProxy buildingEntity)
         {
             if (_buildingsMap.TryGetValue(buildingEntity.Id, out var buildingViewModel))
@@ -101,3 +106,4 @@ namespace Game.GamePlay.Services
         }
     }
 }
+*/

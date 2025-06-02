@@ -2,25 +2,28 @@
 using System.Linq;
 using Game.Settings;
 using Game.State.CMD;
-using Game.State.Entities.Buildings;
+using Game.State.Entities;
 using Game.State.Maps;
+using Game.State.Mergeable.Buildings;
 using Game.State.Root;
+using Newtonsoft.Json;
 using UnityEngine;
 
-namespace Game.GamePlay.Commands
+namespace Game.GamePlay.Commands.MapCommand
 {
-    public class CommandCreateMapStateHandler : ICommandHandler<CommandCreateMapState>
+    public class CommandCreateMapHandler
+        : ICommandHandler<CommandCreateMap>
     {
         private readonly GameStateProxy _gameState;
         private readonly GameSettings _gameSettings;
 
-        public CommandCreateMapStateHandler(GameStateProxy gameState, GameSettings gameSettings)
+        public CommandCreateMapHandler(GameStateProxy gameState, GameSettings gameSettings)
         {
             _gameState = gameState;
             _gameSettings = gameSettings;
         }
 
-        public bool Handle(CommandCreateMapState command)
+        public bool Handle(CommandCreateMap command)
         {
             Debug.Log("Создаем карту - ");
             var isMapAlreadyExisted = _gameState.Maps.Any(m => m.Id == command.MapId);
@@ -32,28 +35,33 @@ namespace Game.GamePlay.Commands
             //Находим настройки карты по ее Id
             var newMapSettings = _gameSettings.MapsSettings.Maps.First(m => m.MapId == command.MapId);
             var newMapInitialStateSettings = newMapSettings.InitialStateSettings;
-            var initialBuildings = new List<BuildingEntity>(); //Создаем список зданий
+            var initialEntities = new List<EntityData>(); //Создаем список зданий
 
-            Debug.Log("newMapSettings " + JsonUtility.ToJson(newMapSettings));
+            Debug.Log("newMapSettings " + JsonConvert.SerializeObject(newMapSettings, Formatting.Indented));
             foreach (var buildingSettings in newMapInitialStateSettings.Buildings) //Берем список зданий из настроек карты (конфиг)
             {
-                var initialBuilding = new BuildingEntity // .. и создаем все здания
+                var initialBuilding = new BuildingEntityData // .. и создаем все здания
                 {
-                    Id = _gameState.CreateEntityID(),
-                    TypeId = buildingSettings.TypeId,
+                    UniqueId = _gameState.CreateEntityID(),
+                    ConfigId = buildingSettings.TypeId,
+                    Type = EntityType.Building,
                     Position = buildingSettings.Position,
-                    Level = buildingSettings.Level
+                    Level = buildingSettings.Level,
+                    IsAutoCollectionEnabled = false,
+                    LastClickedTimeMS = 0,
                 };
-                initialBuildings.Add(initialBuilding);
+                initialEntities.Add(initialBuilding);
             }
+            
             //Создаем другие ресурсы карты 
             /// ..... 
             
             //Создаем состояние карты
-            var newMapState = new MapState
+            var newMapState = new MapData
             {
                 Id = command.MapId,
-                Buildings = initialBuildings,
+                Entities = initialEntities,
+             //   Buildings = initialBuildings,
             };
             // ... затем оборачиваем прокис
             var newMapStateProxy = new Map(newMapState);

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿/*
+ using System.Linq;
 using Game.State.CMD;
 using Game.State.Entities.Buildings;
 using Game.State.Root;
@@ -38,3 +39,4 @@ namespace Game.GamePlay.Commands
         }
     }
 }
+*/

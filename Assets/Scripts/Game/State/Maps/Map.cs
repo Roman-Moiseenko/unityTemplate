@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Game.State.Entities.Buildings;
+using Game.State.Entities;
 using ObservableCollections;
 using R3;
 
@@ -8,30 +8,28 @@ namespace Game.State.Maps
 {
     public class Map
     {
-        public int Id;
-        private MapState _mapState;
-        public MapState Origin { get; }
-        public ObservableList<BuildingEntityProxy> Buildings { get; } = new();
+        public int Id => Origin.Id;
+        private MapData _mapData;
+        public MapData Origin { get; }
+        public ObservableList<Entity> Entities { get; } = new();
 
-        public Map(MapState mapState)
+        public Map(MapData mapData)
         {
-            Origin = mapState;
-            Id = mapState.Id;
-            mapState.Buildings.ForEach(
-                buildingOriginal => Buildings.Add(new BuildingEntityProxy(buildingOriginal))
-            );
-            Buildings.ObserveAdd().Subscribe(e =>
+            Origin = mapData;
+            mapData.Entities.ForEach(
+                entityOriginal => Entities.Add(EntitiesFactory.CreateEntity(entityOriginal)));
+            Entities.ObserveAdd().Subscribe(e =>
             {
-                var addedBuildingEntity = e.Value;
-                mapState.Buildings.Add(addedBuildingEntity.Origin);
+                var addedEntity = e.Value;
+                mapData.Entities.Add(addedEntity.Origin);
             });
 
-            Buildings.ObserveRemove().Subscribe(e =>
+            Entities.ObserveRemove().Subscribe(e =>
             {
-                var removedBuildingEntityProxy = e.Value;
-                var removedBuildingEntity =
-                    mapState.Buildings.FirstOrDefault(b => b.Id == removedBuildingEntityProxy.Id);
-                mapState.Buildings.Remove(removedBuildingEntity);
+                var removedEntity = e.Value;
+                var removedEntityData =
+                    mapData.Entities.FirstOrDefault(b => b.UniqueId == removedEntity.UniqueId);
+                mapData.Entities.Remove(removedEntityData);
             });
         }
     }

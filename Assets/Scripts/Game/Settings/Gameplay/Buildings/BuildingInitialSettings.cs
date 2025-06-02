@@ -8,6 +8,6 @@ namespace Game.Settings.Gameplay.Buildings
     {
         public string TypeId;
         public int Level;
-        public Vector3Int Position;
+        public Vector2Int Position;
     }
 }
