@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuildingsSettings: {fileID: 11400000, guid: 1308c14217b2005478fa31ec921b6409, type: 2}
   MapsSettings: {fileID: 11400000, guid: 10e8e4e8ebbd3244b989ae50a5ecce16, type: 2}
+  TowerBustsSettings: {fileID: 11400000, guid: 1414b853bc8b0eb49a408e4ae8cc3f84, type: 2}
+  TowersSettings: {fileID: 11400000, guid: 3c8853ae75226e444b2ed2d733f552a2, type: 2}

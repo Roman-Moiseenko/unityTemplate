@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7296470140475f9390ad5151b068a3, type: 3}
+  m_Name: Tower02
+  m_EditorClassIdentifier: 
+  <EntityType>k__BackingField: 1
+  <ConfigId>k__BackingField: Tower02
+  <TitleLid>k__BackingField: Bomber Tower
+  <DescriptionLid>k__BackingField: 
+  <PrefabPath>k__BackingField: 
+  <Levels>k__BackingField:
+  - {fileID: 11400000, guid: a7b82d3be11c597469eed843072475d3, type: 2}
+  - {fileID: 11400000, guid: 0addc1888a7a782479ceacf7491fe9d6, type: 2}
+  - {fileID: 11400000, guid: 46212201e464c0e4f8e9cede75680f44, type: 2}
+  - {fileID: 11400000, guid: c9c20d1d1e42f954d9d46d92ee39d0bd, type: 2}
+  - {fileID: 11400000, guid: f5bd595faf8eb5045b81b24799d537b8, type: 2}
+  <TypeDamage>k__BackingField: 1
+  <TypeEnemy>k__BackingField: 1

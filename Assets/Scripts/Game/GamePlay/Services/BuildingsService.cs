@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.GamePlay.Commands;
 using Game.GamePlay.View.Buildings;
 using Game.Settings.Gameplay.Buildings;
+using Game.Settings.Gameplay.Entities.Buildings;
 using Game.State.CMD;
 using Game.State.Entities;
 using Game.State.Mergeable.Buildings;
@@ -38,7 +39,7 @@ namespace Game.GamePlay.Services
             //Кешируем настройки зданий / обектов
             foreach (var buildingSettings in buildingsSettings.AllBuildings)
             {
-                _buildingSettingsMap[buildingSettings.TypeId] = buildingSettings;
+                _buildingSettingsMap[buildingSettings.ConfigId] = buildingSettings;
             }
             
             foreach (var entity in entities)

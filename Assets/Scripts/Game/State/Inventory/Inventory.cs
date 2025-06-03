@@ -8,12 +8,17 @@ namespace Game.State.Inventory
         public InventoryType TypeItem => Origin.TypeItem;
         public string ConfigId => Origin.ConfigId;
         public readonly ReactiveProperty<int> Amount;
+        public readonly ReactiveProperty<int> Level;
+        
 
         public Inventory(InventoryData data)
         {
             Origin = data;
             Amount = new ReactiveProperty<int>(data.Amount);
             Amount.Subscribe(newAmount => data.Amount = newAmount); 
+            
+            Level = new ReactiveProperty<int>(data.Level);
+            Level.Subscribe(newAmount => data.Level = newAmount);
         }
     }
 }

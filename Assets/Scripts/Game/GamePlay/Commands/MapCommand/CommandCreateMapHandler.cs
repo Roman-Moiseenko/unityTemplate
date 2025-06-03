@@ -5,6 +5,7 @@ using Game.State.CMD;
 using Game.State.Entities;
 using Game.State.Maps;
 using Game.State.Maps.Grounds;
+using Game.State.Maps.Towers;
 using Game.State.Mergeable.Buildings;
 using Game.State.Root;
 using Newtonsoft.Json;
@@ -71,8 +72,21 @@ namespace Game.GamePlay.Commands.MapCommand
                 };
                 initialEntities.Add(initialBuilding);
             }
-            
-            
+            Debug.Log("newMapInitialStateSettings.Towers " + JsonConvert.SerializeObject(newMapInitialStateSettings.Towers, Formatting.Indented));
+            foreach (var towerSettings in newMapInitialStateSettings.Towers) //Берем список зданий из настроек карты (конфиг)
+            {
+                var initialTower = new TowerEntityData // .. и создаем все здания
+                {
+                    UniqueId = _gameState.CreateEntityID(),
+                    ConfigId = towerSettings.ConfigId,
+                    Type = EntityType.Tower,
+                    Position = towerSettings.Position,
+                    EpicLevel = towerSettings.Level,
+
+                    
+                };
+                initialEntities.Add(initialTower);
+            }
             //Создаем другие ресурсы карты 
             /// ..... 
             

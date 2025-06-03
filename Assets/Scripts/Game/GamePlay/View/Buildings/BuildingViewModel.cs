@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.Settings.Gameplay.Buildings;
+using Game.Settings.Gameplay.Entities.Buildings;
 using Game.State.Mergeable.Buildings;
 using R3;
 using UnityEngine;
@@ -34,7 +35,7 @@ namespace Game.GamePlay.View.Buildings
             _buildingSettings = buildingSettings;
             _buildingsService = buildingsService;
 
-            foreach (var buildingLevelSettings in buildingSettings.LevelsSettings)
+            foreach (var buildingLevelSettings in buildingSettings.Levels)
             {
                 _buildingLevelSettingsMap[buildingLevelSettings.Level] = buildingLevelSettings;
             }

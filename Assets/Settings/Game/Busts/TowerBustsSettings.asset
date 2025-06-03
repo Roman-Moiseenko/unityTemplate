@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 832bd5c56b9b4111b244482754c9a0c9, type: 3}
+  m_Name: TowerBustsSettings
+  m_EditorClassIdentifier: 
+  Busts:
+  - {fileID: 11400000, guid: f69b005c87558084895752f725c2c54f, type: 2}
+  - {fileID: 11400000, guid: ef5b8e5358049a54293ecb2f7ba53302, type: 2}
+  - {fileID: 11400000, guid: 003210a780a9a0f44ad69e05ea335b52, type: 2}

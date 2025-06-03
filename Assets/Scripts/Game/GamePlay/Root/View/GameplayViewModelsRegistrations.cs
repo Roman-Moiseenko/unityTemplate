@@ -18,7 +18,8 @@ namespace Game.GamePlay.Root.View
             container.RegisterFactory(c => new WorldGameplayRootViewModel(
                 c.Resolve<BuildingsService>(),
                 c.Resolve<GroundsService>(),
-                c.Resolve<ResourcesService>()
+                c.Resolve<ResourcesService>(),
+                c.Resolve<TowersService>()
                 )).AsSingle();
         }
     }

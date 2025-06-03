@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.Settings.Gameplay.Buildings;
+using Game.Settings.Gameplay.Entities.Tower;
 using Game.Settings.Gameplay.Grounds;
 using Game.State.Maps.Grounds;
 using UnityEngine;
@@ -13,6 +14,8 @@ namespace Game.Settings.Gameplay.Maps
     {
         public List<BuildingInitialSettings> Buildings;
         public List<GroundInitialSettings> Grounds;
+        
+        public List<TowerInitialSettings> Towers;
 
         public string GroundDefault;
         //Доп.настройки карты

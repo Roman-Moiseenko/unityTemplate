@@ -4,6 +4,7 @@ using DI;
 using Game.Common;
 using Game.GamePlay.Commands;
 using Game.GamePlay.Commands.MapCommand;
+using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Services;
 using Game.Settings;
 using Game.State;
@@ -32,7 +33,8 @@ namespace Game.GamePlay.Root
             var cmd = container.Resolve<ICommandProcessor>(); // new CommandProcessor(gameStateProvider); //Создаем обработчик команд
             //container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
             
-          //  cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
+            //cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
+            //cmd.RegisterHandler(new CommandPlaceTowerHandler(gameState));
             cmd.RegisterHandler(new CommandCreateMapHandler(gameState, gameSettings)); //Регистрируем команды обработки зданий
 
             //TODO CommandProcessor и команды Resources регистрировать раньше, т.к. используются в меню 
@@ -59,6 +61,7 @@ namespace Game.GamePlay.Root
                 loadingMap = gameState.Maps.First(m => m.Id == loadingMapId); //??
                 Debug.Log("loadingMap: " + JsonConvert.SerializeObject(loadingMap, Formatting.Indented));
             }
+            Debug.Log("*** gameSettings: " + JsonConvert.SerializeObject(gameSettings, Formatting.Indented));
 
             //Регистрируем сервис по Зданиями
                container.RegisterFactory(_ => new BuildingsService(
@@ -69,6 +72,16 @@ namespace Game.GamePlay.Root
                container.RegisterFactory(_ => new GroundsService(
                    loadingMap.Entities,
                    cmd)
+               ).AsSingle();
+               Debug.Log("*** loadingMap: " + JsonConvert.SerializeObject(loadingMap.Entities, Formatting.Indented));
+               Debug.Log("*** gameSettings: " + JsonConvert.SerializeObject(gameSettings, Formatting.Indented));
+               Debug.Log("*** TowersSettings: " + JsonConvert.SerializeObject(gameSettings.TowersSettings, Formatting.Indented));
+
+               container.RegisterFactory(_ => new TowersService(
+                   loadingMap.Entities,
+                   gameSettings.TowersSettings,
+                   cmd
+                   )
                ).AsSingle();
 
                container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
