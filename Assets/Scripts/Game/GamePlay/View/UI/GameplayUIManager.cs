@@ -11,10 +11,14 @@ namespace Game.GamePlay.View.UI
     public class GameplayUIManager : UIManager
     {
         private readonly Subject<Unit> _exitSceneRequest;
+        private readonly Subject<Unit> _stateGameplayRequest;
+        public readonly DIContainer Container;
 
         public GameplayUIManager(DIContainer container) : base(container)
         {
+            Container = container;
             _exitSceneRequest = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            _stateGameplayRequest = container.Resolve<Subject<Unit>>(AppConstants.GAME_PLAY_STATE);
         }
 
         public ScreenGameplayViewModel OpenScreenGameplay()
@@ -29,6 +33,7 @@ namespace Game.GamePlay.View.UI
         {
             var a = new PopupAViewModal();
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
+            //TODO Ставим на паузу
             rootUI.OpenPopup(a);
             return a;
         }
@@ -37,6 +42,7 @@ namespace Game.GamePlay.View.UI
         {
             var b = new PopupBViewModal();
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
+            //TODO Ставим на паузу
             rootUI.OpenPopup(b);
             return b;
         }

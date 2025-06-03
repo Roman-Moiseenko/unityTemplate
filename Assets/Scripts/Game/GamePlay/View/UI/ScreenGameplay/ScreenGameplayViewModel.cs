@@ -5,7 +5,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 {
     public class ScreenGameplayViewModel : WindowViewModel
     {
-        private readonly GameplayUIManager _uiManager;
+        public readonly GameplayUIManager _uiManager;
         private readonly Subject<Unit> _exitSceneRequest;
         public override string Id => "ScreenGameplay";
         public override string Path => "";
@@ -13,6 +13,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             _uiManager = uiManager;
             _exitSceneRequest = exitSceneRequest;
+            
         }
         
         public void RequestOpenPopupA()

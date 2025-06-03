@@ -1,6 +1,7 @@
 ﻿using DI;
 using Game.Common;
 using Game.GamePlay.Commands;
+using Game.GamePlay.FSM.Play;
 using Game.GamePlay.Root.View;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
@@ -21,7 +22,9 @@ namespace Game.GamePlay.Root
         [SerializeField] private UIGameplayRootBinder _sceneUIRootPrefab; 
 
         //Объект сцены, куда будут вставляться/создаваться объекты игры из префабов
-        [SerializeField] private WorldGameplayRootBinder _worldRootBinder; 
+        [SerializeField] private WorldGameplayRootBinder _worldRootBinder;
+        [SerializeField] private FSMGameplay _fsmGameplay;
+        
         public Observable<GameplayExitParams> Run(DIContainer gameplayContainer, GameplayEnterParams enterParams)
         {
             GameplayRegistrations.Register(gameplayContainer, enterParams); //Регистрируем все сервисы сцены
@@ -33,7 +36,7 @@ namespace Game.GamePlay.Root
             
             Debug.Log($"MAIN MENU ENTER POINT: Results MapId {enterParams?.MapId}");
 
-                //Создаем выходные параметры для входа в Меню
+            //Создаем выходные параметры для входа в Меню
             var mainMenuEnterParams = new MainMenuEnterParams("Fatality");
             var exitParams = new GameplayExitParams(mainMenuEnterParams);
             //Формируем сигнал для подписки
@@ -46,6 +49,8 @@ namespace Game.GamePlay.Root
         {
             //Строим мир сцены по параметрам
             _worldRootBinder.Bind(viewContainer.Resolve<WorldGameplayRootViewModel>());
+            _fsmGameplay.Bind();
+            //TODO 
         }
 
         private void InitUI(DIContainer viewContainer)

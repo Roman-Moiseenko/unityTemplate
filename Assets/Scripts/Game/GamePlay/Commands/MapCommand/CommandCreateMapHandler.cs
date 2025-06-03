@@ -63,7 +63,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 var initialBuilding = new BuildingEntityData // .. и создаем все здания
                 {
                     UniqueId = _gameState.CreateEntityID(),
-                    ConfigId = buildingSettings.TypeId,
+                    ConfigId = buildingSettings.ConfigId,
                     Type = EntityType.Building,
                     Position = buildingSettings.Position,
                     Level = buildingSettings.Level,
@@ -82,8 +82,6 @@ namespace Game.GamePlay.Commands.MapCommand
                     Type = EntityType.Tower,
                     Position = towerSettings.Position,
                     EpicLevel = towerSettings.Level,
-
-                    
                 };
                 initialEntities.Add(initialTower);
             }

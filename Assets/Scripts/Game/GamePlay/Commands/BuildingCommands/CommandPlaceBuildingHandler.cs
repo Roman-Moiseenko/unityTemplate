@@ -1,11 +1,10 @@
-﻿/*
- using System.Linq;
+﻿using System.Linq;
 using Game.State.CMD;
-using Game.State.Entities.Buildings;
+using Game.State.Mergeable.Buildings;
 using Game.State.Root;
 using UnityEngine;
 
-namespace Game.GamePlay.Commands
+namespace Game.GamePlay.Commands.BuildingCommands
 {
     public class CommandPlaceBuildingHandler : ICommandHandler<CommandPlaceBuilding>
     {
@@ -26,17 +25,13 @@ namespace Game.GamePlay.Commands
             }
             
             var entityId = _gameState.CreateEntityID(); //Получаем уникальный ID
-            var newBuildingEntity = new BuildingEntity //Создаем сущность игрового объекта
-            {
-                Id = entityId,
-                Position = command.Position,
-                TypeId = command.BuildingTypeId
-            };
-            var newBuildingEntityProxy = new BuildingEntityProxy(newBuildingEntity); //Оборачиваем его Прокси
-            currentMap.Buildings.Add(newBuildingEntityProxy);//Добавляем в список объектов карты
+   //         var newBuildingEntity = new BuildingEntity //Создаем сущность игрового объекта
+   //         { };
+          //  var newBuildingEntityProxy = new BuildingEntityProxy(newBuildingEntity); //Оборачиваем его Прокси
+           // currentMap.Entities.Add(newBuildingEntityProxy);//Добавляем в список объектов карты
             //_gameState.Buildings.Add(newBuildingEntityProxy); 
+            
             return true;
         }
     }
 }
-*/

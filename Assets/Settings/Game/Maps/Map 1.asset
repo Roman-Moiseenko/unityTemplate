@@ -15,7 +15,7 @@ MonoBehaviour:
   MapId: 0
   InitialStateSettings:
     Buildings:
-    - TypeId: Base
+    - ConfigId: Base
       Level: 1
       Position: {x: 0, y: 0}
     Grounds:

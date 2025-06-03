@@ -3,6 +3,7 @@
     public static class AppConstants
     {
         public const string EXIT_SCENE_REQUEST_TAG = nameof(EXIT_SCENE_REQUEST_TAG);
+        public const string GAME_PLAY_STATE = nameof(GAME_PLAY_STATE);
 
         public const string MAIN_MENU_SHOP = nameof(MAIN_MENU_SHOP);
         public const string MAIN_MENU_INVENTORY = nameof(MAIN_MENU_INVENTORY);
