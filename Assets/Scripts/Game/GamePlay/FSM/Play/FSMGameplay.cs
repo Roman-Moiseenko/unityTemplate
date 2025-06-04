@@ -1,15 +1,19 @@
-﻿using UnityEngine;
+﻿using DI;
+using Game.GamePlay.FSM.Play.States;
+using MVVM.FSM;
+using UnityEngine.PlayerLoop;
 
 namespace Game.GamePlay.FSM.Play
 {
-    public class FSMGameplay : MonoBehaviour
+    public class FSMGameplay
     {
-        private MVVM.FSM.FSM _fsm;
+        public MVVM.FSM.FSM _fsm { get; }
 
-        public void Bind()
+        public FSMGameplay(DIContainer container)
         {
             _fsm = new MVVM.FSM.FSM();
             _fsm.AddState(new FSMGamePause(_fsm));
+            _fsm.AddState(new FSMGameReturn(_fsm));
             _fsm.AddState(new FSMGameBuild(_fsm));
             _fsm.AddState(new FSMGameSpeedNormal(_fsm));
             _fsm.AddState(new FSMGameSpeed2x(_fsm));
@@ -17,11 +21,21 @@ namespace Game.GamePlay.FSM.Play
             _fsm.SetState<FSMGameBuild>();
         }
 
-        private void Update()
+        public FSMState GetCurrentState()
         {
-            _fsm.Update();
+            return _fsm.StateCurrent;
         }
+        
+        public FSMState GetPreviousState()
+        {
+            return _fsm.PreviousState;
+        }
+
+        public void UpdateState()
+        {
+            _fsm?.Update();
+        }
+        
+        
     }
-    
-    
 }

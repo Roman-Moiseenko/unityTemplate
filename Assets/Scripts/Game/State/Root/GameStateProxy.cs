@@ -1,9 +1,11 @@
 ﻿using System.Linq;
 using Game.State.GameResources;
+using Game.State.Inventory;
 using Game.State.Maps;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+
 
 namespace Game.State.Root
 {
@@ -15,18 +17,40 @@ namespace Game.State.Root
     {
         private readonly GameState _gameState;
         public ReactiveProperty<int> CurrentMapId = new();
+        
+        public GameplayState GameplayState;
+        //public ReactiveProperty<GameplayStateData> GameplayStateData = new();
         public ObservableList<Map> Maps { get; } = new();
+        public ObservableList<Inventory.Inventory> Inventory { get; } = new();
 
         public ObservableList<Resource> Resources { get; } = new();
 
         public GameStateProxy(GameState gameState)
         {
             _gameState = gameState;
+            
+
+            GameplayState = new GameplayState(gameState.GameplayStateData);
+            
+            GameplayState.GameSpeed.Subscribe(newSpeed =>
+            {
+                if (newSpeed == 0)
+                {
+                  //  gameState.PreviousGameSpeed;
+                    Debug.Log("Игра на паузе");
+                }
+                else
+                {
+                    Debug.Log($"Скорость игры {newSpeed}");
+                }
+          //      gameState.StateData.GameSpeed = newSpeed;
+                
+            });
 
             InitMaps(gameState);
-
             InitResource(gameState);
-
+            InitInventory(gameState);
+            
             CurrentMapId.Subscribe(newValue => { gameState.CurrentMapId = newValue; });
         }
 
@@ -58,6 +82,19 @@ namespace Game.State.Root
             });
         }
 
+        private void InitInventory(GameState gameState)
+        {
+            gameState.Inventory.ForEach(originInventory => Inventory.Add(InventoryFactory.CreateInventory(originInventory)));
+            Inventory.ObserveAdd().Subscribe(e => gameState.Inventory.Add(e.Value.Origin));
+            
+            Inventory.ObserveRemove().Subscribe(e =>
+            {
+                var removedInventoryData =
+                    gameState.Inventory.FirstOrDefault(b => b.TypeItem == e.Value.TypeItem);
+                gameState.Inventory.Remove(removedInventoryData);
+            });
+        }
+        
         public int CreateEntityID()
         {
             return _gameState.CreateEntityID();

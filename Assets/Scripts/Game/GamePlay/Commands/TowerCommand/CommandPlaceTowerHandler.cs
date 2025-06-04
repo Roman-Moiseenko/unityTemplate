@@ -1,22 +1,22 @@
-﻿/*
- using System.Linq;
+﻿using System.Linq;
+using Game.GamePlay.Commands.TowerCommand;
 using Game.State.CMD;
-using Game.State.Entities.Buildings;
+using Game.State.Maps.Towers;
 using Game.State.Root;
 using UnityEngine;
 
 namespace Game.GamePlay.Commands
 {
-    public class CommandPlaceBuildingHandler : ICommandHandler<CommandPlaceBuilding>
+    public class CommandPlaceTowerHandler : ICommandHandler<CommandPlaceTower>
     {
         private readonly GameStateProxy _gameState;
 
-        public CommandPlaceBuildingHandler(GameStateProxy gameState)
+        public CommandPlaceTowerHandler(GameStateProxy gameState)
         {
             _gameState = gameState;
         }
         
-        public bool Handle(CommandPlaceBuilding command)
+        public bool Handle(CommandPlaceTower command)
         {
             var currentMap = _gameState.Maps.FirstOrDefault(m => m.Id == _gameState.CurrentMapId.CurrentValue);
             if (currentMap == null)
@@ -25,18 +25,17 @@ namespace Game.GamePlay.Commands
                 return false;
             }
             
-            var entityId = _gameState.CreateEntityID(); //Получаем уникальный ID
-            var newBuildingEntity = new BuildingEntity //Создаем сущность игрового объекта
+           // var entityId = _gameState.CreateEntityID(); //Получаем уникальный ID
+            var newTowerEntity = new TowerEntityData() //Создаем сущность игрового объекта
             {
-                Id = entityId,
                 Position = command.Position,
-                TypeId = command.BuildingTypeId
+                ConfigId = command.TowerTypeId,
             };
-            var newBuildingEntityProxy = new BuildingEntityProxy(newBuildingEntity); //Оборачиваем его Прокси
-            currentMap.Buildings.Add(newBuildingEntityProxy);//Добавляем в список объектов карты
+            var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
+            currentMap.Entities.Add(newTower);//Добавляем в список объектов карты
+            //_gameState.Maps.Add();
             //_gameState.Buildings.Add(newBuildingEntityProxy); 
             return true;
         }
     }
 }
-*/

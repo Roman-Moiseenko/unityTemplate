@@ -1,24 +1,24 @@
 ﻿using MVVM.FSM;
 using UnityEngine;
 
-namespace Game.GamePlay.FSM.Play
+namespace Game.GamePlay.FSM.Play.States
 {
-    public class FSMGameSpeed2x : FSMState
+    public class FSMGameBuild : FSMState
     {
-        public FSMGameSpeed2x(MVVM.FSM.FSM fsm) : base(fsm)
+        public FSMGameBuild(MVVM.FSM.FSM fsm) : base(fsm)
         {
 
         }
 
         public override void Enter()
         {
-            Debug.Log($"Скорость установлена 2");
-            Time.timeScale = 2;
+            Debug.Log($"Начинаем строить");
+            
         }
 
         public override void Exit()
         {
-            Debug.Log($"Меняем скорость игры");
+            Debug.Log($"Закончили строить");
             //Запомнить скорость игры
         }
 

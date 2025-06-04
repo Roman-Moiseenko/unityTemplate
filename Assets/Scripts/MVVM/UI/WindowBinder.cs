@@ -12,7 +12,6 @@ namespace MVVM.UI
         public void Bind(WindowViewModel viewModel)
         {
             ViewModel = (T)viewModel; //Кешируем view-модель
-            Debug.Log($"Окно {ViewModel.Id}");
             OnBind(ViewModel); 
         }
 

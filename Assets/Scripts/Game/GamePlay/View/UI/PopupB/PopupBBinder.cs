@@ -14,13 +14,11 @@ namespace Game.GamePlay.View.UI.PopupB
         protected override void OnBind(PopupBViewModal viewModal)
         {
             base.OnBind(viewModal);
-            Debug.Log("Ставим игру на паузу");
         }
 
         public override void Close()
         {
             base.Close();
-            Debug.Log("Снимаем паузу");
         }
         
     }

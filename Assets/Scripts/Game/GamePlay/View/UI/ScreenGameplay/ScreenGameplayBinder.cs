@@ -1,7 +1,10 @@
-﻿using System;
-using MVVM.UI;
+﻿using MVVM.UI;
+using Newtonsoft.Json;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Game.GamePlay.View.UI.ScreenGameplay
 {
@@ -10,12 +13,14 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         [SerializeField] private Button _btnPopupA;
         [SerializeField] private Button _btnPopupB;
         [SerializeField] private Button _btnGoToMenu;
+        [SerializeField] private Button _btnGameSpeed;
 
         private void OnEnable()
         {
             _btnPopupA.onClick.AddListener(OnPopupAButtonClicked);
             _btnPopupB.onClick.AddListener(OnPopupBButtonClicked);
             _btnGoToMenu.onClick.AddListener(OnGoToMenuButtonClicked);
+            _btnGameSpeed.onClick.AddListener(OnChangeGameSpeed);
         }
 
         private void OnDisable()
@@ -23,6 +28,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _btnPopupA.onClick.RemoveListener(OnPopupAButtonClicked);
             _btnPopupB.onClick.RemoveListener(OnPopupBButtonClicked);
             _btnGoToMenu.onClick.RemoveListener(OnGoToMenuButtonClicked);
+            _btnGameSpeed.onClick.RemoveListener(OnChangeGameSpeed);
         }
 
         private void OnPopupBButtonClicked()
@@ -38,6 +44,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         private void OnPopupAButtonClicked()
         {
             ViewModel.RequestOpenPopupA();
+        }
+
+        private void OnChangeGameSpeed()
+        {
+            _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.RequestGameSpeed()}x";
         }
     }
 }

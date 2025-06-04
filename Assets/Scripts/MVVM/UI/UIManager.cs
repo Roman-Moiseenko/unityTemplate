@@ -4,7 +4,7 @@ namespace MVVM.UI
 {
     public abstract class UIManager
     {
-        protected readonly DIContainer Container;
+        public readonly DIContainer Container;
 
         protected UIManager(DIContainer container)
         {

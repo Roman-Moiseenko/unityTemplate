@@ -1,12 +1,12 @@
 ﻿using MVVM.FSM;
 using UnityEngine;
 
-namespace Game.GamePlay.FSM.Play
+namespace Game.GamePlay.FSM.Play.States
 {
-    public class FSMGamePause : FSMState
+    public class FSMGameReturn : FSMState
     {
         
-        public FSMGamePause(MVVM.FSM.FSM fsm) : base(fsm) { }
+        public FSMGameReturn(MVVM.FSM.FSM fsm) : base(fsm) { }
 
         public override void Enter()
         {

@@ -1,24 +1,25 @@
 ﻿using MVVM.FSM;
 using UnityEngine;
 
-namespace Game.GamePlay.FSM.Play
+namespace Game.GamePlay.FSM.Play.States
 {
-    public class FSMGameSpeedNormal : FSMState
+    public class FSMGameSpeed2x : FSMState
     {
-        public FSMGameSpeedNormal(MVVM.FSM.FSM fsm) : base(fsm)
+        public FSMGameSpeed2x(MVVM.FSM.FSM fsm) : base(fsm)
         {
 
         }
 
         public override void Enter()
         {
-            Debug.Log($"Скорость установлена 1");
-            Time.timeScale = 1;
+            Debug.Log($"Скорость установлена 2");
+            Time.timeScale = 2;
         }
 
         public override void Exit()
         {
             Debug.Log($"Меняем скорость игры");
+            //Запомнить скорость игры
         }
 
         public override void Update()
@@ -27,9 +28,9 @@ namespace Game.GamePlay.FSM.Play
             {
                 Fsm.SetState<FSMGamePause>(this);
             }
-            if (Input.GetKeyDown(KeyCode.Alpha2))
+            if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                Fsm.SetState<FSMGameSpeed2x>();
+                Fsm.SetState<FSMGameSpeedNormal>();
             }
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {

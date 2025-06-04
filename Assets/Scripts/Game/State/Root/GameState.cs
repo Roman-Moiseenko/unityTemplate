@@ -17,6 +17,8 @@ namespace Game.State.Root
         public List<MapData> Maps { get; set; }
         public List<InventoryData> Inventory { get; set; }
         public List<ResourceData> Resources { get; set; }
+
+        public GameplayStateData GameplayStateData = new(); //Cостояния gameplay игры
         
         public int CreateEntityID()
         {

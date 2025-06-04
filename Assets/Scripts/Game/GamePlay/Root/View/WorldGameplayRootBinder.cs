@@ -69,7 +69,6 @@ namespace Game.GamePlay.Root.View
             var prefabBuildingLevelPath =
                 $"Prefabs/Gameplay/Buildings/{buildingType}/Level_{buildingLevel}"; //Перенести в настройки уровня
             var buildingPrefab = Resources.Load<BuildingBinder>(prefabBuildingLevelPath);
-            Debug.Log(prefabBuildingLevelPath);
 
             var createdBuilding = Instantiate(buildingPrefab, transform);
             createdBuilding.Bind(buildingViewModel);
@@ -136,8 +135,8 @@ namespace Game.GamePlay.Root.View
              //   Ray ray = Camera.main.ScreenPointToRay(cursorPosition);
              if (Physics.Raycast(Camera.main.ScreenPointToRay(cursorPosition), out RaycastHit hit))
              {
-                 print(hit.transform.name);
-                 print(hit.transform.position);
+             //    print(hit.transform.name);
+           //      print(hit.transform.position);
              }
              
            //     Debug.Log(Input.mousePosition.x + ", "+ Input.mousePosition.y + ", " + Input.mousePosition.z);

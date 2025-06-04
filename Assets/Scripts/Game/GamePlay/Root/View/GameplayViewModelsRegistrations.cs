@@ -1,4 +1,5 @@
 ﻿using DI;
+using Game.GamePlay.FSM.Play;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
 using Scripts.Game.GameRoot.Services;
@@ -21,6 +22,7 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<ResourcesService>(),
                 c.Resolve<TowersService>()
                 )).AsSingle();
+        //    container.RegisterFactory(c => new FSMGameplay(container)).AsSingle();
         }
     }
 }

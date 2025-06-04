@@ -1,25 +1,24 @@
 ﻿using MVVM.FSM;
 using UnityEngine;
 
-namespace Game.GamePlay.FSM.Play
+namespace Game.GamePlay.FSM.Play.States
 {
-    public class FSMGameBuild : FSMState
+    public class FSMGameSpeedNormal : FSMState
     {
-        public FSMGameBuild(MVVM.FSM.FSM fsm) : base(fsm)
+        public FSMGameSpeedNormal(MVVM.FSM.FSM fsm) : base(fsm)
         {
 
         }
 
         public override void Enter()
         {
-            Debug.Log($"Начинаем строить");
-            
+            Debug.Log($"Скорость установлена 1");
+            Time.timeScale = 1;
         }
 
         public override void Exit()
         {
-            Debug.Log($"Закончили строить");
-            //Запомнить скорость игры
+            Debug.Log($"Меняем скорость игры");
         }
 
         public override void Update()
@@ -28,9 +27,9 @@ namespace Game.GamePlay.FSM.Play
             {
                 Fsm.SetState<FSMGamePause>(this);
             }
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                Fsm.SetState<FSMGameSpeedNormal>();
+                Fsm.SetState<FSMGameSpeed2x>();
             }
             if (Input.GetKeyDown(KeyCode.Alpha3))
             {

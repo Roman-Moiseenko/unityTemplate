@@ -29,7 +29,7 @@ namespace Game.GamePlay.Root
             var gameSettings = settingsProvider.GameSettings;
             
             container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG, new Subject<Unit>()); //Событие, требующее смены сцены
-            container.RegisterInstance(AppConstants.GAME_PLAY_STATE, new Subject<Unit>()); //Событие, меняющее состояние игры
+           // container.RegisterInstance(AppConstants.GAME_PLAY_STATE, new Subject<Unit>()); //Событие, меняющее состояние игры
 
             var cmd = container.Resolve<ICommandProcessor>(); // new CommandProcessor(gameStateProvider); //Создаем обработчик команд
             //container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI

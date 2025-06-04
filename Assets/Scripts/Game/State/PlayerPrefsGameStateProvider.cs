@@ -82,6 +82,7 @@ namespace Game.State
                 },
                 Inventory = new List<InventoryData>(),
             };
+            _gameStateOrigin.GameplayStateData.GameSpeed = 1;
        //     Debug.Log("_gameStateOrigin = " + JsonUtility.ToJson(_gameStateOrigin));
 
             return new GameStateProxy(_gameStateOrigin);

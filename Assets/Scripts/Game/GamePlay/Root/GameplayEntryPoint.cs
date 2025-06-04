@@ -12,6 +12,7 @@ using ObservableCollections;
 using R3;
 using Scripts.Game.GameRoot;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 namespace Game.GamePlay.Root
@@ -23,7 +24,7 @@ namespace Game.GamePlay.Root
 
         //Объект сцены, куда будут вставляться/создаваться объекты игры из префабов
         [SerializeField] private WorldGameplayRootBinder _worldRootBinder;
-        [SerializeField] private FSMGameplay _fsmGameplay;
+       // [SerializeField] private FSMGameplayBinder fsmGameplayBinder;
         
         public Observable<GameplayExitParams> Run(DIContainer gameplayContainer, GameplayEnterParams enterParams)
         {
@@ -49,7 +50,7 @@ namespace Game.GamePlay.Root
         {
             //Строим мир сцены по параметрам
             _worldRootBinder.Bind(viewContainer.Resolve<WorldGameplayRootViewModel>());
-            _fsmGameplay.Bind();
+         //   fsmGameplayBinder.Bind(viewContainer.Resolve<FSMGameplay>());
             //TODO 
         }
 

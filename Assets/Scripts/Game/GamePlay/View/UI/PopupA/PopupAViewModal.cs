@@ -8,7 +8,7 @@ namespace Game.GamePlay.View.UI.PopupA
     public class PopupAViewModal : WindowViewModel
     {
         public override string Id => "PopupA";
-        public override string Path => "";
+        public override string Path => "Gameplay/";
 
         //TODO действия при нажатии на кнопки
 

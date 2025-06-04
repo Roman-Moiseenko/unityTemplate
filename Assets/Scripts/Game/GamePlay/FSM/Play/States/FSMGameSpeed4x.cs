@@ -1,7 +1,7 @@
 ﻿using MVVM.FSM;
 using UnityEngine;
 
-namespace Game.GamePlay.FSM.Play
+namespace Game.GamePlay.FSM.Play.States
 {
     public class FSMGameSpeed4x : FSMState
     {

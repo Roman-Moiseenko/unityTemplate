@@ -15,5 +15,11 @@ namespace Game.GamePlay.View.UI.PopupA
         */
 
         //Подписываемся на нажатия кнопок и вызываем функции из View Модели
+        
+        protected override void OnCloseButtonClick()
+        {
+            //
+            ViewModel.RequestClose();
+        }
     }
 }
