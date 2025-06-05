@@ -46,7 +46,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         private void OnBuild()
         {
-            //TODO Создать событие Начало строительства
+            ViewModel.RequestToBuild();
         }
 
         private void OnPopupBButtonClicked()

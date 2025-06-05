@@ -1,5 +1,7 @@
 ﻿using DI;
 using Game.Common;
+using Game.GamePlay.Fsm;
+using Game.GamePlay.Fsm.States;
 using Game.GamePlay.View.UI.PopupA;
 using Game.GamePlay.View.UI.PopupB;
 using Game.GamePlay.View.UI.ScreenGameplay;
@@ -14,14 +16,40 @@ namespace Game.GamePlay.View.UI
     {
         private readonly Subject<Unit> _exitSceneRequest;
 
-        private readonly GameStateProxy _gameState;
+        //private readonly GameStateProxy _gameState;
+
+        private readonly FsmGameplay _fsmGameplay;
       //  public readonly DIContainer Container;
 
         public GameplayUIManager(DIContainer container) : base(container)
         {
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
-            _gameState = gameStateProvider.GameState;
+
+            _fsmGameplay = container.Resolve<FsmGameplay>();
+            //_gameState = gameStateProvider.GameState;
             _exitSceneRequest = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+
+            _fsmGameplay.Fsm.StateCurrent.Subscribe(newValue =>
+            {
+                if (newValue == null) return;
+                if (newValue.GetType() == typeof(FsmStateBuild))
+                {
+                    //Прячем окно Action
+                    //Показываем Окно Build
+                }
+
+                if (newValue.GetType() == typeof(FsmStateBuildBegin))
+                {
+                    //Прячем Окно Build
+                }
+
+                if (newValue.GetType() == typeof(FsmStateBuild))
+                {
+                    //Прячем Окно Build
+                    //Показываем окно Action
+                }
+                
+            });
         }
 
         public ScreenGameplayViewModel OpenScreenGameplay()
@@ -36,10 +64,10 @@ namespace Game.GamePlay.View.UI
         {
             var a = new PopupAViewModal();
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
-            _gameState.GameplayState.SetPauseGame();// GameSpeed.Value = 0; //Ставим на паузу
+            _fsmGameplay.Fsm.SetState<FsmStateGamePause>();
             a.CloseRequested.Subscribe(e =>
             {
-                _gameState.GameplayState.GameplayReturn();
+                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
             });
             rootUI.OpenPopup(a);
             return a;
@@ -49,11 +77,10 @@ namespace Game.GamePlay.View.UI
         {
             var b = new PopupBViewModal();
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
-            _gameState.GameplayState.SetPauseGame();// GameSpeed.Value = 0; //Ставим на паузу
+            _fsmGameplay.Fsm.SetState<FsmStateGamePause>(); //Меняем состояние на Пауза
             b.CloseRequested.Subscribe(e =>
             {
-                _gameState.GameplayState.GameplayReturn();
-
+                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
             });
             rootUI.OpenPopup(b);
             return b;

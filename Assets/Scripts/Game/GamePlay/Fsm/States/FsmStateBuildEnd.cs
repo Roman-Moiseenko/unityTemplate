@@ -1,0 +1,34 @@
+﻿using System;
+using DI;
+using Game.Settings;
+using Game.State;
+using Game.State.Root;
+using MVVM.FSM;
+
+namespace Game.GamePlay.Fsm.States
+{
+    public class FsmStateBuildEnd : FSMState
+    {
+        private int _previousGameSpeed;
+        private GameplayState _gameplayState;
+
+        public FsmStateBuildEnd(FsmProxy fsm, DIContainer container) : base(fsm, container)
+        {
+        }
+
+        public override void Enter()
+        {
+            
+        }
+
+        public override bool Exit(FSMState _next)
+        {
+            if (_next.GetType() == typeof(FsmStateGamePlay)) return true;
+            return false;
+        }
+
+        public override void Update()
+        {
+        }
+    }
+}
