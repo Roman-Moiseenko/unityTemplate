@@ -4,6 +4,7 @@ using Game.State;
 using Game.State.Root;
 using MVVM.UI;
 using R3;
+using UnityEngine;
 
 namespace Game.GamePlay.View.UI.ScreenGameplay
 {
@@ -14,6 +15,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         private readonly GameplayState _gameplayState;
         public override string Id => "ScreenGameplay";
         public override string Path => "Gameplay/";
+        public readonly int CurrentSpeed;
         public ScreenGameplayViewModel(
             GameplayUIManager uiManager, 
             Subject<Unit> exitSceneRequest,
@@ -23,6 +25,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _uiManager = uiManager;
             _exitSceneRequest = exitSceneRequest;
             _gameplayState = container.Resolve<IGameStateProvider>().GameState.GameplayState;
+            CurrentSpeed = _gameplayState.GetCurrentSpeed();
         }
         
         public void RequestOpenPopupA()
@@ -42,21 +45,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         public int RequestGameSpeed()
         {
-            var currentGameSpeed = _gameplayState.GetCurrentSpeed();
-            var newSpeed = 1;
-            switch (currentGameSpeed)
-            {
-                case 1: newSpeed = 2;
-                    break;
-                case 2: newSpeed = 4;
-                    break;
-                case 4: newSpeed = 1;
-                    break;
-            }
-          
-            _gameplayState.SetGameSpeed(newSpeed);
-            return newSpeed;
-
+            return _gameplayState.SetNextSpeed();
         }
 
     }

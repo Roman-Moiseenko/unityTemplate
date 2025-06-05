@@ -15217,7 +15217,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneUIRootPrefab: {fileID: 1340599913305223147, guid: aae39ad1184db644eaa36b48e9b48dad, type: 3}
   _worldRootBinder: {fileID: 1946288059}
-  fsmGameplayBinder: {fileID: 1946288061}
 --- !u!4 &1602569330
 Transform:
   m_ObjectHideFlags: 0
@@ -19112,7 +19111,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1946288060}
   - component: {fileID: 1946288059}
-  - component: {fileID: 1946288061}
   m_Layer: 0
   m_Name: WorldRoot
   m_TagString: Untagged
@@ -19147,18 +19145,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1946288061
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1946288058}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b6b857f7cbf4150a6486e6e228fc3d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1946366451 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 878123ad369a0e549b0162c3c058c8c3, type: 3}

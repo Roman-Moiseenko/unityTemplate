@@ -33,7 +33,7 @@ namespace Game.State.Root
          */
         public void GameplayReturn() 
         {
-            if (_gameplayStateData.PreviousGameSpeed == null)
+            if (_gameplayStateData.PreviousGameSpeed == 0)
             {
                 GameSpeed.Value = 1;
             } else
@@ -52,6 +52,23 @@ namespace Game.State.Root
         public int GetCurrentSpeed()
         {
             return GameSpeed.Value;
+        }
+
+        public int SetNextSpeed()
+        {
+            var newSpeed = 1;
+            switch (GameSpeed.Value)
+            {
+                case 1: newSpeed = 2;
+                    break;
+                case 2: newSpeed = 4;
+                    break;
+                case 4: newSpeed = 1;
+                    break;
+            }
+          
+            SetGameSpeed(newSpeed);
+            return newSpeed;
         }
     }
 }

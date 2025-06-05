@@ -1,4 +1,5 @@
-﻿using MVVM.UI;
+﻿using System;
+using MVVM.UI;
 using Newtonsoft.Json;
 using TMPro;
 using Unity.VisualScripting;
@@ -14,6 +15,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         [SerializeField] private Button _btnPopupB;
         [SerializeField] private Button _btnGoToMenu;
         [SerializeField] private Button _btnGameSpeed;
+
+        private void Start()
+        {
+            _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.CurrentSpeed}x";
+        }
 
         private void OnEnable()
         {

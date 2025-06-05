@@ -50,8 +50,6 @@ namespace Game.GamePlay.Root
             
             if (loadingMap == null)
             {
-                Debug.Log("loadingMap == null ");
-
                 var command = new CommandCreateMap(loadingMapId);
                 var success = cmd.Process(command);
                 if (!success)
@@ -60,9 +58,9 @@ namespace Game.GamePlay.Root
                 }
 
                 loadingMap = gameState.Maps.First(m => m.Id == loadingMapId); //??
-                Debug.Log("loadingMap: " + JsonConvert.SerializeObject(loadingMap, Formatting.Indented));
+                //Debug.Log("loadingMap: " + JsonConvert.SerializeObject(loadingMap, Formatting.Indented));
             }
-            Debug.Log("*** gameSettings: " + JsonConvert.SerializeObject(gameSettings, Formatting.Indented));
+            Debug.Log("*** gameSettings: " + JsonConvert.SerializeObject(gameState, Formatting.Indented));
 
             //Регистрируем сервис по Зданиями
                container.RegisterFactory(_ => new BuildingsService(

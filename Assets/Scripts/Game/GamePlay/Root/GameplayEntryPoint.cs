@@ -1,19 +1,12 @@
 ﻿using DI;
 using Game.Common;
-using Game.GamePlay.Commands;
-using Game.GamePlay.FSM.Play;
 using Game.GamePlay.Root.View;
-using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
 using Game.MainMenu.Root;
 using Game.State;
-using Game.State.CMD;
-using ObservableCollections;
 using R3;
 using Scripts.Game.GameRoot;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 namespace Game.GamePlay.Root
 {
@@ -24,7 +17,6 @@ namespace Game.GamePlay.Root
 
         //Объект сцены, куда будут вставляться/создаваться объекты игры из префабов
         [SerializeField] private WorldGameplayRootBinder _worldRootBinder;
-       // [SerializeField] private FSMGameplayBinder fsmGameplayBinder;
         
         public Observable<GameplayExitParams> Run(DIContainer gameplayContainer, GameplayEnterParams enterParams)
         {
@@ -34,6 +26,17 @@ namespace Game.GamePlay.Root
             
             InitWorld(gameplayViewModelsContainer);
             InitUI(gameplayViewModelsContainer);
+            
+            
+            //TODO Вынести в отдельный контроллер
+            var _provider = gameplayContainer.Resolve<IGameStateProvider>();
+            _provider.GameState.GameplayState.GameSpeed.Subscribe(newSpeed =>
+            {
+                if (newSpeed != 0) _provider.SaveGameState();
+            });
+            //TODO Добавить другие параметры при сохранении
+            
+            
             
             Debug.Log($"MAIN MENU ENTER POINT: Results MapId {enterParams?.MapId}");
 
@@ -50,8 +53,6 @@ namespace Game.GamePlay.Root
         {
             //Строим мир сцены по параметрам
             _worldRootBinder.Bind(viewContainer.Resolve<WorldGameplayRootViewModel>());
-         //   fsmGameplayBinder.Bind(viewContainer.Resolve<FSMGameplay>());
-            //TODO 
         }
 
         private void InitUI(DIContainer viewContainer)

@@ -1,7 +1,5 @@
 ﻿using DI;
 using Game.Common;
-using Game.GamePlay.FSM.Play;
-using Game.GamePlay.FSM.Play.States;
 using Game.GamePlay.View.UI.PopupA;
 using Game.GamePlay.View.UI.PopupB;
 using Game.GamePlay.View.UI.ScreenGameplay;
@@ -9,16 +7,12 @@ using Game.State;
 using Game.State.Root;
 using MVVM.UI;
 using R3;
-using UnityEngine;
 
 namespace Game.GamePlay.View.UI
 {
     public class GameplayUIManager : UIManager
     {
         private readonly Subject<Unit> _exitSceneRequest;
-        private readonly Subject<FSMGamePause> _setGamePause;
-        private readonly Subject<FSMGamePause> _setGameReturn;
-        private readonly FSMGameplayBinder _fsmGameplayBinder;
 
         private readonly GameStateProxy _gameState;
       //  public readonly DIContainer Container;
