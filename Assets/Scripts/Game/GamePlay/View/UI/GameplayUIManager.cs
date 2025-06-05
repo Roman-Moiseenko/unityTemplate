@@ -58,5 +58,30 @@ namespace Game.GamePlay.View.UI
             rootUI.OpenPopup(b);
             return b;
         }
+
+        /**
+         * Показываем/Скрывем панель Action
+         */
+        public void ViewActionPanel(bool isVisible)
+        {
+            //
+        }
+        /**
+         * Показываем/Скрывем панель Card
+         */
+        public void ViewCardPanel(bool isVisible)
+        {
+            //
+        }
+
+        /**
+         * Панель подтверждения действия Строить/Отмена
+         */
+        public void ViewConfirmPanel(bool isVisible)
+        {
+            
+        }
+        
+        
     }
 }

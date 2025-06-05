@@ -15,6 +15,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         [SerializeField] private Button _btnPopupB;
         [SerializeField] private Button _btnGoToMenu;
         [SerializeField] private Button _btnGameSpeed;
+        
+        /**
+         * Режим строительства, временная кнопка, вызывается по событию.
+         */
+        [SerializeField] private Button _btnBuid;
 
         private void Start()
         {
@@ -27,6 +32,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _btnPopupB.onClick.AddListener(OnPopupBButtonClicked);
             _btnGoToMenu.onClick.AddListener(OnGoToMenuButtonClicked);
             _btnGameSpeed.onClick.AddListener(OnChangeGameSpeed);
+            _btnBuid.onClick.AddListener(OnBuild);
         }
 
         private void OnDisable()
@@ -35,6 +41,12 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _btnPopupB.onClick.RemoveListener(OnPopupBButtonClicked);
             _btnGoToMenu.onClick.RemoveListener(OnGoToMenuButtonClicked);
             _btnGameSpeed.onClick.RemoveListener(OnChangeGameSpeed);
+            _btnBuid.onClick.RemoveListener(OnBuild);
+        }
+
+        private void OnBuild()
+        {
+            //TODO Создать событие Начало строительства
         }
 
         private void OnPopupBButtonClicked()

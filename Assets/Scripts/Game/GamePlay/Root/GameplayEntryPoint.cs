@@ -1,6 +1,7 @@
 ﻿using DI;
 using Game.Common;
 using Game.GamePlay.Root.View;
+using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
 using Game.MainMenu.Root;
 using Game.State;
@@ -27,15 +28,7 @@ namespace Game.GamePlay.Root
             InitWorld(gameplayViewModelsContainer);
             InitUI(gameplayViewModelsContainer);
             
-            
-            //TODO Вынести в отдельный контроллер
-            var _provider = gameplayContainer.Resolve<IGameStateProvider>();
-            _provider.GameState.GameplayState.GameSpeed.Subscribe(newSpeed =>
-            {
-                if (newSpeed != 0) _provider.SaveGameState();
-            });
-            //TODO Добавить другие параметры при сохранении
-            
+            GameplaySaveService.Run(gameplayContainer);
             
             
             Debug.Log($"MAIN MENU ENTER POINT: Results MapId {enterParams?.MapId}");
@@ -67,7 +60,6 @@ namespace Game.GamePlay.Root
             //можно открывать окошки
             var uiManager = viewContainer.Resolve<GameplayUIManager>();
             uiManager.OpenScreenGameplay();
-
         }
     }
 }
