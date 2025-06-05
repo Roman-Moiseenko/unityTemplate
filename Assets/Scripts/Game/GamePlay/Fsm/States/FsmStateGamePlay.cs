@@ -19,10 +19,10 @@ namespace Game.GamePlay.Fsm.States
         public override bool Exit(FSMState _next)
         {
             if (_next.GetType() == typeof(FsmStateGamePause)) return true;
-            if (_next.GetType() == typeof(FsmStateSkill)) return true;
+            if (_next.GetType() == typeof(FsmStateSelectSkill)) return true;
             if (_next.GetType() == typeof(FsmStateBuildBegin)) return true;
             
-            return true;
+            return false;
         }
 
         public override void Update()

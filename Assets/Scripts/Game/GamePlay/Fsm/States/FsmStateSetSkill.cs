@@ -7,27 +7,26 @@ using MVVM.FSM;
 
 namespace Game.GamePlay.Fsm.States
 {
-    public class FsmStateSkill : FSMState
+    public class FsmStateSetSkill : FSMState
     {
         private int _previousGameSpeed;
         private GameplayState _gameplayState;
 
-        public FsmStateSkill(FsmProxy fsm, DIContainer container) : base(fsm, container)
+        public FsmStateSetSkill(FsmProxy fsm, DIContainer container) : base(fsm, container)
         {
         }
 
         public override void Enter()
         {
-            _gameplayState = _container.Resolve<IGameStateProvider>().GameState.GameplayState; 
-            _previousGameSpeed = _gameplayState.GetCurrentSpeed(); //Запоминаем текущую скорость
-            _gameplayState.SetGameSpeed(1); //Устанавливаем минимальную скорость
+            //При входе, по подписке Скилл применяется в своем контроллере,
+            //Текущее состояние сразу меняем на GamePlay
+            Fsm.SetState<FsmStateGamePlay>();
         }
 
         public override bool Exit(FSMState _next)
         {
-            
-            _gameplayState.SetGameSpeed(_previousGameSpeed); //Возвращаем скорость
-            return true;
+            if (_next.GetType() == typeof(FsmStateGamePlay)) return true;
+            return false;
         }
 
         public override void Update()

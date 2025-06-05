@@ -54,7 +54,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         public void RequestToBuild()
         {
-            _fsmGameplay.Fsm.SetState<FsmStateBuild>();
+            _fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
         }
     }
 }

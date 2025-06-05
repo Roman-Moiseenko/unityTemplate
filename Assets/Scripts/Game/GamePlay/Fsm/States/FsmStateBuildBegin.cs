@@ -4,6 +4,7 @@ using Game.Settings;
 using Game.State;
 using Game.State.Root;
 using MVVM.FSM;
+using UnityEngine;
 
 namespace Game.GamePlay.Fsm.States
 {
@@ -18,7 +19,7 @@ namespace Game.GamePlay.Fsm.States
 
         public override void Enter()
         {
-            _gameplayState = _container.Resolve<IGameStateProvider>().GameState.GameplayState; 
+            _gameplayState = _container.Resolve<IGameStateProvider>().GameState.GameplayState;
             _gameplayState.SetPauseGame();
         }
 

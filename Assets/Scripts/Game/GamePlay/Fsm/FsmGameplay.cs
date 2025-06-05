@@ -14,7 +14,8 @@ namespace Game.GamePlay.Fsm
             
             Fsm.AddState(new FsmStateGamePause(Fsm, container));
             Fsm.AddState(new FsmStateGamePlay(Fsm, container));
-            Fsm.AddState(new FsmStateSkill(Fsm, container));
+            Fsm.AddState(new FsmStateSelectSkill(Fsm, container));
+            Fsm.AddState(new FsmStateSetSkill(Fsm, container));
             Fsm.AddState(new FsmStateBuildBegin(Fsm, container));
             Fsm.AddState(new FsmStateBuild(Fsm, container));
             Fsm.AddState(new FsmStateBuildEnd(Fsm, container));
