@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DI;
 using ObservableCollections;
 using R3;
 
@@ -11,6 +12,8 @@ namespace MVVM.UI
      */
     public class UIRootViewModel : IDisposable
     {
+        public DIContainer Container { get; }
+
         //Публичные поля, для подписки и чтения 
         public IObservableCollection<WindowViewModel> OpenedPopups => _openedPopups;
         public ReadOnlyReactiveProperty<WindowViewModel> OpenedScreen => _openedScreen;
@@ -21,6 +24,10 @@ namespace MVVM.UI
 
         private readonly Dictionary<WindowViewModel, IDisposable> _popupSubscriptions = new ();
 
+        public UIRootViewModel(DIContainer container)
+        {
+            Container = container;
+        }
         public void Dispose()
         {
             CloseAllPopups();

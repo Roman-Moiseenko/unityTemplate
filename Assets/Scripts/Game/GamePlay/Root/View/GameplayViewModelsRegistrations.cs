@@ -13,7 +13,7 @@ namespace Game.GamePlay.Root.View
         {
             //Добавить сервис если нужен в UIGameplayRootViewModel и WorldGameplayRootViewModel
             container.RegisterFactory(c => new GameplayUIManager(container)).AsSingle();
-            container.RegisterFactory(c => new UIGameplayRootViewModel()).AsSingle();
+            container.RegisterFactory(c => new UIGameplayRootViewModel(container)).AsSingle();
             container.RegisterFactory(c => new WorldGameplayRootViewModel(
                 c.Resolve<BuildingsService>(),
                 c.Resolve<GroundsService>(),

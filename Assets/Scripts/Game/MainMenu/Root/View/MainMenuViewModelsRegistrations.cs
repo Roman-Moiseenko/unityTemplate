@@ -20,7 +20,7 @@ namespace Game.MainMenu.Root.View
         {
             
             container.RegisterFactory(c => new MainMenuUIManager(container)).AsSingle();
-            container.RegisterFactory(c => new UIMainMenuRootViewModel()).AsSingle();
+            container.RegisterFactory(c => new UIMainMenuRootViewModel(container)).AsSingle();
             
           //  container.RegisterFactory(c => new UIMainMenuRootViewModel(container.Resolve<SomeMainMenuService>())).AsSingle();
         }

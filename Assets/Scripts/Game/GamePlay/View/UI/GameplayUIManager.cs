@@ -9,6 +9,7 @@ using Game.State;
 using Game.State.Root;
 using MVVM.UI;
 using R3;
+using UnityEngine;
 
 namespace Game.GamePlay.View.UI
 {
@@ -32,13 +33,17 @@ namespace Game.GamePlay.View.UI
             _fsmGameplay.Fsm.StateCurrent.Subscribe(newValue =>
             {
                 if (newValue == null) return;
-                if (newValue.GetType() == typeof(FsmStateBuild))
+                var rootUI = Container.Resolve<UIGameplayRootViewModel>();
+                var viewModel = rootUI.OpenedScreen.CurrentValue;
+                if (newValue.GetType() == typeof(FsmStateBuildBegin))
                 {
+                    Debug.Log("Прячем окно Action");
+                    Debug.Log("Показываем Окно Build");
                     //Прячем окно Action
                     //Показываем Окно Build
                 }
 
-                if (newValue.GetType() == typeof(FsmStateBuildBegin))
+                if (newValue.GetType() == typeof(FsmStateBuild))
                 {
                     //Прячем Окно Build
                 }

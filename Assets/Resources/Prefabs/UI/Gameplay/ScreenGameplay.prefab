@@ -2066,7 +2066,9 @@ MonoBehaviour:
   _btnPopupB: {fileID: 7570263331346039006}
   _btnGoToMenu: {fileID: 878412287938862371}
   _btnGameSpeed: {fileID: 7745109236603589688}
-  _btnBuid: {fileID: 5564069070985748470}
+  _panelAction: {fileID: 2815544119482140916}
+  _panelBuild: {fileID: 1099184460722181784}
+  _btnBuild: {fileID: 5564069070985748470}
 --- !u!1 &6956521981305515933
 GameObject:
   m_ObjectHideFlags: 0
@@ -2076,6 +2078,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1099184460722181784}
+  - component: {fileID: 8435276856855750176}
   m_Layer: 5
   m_Name: CardMenu
   m_TagString: Untagged
@@ -2105,6 +2108,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0.5, y: 1}
+--- !u!114 &8435276856855750176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6956521981305515933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 838d7f26f67241dc8afe841b85436cd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7728568162153979690
 GameObject:
   m_ObjectHideFlags: 0
