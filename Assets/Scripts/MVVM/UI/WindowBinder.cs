@@ -20,7 +20,15 @@ namespace MVVM.UI
             //Здесь в дальнейшем будет анимация на закрытие, пока просто уничтоажем окна
             Destroy(gameObject);
         }
-        
+
+        public virtual void Show()
+        {
+        }
+
+        public virtual void Hide()
+        {
+        }
+
         protected virtual void OnBind(T viewModel) { }
     }
 }

@@ -1,3 +1,5 @@
+using Game.GamePlay.View.UI.PanelActions;
+using Game.GamePlay.View.UI.PanelBuild;
 using MVVM.UI;
 using UnityEngine;
 
@@ -8,7 +10,12 @@ namespace Game.GamePlay.View.UI
         //Если нужно свое, то делаем override OnBind() 
         protected override void OnBind(UIRootViewModel viewModel)
         {
-            Debug.Log(" **** " + viewModel.GetType());
+            
+
+            //viewModel.OpenedPanels
+            
+            //_windowsContainer.AddPanel(PanelBuild);
+          //  Debug.Log(" **** " + viewModel.GetType());
         }
     }
 }

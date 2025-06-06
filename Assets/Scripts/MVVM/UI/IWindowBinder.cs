@@ -5,5 +5,9 @@
         void Bind(WindowViewModel viewModel);
 
         void Close();
+
+        void Show();
+
+        void Hide();
     }
 }

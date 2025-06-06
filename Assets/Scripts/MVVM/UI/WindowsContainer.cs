@@ -7,12 +7,38 @@ namespace MVVM.UI
     {
         [SerializeField] private Transform _screensContainer; //контейнер экранов
         [SerializeField] private Transform _popupsContainer; //контейнер попап-ов
+        [SerializeField] private Transform _panelsContainer; //контейнер попап-ов
 
+        private readonly Dictionary<WindowViewModel, IWindowBinder>
+            _openedPanelBinders = new(); //кеш открытых binder-ов для попап
         private readonly Dictionary<WindowViewModel, IWindowBinder>
             _openedPopupBinders = new(); //кеш открытых binder-ов для попап
 
         private IWindowBinder _openedScreenBinder; //кеш для байндера открытого окна 
 
+        public void AddPanel(WindowViewModel viewModel)
+        {
+           // Debug.Log("Этап 3. Создание панели " + viewModel.GetType());
+            var prefabPath = GetPrefabPath(viewModel);
+            var prefab = Resources.Load<GameObject>(prefabPath);
+            var createPanel = Instantiate(prefab, _panelsContainer);
+            var binder = createPanel.GetComponent<IWindowBinder>();
+            binder.Bind(viewModel);
+            _openedPanelBinders.Add(viewModel, binder);
+        }
+        
+        public void ShowPanel(WindowViewModel viewModel)
+        {
+            var binder = _openedPanelBinders[viewModel];
+            binder.Show();
+        }
+
+        public void HidePanel(WindowViewModel viewModel)
+        {
+            var binder = _openedPanelBinders[viewModel];
+            binder.Hide();
+        }
+        
         public void OpenPopup(WindowViewModel viewModel)
         {
             var prefabPath = GetPrefabPath(viewModel); //Получаем путь к префабу из view-модели

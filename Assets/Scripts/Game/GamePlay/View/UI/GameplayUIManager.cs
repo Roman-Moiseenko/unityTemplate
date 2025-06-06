@@ -2,6 +2,8 @@
 using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
+using Game.GamePlay.View.UI.PanelActions;
+using Game.GamePlay.View.UI.PanelBuild;
 using Game.GamePlay.View.UI.PopupA;
 using Game.GamePlay.View.UI.PopupB;
 using Game.GamePlay.View.UI.ScreenGameplay;
@@ -24,35 +26,49 @@ namespace Game.GamePlay.View.UI
 
         public GameplayUIManager(DIContainer container) : base(container)
         {
+            Debug.Log("!!! GameplayUIManager  ====>");
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
 
             _fsmGameplay = container.Resolve<FsmGameplay>();
+            
+            var rootUI = Container.Resolve<UIGameplayRootViewModel>();
+ 
+            //Создаем панели, необходимые для Геймплея           
+            rootUI.AddPanel(new PanelBuildViewModel(container));
+            rootUI.AddPanel(new PanelActionsViewModel(this, container));
+            
             //_gameState = gameStateProvider.GameState;
             _exitSceneRequest = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
 
             _fsmGameplay.Fsm.StateCurrent.Subscribe(newValue =>
             {
                 if (newValue == null) return;
-                var rootUI = Container.Resolve<UIGameplayRootViewModel>();
-                var viewModel = rootUI.OpenedScreen.CurrentValue;
+                
                 if (newValue.GetType() == typeof(FsmStateBuildBegin))
                 {
+                    rootUI.ShowPanel<PanelBuildViewModel>();
+                    rootUI.HidePanel<PanelActionsViewModel>();
+ 
                     Debug.Log("Прячем окно Action");
                     Debug.Log("Показываем Окно Build");
-                    //Прячем окно Action
-                    //Показываем Окно Build
                 }
 
                 if (newValue.GetType() == typeof(FsmStateBuild))
                 {
+                    Debug.Log("Прячем окно Build");
+
                     //Прячем Окно Build
+                    rootUI.HidePanel<PanelBuildViewModel>();
                 }
 
-                if (newValue.GetType() == typeof(FsmStateBuild))
+                if (newValue.GetType() == typeof(FsmStateBuildEnd))
                 {
+                    rootUI.HidePanel<PanelBuildViewModel>();
+                    rootUI.ShowPanel<PanelActionsViewModel>();
                     //Прячем Окно Build
                     //Показываем окно Action
                 }
+                
                 
             });
         }

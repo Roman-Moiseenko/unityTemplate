@@ -12,16 +12,6 @@ namespace Game.GamePlay.View.UI
         {
             //Подписка на состояния
         }
-
-
-        public void ShowPanelBuild(RectTransform position)
-        {
-            
-        }
-
-        public void HidePanelAction(RectTransform position)
-        {
-            
-        }
+        
     }
 }

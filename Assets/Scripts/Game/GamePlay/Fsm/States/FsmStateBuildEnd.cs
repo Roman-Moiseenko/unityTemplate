@@ -18,7 +18,10 @@ namespace Game.GamePlay.Fsm.States
 
         public override void Enter()
         {
-            
+            //Входим в состояние Завершения строительства
+            //Все подписчики его обрабатывают.
+            //Переходим в состояние Игры
+            Fsm.SetState<FsmStateGamePlay>();
         }
 
         public override bool Exit(FSMState _next)

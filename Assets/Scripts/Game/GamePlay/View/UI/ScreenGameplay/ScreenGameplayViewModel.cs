@@ -14,11 +14,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
     {
         public readonly GameplayUIManager _uiManager;
         private readonly Subject<Unit> _exitSceneRequest;
-        private readonly GameplayState _gameplayState;
-        private readonly FsmGameplay _fsmGameplay;
+     //   private readonly GameplayState _gameplayState;
+   //     private readonly FsmGameplay _fsmGameplay;
         public override string Id => "ScreenGameplay";
         public override string Path => "Gameplay/";
-        public readonly int CurrentSpeed;
+     //   public readonly int CurrentSpeed;
         public ScreenGameplayViewModel(
             GameplayUIManager uiManager, 
             Subject<Unit> exitSceneRequest,
@@ -27,9 +27,9 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             _uiManager = uiManager;
             _exitSceneRequest = exitSceneRequest;
-            _gameplayState = container.Resolve<IGameStateProvider>().GameState.GameplayState;
-            _fsmGameplay = container.Resolve<FsmGameplay>();
-            CurrentSpeed = _gameplayState.GetCurrentSpeed();
+        //    _gameplayState = container.Resolve<IGameStateProvider>().GameState.GameplayState;
+         ///   _fsmGameplay = container.Resolve<FsmGameplay>();
+       //     CurrentSpeed = _gameplayState.GetCurrentSpeed();
         }
         
         public void RequestOpenPopupA()
@@ -47,14 +47,6 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _exitSceneRequest.OnNext(Unit.Default); //Вызываем сигнал для смены сцены
         }
 
-        public int RequestGameSpeed()
-        {
-            return _gameplayState.SetNextSpeed();
-        }
 
-        public void RequestToBuild()
-        {
-            _fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
-        }
     }
 }
