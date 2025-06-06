@@ -37,5 +37,11 @@ namespace Game.GamePlay.Root.View
                 newValue => Debug.Log($"HardCurrency = {newValue}"));
         }
 
+
+        public void ControllInput(Vector3Int position, string ConfigId )
+        {
+            
+        }
+
     }
 }

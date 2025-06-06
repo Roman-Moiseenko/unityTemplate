@@ -128,6 +128,13 @@ namespace Game.GamePlay.Root.View
 
         private void Update()
         {
+            //TODO Перемещение камеры
+            ///
+            ///
+            
+            //TODO В противном случае отправляем данные в контроллер
+            var position = Input.mousePosition;
+            
             //Проверка мышки и состояния
             if (Input.GetMouseButtonDown(0))
             {
@@ -146,6 +153,8 @@ namespace Game.GamePlay.Root.View
             {
                 // _viewModel.HandleTestInput();
             }
+            
+            
         }
 
     }
