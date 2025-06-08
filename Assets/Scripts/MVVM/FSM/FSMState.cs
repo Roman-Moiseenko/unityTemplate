@@ -5,6 +5,7 @@ namespace MVVM.FSM
     public abstract class FSMState
     {
         public readonly FsmProxy Fsm;
+        public object Params { get; set; }
         protected readonly DIContainer _container;
 
         public FSMState(FsmProxy fsm, DIContainer container)

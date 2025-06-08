@@ -1,6 +1,7 @@
 ﻿using System;
 using MVVM.UI;
 using Newtonsoft.Json;
+using R3;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -15,13 +16,25 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         [SerializeField] private Button _btnPopupA;
         [SerializeField] private Button _btnPopupB;
         [SerializeField] private Button _btnGoToMenu;
-        
+        [SerializeField] private TMP_Text _textProgress;
+
+        private void Start()
+        {
+            ViewModel.ProgressData.Subscribe(newValue =>
+            {
+             //   if (newValue != null)
+            //    {
+                    _textProgress.text = $"Progress: {newValue}";
+                //}
+                
+            });
+        }
+
         private void OnEnable()
         {
             _btnPopupA.onClick.AddListener(OnPopupAButtonClicked);
             _btnPopupB.onClick.AddListener(OnPopupBButtonClicked);
             _btnGoToMenu.onClick.AddListener(OnGoToMenuButtonClicked);
-
         }
 
         private void OnDisable()

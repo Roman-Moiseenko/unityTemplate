@@ -26,7 +26,7 @@ namespace Game.GamePlay.View.UI
 
         public GameplayUIManager(DIContainer container) : base(container)
         {
-            Debug.Log("!!! GameplayUIManager  ====>");
+          //  Debug.Log("!!! GameplayUIManager  ====>");
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
 
             _fsmGameplay = container.Resolve<FsmGameplay>();
@@ -43,33 +43,21 @@ namespace Game.GamePlay.View.UI
             _fsmGameplay.Fsm.StateCurrent.Subscribe(newValue =>
             {
                 if (newValue == null) return;
-                
                 if (newValue.GetType() == typeof(FsmStateBuildBegin))
                 {
                     rootUI.ShowPanel<PanelBuildViewModel>();
                     rootUI.HidePanel<PanelActionsViewModel>();
- 
-                    Debug.Log("Прячем окно Action");
-                    Debug.Log("Показываем Окно Build");
                 }
-
                 if (newValue.GetType() == typeof(FsmStateBuild))
                 {
-                    Debug.Log("Прячем окно Build");
-
                     //Прячем Окно Build
                     rootUI.HidePanel<PanelBuildViewModel>();
                 }
-
                 if (newValue.GetType() == typeof(FsmStateBuildEnd))
                 {
                     rootUI.HidePanel<PanelBuildViewModel>();
                     rootUI.ShowPanel<PanelActionsViewModel>();
-                    //Прячем Окно Build
-                    //Показываем окно Action
                 }
-                
-                
             });
         }
 

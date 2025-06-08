@@ -36,7 +36,8 @@ namespace Game.GamePlay.View.UI.PanelActions
 
         public void RequestToBuild()
         {
-            _fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
+            _gameplayState.Progress.Value += 50;
+            //_fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
         }
         
     }

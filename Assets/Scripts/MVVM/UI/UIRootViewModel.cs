@@ -60,7 +60,6 @@ namespace MVVM.UI
             {
                 if (action.GetType() == type)
                 {
-                    Debug.Log($"Нашел {type} открываю");
                     ShowedPanel.Value = action;
                 }
             });
@@ -74,7 +73,6 @@ namespace MVVM.UI
                 if (action.GetType() == type)
                 {
                     HidedPanel.Value = action;
-                    Debug.Log($"Нашел {type} закрываю");
                 }
             });
         }

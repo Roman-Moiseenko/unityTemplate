@@ -8,17 +8,29 @@ namespace Game.State.Root
         private readonly GameplayStateData _gameplayStateData;
 
         public readonly ReactiveProperty<int> GameSpeed;
+        public readonly ReactiveProperty<int> Progress;
+        public readonly ReactiveProperty<int> ProgressLevel;
         
         public GameplayState(GameplayStateData gameplayStateData)
         {
             _gameplayStateData = gameplayStateData;
             GameSpeed = new ReactiveProperty<int>(gameplayStateData.GameSpeed);
-            GameSpeed.Subscribe(newSpeed =>
-            {
-                gameplayStateData.GameSpeed = newSpeed;
-            });
+            GameSpeed.Subscribe(newSpeed => gameplayStateData.GameSpeed = newSpeed);
+            
+            Progress = new ReactiveProperty<int>(gameplayStateData.Progress);
+            Progress.Subscribe(newProgress => gameplayStateData.Progress = newProgress);
+            ProgressLevel = new ReactiveProperty<int>(gameplayStateData.ProgressLevel);
+            ProgressLevel.Subscribe(newProgressLevel => gameplayStateData.ProgressLevel = newProgressLevel);
+            
         }
 
+        public void ClearProgress()
+        {
+            if (Progress.Value < 100) return;
+            Progress.Value -= 100;
+            ProgressLevel.Value++;
+        }
+        
         /**
          * Ставим игру на паузу. Все объекты, которые зависят от скорости игры, подписываются на GameSpeed
          */

@@ -2,6 +2,7 @@
 using DI;
 using Game.Settings;
 using Game.State;
+using Game.State.Gameplay;
 using Game.State.Root;
 using MVVM.FSM;
 
@@ -12,14 +13,9 @@ namespace Game.GamePlay.Fsm.States
         private int _previousGameSpeed;
         private GameplayState _gameplayState;
 
-        public FsmStateBuild(FsmProxy fsm, DIContainer container) : base(fsm, container)
-        {
-        }
+        public FsmStateBuild(FsmProxy fsm, DIContainer container) : base(fsm, container) { }
 
-        public override void Enter()
-        {
-            
-        }
+        public override void Enter() { }
 
         public override bool Exit(FSMState _next = null)
         {
@@ -27,12 +23,14 @@ namespace Game.GamePlay.Fsm.States
             {
                 return true;                
             }
-
             return false;
         }
 
-        public override void Update()
+        public override void Update() { }
+
+        public RewardCardData GetRewardCard()
         {
+            return (RewardCardData)Params;
         }
     }
 }

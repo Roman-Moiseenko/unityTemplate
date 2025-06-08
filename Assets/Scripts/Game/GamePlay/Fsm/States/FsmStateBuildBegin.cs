@@ -2,6 +2,7 @@
 using DI;
 using Game.Settings;
 using Game.State;
+using Game.State.Gameplay;
 using Game.State.Root;
 using MVVM.FSM;
 using UnityEngine;
@@ -12,10 +13,9 @@ namespace Game.GamePlay.Fsm.States
     {
         private int _previousGameSpeed;
         private GameplayState _gameplayState;
+      //  public override RewardsProgress Params { get; set; }
 
-        public FsmStateBuildBegin(FsmProxy fsm, DIContainer container) : base(fsm, container)
-        {
-        }
+        public FsmStateBuildBegin(FsmProxy fsm, DIContainer container) : base(fsm, container) { }
 
         public override void Enter()
         {
@@ -30,8 +30,11 @@ namespace Game.GamePlay.Fsm.States
             return false;
         }
 
-        public override void Update()
+        public override void Update() { }
+
+        public RewardsProgress GetRewards()
         {
+            return (RewardsProgress)Params;
         }
     }
 }

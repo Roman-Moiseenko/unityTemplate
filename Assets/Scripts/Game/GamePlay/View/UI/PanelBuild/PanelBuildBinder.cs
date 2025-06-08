@@ -1,4 +1,7 @@
-﻿using MVVM.UI;
+﻿using System;
+using MVVM.UI;
+using R3;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +13,14 @@ namespace Game.GamePlay.View.UI.PanelBuild
         [SerializeField] private Button _btnBuild1;
         [SerializeField] private Button _btnBuild2;
         [SerializeField] private Button _btnBuild3;
-   
+        
+        private void Start()
+        {
+            ViewModel.TextButton1.Subscribe(newText => _btnBuild1.GetComponentInChildren<TMP_Text>().text = newText);
+            ViewModel.TextButton2.Subscribe(newText => _btnBuild2.GetComponentInChildren<TMP_Text>().text = newText);
+            ViewModel.TextButton3.Subscribe(newText => _btnBuild3.GetComponentInChildren<TMP_Text>().text = newText);
+        }
+
         public override void Show()
         {
             if (isShow) return;
@@ -31,7 +41,10 @@ namespace Game.GamePlay.View.UI.PanelBuild
         {
             _btnBuild1.onClick.AddListener(OnClickButtonBuild1);            
             _btnBuild2.onClick.AddListener(OnClickButtonBuild2);            
-            _btnBuild3.onClick.AddListener(OnClickButtonBuild3);            
+            _btnBuild3.onClick.AddListener(OnClickButtonBuild3);
+
+
+
         }
 
 
@@ -42,7 +55,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
             _btnBuild3.onClick.RemoveListener(OnClickButtonBuild3);
         }
         
-        private void OnClickButtonBuild3()
+        private void OnClickButtonBuild1()
         {
             ViewModel.OnBuild1();
         }
@@ -52,7 +65,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
             ViewModel.OnBuild2();
         }
 
-        private void OnClickButtonBuild1()
+        private void OnClickButtonBuild3()
         {
             ViewModel.OnBuild3();
         }

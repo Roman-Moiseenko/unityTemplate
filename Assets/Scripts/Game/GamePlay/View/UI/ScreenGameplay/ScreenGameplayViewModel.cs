@@ -14,7 +14,9 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
     {
         public readonly GameplayUIManager _uiManager;
         private readonly Subject<Unit> _exitSceneRequest;
-     //   private readonly GameplayState _gameplayState;
+
+        public readonly ReactiveProperty<int> ProgressData = new();
+        private readonly GameplayState _gameplayState;
    //     private readonly FsmGameplay _fsmGameplay;
         public override string Id => "ScreenGameplay";
         public override string Path => "Gameplay/";
@@ -27,9 +29,12 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             _uiManager = uiManager;
             _exitSceneRequest = exitSceneRequest;
-        //    _gameplayState = container.Resolve<IGameStateProvider>().GameState.GameplayState;
-         ///   _fsmGameplay = container.Resolve<FsmGameplay>();
-       //     CurrentSpeed = _gameplayState.GetCurrentSpeed();
+            
+            _gameplayState = container.Resolve<IGameStateProvider>().GameState.GameplayState;
+            _gameplayState.Progress.Subscribe(newValue => ProgressData.Value = newValue);
+            
+            ///   _fsmGameplay = container.Resolve<FsmGameplay>();
+            //     CurrentSpeed = _gameplayState.GetCurrentSpeed();
         }
         
         public void RequestOpenPopupA()

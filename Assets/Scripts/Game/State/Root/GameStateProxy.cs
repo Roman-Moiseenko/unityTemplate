@@ -29,9 +29,7 @@ namespace Game.State.Root
         {
             _gameState = gameState;
             
-
             GameplayState = new GameplayState(gameState.GameplayStateData);
-            
             GameplayState.GameSpeed.Subscribe(newSpeed =>
             {
                 if (newSpeed == 0)

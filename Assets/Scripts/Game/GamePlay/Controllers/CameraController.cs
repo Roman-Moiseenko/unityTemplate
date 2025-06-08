@@ -159,15 +159,10 @@ namespace Game.GamePlay.Controllers
 
             if (tempSens <= sens_touch) isMoving = false;
             Vector3 newPosition = transform.position + new Vector3(targetDirection.x, 0, targetDirection.y) * tempSens;
-          //  Debug.Log("targetDirection = " + JsonUtility.ToJson(targetDirection));
-         //   Debug.Log("newPosition = " + JsonUtility.ToJson(newPosition));
             newPosition.x = Mathf.Clamp(newPosition.x, _border.BottomX, _border.TopX);
             newPosition.z = Mathf.Clamp(newPosition.z, _border.BottomY, _border.TopY);
-            //Debug.Log(JsonUtility.ToJson(transform.position)+" => "+JsonUtility.ToJson(newPosition));
             
             transform.position = Vector3.Lerp(transform.position, newPosition, speed);
-           
-            //   Debug.Log(" tempSens " + tempSens + " x1 = " + transform.position.x + " x2 = " + newPosition.x + " Speed = " + speed);
         }
 
         private void OnPointDown(Vector2 mousePosition)
@@ -191,10 +186,7 @@ namespace Game.GamePlay.Controllers
                     if (tempMousePos != mousePosition)
                     {
                         var _targetDirection = (tempMousePos - mousePosition).normalized;
-                        Debug.Log("tempMousePos= "+ JsonUtility.ToJson(tempMousePos) + "mousePosition= "+ JsonUtility.ToJson(mousePosition));
-                        Debug.Log("_targetDirection (OnPointMove) = " + JsonUtility.ToJson(_targetDirection));
                         targetDirection = RotateTarget(_targetDirection);
-                        Debug.Log("targetDirection (OnPointMove) = " + JsonUtility.ToJson(targetDirection));
                     }
                     tempMousePos = mousePosition;
                 }

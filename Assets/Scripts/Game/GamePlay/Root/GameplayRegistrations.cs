@@ -30,6 +30,9 @@ namespace Game.GamePlay.Root
             var gameState = gameStateProvider.GameState;
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
+            //Регистрируем машину состояния
+            var Fsm = new FsmGameplay(container);
+            container.RegisterInstance(Fsm);
             
             container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG, new Subject<Unit>()); //Событие, требующее смены сцены
            // container.RegisterInstance(AppConstants.GAME_PLAY_STATE, new Subject<Unit>()); //Событие, меняющее состояние игры
@@ -91,10 +94,15 @@ namespace Game.GamePlay.Root
                /// Монстров
                /// Башни вместо Здания
 
-               //Регистрируем машину состояния
-               var Fsm = new FsmGameplay(container);
+
                Fsm.Fsm.SetState<FsmStateGamePlay>();
-               container.RegisterInstance(Fsm);
+               
+               
+                
+               //Регистрируем сервисы, завия
+               var rewardService = new RewardProgressService(container);
+               container.RegisterInstance(rewardService);
+               
         }
     }
 }
