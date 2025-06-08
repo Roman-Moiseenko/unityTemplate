@@ -1,6 +1,7 @@
 ﻿using DI;
 using Game.State;
 using R3;
+using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
@@ -14,7 +15,13 @@ namespace Game.GamePlay.Services
             var _provider = container.Resolve<IGameStateProvider>();
             _provider.GameState.GameplayState.GameSpeed.Subscribe(newSpeed =>
             {
-                if (newSpeed != 0) _provider.SaveGameState();
+                
+                
+                if (newSpeed != 0)
+                {
+                    Debug.Log("Сохраняем скорость игры ");
+                    _provider.SaveGameState();
+                }
             });
             //TODO Добавить другие параметры при сохранении
             

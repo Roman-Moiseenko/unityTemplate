@@ -38,7 +38,7 @@ namespace Game.GamePlay.Root.View
         }
 
 
-        public void ControllInput(Vector3Int position, string ConfigId )
+        public void ControlInput(Vector3Int position, string ConfigId )
         {
             
         }

@@ -13,35 +13,29 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 {
     public class ScreenGameplayBinder : WindowBinder<ScreenGameplayViewModel>
     {
-        [SerializeField] private Button _btnPopupA;
-        [SerializeField] private Button _btnPopupB;
-        [SerializeField] private Button _btnGoToMenu;
+        [SerializeField] private Button _btnPopupPause;
         [SerializeField] private TMP_Text _textProgress;
-
+        [SerializeField] private TMP_Text _textMoney;
+        [SerializeField] private TMP_Text _textCrystal;
+        
         private void Start()
         {
             ViewModel.ProgressData.Subscribe(newValue =>
             {
-             //   if (newValue != null)
-            //    {
-                    _textProgress.text = $"Progress: {newValue}";
-                //}
-                
+                _textProgress.text = $"Progress: {newValue}";
             });
+            ViewModel.SoftCurrency.Subscribe(newValue => _textMoney.text = $"Money: {newValue}");
+            ViewModel.HardCurrency.Subscribe(newValue => _textCrystal.text = $"Money: {newValue}");
         }
 
         private void OnEnable()
         {
-            _btnPopupA.onClick.AddListener(OnPopupAButtonClicked);
-            _btnPopupB.onClick.AddListener(OnPopupBButtonClicked);
-            _btnGoToMenu.onClick.AddListener(OnGoToMenuButtonClicked);
+            _btnPopupPause.onClick.AddListener(OnPopupPauseButtonClicked);
         }
 
         private void OnDisable()
         {
-            _btnPopupA.onClick.RemoveListener(OnPopupAButtonClicked);
-            _btnPopupB.onClick.RemoveListener(OnPopupBButtonClicked);
-            _btnGoToMenu.onClick.RemoveListener(OnGoToMenuButtonClicked);
+            _btnPopupPause.onClick.RemoveListener(OnPopupPauseButtonClicked);
         }
         
         private void OnPopupBButtonClicked()
@@ -54,9 +48,9 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             ViewModel.RequestGoToMainMenu();
         }
 
-        private void OnPopupAButtonClicked()
+        private void OnPopupPauseButtonClicked()
         {
-            ViewModel.RequestOpenPopupA();
+            ViewModel.RequestOpenPopupPause();
         }
 
 

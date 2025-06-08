@@ -4,8 +4,8 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.View.UI.PanelActions;
 using Game.GamePlay.View.UI.PanelBuild;
-using Game.GamePlay.View.UI.PopupA;
 using Game.GamePlay.View.UI.PopupB;
+using Game.GamePlay.View.UI.PopupPause;
 using Game.GamePlay.View.UI.ScreenGameplay;
 using Game.State;
 using Game.State.Root;
@@ -18,15 +18,10 @@ namespace Game.GamePlay.View.UI
     public class GameplayUIManager : UIManager
     {
         private readonly Subject<Unit> _exitSceneRequest;
-
-        //private readonly GameStateProxy _gameState;
-
         private readonly FsmGameplay _fsmGameplay;
-      //  public readonly DIContainer Container;
 
         public GameplayUIManager(DIContainer container) : base(container)
         {
-          //  Debug.Log("!!! GameplayUIManager  ====>");
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
 
             _fsmGameplay = container.Resolve<FsmGameplay>();
@@ -69,9 +64,9 @@ namespace Game.GamePlay.View.UI
             return viewModel;
         }
 
-        public PopupAViewModal OpenPopupA()
+        public PopupPauseViewModal OpenPopupPause()
         {
-            var a = new PopupAViewModal();
+            var a = new PopupPauseViewModal(this, _exitSceneRequest, Container);
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
             _fsmGameplay.Fsm.SetState<FsmStateGamePause>();
             a.CloseRequested.Subscribe(e =>

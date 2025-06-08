@@ -18,8 +18,6 @@ namespace MVVM.FSM
 
         public FsmProxy()
         {
-            //Origin = fsm;
-       //     StateCurrent = new ReactiveProperty<FSMState>();
        
             StateCurrent.Subscribe(newValue =>
             {

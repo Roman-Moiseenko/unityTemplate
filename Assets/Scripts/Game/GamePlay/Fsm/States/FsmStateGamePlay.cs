@@ -12,8 +12,11 @@ namespace Game.GamePlay.Fsm.States
 
         public override void Enter()
         {
-            //Ставим игру на паузу
-            _container.Resolve<IGameStateProvider>().GameState.GameplayState.GameplayReturn();
+            if (Fsm.PreviousState != null)
+            {
+                _container.Resolve<IGameStateProvider>().GameState.GameplayState.GameplayReturn();
+            }
+            
         }
 
         public override bool Exit(FSMState _next)
