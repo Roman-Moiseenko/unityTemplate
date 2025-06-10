@@ -13,13 +13,10 @@ namespace Game.GamePlay.Services
         public static void Run(DIContainer container)
         {
             var _provider = container.Resolve<IGameStateProvider>();
-            _provider.GameState.GameplayState.GameSpeed.Subscribe(newSpeed =>
+            _provider.GameState.GameplayStateProxy.GameSpeed.Subscribe(newSpeed =>
             {
-                
-                
                 if (newSpeed != 0)
                 {
-                    Debug.Log("Сохраняем скорость игры ");
                     _provider.SaveGameState();
                 }
             });

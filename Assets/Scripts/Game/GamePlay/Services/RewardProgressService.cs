@@ -12,15 +12,15 @@ namespace Game.GamePlay.Services
     public class RewardProgressService
     {
         private readonly DIContainer _container;
-        private readonly GameplayState _gameplayState;
+        private readonly GameplayStateProxy _gameplayStateProxy;
 
         public RewardProgressService(DIContainer container)
         {
             _container = container;
-            _gameplayState = container.Resolve<IGameStateProvider>().GameState.GameplayState;
+            _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameState.GameplayStateProxy;
             var fsm = container.Resolve<FsmGameplay>();
 
-            _gameplayState.Progress.Subscribe(newValue =>
+            _gameplayStateProxy.Progress.Subscribe(newValue =>
             {
                 if (newValue >= 100)
                 {

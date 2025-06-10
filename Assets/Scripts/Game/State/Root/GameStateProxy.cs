@@ -18,7 +18,7 @@ namespace Game.State.Root
         private readonly GameState _gameState;
         public ReactiveProperty<int> CurrentMapId = new();
         
-        public GameplayState GameplayState;
+        public GameplayStateProxy GameplayStateProxy;
         //public ReactiveProperty<GameplayStateData> GameplayStateData = new();
         public ObservableList<Map> Maps { get; } = new();
         public ObservableList<Inventory.Inventory> Inventory { get; } = new();
@@ -29,8 +29,8 @@ namespace Game.State.Root
         {
             _gameState = gameState;
             
-            GameplayState = new GameplayState(gameState.GameplayStateData);
-            GameplayState.GameSpeed.Subscribe(newSpeed =>
+            GameplayStateProxy = new GameplayStateProxy(gameState.GameplayState);
+            GameplayStateProxy.GameSpeed.Subscribe(newSpeed =>
             {
                 if (newSpeed == 0)
                 {

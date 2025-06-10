@@ -5,6 +5,7 @@ using Game.MainMenu.Root;
 using Game.Settings;
 using Game.State;
 using Game.State.CMD;
+using Newtonsoft.Json;
 using R3;
 using Scripts.Game.GameRoot.Services;
 using Scripts.Utils;
@@ -59,6 +60,9 @@ namespace Scripts.Game.GameRoot
             var gameStateProvider = new PlayerPrefsGameStateProvider(); //Заменить конструктор на другой - из облака
             gameStateProvider.LoadSettingsState(); //Загрузили настройки игры
             //Применяем настройки к окружению - звук, вибрация и т.п.
+
+
+            gameStateProvider.LoadGameState(); //Загружаем данные игрока
             
             _rootContainer.RegisterInstance<IGameStateProvider>(gameStateProvider);
             
@@ -110,7 +114,7 @@ namespace Scripts.Game.GameRoot
             //Ждем когда загрузится сохранение игры
             var isGameStateLoaded = false; //не загружено
             //При загрузке, по подписке поменяем флажок на Загружено
-            _rootContainer.Resolve<IGameStateProvider>().LoadGameState().Subscribe(_ => isGameStateLoaded = true);
+            _rootContainer.Resolve<IGameStateProvider>().LoadGameplayState().Subscribe(_ => isGameStateLoaded = true);
             yield return new WaitUntil(() => isGameStateLoaded);
  
             //Контейнер

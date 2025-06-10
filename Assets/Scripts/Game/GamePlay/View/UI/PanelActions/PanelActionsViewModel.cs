@@ -18,7 +18,7 @@ namespace Game.GamePlay.View.UI.PanelActions
         public readonly int CurrentSpeed;
         public readonly GameplayUIManager _uiManager;
         
-        private readonly GameplayState _gameplayState;
+        private readonly GameplayStateProxy _gameplayStateProxy;
         
         //Для теста
         private readonly FsmGameplay _fsmGameplay;
@@ -30,21 +30,21 @@ namespace Game.GamePlay.View.UI.PanelActions
         {
             _uiManager = uiManager;
             
-            _gameplayState = container.Resolve<IGameStateProvider>().GameState.GameplayState;
+            _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameState.GameplayStateProxy;
             _fsmGameplay = container.Resolve<FsmGameplay>();
-            CurrentSpeed = _gameplayState.GetCurrentSpeed();
+            CurrentSpeed = _gameplayStateProxy.GetCurrentSpeed();
             
             //Для теста
             _resourcesService = container.Resolve<ResourcesService>();
         }
         public int RequestGameSpeed()
         {
-            return _gameplayState.SetNextSpeed();
+            return _gameplayStateProxy.SetNextSpeed();
         }
 
         public void RequestToProgressAdd()
         {
-            _gameplayState.Progress.Value += 50;
+            _gameplayStateProxy.Progress.Value += 50;
             //_fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
         }
 

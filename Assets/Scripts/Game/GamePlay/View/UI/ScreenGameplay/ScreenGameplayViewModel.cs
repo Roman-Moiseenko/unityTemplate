@@ -42,7 +42,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _exitSceneRequest = exitSceneRequest;
             
             _gameplayState = container.Resolve<IGameStateProvider>().GameState;
-            _gameplayState.GameplayState.Progress.Subscribe(newValue => ProgressData.Value = newValue);
+            _gameplayState.GameplayStateProxy.Progress.Subscribe(newValue => ProgressData.Value = newValue);
  
             var resourcesService = container.Resolve<ResourcesService>();
             resourcesService.ObservableResource(ResourceType.SoftCurrency)

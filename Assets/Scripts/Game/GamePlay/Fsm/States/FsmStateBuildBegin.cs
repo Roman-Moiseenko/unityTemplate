@@ -12,15 +12,15 @@ namespace Game.GamePlay.Fsm.States
     public class FsmStateBuildBegin : FSMState
     {
         private int _previousGameSpeed;
-        private GameplayState _gameplayState;
+        private GameplayStateProxy _gameplayStateProxy;
       //  public override RewardsProgress Params { get; set; }
 
         public FsmStateBuildBegin(FsmProxy fsm, DIContainer container) : base(fsm, container) { }
 
         public override void Enter()
         {
-            _gameplayState = _container.Resolve<IGameStateProvider>().GameState.GameplayState;
-            _gameplayState.SetPauseGame();
+            _gameplayStateProxy = _container.Resolve<IGameStateProvider>().GameState.GameplayStateProxy;
+            _gameplayStateProxy.SetPauseGame();
         }
 
         public override bool Exit(FSMState _next)

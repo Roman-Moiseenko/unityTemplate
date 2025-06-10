@@ -21,9 +21,11 @@ namespace Game.MainMenu.Root
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
 
+            
+        //    container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG,
+               // new Subject<Unit>()); //Событие, требующее смены сцены
             container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG,
-                new Subject<Unit>()); //Событие, требующее смены сцены
-
+                new Subject<MainMenuExitParams>()); //Событие, требующее смены сцены
 
             var cmd = container.Resolve<ICommandProcessor>();
             //TODO Командный процессор - команды работы с инвентарем

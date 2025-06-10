@@ -10,7 +10,7 @@ namespace Game.GamePlay.Fsm.States
     public class FsmStateSelectSkill : FSMState
     {
         private int _previousGameSpeed;
-        private GameplayState _gameplayState;
+        private GameplayStateProxy _gameplayStateProxy;
 
         public FsmStateSelectSkill(FsmProxy fsm, DIContainer container) : base(fsm, container)
         {
@@ -18,14 +18,14 @@ namespace Game.GamePlay.Fsm.States
 
         public override void Enter()
         {
-            _gameplayState = _container.Resolve<IGameStateProvider>().GameState.GameplayState; 
-            _previousGameSpeed = _gameplayState.GetCurrentSpeed(); //Запоминаем текущую скорость
-            _gameplayState.SetGameSpeed(1); //Устанавливаем минимальную скорость
+            _gameplayStateProxy = _container.Resolve<IGameStateProvider>().GameState.GameplayStateProxy; 
+            _previousGameSpeed = _gameplayStateProxy.GetCurrentSpeed(); //Запоминаем текущую скорость
+            _gameplayStateProxy.SetGameSpeed(1); //Устанавливаем минимальную скорость
         }
 
         public override bool Exit(FSMState _next)
         {
-            _gameplayState.SetGameSpeed(_previousGameSpeed); //Возвращаем скорость
+            _gameplayStateProxy.SetGameSpeed(_previousGameSpeed); //Возвращаем скорость
             return true;
             //Любой режим может сменить текущее состояние, и скилл не применяется, если _next != FsmStateSetSkill
             /*

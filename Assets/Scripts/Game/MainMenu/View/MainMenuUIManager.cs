@@ -1,5 +1,6 @@
 ﻿using DI;
 using Game.Common;
+using Game.MainMenu.Root;
 using Game.MainMenu.View.MainScreen;
 using Game.MainMenu.View.ScreenInventory;
 using Game.MainMenu.View.ScreenPlay;
@@ -12,11 +13,13 @@ namespace Game.MainMenu.View
 {
     public class MainMenuUIManager : UIManager
     {
-        private readonly Subject<Unit> _exitSceneRequest;
+     //   private readonly Subject<Unit> _exitSceneRequestDefault;
+        private readonly Subject<MainMenuExitParams> _exitSceneRequest;
 
         public MainMenuUIManager(DIContainer container) : base(container)
         {
-            _exitSceneRequest = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+     //       _exitSceneRequestDefault = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            _exitSceneRequest = container.Resolve<Subject<MainMenuExitParams>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
         }
 
         public MainScreenViewModel OpenMainScreen()
@@ -29,7 +32,7 @@ namespace Game.MainMenu.View
         
         public ScreenShopViewModel OpenScreenShop()
         {
-            var viewModel = new ScreenShopViewModel(this, _exitSceneRequest);
+            var viewModel = new ScreenShopViewModel(this);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
@@ -37,7 +40,7 @@ namespace Game.MainMenu.View
 
         public ScreenInventoryViewModel OpenScreenInventory()
         {
-            var viewModel = new ScreenInventoryViewModel(this, _exitSceneRequest);
+            var viewModel = new ScreenInventoryViewModel(this);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
@@ -45,7 +48,7 @@ namespace Game.MainMenu.View
         
         public ScreenClanViewModel OpenScreenClan()
         {
-            var viewModel = new ScreenClanViewModel(this, _exitSceneRequest);
+            var viewModel = new ScreenClanViewModel(this);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
@@ -59,7 +62,7 @@ namespace Game.MainMenu.View
         }
         public ScreenResearchViewModel OpenScreenResearch()
         {
-            var viewModel = new ScreenResearchViewModel(this, _exitSceneRequest);
+            var viewModel = new ScreenResearchViewModel(this);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;

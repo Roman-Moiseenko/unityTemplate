@@ -13,12 +13,14 @@ namespace Game.State.Root
     {
         public int GlobalEntityId { get; set; }
         public int CurrentMapId { get; set; }
+        public int GameSpeed { get; set; } //При выходе из Gameplay сохранять
         
-        public List<MapData> Maps { get; set; }
+        public List<MapData> Maps { get; set; } //Заменить на выйгранные с полученной наградой
         public List<InventoryData> Inventory { get; set; }
         public List<ResourceData> Resources { get; set; }
 
-        public GameplayStateData GameplayStateData = new(); //Cостояния gameplay игры
+        public bool ResumeGame { get; set; } //Привыходе false, при входе true 
+        public GameplayState GameplayState = new(); //Cостояния gameplay игры -- удалить
         
         public int CreateEntityID()
         {

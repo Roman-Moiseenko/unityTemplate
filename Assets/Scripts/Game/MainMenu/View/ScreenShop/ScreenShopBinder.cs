@@ -6,22 +6,22 @@ namespace Game.MainMenu.View.ScreenShop
 {
     public class ScreenShopBinder : WindowBinder<ScreenShopViewModel>
     {
-        [SerializeField] private Button _btnGoToPlay;
+      //  [SerializeField] private Button _btnGoToPlay;
         
         
         private void OnEnable()
         {
-            _btnGoToPlay.onClick.AddListener(OnGoToPlayButtonClicked);
+    //        _btnGoToPlay.onClick.AddListener(OnGoToPlayButtonClicked);
         }
 
         private void OnDisable()
         {
-            _btnGoToPlay.onClick.RemoveListener(OnGoToPlayButtonClicked);
+    //        _btnGoToPlay.onClick.RemoveListener(OnGoToPlayButtonClicked);
         }
 
         private void OnGoToPlayButtonClicked()
         {
-            ViewModel.RequestGoToPlay();
+     //       ViewModel.RequestGoToPlay();
         }
     }
 }

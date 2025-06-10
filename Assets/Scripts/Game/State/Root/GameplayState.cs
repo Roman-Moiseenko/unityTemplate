@@ -1,86 +1,26 @@
-﻿using R3;
-using UnityEngine;
+﻿using System.Collections.Generic;
+using Game.State.Entities;
 
 namespace Game.State.Root
 {
     public class GameplayState
     {
-        private readonly GameplayStateData _gameplayStateData;
-
-        public readonly ReactiveProperty<int> GameSpeed;
-        public readonly ReactiveProperty<int> Progress;
-        public readonly ReactiveProperty<int> ProgressLevel;
+        public int GameSpeed { get; set; }
+        public int PreviousGameSpeed { get; set; }
         
-        public GameplayState(GameplayStateData gameplayStateData)
-        {
-            _gameplayStateData = gameplayStateData;
-            GameSpeed = new ReactiveProperty<int>(gameplayStateData.GameSpeed);
-            GameSpeed.Subscribe(newSpeed => gameplayStateData.GameSpeed = newSpeed);
-            
-            Progress = new ReactiveProperty<int>(gameplayStateData.Progress);
-            Progress.Subscribe(newProgress => gameplayStateData.Progress = newProgress);
-            ProgressLevel = new ReactiveProperty<int>(gameplayStateData.ProgressLevel);
-            ProgressLevel.Subscribe(newProgressLevel => gameplayStateData.ProgressLevel = newProgressLevel);
-            
-        }
+        public int Progress { get; set; } //Текущий прогресс игры, растет от убийства мобов, при = наполнении обнуляем и увеличиваем ProgressLevel на 1
+        public int ProgressLevel { get; set; } //Влияет на коэффициент роста Progress в обратно-пропорциональном порядке 
 
-        public void ClearProgress()
-        {
-            if (Progress.Value < 100) return;
-            Progress.Value -= 100;
-            ProgressLevel.Value++;
-        }
+        public int SoftCurrency { get; set; } //При входе 0
+        public int HardCurrency { get; set; } //Дублирование?
         
-        /**
-         * Ставим игру на паузу. Все объекты, которые зависят от скорости игры, подписываются на GameSpeed
-         */
-        public void SetPauseGame() 
-        {
-            _gameplayStateData.PreviousGameSpeed = GameSpeed.Value;
-            GameSpeed.Value = 0;
-        }
+        //Список наград
+        //Список Волн
+        //Список Мобов
         
-        /**
-         * Возвращаемся к игре
-         */
-        public void GameplayReturn() 
-        {
-            if (_gameplayStateData.PreviousGameSpeed == 0)
-            {
-                GameSpeed.Value = 1;
-            } else
-            {
-                GameSpeed.Value = _gameplayStateData.PreviousGameSpeed;
-            }
-        }
-
-        public void SetGameSpeed(int newSpeed)
-        {
-            if (newSpeed == GameSpeed.Value) return;
-            GameSpeed.Value = newSpeed;
-        }
-
-
-        public int GetCurrentSpeed()
-        {
-            return GameSpeed.Value;
-        }
-
-        public int SetNextSpeed()
-        {
-            var newSpeed = 1;
-            switch (GameSpeed.Value)
-            {
-                case 1: newSpeed = 2;
-                    break;
-                case 2: newSpeed = 4;
-                    break;
-                case 4: newSpeed = 1;
-                    break;
-            }
-          
-            SetGameSpeed(newSpeed);
-            return newSpeed;
-        }
+        public int Id { get; set; }
+        public List<EntityData> Entities;
+        //Либо разделить на Tower Ground Road Build
+        
     }
 }
