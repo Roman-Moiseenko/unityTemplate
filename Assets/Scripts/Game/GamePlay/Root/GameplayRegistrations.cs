@@ -12,7 +12,7 @@ using Game.GamePlay.Services;
 using Game.MainMenu.Services;
 using Game.Settings;
 using Game.State;
-using Game.State.CMD;
+using MVVM.CMD;
 using MVVM.FSM;
 using Newtonsoft.Json;
 using R3;
@@ -65,12 +65,18 @@ namespace Game.GamePlay.Root
                 }
             }
 
+            container.RegisterFactory(_ => new CastleService(
+                gameplayState.Castle.Value,
+                cmd)
+            ).AsSingle();
+            
             //Регистрируем сервис по Зданиями
-               container.RegisterFactory(_ => new BuildingsService(
+            /*   container.RegisterFactory(_ => new BuildingsService(
                    gameplayState.Entities,
                    gameSettings.BuildingsSettings,
                    cmd)
                ).AsSingle();
+               */
                container.RegisterFactory(_ => new GroundsService(
                    gameplayState.Entities,
                    cmd)

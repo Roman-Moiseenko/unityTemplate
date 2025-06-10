@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.State.Entities;
+using Game.State.Maps.Castle;
 
 namespace Game.State.Root
 {
@@ -22,6 +23,7 @@ namespace Game.State.Root
         //Список наград
         //Список Волн
         //Список Мобов
+        public CastleEntityData CastleData { get; set; } 
         
         public int Id { get; set; }
         public List<EntityData> Entities;

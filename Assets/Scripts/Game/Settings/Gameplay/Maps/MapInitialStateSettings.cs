@@ -12,6 +12,7 @@ namespace Game.Settings.Gameplay.Maps
     [Serializable]
     public class MapInitialStateSettings
     {
+        //public CastleInitialSettings Castle;
         public List<BuildingInitialSettings> Buildings;
         public List<GroundInitialSettings> Grounds;
         

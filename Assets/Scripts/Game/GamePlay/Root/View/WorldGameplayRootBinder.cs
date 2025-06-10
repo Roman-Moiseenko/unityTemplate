@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.GamePlay.View.Buildings;
+using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Towers;
 using Newtonsoft.Json;
@@ -15,9 +16,10 @@ namespace Game.GamePlay.Root.View
     public class WorldGameplayRootBinder : MonoBehaviour
     {
         //      [SerializeField] private BuildingBinder _prefabBuilding;
-        private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
+    //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
         private readonly Dictionary<int, TowerBinder> _createTowersMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
+        private CastleBinder _castleBinder;
         private readonly CompositeDisposable _disposables = new();
 
 
@@ -37,13 +39,15 @@ namespace Game.GamePlay.Root.View
             _disposables.Remove(
                 viewModel.AllTowers.ObserveRemove().Subscribe(e => DestroyTower(e.Value))
             );
-
+            
+            CreateCastle(viewModel.CastleViewModel);
+/*
             foreach (var buildingViewModel in viewModel.AllBuildings)
                 CreateBuilding(buildingViewModel);
             _disposables.Add(
                 viewModel.AllBuildings.ObserveAdd().Subscribe(e => CreateBuilding(e.Value))
             );            
-            
+            */
             
             foreach (var groundViewModel in viewModel.AllGrounds)
                 CreateGround(groundViewModel);
@@ -58,10 +62,11 @@ namespace Game.GamePlay.Root.View
 
         private void OnDestroy()
         {
+            Destroy(_castleBinder.gameObject);
             _disposables.Dispose();
         }
 
-        private void CreateBuilding(BuildingViewModel buildingViewModel)
+   /*     private void CreateBuilding(BuildingViewModel buildingViewModel)
         {
             var buildingLevel = buildingViewModel.Level;
             var buildingType = buildingViewModel.ConfigId;
@@ -72,7 +77,16 @@ namespace Game.GamePlay.Root.View
 
             var createdBuilding = Instantiate(buildingPrefab, transform);
             createdBuilding.Bind(buildingViewModel);
-            _createBuildingsMap[buildingViewModel.BuildingEntityId] = createdBuilding;
+            //_createBuildingsMap[buildingViewModel.BuildingEntityId] = createdBuilding;
+        }
+*/
+        private void CreateCastle(CastleViewModel castleViewModel)
+        {
+            var prefabPath = "Prefabs/Gameplay/Buildings/Castle"; //Перенести в настройки уровня
+            var castlePrefab = Resources.Load<CastleBinder>(prefabPath);
+            var createdCastle = Instantiate(castlePrefab, transform);
+            createdCastle.Bind(castleViewModel);
+            _castleBinder = createdCastle;
         }
 
         private void CreateTower(TowerViewModel towerViewModel)
@@ -99,7 +113,7 @@ namespace Game.GamePlay.Root.View
             _createGroundsMap[groundViewModel.GroundEntityId] = createdGround;
         }
         
-        private void DestroyBuilding(BuildingViewModel buildingViewModel)
+      /*  private void DestroyBuilding(BuildingViewModel buildingViewModel)
         {
             if (_createBuildingsMap.TryGetValue(buildingViewModel.BuildingEntityId, out var buildingBinder))
             {
@@ -107,7 +121,7 @@ namespace Game.GamePlay.Root.View
                 _createBuildingsMap.Remove(buildingViewModel.BuildingEntityId);
             }
         }
-
+*/
         private void DestroyTower(TowerViewModel towerViewModel)
         {
             if (_createTowersMap.TryGetValue(towerViewModel.TowerEntityId, out var towerBinder))

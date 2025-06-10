@@ -1,6 +1,6 @@
-﻿using Game.State.CMD;
-using Game.State.Inventory;
+﻿using Game.State.Inventory;
 using Game.State.Root;
+using MVVM.CMD;
 
 namespace Game.GamePlay.Commands.RewardCommand
 {

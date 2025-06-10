@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using Game.State.CMD;
 using Game.State.Root;
+using MVVM.CMD;
 using UnityEngine;
 
 namespace Game.MainMenu.Commands.ResourceCommands

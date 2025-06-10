@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.State;
 
-namespace Game.State.CMD
+namespace MVVM.CMD
 {
-    public class CommandProcessorMainMenu : ICommandProcessor
+    public class CommandProcessorGameplay : ICommandProcessor
     {
         private readonly IGameStateProvider _gameStateProvider;
         private readonly Dictionary<Type, object> _handlesMap = new();
 
         //Командный процессор получает ссылку на репозиторий, для сохранения данных в процесссе обработки команд
-        public CommandProcessorMainMenu(IGameStateProvider gameStateProvider)
+        public CommandProcessorGameplay(IGameStateProvider gameStateProvider)
         {
             _gameStateProvider = gameStateProvider; //для сохранения игры
         }
@@ -29,9 +30,9 @@ namespace Game.State.CMD
             {
                 var typeHandler = (ICommandHandler<TCommand>)handler;
                 var result = typeHandler.Handle(command);
-                if (result) //Если команда успешно обработалась, то сохраняем состояние игры
+                if (result) //Если команда успешно обработалась, то сохраняем состояние сессии игры
                 {
-                    _gameStateProvider.SaveGameState();
+                    _gameStateProvider.SaveGameplayState();
                 }
                 return result;
             }

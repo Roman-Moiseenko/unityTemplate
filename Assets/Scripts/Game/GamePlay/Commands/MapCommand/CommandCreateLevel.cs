@@ -1,4 +1,4 @@
-﻿using Game.State.CMD;
+﻿using MVVM.CMD;
 
 namespace Game.GamePlay.Commands.MapCommand
 {

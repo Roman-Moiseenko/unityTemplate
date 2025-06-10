@@ -1,4 +1,4 @@
-﻿namespace Game.State.CMD
+﻿namespace MVVM.CMD
 {
     public interface ICommand
     {

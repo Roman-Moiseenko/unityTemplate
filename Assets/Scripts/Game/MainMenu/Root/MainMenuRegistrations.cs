@@ -5,7 +5,7 @@ using Game.MainMenu.Commands.ResourceCommands;
 using Game.MainMenu.Services;
 using Game.Settings;
 using Game.State;
-using Game.State.CMD;
+using MVVM.CMD;
 using R3;
 using Scripts.Game.GameRoot.Services;
 

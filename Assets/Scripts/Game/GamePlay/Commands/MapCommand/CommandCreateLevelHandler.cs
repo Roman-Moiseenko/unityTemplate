@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Game.Settings;
-using Game.State.CMD;
 using Game.State.Entities;
 using Game.State.Maps;
+using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Towers;
 using Game.State.Mergeable.Buildings;
 using Game.State.Root;
+using MVVM.CMD;
 using Newtonsoft.Json;
+using R3;
 using UnityEngine;
 
 namespace Game.GamePlay.Commands.MapCommand
@@ -42,6 +44,7 @@ namespace Game.GamePlay.Commands.MapCommand
             //Находим настройки карты по ее Id
             var newMapSettings = _gameSettings.MapsSettings.Maps.First(m => m.MapId == command.MapId);
             
+            
             var newMapInitialStateSettings = newMapSettings.InitialStateSettings;
            // var initialEntities = new List<EntityData>(); //Создаем список зданий
             
@@ -64,7 +67,25 @@ namespace Game.GamePlay.Commands.MapCommand
             
             //Добавляем Волны и Список врагов, по Волнам
             
+            //Загружаем базовые параметры
+            //Создаем замок
+            var castle = new CastleEntityData()
+            {
+                ConfigId = "Castle",
+                Position = new Vector2Int(0, 0),
+                Type = EntityType.Building,
+                UniqueId = _gameplayState.CreateEntityID(),
+                //Базовые параметры
+                Damage = _gameSettings.CastleInitialSettings.Damage,
+                FullHealth = _gameSettings.CastleInitialSettings.FullHealth,
+                DistanceDamage = _gameSettings.CastleInitialSettings.DistanceDamage,
+                ReduceHealth = _gameSettings.CastleInitialSettings.ReduceHealth,
+                CurrenHealth = _gameSettings.CastleInitialSettings.FullHealth,
+                Level = 0,
+            };
+            _gameplayState.Castle.Value = new CastleEntity(castle);
             
+            /*
             foreach (var buildingSettings in newMapInitialStateSettings.Buildings) //Берем список зданий из настроек карты (конфиг)
             {
                 var initialBuilding = new BuildingEntityData // .. и создаем все здания
@@ -80,6 +101,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialBuilding));
               //  initialEntities.Add(initialBuilding);
             }
+            */
             Debug.Log("newMapInitialStateSettings.Towers " + JsonConvert.SerializeObject(newMapInitialStateSettings.Towers, Formatting.Indented));
             foreach (var towerSettings in newMapInitialStateSettings.Towers) //Берем список зданий из настроек карты (конфиг)
             {

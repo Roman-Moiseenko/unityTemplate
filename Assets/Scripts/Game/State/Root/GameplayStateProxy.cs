@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Game.State.Entities;
+using Game.State.Maps.Castle;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -17,6 +18,8 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> MapId;
         public readonly ReactiveProperty<int> CurrentWave;
 
+        public readonly ReactiveProperty<CastleEntity> Castle;
+
         public int PreviousGameSpeed => _gameplayState.PreviousGameSpeed;
         
         public ObservableList<Entity> Entities { get; } = new();
@@ -24,6 +27,8 @@ namespace Game.State.Root
         public GameplayStateProxy(GameplayState gameplayState)
         {
             _gameplayState = gameplayState;
+            Castle = new ReactiveProperty<CastleEntity>(new CastleEntity(gameplayState.CastleData));
+            
             GameSpeed = new ReactiveProperty<int>(gameplayState.GameSpeed);
             GameSpeed.Subscribe(newSpeed =>
             {

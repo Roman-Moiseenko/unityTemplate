@@ -5,7 +5,6 @@ using Game.MainMenu.Services;
 using Game.MainMenu.View;
 using Game.Settings;
 using Game.State;
-using Game.State.CMD;
 using R3;
 
 namespace Game.MainMenu.Root.View

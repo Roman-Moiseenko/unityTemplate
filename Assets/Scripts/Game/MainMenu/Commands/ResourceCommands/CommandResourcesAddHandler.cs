@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using Game.State.CMD;
 using Game.State.GameResources;
 using Game.State.Root;
+using MVVM.CMD;
 
 namespace Game.MainMenu.Commands.ResourceCommands
 {

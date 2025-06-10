@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using Game.State.CMD;
 using Game.State.Mergeable.Buildings;
 using Game.State.Root;
+using MVVM.CMD;
 using UnityEngine;
 
 namespace Game.GamePlay.Commands.BuildingCommands

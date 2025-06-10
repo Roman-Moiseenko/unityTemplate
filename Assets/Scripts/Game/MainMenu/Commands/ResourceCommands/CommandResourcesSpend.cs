@@ -1,5 +1,5 @@
-﻿using Game.State.CMD;
-using Game.State.GameResources;
+﻿using Game.State.GameResources;
+using MVVM.CMD;
 
 namespace Game.MainMenu.Commands.ResourceCommands
 {
