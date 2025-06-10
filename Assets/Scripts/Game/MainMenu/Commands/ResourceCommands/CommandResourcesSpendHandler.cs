@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
 using Game.State.CMD;
-using Game.State.GameResources;
 using Game.State.Root;
 using UnityEngine;
 
-
-namespace Game.GamePlay.Commands
+namespace Game.MainMenu.Commands.ResourceCommands
 {
     public class CommandResourcesSpendHandler : ICommandHandler<CommandResourcesSpend>
     {

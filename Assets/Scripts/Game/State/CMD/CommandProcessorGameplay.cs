@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Game.State.CMD
 {
-    public class CommandProcessor : ICommandProcessor
+    public class CommandProcessorGameplay : ICommandProcessor
     {
         private readonly IGameStateProvider _gameStateProvider;
         private readonly Dictionary<Type, object> _handlesMap = new();
 
         //Командный процессор получает ссылку на репозиторий, для сохранения данных в процесссе обработки команд
-        public CommandProcessor(IGameStateProvider gameStateProvider)
+        public CommandProcessorGameplay(IGameStateProvider gameStateProvider)
         {
             _gameStateProvider = gameStateProvider; //для сохранения игры
         }
@@ -29,9 +29,9 @@ namespace Game.State.CMD
             {
                 var typeHandler = (ICommandHandler<TCommand>)handler;
                 var result = typeHandler.Handle(command);
-                if (result) //Если команда успешно обработалась, то сохраняем состояние игры
+                if (result) //Если команда успешно обработалась, то сохраняем состояние сессии игры
                 {
-                    _gameStateProvider.SaveGameState();
+                    _gameStateProvider.SaveGameplayState();
                 }
                 return result;
             }

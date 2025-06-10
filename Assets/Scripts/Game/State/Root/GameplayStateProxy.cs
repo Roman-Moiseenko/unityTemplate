@@ -14,6 +14,8 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> Progress;
         public readonly ReactiveProperty<int> ProgressLevel;
         public readonly ReactiveProperty<int> SoftCurrency;
+        public readonly ReactiveProperty<int> MapId;
+        public readonly ReactiveProperty<int> CurrentWave;
 
         public int PreviousGameSpeed => _gameplayState.PreviousGameSpeed;
         
@@ -37,8 +39,11 @@ namespace Game.State.Root
             SoftCurrency = new ReactiveProperty<int>(gameplayState.SoftCurrency);
             SoftCurrency.Subscribe(newValue => gameplayState.SoftCurrency = newValue);
 
+            CurrentWave = new ReactiveProperty<int>(gameplayState.CurrentWave);
+            CurrentWave.Subscribe(newValue => gameplayState.CurrentWave = newValue);
+            
 
-            // InitMaps(gameplayState);
+             InitMaps(gameplayState);
         }
 
         private void InitMaps(GameplayState gameplayState)

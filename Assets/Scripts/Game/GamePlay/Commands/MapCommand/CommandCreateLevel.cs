@@ -2,11 +2,11 @@
 
 namespace Game.GamePlay.Commands.MapCommand
 {
-    public class CommandCreateMap: ICommand
+    public class CommandCreateLevel: ICommand
     {
         public readonly int MapId;
 
-        public CommandCreateMap(int mapId)
+        public CommandCreateLevel(int mapId)
         {
             MapId = mapId;
         }

@@ -5,8 +5,11 @@
         public string Result { get; }
         public int SoftCurrency { get; set; }
         
+        public int LastWave { get; set; } //Последняя волна, при проигрыше
+        public bool CompletedLevel { get; set; } //Уровень выйгран
+        
         public int GameSpeed { get; set; }
-        public bool HasSessionGame { get; set; }
+        
 
         public MainMenuEnterParams(string result)
         {

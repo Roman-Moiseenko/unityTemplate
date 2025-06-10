@@ -5,6 +5,9 @@ namespace Game.State.Root
 {
     public class GameplayState
     {
+
+        public int MapId { get; set; }
+        public int CurrentWave { get; set; }
         public int GlobalEntityId { get; set; }
         
         public int GameSpeed { get; set; }

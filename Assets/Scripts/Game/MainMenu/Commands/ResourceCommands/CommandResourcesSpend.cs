@@ -1,14 +1,14 @@
 ﻿using Game.State.CMD;
 using Game.State.GameResources;
 
-namespace Game.GamePlay.Commands
+namespace Game.MainMenu.Commands.ResourceCommands
 {
-    public class CommandResourcesAdd : ICommand
+    public class CommandResourcesSpend : ICommand
     {
         public readonly ResourceType ResourceType;
         public readonly int Amount;
 
-        public CommandResourcesAdd(ResourceType resourceType, int amount)
+        public CommandResourcesSpend(ResourceType resourceType, int amount)
         {
             ResourceType = resourceType;
             Amount = amount;

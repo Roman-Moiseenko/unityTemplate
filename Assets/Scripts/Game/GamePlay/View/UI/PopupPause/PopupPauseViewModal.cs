@@ -1,5 +1,6 @@
 ﻿using DI;
 using Game.GamePlay.Root;
+using Game.GamePlay.Services;
 using Game.MainMenu.Root;
 using Game.State;
 using Game.State.Root;
@@ -17,6 +18,7 @@ namespace Game.GamePlay.View.UI.PopupPause
         public override string Id => "PopupPause";
         public override string Path => "Gameplay/";
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
+        private readonly DIContainer _container;
 
         private readonly GameplayStateProxy _gameplayState;
         //TODO действия при нажатии на кнопки
@@ -27,6 +29,7 @@ namespace Game.GamePlay.View.UI.PopupPause
             DIContainer container)
         {
             _exitSceneRequest = exitSceneRequest;
+            _container = container;
 
             _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
         }
@@ -41,23 +44,12 @@ namespace Game.GamePlay.View.UI.PopupPause
         //Покупка восстановления ... отнимаем кристалы, событие восстановления
         public void RequestGoToMainMenu()
         {
-            //TODO Перенести в GameplayService
-            var menuParams = new MainMenuEnterParams("Выход");
-            //Передаем награду и некоторые настройки, для загрузки в меню
-            menuParams.GameSpeed = _gameplayState.PreviousGameSpeed;
-            menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
-            var exitParams = new GameplayExitParams(menuParams);
-            _exitSceneRequest.OnNext(exitParams);
+            _container.Resolve<GameplayService>().Lose();
         }
 
         public void RequestExitSave()
         {
-            var menuParams = new MainMenuEnterParams("Выход с сохранением");
-            menuParams.GameSpeed = _gameplayState.PreviousGameSpeed;
-            menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
-            var exitParams = new GameplayExitParams(menuParams);
-            exitParams.SaveGameplay = true;
-            _exitSceneRequest.OnNext(exitParams);
+            _container.Resolve<GameplayService>().ExitSave();
         }
     }
 }

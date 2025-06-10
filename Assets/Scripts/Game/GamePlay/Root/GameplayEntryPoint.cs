@@ -34,7 +34,7 @@ namespace Game.GamePlay.Root
             InitWorld(gameplayViewModelsContainer);
             InitUI(gameplayViewModelsContainer);
             
-            GameplaySaveService.Run(gameplayContainer);
+            
             
             //Сохраняем начальные параметры игровой сессии
             gameplayContainer.Resolve<IGameStateProvider>().SaveGameplayState();
@@ -46,7 +46,7 @@ namespace Game.GamePlay.Root
          //   var mainMenuEnterParams = new MainMenuEnterParams("Fatality");
            // var exitParams = new GameplayExitParams(mainMenuEnterParams);
             //Формируем сигнал для подписки
-            var exitSceneRequest = gameplayContainer.Resolve<Subject<GameplayExitParams>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            var exitSceneRequest = gameplayContainer.Resolve<Subject<GameplayExitParams>>();
            // var exitToMainMenuSignal = exitSceneRequest.Select(_ => exitParams);//В сигнал кладем в выходные параметры
             return exitSceneRequest;
         }

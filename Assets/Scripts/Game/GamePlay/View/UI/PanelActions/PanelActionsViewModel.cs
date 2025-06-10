@@ -1,9 +1,11 @@
 ﻿using DI;
+using Game.GamePlay.Commands.RewardCommand;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Services;
 using Game.MainMenu.Services;
 using Game.State;
+using Game.State.CMD;
 using Game.State.GameResources;
 using Game.State.Root;
 using MVVM.UI;
@@ -18,7 +20,8 @@ namespace Game.GamePlay.View.UI.PanelActions
         
         public readonly int CurrentSpeed;
         public readonly GameplayUIManager _uiManager;
-        
+        private readonly DIContainer _container;
+
         private readonly GameplayStateProxy _gameplayStateProxy;
         
         //Для теста
@@ -29,7 +32,8 @@ namespace Game.GamePlay.View.UI.PanelActions
         )
         {
             _uiManager = uiManager;
-            
+            _container = container;
+
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             _fsmGameplay = container.Resolve<FsmGameplay>();
             CurrentSpeed = _gameplayStateProxy.GetCurrentSpeed();
@@ -42,8 +46,11 @@ namespace Game.GamePlay.View.UI.PanelActions
 
         public void RequestToProgressAdd()
         {
-            _gameplayStateProxy.Progress.Value += 50;
-            
+            var cmd = _container.Resolve<ICommandProcessor>();
+            var command = new CommandRewardKillMob(25, 1);
+            cmd.Process(command);
+            //_gameplayStateProxy.Progress.Value += 50;
+
             //_fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
         }
 
@@ -51,7 +58,7 @@ namespace Game.GamePlay.View.UI.PanelActions
         {
             //_gameplayStateProxy.
             
-            _gameplayStateProxy.SoftCurrency.Value += 50;
+        //    _gameplayStateProxy.SoftCurrency.Value += 50;
         }
 
         public void RequestToHardCurrencyAdd()

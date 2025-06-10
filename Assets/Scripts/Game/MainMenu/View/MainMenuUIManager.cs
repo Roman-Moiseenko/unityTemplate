@@ -25,7 +25,7 @@ namespace Game.MainMenu.View
         {
             _container = container;
             //       _exitSceneRequestDefault = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
-            _exitSceneRequest = container.Resolve<Subject<MainMenuExitParams>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            _exitSceneRequest = container.Resolve<Subject<MainMenuExitParams>>();
             _exitParamsService = container.Resolve<MainMenuExitParamsService>();
 
         }

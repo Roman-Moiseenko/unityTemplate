@@ -46,6 +46,7 @@ namespace Game.State
                 var json = PlayerPrefs.GetString(GAMEPLAY_STATE_KEY);
                 _gameplayStateOrigin = JsonConvert.DeserializeObject<GameplayState>(json);
                 GameplayState = new GameplayStateProxy(_gameplayStateOrigin);
+                Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
             }
             return Observable.Return(GameplayState);
         }
@@ -59,8 +60,6 @@ namespace Game.State
                 SoftCurrency = 0,
                 Progress = 0,
                 ProgressLevel = 0,
-                //PreviousGameSpeed = 1,
-                //GameSpeed = 
                 //TODO Ресурсы игры
             };
             //_gameStateOrigin.GameplayStateData.GameSpeed = 1;
@@ -114,7 +113,6 @@ namespace Game.State
             _gameStateOrigin = new GameState
             {
                 CurrentMapId = 0,
-                Maps = new List<MapData>(),
                 Resources = new List<ResourceData>()
                 {
                     new() { Amount = 0, ResourceType = ResourceType.SoftCurrency },

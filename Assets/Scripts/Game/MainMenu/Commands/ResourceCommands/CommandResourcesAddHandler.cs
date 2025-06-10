@@ -4,7 +4,7 @@ using Game.State.CMD;
 using Game.State.GameResources;
 using Game.State.Root;
 
-namespace Game.GamePlay.Commands
+namespace Game.MainMenu.Commands.ResourceCommands
 {
     public class CommandResourcesAddHandler : ICommandHandler<CommandResourcesAdd>
     {

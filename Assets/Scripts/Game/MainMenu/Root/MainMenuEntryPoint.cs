@@ -62,7 +62,7 @@ namespace Game.MainMenu.Root
             //Загружаем входные параметры
             //   var gameplayEnterParams = new GameplayEnterParams(0); //Имитация выбора уровня 0
             //  var mainMenuExitParams = new MainMenuExitParams(gameplayEnterParams);
-            return mainMenuContainer.Resolve<Subject<MainMenuExitParams>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            return mainMenuContainer.Resolve<Subject<MainMenuExitParams>>();
             
             //var exitToGameplaySceneSignal = exitSceneRequest.Select(_ => mainMenuExitParams);
             //exitToGameplaySceneSignal.

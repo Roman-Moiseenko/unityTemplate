@@ -34,7 +34,7 @@ namespace Game.GamePlay.View.UI
             rootUI.AddPanel(new PanelActionsViewModel(this, container));
             
             //_gameState = gameStateProvider.GameState;
-            _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>();
 
             _fsmGameplay.Fsm.StateCurrent.Subscribe(newValue =>
             {

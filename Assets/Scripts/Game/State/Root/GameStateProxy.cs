@@ -19,7 +19,7 @@ namespace Game.State.Root
         public ReactiveProperty<int> CurrentMapId = new();
         public ReactiveProperty<int> GameSpeed;
         
-        public ObservableList<Map> Maps { get; } = new();
+     //   public ObservableList<Map> Maps { get; } = new();
         public ObservableList<Inventory.Inventory> Inventory { get; } = new();
 
         public ObservableList<Resource> Resources { get; } = new();
@@ -37,14 +37,14 @@ namespace Game.State.Root
   
             
 
-            InitMaps(gameState);
+       //     InitMaps(gameState);
             InitResource(gameState);
             InitInventory(gameState);
             
             CurrentMapId.Subscribe(newValue => { gameState.CurrentMapId = newValue; });
         }
 
-        private void InitMaps(GameState gameState)
+     /*   private void InitMaps(GameState gameState)
         {
             gameState.Maps.ForEach(
                 mapOriginal => Maps.Add(new Map(mapOriginal))
@@ -56,7 +56,7 @@ namespace Game.State.Root
                 var removedMapState = gameState.Maps.FirstOrDefault(b => b.Id == e.Value.Id);
                 gameState.Maps.Remove(removedMapState);
             });
-        }
+        }*/
 
         private void InitResource(GameState gameState)
         {
@@ -85,9 +85,9 @@ namespace Game.State.Root
             });
         }
         
-        public int CreateEntityID()
+        public int CreateInventoryID()
         {
-            return _gameState.CreateEntityID();
+            return _gameState.CreateInventoryID();
         }
     }
 }

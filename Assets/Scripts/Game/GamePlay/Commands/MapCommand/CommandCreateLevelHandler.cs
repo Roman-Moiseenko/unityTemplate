@@ -13,46 +13,51 @@ using UnityEngine;
 
 namespace Game.GamePlay.Commands.MapCommand
 {
-    public class CommandCreateMapHandler
-        : ICommandHandler<CommandCreateMap>
+    public class CommandCreateLevelHandler
+        : ICommandHandler<CommandCreateLevel>
     {
-        private readonly GameStateProxy _gameState;
+        
         private readonly GameSettings _gameSettings;
         private readonly GameplayStateProxy _gameplayState;
 
-        public CommandCreateMapHandler(GameStateProxy gameState, GameSettings gameSettings, GameplayStateProxy gameplayState)
+        public CommandCreateLevelHandler(GameSettings gameSettings, GameplayStateProxy gameplayState)
         {
-            _gameState = gameState;
+           
             _gameSettings = gameSettings;
             _gameplayState = gameplayState;
         }
 
-        public bool Handle(CommandCreateMap command)
+        public bool Handle(CommandCreateLevel command)
         {
-            var isMapAlreadyExisted = _gameState.Maps.Any(m => m.Id == command.MapId);
-            if (isMapAlreadyExisted) //Если карта была создана, то ошибка
+            if (_gameplayState.Entities.Any())
             {
                 Debug.Log($"Map id={command.MapId} already exist");
                 return false;
             }
+           /* var isMapAlreadyExisted = _gameState.Maps.Any(m => m.Id == command.MapId);
+            if (isMapAlreadyExisted) //Если карта была создана, то ошибка
+            {
+
+            } */
             //Находим настройки карты по ее Id
             var newMapSettings = _gameSettings.MapsSettings.Maps.First(m => m.MapId == command.MapId);
             
             var newMapInitialStateSettings = newMapSettings.InitialStateSettings;
-            var initialEntities = new List<EntityData>(); //Создаем список зданий
+           // var initialEntities = new List<EntityData>(); //Создаем список зданий
             
             foreach (var ground in newMapInitialStateSettings.Grounds)
             {
                 var initialGround = new GroundEntityData
                 {
                     Type = EntityType.Ground,
-                    UniqueId = _gameState.CreateEntityID(),
+                    UniqueId = _gameplayState.CreateEntityID(),
                     ConfigId = newMapInitialStateSettings.GroundDefault,
                     Position = ground.Position,
                     Enabled = ground.Enabled,
                     
                 };
-                initialEntities.Add(initialGround);
+                _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialGround));
+                //initialEntities.Add(initialGround);
                 
             }
             //Рисуем дорогу
@@ -64,7 +69,7 @@ namespace Game.GamePlay.Commands.MapCommand
             {
                 var initialBuilding = new BuildingEntityData // .. и создаем все здания
                 {
-                    UniqueId = _gameState.CreateEntityID(),
+                    UniqueId = _gameplayState.CreateEntityID(),
                     ConfigId = buildingSettings.ConfigId,
                     Type = EntityType.Building,
                     Position = buildingSettings.Position,
@@ -72,22 +77,25 @@ namespace Game.GamePlay.Commands.MapCommand
                     IsAutoCollectionEnabled = false,
                     LastClickedTimeMS = 0,
                 };
-                initialEntities.Add(initialBuilding);
+                _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialBuilding));
+              //  initialEntities.Add(initialBuilding);
             }
             Debug.Log("newMapInitialStateSettings.Towers " + JsonConvert.SerializeObject(newMapInitialStateSettings.Towers, Formatting.Indented));
             foreach (var towerSettings in newMapInitialStateSettings.Towers) //Берем список зданий из настроек карты (конфиг)
             {
                 var initialTower = new TowerEntityData // .. и создаем все здания
                 {
-                    UniqueId = _gameState.CreateEntityID(),
+                    UniqueId = _gameplayState.CreateEntityID(),
                     ConfigId = towerSettings.ConfigId,
                     Type = EntityType.Tower,
                     Position = towerSettings.Position,
                     EpicLevel = towerSettings.Level,
                 };
-                initialEntities.Add(initialTower);
+                _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialTower));
+              //  initialEntities.Add(initialTower);
             }
-
+            
+/*
             //Создаем состояние карты
             var newMapState = new MapData
             {
@@ -96,7 +104,8 @@ namespace Game.GamePlay.Commands.MapCommand
             };
             // ... затем оборачиваем прокис
             var newMapStateProxy = new Map(newMapState);
-            _gameState.Maps.Add(newMapStateProxy); //И добавляем в список карт игры
+            _gameplayState.Entities.Add(newMapStateProxy); //И добавляем в список карт игры 
+            */
             return true;
         }
     }

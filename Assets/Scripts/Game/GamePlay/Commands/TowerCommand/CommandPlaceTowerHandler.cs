@@ -9,23 +9,24 @@ namespace Game.GamePlay.Commands
 {
     public class CommandPlaceTowerHandler : ICommandHandler<CommandPlaceTower>
     {
-        private readonly GameStateProxy _gameState;
+        private readonly GameplayStateProxy _gameplayState;
 
-        public CommandPlaceTowerHandler(GameStateProxy gameState)
+        public CommandPlaceTowerHandler(GameplayStateProxy gameplayState)
         {
-            _gameState = gameState;
+            _gameplayState = gameplayState;
         }
         
         public bool Handle(CommandPlaceTower command)
         {
-            //TODO Entities = _gameplayState.Entities
+            var Entities = _gameplayState.Entities;
+            /*
             var currentMap = _gameState.Maps.FirstOrDefault(m => m.Id == _gameState.CurrentMapId.CurrentValue);
             if (currentMap == null)
             {
                 Debug.Log($" Карта не найдена { _gameState.CurrentMapId.CurrentValue}");
                 return false;
             }
-            
+            */
            // var entityId = _gameState.CreateEntityID(); //Получаем уникальный ID
             var newTowerEntity = new TowerEntityData() //Создаем сущность игрового объекта
             {
@@ -33,7 +34,7 @@ namespace Game.GamePlay.Commands
                 ConfigId = command.TowerTypeId,
             };
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
-            currentMap.Entities.Add(newTower);//Добавляем в список объектов карты
+            Entities.Add(newTower);//Добавляем в список объектов карты
             //_gameState.Maps.Add();
             //_gameState.Buildings.Add(newBuildingEntityProxy); 
             return true;
