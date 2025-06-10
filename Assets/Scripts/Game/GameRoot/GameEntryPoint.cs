@@ -84,7 +84,7 @@ namespace Scripts.Game.GameRoot
             if (sceneName == Scenes.GAMEPLAY)
             {
                 var enterParams = new GameplayEnterParams(0);
-                enterParams.HasSessionGameplay = true;
+              //  enterParams.HasSessionGameplay = true;
                 _coroutines.StartCoroutine(LoadAndStartGameplay(enterParams));
                 return;
             }

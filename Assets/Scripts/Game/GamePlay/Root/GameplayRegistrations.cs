@@ -51,15 +51,18 @@ namespace Game.GamePlay.Root
             //TODO CommandProcessor и команды Resources регистрировать раньше, т.к. используются в меню 
             //TODO либо делать 2 уровня ресурсов - ОбщеИгровые и Игровые (сессионные) 
 
-            
+            //gameplayEnterParams.HasSessionGameplay
             //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
             var loadingMapId = gameplayEnterParams.MapId;
             var loadingMap = gameState.Maps.FirstOrDefault(m => m.Id == loadingMapId);
-
-          /*  if (gameplayState.En)
+            
+            if (gameplayState.Entities.Any() != true)
             {
-                
-            }*/
+                Debug.Log(" *** ");
+                //Загружаем из настроек
+            }
+            
+            var Entities = gameplayState.Entities;
             //var loadingMap = gameplayState;
            // Debug.Log("loadingMapId " + loadingMapId);
             

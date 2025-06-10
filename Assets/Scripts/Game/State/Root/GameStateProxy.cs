@@ -16,12 +16,9 @@ namespace Game.State.Root
     public class GameStateProxy
     {
         private readonly GameState _gameState;
-        public ReactiveProperty<bool> HasSessionGame;
         public ReactiveProperty<int> CurrentMapId = new();
         public ReactiveProperty<int> GameSpeed;
         
-        //public GameplayStateProxy GameplayStateProxy;
-        //public ReactiveProperty<GameplayStateData> GameplayStateData = new();
         public ObservableList<Map> Maps { get; } = new();
         public ObservableList<Inventory.Inventory> Inventory { get; } = new();
 
@@ -37,11 +34,8 @@ namespace Game.State.Root
                 gameState.GameSpeed = newValue;
                 Debug.Log($"Сохраняем скорость игры в GameState = {newValue}");
             });
+  
             
-            HasSessionGame = new ReactiveProperty<bool>(gameState.HasSessionGame);
-            HasSessionGame.Subscribe(newValue => gameState.HasSessionGame = newValue);
-            
-          //  GameplayStateProxy = new GameplayStateProxy(gameState.GameplayState);
 
             InitMaps(gameState);
             InitResource(gameState);

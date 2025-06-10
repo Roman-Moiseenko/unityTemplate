@@ -6,14 +6,14 @@ namespace Game.GamePlay.Root
     {
         public int MapId { get; }
         public int GameSpeed { get; set; }
-        public bool HasSessionGameplay { get; set; }
+        //public bool HasSessionGameplay { get; set; }
         public float DamageTowerBust { get; set; }
         
         public GameplayEnterParams(int mapId) : base(Scenes.GAMEPLAY)
         {
             GameSpeed = 1;
             MapId = mapId;
-            HasSessionGameplay = false;
+          //  HasSessionGameplay = false;
         }
     }
 }

@@ -115,5 +115,10 @@ namespace Game.State.Root
             SetGameSpeed(newSpeed);
             return newSpeed;
         }
+        
+        public int CreateEntityID()
+        {
+            return _gameplayState.CreateEntityID();
+        }
     }
 }

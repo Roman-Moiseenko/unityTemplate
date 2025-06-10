@@ -1,4 +1,5 @@
-﻿using DI;
+﻿using System.Linq;
+using DI;
 using Game.Common;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
@@ -26,19 +27,17 @@ namespace Game.MainMenu.Root
             MainMenuRegistrations.Register(mainMenuContainer, enterParams); //Регистрируем все сервисы сцены меню
             var mainMenuViewModelsContainer = new DIContainer(mainMenuContainer); //Создаем контейнер для view-моделей
             MainMenuViewModelsRegistrations.Register(mainMenuViewModelsContainer);
-            //TODO Сохранить входные данные в GameState если вышли из Игры 
+            
 
             //  mainMenuViewModelsContainer.Resolve<UIMainMenuRootViewModel>();
-
-            if (enterParams != null)
+             
+            if (enterParams != null) 
             {
+                //Сохраняем входные данные в GameState если вышли из Игры
+                
                 //TODO Добавляем награды
                 var resourcesService = mainMenuContainer.Resolve<ResourcesService>();
                 resourcesService.AddResource(ResourceType.SoftCurrency, enterParams.SoftCurrency);
-                
-                
-                
-
                 /*              var inventoryService = mainMenuContainer.Resolve<InventoryService>();
                               enterParams.Inventory.ForEach(item =>
                               {
@@ -47,34 +46,28 @@ namespace Game.MainMenu.Root
               */
                 
                 //Сохраняем параметры/настройки для следующих геймплеев
-
                 var gameProvider = mainMenuContainer.Resolve<IGameStateProvider>();
                 gameProvider.GameState.GameSpeed.Value = enterParams.GameSpeed;
-
-
+                
                 gameProvider.SaveGameState();
 
             }
             
             InitUI(mainMenuViewModelsContainer);
-
             InitPopup(mainMenuViewModelsContainer);
 
-
-            // var exitSceneSignalSubj = new Subject<Unit>();
-            //   uiScene.Bind(exitSceneSignalSubj);
 
             Debug.Log($"MAIN MENU ENTER POINT: Results {enterParams?.Result}");
 
             //Загружаем входные параметры
             //   var gameplayEnterParams = new GameplayEnterParams(0); //Имитация выбора уровня 0
             //  var mainMenuExitParams = new MainMenuExitParams(gameplayEnterParams);
-            var exitSceneRequest =
-                mainMenuContainer.Resolve<Subject<MainMenuExitParams>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            return mainMenuContainer.Resolve<Subject<MainMenuExitParams>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            
             //var exitToGameplaySceneSignal = exitSceneRequest.Select(_ => mainMenuExitParams);
             //exitToGameplaySceneSignal.
             //  Debug.Log(JsonConvert.SerializeObject(mainMenuExitParams, Formatting.Indented));
-            return exitSceneRequest; //exitToGameplaySceneSignal;
+            //return exitSceneRequest; //exitToGameplaySceneSignal;
         }
 
         private void InitUI(DIContainer container)
@@ -100,8 +93,12 @@ namespace Game.MainMenu.Root
         private void InitPopup(DIContainer container)
         {
             var uiManager = container.Resolve<MainMenuUIManager>();
-            var gameState = container.Resolve<IGameStateProvider>().GameState;
-            if (gameState.HasSessionGame.Value) //если была сессия игры
+            //TODO Сделать проверку, что есть сохраненные данные о сессии
+            //Запрашиваем окно и переходим в игру или очищаем
+            return;
+            /*
+            var gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            if (gameplayState.Entities.Any()) //если была сессия игры
             {
                 //Окно вернуться к ней
                 uiManager.OpenPopupResumeGame();
@@ -116,6 +113,7 @@ namespace Game.MainMenu.Root
                 //uiManager.OpenPopupAD_03();
                 //uiManager.OpenPopupAD_04();
             }
+            */
         }
     }
 }

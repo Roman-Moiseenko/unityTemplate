@@ -15,13 +15,16 @@ namespace Game.MainMenu.View
 {
     public class MainMenuUIManager : UIManager
     {
-     //   private readonly Subject<Unit> _exitSceneRequestDefault;
+        private readonly DIContainer _container;
+
+        //   private readonly Subject<Unit> _exitSceneRequestDefault;
         private readonly Subject<MainMenuExitParams> _exitSceneRequest;
         private readonly MainMenuExitParamsService _exitParamsService;
 
         public MainMenuUIManager(DIContainer container) : base(container)
         {
-     //       _exitSceneRequestDefault = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            _container = container;
+            //       _exitSceneRequestDefault = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
             _exitSceneRequest = container.Resolve<Subject<MainMenuExitParams>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
             _exitParamsService = container.Resolve<MainMenuExitParamsService>();
 
@@ -60,7 +63,7 @@ namespace Game.MainMenu.View
         }
         public ScreenPlayViewModel OpenScreenPlay()
         {
-            var viewModel = new ScreenPlayViewModel(this, _exitSceneRequest, _exitParamsService);
+            var viewModel = new ScreenPlayViewModel(this, _exitSceneRequest, _exitParamsService, _container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;

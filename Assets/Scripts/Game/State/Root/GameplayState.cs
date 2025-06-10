@@ -5,6 +5,8 @@ namespace Game.State.Root
 {
     public class GameplayState
     {
+        public int GlobalEntityId { get; set; }
+        
         public int GameSpeed { get; set; }
         public int PreviousGameSpeed { get; set; }
         
@@ -21,6 +23,12 @@ namespace Game.State.Root
         public int Id { get; set; }
         public List<EntityData> Entities;
         //Либо разделить на Tower Ground Road Build
+        
+        public int CreateEntityID()
+        {
+            return GlobalEntityId++;
+        }
+
         
     }
 }

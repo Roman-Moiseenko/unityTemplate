@@ -36,10 +36,9 @@ namespace Game.GamePlay.Root
             
             GameplaySaveService.Run(gameplayContainer);
             
-            //Сохраняем, что сессия игры открыта
-            var provider = gameplayContainer.Resolve<IGameStateProvider>();
-            provider.GameState.HasSessionGame.Value = true;
-            provider.SaveGameState();
+            //Сохраняем начальные параметры игровой сессии
+            gameplayContainer.Resolve<IGameStateProvider>().SaveGameplayState();
+            
             
             Debug.Log($"MAIN MENU ENTER POINT: Results MapId {enterParams?.MapId}");
 

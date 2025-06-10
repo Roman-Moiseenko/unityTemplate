@@ -11,7 +11,7 @@ namespace Game.State.Root
    // [Serializable]
     public class GameState
     {
-        public bool HasSessionGame { get; set; }
+      //  public bool HasSessionGame { get; set; }
         public int GlobalEntityId { get; set; }
         public int CurrentMapId { get; set; }
         public int GameSpeed { get; set; } //При выходе из Gameplay сохранять
@@ -20,7 +20,7 @@ namespace Game.State.Root
         public List<InventoryData> Inventory { get; set; }
         public List<ResourceData> Resources { get; set; }
 
-        public bool ResumeGame { get; set; } //Привыходе false, при входе true 
+      //  public bool ResumeGame { get; set; } //Привыходе false, при входе true 
         //public GameplayState GameplayState = new(); //Cостояния gameplay игры -- удалить
         
         public int CreateEntityID()
