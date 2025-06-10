@@ -432,6 +432,7 @@ MonoBehaviour:
   _btnClose: {fileID: 8773351310406880080}
   _btnCloseAlt: {fileID: 3051496770975261853}
   _btnGoToMenu: {fileID: 7853948057739590850}
+  _btnExitSave: {fileID: 5465395440558080867}
 --- !u!1 &4294170103537658792
 GameObject:
   m_ObjectHideFlags: 0

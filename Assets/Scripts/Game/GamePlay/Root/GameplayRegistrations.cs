@@ -28,13 +28,14 @@ namespace Game.GamePlay.Root
         {
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
             var gameState = gameStateProvider.GameState;
+            var gameplayState = gameStateProvider.GameplayState;
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
             //Регистрируем машину состояния
             var Fsm = new FsmGameplay(container);
             container.RegisterInstance(Fsm);
             
-            container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG, new Subject<Unit>()); //Событие, требующее смены сцены
+            container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG, new Subject<GameplayExitParams>()); //Событие, требующее смены сцены
            // container.RegisterInstance(AppConstants.GAME_PLAY_STATE, new Subject<Unit>()); //Событие, меняющее состояние игры
 
             var cmd = container.Resolve<ICommandProcessor>(); // new CommandProcessor(gameStateProvider); //Создаем обработчик команд
@@ -42,7 +43,7 @@ namespace Game.GamePlay.Root
             
             //cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
             //cmd.RegisterHandler(new CommandPlaceTowerHandler(gameState));
-            cmd.RegisterHandler(new CommandCreateMapHandler(gameState, gameSettings)); //Регистрируем команды обработки зданий
+            cmd.RegisterHandler(new CommandCreateMapHandler(gameState, gameSettings, gameplayState)); //Регистрируем команды обработки зданий
 
             //TODO CommandProcessor и команды Resources регистрировать раньше, т.к. используются в меню 
             //TODO либо делать 2 уровня ресурсов - ОбщеИгровые и Игровые (сессионные) 
@@ -52,6 +53,12 @@ namespace Game.GamePlay.Root
             //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
             var loadingMapId = gameplayEnterParams.MapId;
             var loadingMap = gameState.Maps.FirstOrDefault(m => m.Id == loadingMapId);
+
+          /*  if (gameplayState.En)
+            {
+                
+            }*/
+            //var loadingMap = gameplayState;
            // Debug.Log("loadingMapId " + loadingMapId);
             
             if (loadingMap == null)

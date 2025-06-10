@@ -11,6 +11,7 @@ namespace Game.State.Root
    // [Serializable]
     public class GameState
     {
+        public bool HasSessionGame { get; set; }
         public int GlobalEntityId { get; set; }
         public int CurrentMapId { get; set; }
         public int GameSpeed { get; set; } //При выходе из Gameplay сохранять

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.State.Entities;
 using Game.State.GameResources;
 using Game.State.Inventory;
 //using Game.State.Entities.Buildings;
@@ -32,6 +33,7 @@ namespace Game.State
                 TypeNameHandling = TypeNameHandling.Auto,
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
             }; 
+            Debug.Log("!PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY) = "  + !PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY));
             
             if (!PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY))
             {
@@ -49,9 +51,16 @@ namespace Game.State
         }
         private GameplayStateProxy CreateGameplayStateFromSettings()
         {
+            Debug.Log("CreateGameplayStateFromSettings" );
             //Заполняем карты по умолчанию, и другие бонусы
             _gameplayStateOrigin = new GameplayState
             {
+                Entities = new List<EntityData>(),
+                SoftCurrency = 0,
+                Progress = 0,
+                ProgressLevel = 0,
+                //PreviousGameSpeed = 1,
+                //GameSpeed = 
                 //TODO Ресурсы игры
             };
             //_gameStateOrigin.GameplayStateData.GameSpeed = 1;
@@ -67,8 +76,11 @@ namespace Game.State
         }
         public Observable<bool> ResetGameplayState()
         {
-            GameplayState = CreateGameplayStateFromSettings();
-            SaveGameplayState();
+            Debug.Log("ResetGameplayState" );
+
+            PlayerPrefs.DeleteKey(GAMEPLAY_STATE_KEY);
+          //  GameplayState = CreateGameplayStateFromSettings();
+          //  SaveGameplayState();
             return Observable.Return(true);
         }
 

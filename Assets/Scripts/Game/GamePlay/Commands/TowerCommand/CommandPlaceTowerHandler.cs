@@ -18,6 +18,7 @@ namespace Game.GamePlay.Commands
         
         public bool Handle(CommandPlaceTower command)
         {
+            //TODO Entities = _gameplayState.Entities
             var currentMap = _gameState.Maps.FirstOrDefault(m => m.Id == _gameState.CurrentMapId.CurrentValue);
             if (currentMap == null)
             {

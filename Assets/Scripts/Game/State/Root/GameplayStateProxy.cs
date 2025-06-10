@@ -1,4 +1,7 @@
-﻿using R3;
+﻿using System.Linq;
+using Game.State.Entities;
+using ObservableCollections;
+using R3;
 using UnityEngine;
 
 namespace Game.State.Root
@@ -10,6 +13,8 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> GameSpeed;
         public readonly ReactiveProperty<int> Progress;
         public readonly ReactiveProperty<int> ProgressLevel;
+        
+        public ObservableList<Entity> Entities { get; } = new();
         
         public GameplayStateProxy(GameplayState gameplayState)
         {
@@ -24,24 +29,22 @@ namespace Game.State.Root
             
             
             
-            InitMaps(gameplayState);
+           // InitMaps(gameplayState);
         }
 
         private void InitMaps(GameplayState gameplayState)
         {
-            
-            /*
-            gameplayState.Maps.ForEach(
-                mapOriginal => Maps.Add(new Map(mapOriginal))
+            gameplayState.Entities.ForEach(
+                entityOriginal => Entities.Add(EntitiesFactory.CreateEntity(entityOriginal))
             );
-            Maps.ObserveAdd().Subscribe(e => gameState.Maps.Add(e.Value.Origin));
+            Entities.ObserveAdd().Subscribe(e => gameplayState.Entities.Add(e.Value.Origin));
 
-            Maps.ObserveRemove().Subscribe(e =>
+            Entities.ObserveRemove().Subscribe(e =>
             {
-                var removedMapState = gameplayState.Maps.FirstOrDefault(b => b.Id == e.Value.Id);
-                gameplayState.Maps.Remove(removedMapState);
+                var removedMapState = gameplayState.Entities.FirstOrDefault(b => b.UniqueId == e.Value.UniqueId);
+                gameplayState.Entities.Remove(removedMapState);
             });
-            */
+            
         }
 
 

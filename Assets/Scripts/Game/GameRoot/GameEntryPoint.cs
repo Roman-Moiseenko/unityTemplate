@@ -60,8 +60,7 @@ namespace Scripts.Game.GameRoot
             var gameStateProvider = new PlayerPrefsGameStateProvider(); //Заменить конструктор на другой - из облака
             gameStateProvider.LoadSettingsState(); //Загрузили настройки игры
             //Применяем настройки к окружению - звук, вибрация и т.п.
-
-
+            
             gameStateProvider.LoadGameState(); //Загружаем данные игрока
             
             _rootContainer.RegisterInstance<IGameStateProvider>(gameStateProvider);
@@ -85,6 +84,7 @@ namespace Scripts.Game.GameRoot
             if (sceneName == Scenes.GAMEPLAY)
             {
                 var enterParams = new GameplayEnterParams(0);
+                enterParams.HasSessionGameplay = true;
                 _coroutines.StartCoroutine(LoadAndStartGameplay(enterParams));
                 return;
             }
@@ -105,6 +105,7 @@ namespace Scripts.Game.GameRoot
 
         private IEnumerator LoadAndStartGameplay(GameplayEnterParams enterParams)
         {
+
             _uiRoot.ShowLoadingScreen();
             _cachedSceneContainer?.Dispose();
             yield return LoadScene(Scenes.BOOT);
@@ -114,15 +115,25 @@ namespace Scripts.Game.GameRoot
             //Ждем когда загрузится сохранение игры
             var isGameStateLoaded = false; //не загружено
             //При загрузке, по подписке поменяем флажок на Загружено
+            
             _rootContainer.Resolve<IGameStateProvider>().LoadGameplayState().Subscribe(_ => isGameStateLoaded = true);
+            
             yield return new WaitUntil(() => isGameStateLoaded);
  
             //Контейнер
             var sceneEntryPoint = Object.FindFirstObjectByType<GameplayEntryPoint>();
             var gameplayContainer = _cachedSceneContainer = new DIContainer(_rootContainer);
+            
+            
             sceneEntryPoint.Run(gameplayContainer, enterParams).Subscribe(gameplayExitParams =>
             {
-                _coroutines.StartCoroutine(LoadAndStartMainMenu(gameplayExitParams.MainMenuEnterParams));
+                //TODO gameStateProvider.GameState.hasSessionGame = false;
+
+                {
+                    _coroutines.StartCoroutine(LoadAndStartMainMenu(gameplayExitParams.MainMenuEnterParams));
+                    if (gameplayExitParams.SaveGameplay == false)
+                        _rootContainer.Resolve<IGameStateProvider>().ResetGameplayState(); //При выходе сбрасываем данные
+                }
             });
             
 

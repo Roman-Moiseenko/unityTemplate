@@ -2,6 +2,7 @@
 using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
+using Game.GamePlay.Root;
 using Game.GamePlay.View.UI.PanelActions;
 using Game.GamePlay.View.UI.PanelBuild;
 using Game.GamePlay.View.UI.PopupB;
@@ -17,7 +18,7 @@ namespace Game.GamePlay.View.UI
 {
     public class GameplayUIManager : UIManager
     {
-        private readonly Subject<Unit> _exitSceneRequest;
+        private readonly Subject<GameplayExitParams> _exitSceneRequest;
         private readonly FsmGameplay _fsmGameplay;
 
         public GameplayUIManager(DIContainer container) : base(container)
@@ -33,7 +34,7 @@ namespace Game.GamePlay.View.UI
             rootUI.AddPanel(new PanelActionsViewModel(this, container));
             
             //_gameState = gameStateProvider.GameState;
-            _exitSceneRequest = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
 
             _fsmGameplay.Fsm.StateCurrent.Subscribe(newValue =>
             {

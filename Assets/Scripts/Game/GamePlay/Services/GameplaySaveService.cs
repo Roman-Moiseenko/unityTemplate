@@ -12,12 +12,12 @@ namespace Game.GamePlay.Services
     {
         public static void Run(DIContainer container)
         {
-            var _provider = container.Resolve<IGameStateProvider>();
-            _provider.GameState.GameplayStateProxy.GameSpeed.Subscribe(newSpeed =>
+            var provider = container.Resolve<IGameStateProvider>();
+            provider.GameState.GameplayStateProxy.GameSpeed.Subscribe(newSpeed =>
             {
                 if (newSpeed != 0)
                 {
-                    _provider.SaveGameState();
+                    provider.SaveGameState();
                 }
             });
             //TODO Добавить другие параметры при сохранении

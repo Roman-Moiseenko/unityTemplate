@@ -29,12 +29,13 @@ namespace Game.GamePlay.Root.View
             AllBuildings = buildingsService.AllBuildings;
             AllGrounds = groundsService.AllGrounds;
             AllTowers = towersService.AllTowers;
-
+/*
             resourcesService.ObservableResource(ResourceType.SoftCurrency).Subscribe(
                 newValue => Debug.Log($"SoftCurrency = {newValue}"));
             
             resourcesService.ObservableResource(ResourceType.HardCurrency).Subscribe(
                 newValue => Debug.Log($"HardCurrency = {newValue}"));
+            */
         }
 
 

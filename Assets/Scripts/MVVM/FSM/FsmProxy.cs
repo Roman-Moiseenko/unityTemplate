@@ -22,7 +22,7 @@ namespace MVVM.FSM
             StateCurrent.Subscribe(newValue =>
             {
                 if (newValue == null) return;
-                Debug.Log($"Изменилось состояние {newValue.GetType()}");
+               // Debug.Log($"Изменилось состояние {newValue.GetType()}");
             });
         }
         

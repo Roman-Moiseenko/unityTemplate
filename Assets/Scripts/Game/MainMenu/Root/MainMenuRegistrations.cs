@@ -32,7 +32,7 @@ namespace Game.MainMenu.Root
 
             //Сервисы работы с карточками, кланом (присоединиться, запрос и др.) и другое
 
-            //container.RegisterFactory(c => new SomeMainMenuService(c.Resolve<SomeCommonService>())).AsSingle();
+            container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
         }
     }
 }

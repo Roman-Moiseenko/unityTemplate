@@ -1,6 +1,7 @@
 ﻿using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
+using Game.GamePlay.Root;
 using Game.GamePlay.Services;
 using Game.Settings;
 using Game.State;
@@ -16,7 +17,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
     public class ScreenGameplayViewModel : WindowViewModel
     {
         public readonly GameplayUIManager _uiManager;
-        private readonly Subject<Unit> _exitSceneRequest;
+        //TODO Возможно удалить
+        private readonly Subject<GameplayExitParams> _exitSceneRequest;
         private readonly GameStateProxy _gameplayState;
         
         
@@ -25,16 +27,13 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         public readonly ReactiveProperty<int> SoftCurrency = new();
         public readonly ReactiveProperty<int> HardCurrency = new();
         
-        
-        
-        
    
         public override string Id => "ScreenGameplay";
         public override string Path => "Gameplay/";
      //   public readonly int CurrentSpeed;
         public ScreenGameplayViewModel(
             GameplayUIManager uiManager, 
-            Subject<Unit> exitSceneRequest,
+            Subject<GameplayExitParams> exitSceneRequest,
             DIContainer container
             )
         {
@@ -62,12 +61,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             _uiManager.OpenPopupB();
         }
-
-        public void RequestGoToMainMenu()
-        {
-            _exitSceneRequest.OnNext(Unit.Default); //Вызываем сигнал для смены сцены
-        }
-
+        
 
     }
 }

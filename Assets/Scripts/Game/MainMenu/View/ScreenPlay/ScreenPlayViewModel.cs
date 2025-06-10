@@ -1,5 +1,7 @@
-﻿using Game.GamePlay.Root;
+﻿using DI;
+using Game.GamePlay.Root;
 using Game.MainMenu.Root;
+using Game.MainMenu.Services;
 using MVVM.UI;
 using R3;
 
@@ -9,33 +11,40 @@ namespace Game.MainMenu.View.ScreenPlay
     {
         private readonly MainMenuUIManager _uiManager;
         private readonly Subject<MainMenuExitParams> _exitSceneRequest;
-      //  private readonly Subject<MainMenuExitParams> _exitSceneRequest2 = new();
+        private readonly MainMenuExitParamsService _exitParamsService;
+
+
+        //  private readonly Subject<MainMenuExitParams> _exitSceneRequest2 = new();
         public override string Id => "ScreenPlay";
         public override string Path => "MainMenu/";
         
-        public ScreenPlayViewModel(MainMenuUIManager uiManager, Subject<MainMenuExitParams> exitSceneRequest)
+        public ScreenPlayViewModel(
+            MainMenuUIManager uiManager, 
+            Subject<MainMenuExitParams> exitSceneRequest,
+            MainMenuExitParamsService exitParamsService
+            )
         {
             _uiManager = uiManager;
             _exitSceneRequest = exitSceneRequest;
+            _exitParamsService = exitParamsService;
         }
         public void RequestBeginGame()
         {
-            var _gameplayEnterParams = new GameplayEnterParams(0); //Получаем Id текущей карты
-            //TODO Грузим данные для игры - бустеры, колоду и другое
-            //Грузима карту из настроек
-            var mainMenuExitParams = new MainMenuExitParams(_gameplayEnterParams);
+            //TODO Получить из GameState текущую карту
+            //Грузим данные для игры - бустеры, колоду и другое
+            var mainMenuExitParams = _exitParamsService.GetExitParams(0);
             _exitSceneRequest.OnNext(mainMenuExitParams);
         }
         
+        /**
+         * Временная ф-ция, перейдет в попап подтверждения возврата к игре
+         */
         public void RequestResumeGame()
         {
-            var _gameplayEnterParams = new GameplayEnterParams(0);
-            //TODO Грузим данные для игры - бустеры, колоду и другое
-            //TODO Надо загрузить данные из сейва карту и другие данные
-            
-            var mainMenuExitParams = new MainMenuExitParams(_gameplayEnterParams);
-            
-           // _exitSceneRequest2.OnNext(mainMenuExitParams);
+            //Грузим данные для игры - бустеры, колоду и другое
+            var mainMenuExitParams = _exitParamsService.GetExitParams(0);
+            mainMenuExitParams.TargetSceneEnterParams.As<GameplayEnterParams>().HasSessionGameplay = true;
+
             _exitSceneRequest.OnNext(mainMenuExitParams);
         }
     }

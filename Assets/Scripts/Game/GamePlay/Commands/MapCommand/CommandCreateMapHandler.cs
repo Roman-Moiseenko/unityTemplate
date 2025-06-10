@@ -18,17 +18,19 @@ namespace Game.GamePlay.Commands.MapCommand
     {
         private readonly GameStateProxy _gameState;
         private readonly GameSettings _gameSettings;
+        private readonly GameplayStateProxy _gameplayState;
 
-        public CommandCreateMapHandler(GameStateProxy gameState, GameSettings gameSettings)
+        public CommandCreateMapHandler(GameStateProxy gameState, GameSettings gameSettings, GameplayStateProxy gameplayState)
         {
             _gameState = gameState;
             _gameSettings = gameSettings;
+            _gameplayState = gameplayState;
         }
 
         public bool Handle(CommandCreateMap command)
         {
             var isMapAlreadyExisted = _gameState.Maps.Any(m => m.Id == command.MapId);
-            if (isMapAlreadyExisted) //Если карта была создано, то ошибка
+            if (isMapAlreadyExisted) //Если карта была создана, то ошибка
             {
                 Debug.Log($"Map id={command.MapId} already exist");
                 return false;
@@ -85,9 +87,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 };
                 initialEntities.Add(initialTower);
             }
-            //Создаем другие ресурсы карты 
-            /// ..... 
-            
+
             //Создаем состояние карты
             var newMapState = new MapData
             {
