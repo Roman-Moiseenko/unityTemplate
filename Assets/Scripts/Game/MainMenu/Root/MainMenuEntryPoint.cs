@@ -3,6 +3,7 @@ using Game.Common;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
 using Game.MainMenu.Root.View;
+using Game.MainMenu.Services;
 using Game.MainMenu.View;
 using Game.MainMenu.View.MainScreen;
 using Game.State;
@@ -35,13 +36,24 @@ namespace Game.MainMenu.Root
                 var resourcesService = mainMenuContainer.Resolve<ResourcesService>();
                 resourcesService.AddResource(ResourceType.SoftCurrency, enterParams.SoftCurrency);
                 
-  /*              var inventoryService = mainMenuContainer.Resolve<InventoryService>();
-                enterParams.Inventory.ForEach(item =>
-                {
-                    InventoryService.AddInventory(InventoryFactory.CreateInventory(item));
-                });
-*/
                 
+                
+
+                /*              var inventoryService = mainMenuContainer.Resolve<InventoryService>();
+                              enterParams.Inventory.ForEach(item =>
+                              {
+                                  InventoryService.AddInventory(InventoryFactory.CreateInventory(item));
+                              });
+              */
+                
+                //Сохраняем параметры/настройки для следующих геймплеев
+
+                var gameProvider = mainMenuContainer.Resolve<IGameStateProvider>();
+                gameProvider.GameState.GameSpeed.Value = enterParams.GameSpeed;
+
+
+                gameProvider.SaveGameState();
+
             }
             
             InitUI(mainMenuViewModelsContainer);

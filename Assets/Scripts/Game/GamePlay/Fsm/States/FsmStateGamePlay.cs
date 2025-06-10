@@ -14,7 +14,7 @@ namespace Game.GamePlay.Fsm.States
         {
             if (Fsm.PreviousState != null)
             {
-                _container.Resolve<IGameStateProvider>().GameState.GameplayStateProxy.GameplayReturn();
+                _container.Resolve<IGameStateProvider>().GameplayState.GameplayReturn();
             }
             
         }

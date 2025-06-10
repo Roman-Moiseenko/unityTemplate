@@ -8,6 +8,7 @@ using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Services;
+using Game.MainMenu.Services;
 using Game.Settings;
 using Game.State;
 using Game.State.CMD;
@@ -39,6 +40,8 @@ namespace Game.GamePlay.Root
            // container.RegisterInstance(AppConstants.GAME_PLAY_STATE, new Subject<Unit>()); //Событие, меняющее состояние игры
 
             var cmd = container.Resolve<ICommandProcessor>(); // new CommandProcessor(gameStateProvider); //Создаем обработчик команд
+            //Получаем скорость игры из настроек GameState
+            gameplayState.GameSpeed.Value = gameplayEnterParams.GameSpeed;
             //container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
             
             //cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
@@ -47,8 +50,7 @@ namespace Game.GamePlay.Root
 
             //TODO CommandProcessor и команды Resources регистрировать раньше, т.к. используются в меню 
             //TODO либо делать 2 уровня ресурсов - ОбщеИгровые и Игровые (сессионные) 
-            cmd.RegisterHandler(new CommandResourcesAddHandler(gameState));
-            cmd.RegisterHandler(new CommandResourcesSpendHandler(gameState));
+
             
             //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
             var loadingMapId = gameplayEnterParams.MapId;
@@ -93,7 +95,7 @@ namespace Game.GamePlay.Root
                    )
                ).AsSingle();
 
-               container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
+               
                
                //Добавить сервисы и команды для
                /// Дорог

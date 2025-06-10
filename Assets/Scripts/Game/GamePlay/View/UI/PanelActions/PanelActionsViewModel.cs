@@ -2,6 +2,7 @@
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Services;
+using Game.MainMenu.Services;
 using Game.State;
 using Game.State.GameResources;
 using Game.State.Root;
@@ -22,7 +23,6 @@ namespace Game.GamePlay.View.UI.PanelActions
         
         //Для теста
         private readonly FsmGameplay _fsmGameplay;
-        private ResourcesService _resourcesService;
         public PanelActionsViewModel(
             GameplayUIManager uiManager, 
             DIContainer container
@@ -30,12 +30,10 @@ namespace Game.GamePlay.View.UI.PanelActions
         {
             _uiManager = uiManager;
             
-            _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameState.GameplayStateProxy;
+            _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             _fsmGameplay = container.Resolve<FsmGameplay>();
             CurrentSpeed = _gameplayStateProxy.GetCurrentSpeed();
             
-            //Для теста
-            _resourcesService = container.Resolve<ResourcesService>();
         }
         public int RequestGameSpeed()
         {
@@ -45,18 +43,20 @@ namespace Game.GamePlay.View.UI.PanelActions
         public void RequestToProgressAdd()
         {
             _gameplayStateProxy.Progress.Value += 50;
+            
             //_fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
         }
 
         public void RequestToSoftCurrencyAdd()
         {
-            _resourcesService.AddResource(ResourceType.SoftCurrency, 50);
+            //_gameplayStateProxy.
             
+            _gameplayStateProxy.SoftCurrency.Value += 50;
         }
 
         public void RequestToHardCurrencyAdd()
         {
-            _resourcesService.AddResource(ResourceType.HardCurrency, 50);
+            //_resourcesService.AddResource(ResourceType.HardCurrency, 50);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Game.GamePlay.Services
         public RewardProgressService(DIContainer container)
         {
             _container = container;
-            _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameState.GameplayStateProxy;
+            _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             var fsm = container.Resolve<FsmGameplay>();
 
             _gameplayStateProxy.Progress.Subscribe(newValue =>

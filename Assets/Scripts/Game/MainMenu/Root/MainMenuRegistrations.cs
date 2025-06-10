@@ -1,5 +1,6 @@
 ﻿using DI;
 using Game.Common;
+using Game.GamePlay.Commands;
 using Game.MainMenu.Services;
 using Game.Settings;
 using Game.State;
@@ -29,10 +30,12 @@ namespace Game.MainMenu.Root
 
             var cmd = container.Resolve<ICommandProcessor>();
             //TODO Командный процессор - команды работы с инвентарем
-
+            cmd.RegisterHandler(new CommandResourcesAddHandler(gameState));
+            cmd.RegisterHandler(new CommandResourcesSpendHandler(gameState));
             //Сервисы работы с карточками, кланом (присоединиться, запрос и др.) и другое
 
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
+            container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
         }
     }
 }

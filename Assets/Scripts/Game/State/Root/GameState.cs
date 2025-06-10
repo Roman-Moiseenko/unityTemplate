@@ -21,7 +21,7 @@ namespace Game.State.Root
         public List<ResourceData> Resources { get; set; }
 
         public bool ResumeGame { get; set; } //Привыходе false, при входе true 
-        public GameplayState GameplayState = new(); //Cостояния gameplay игры -- удалить
+        //public GameplayState GameplayState = new(); //Cостояния gameplay игры -- удалить
         
         public int CreateEntityID()
         {

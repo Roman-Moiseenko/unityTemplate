@@ -48,7 +48,8 @@ MonoBehaviour:
     - ConfigId: Tower01
       Level: 3
       Position: {x: 3, y: 0}
-    - ConfigId: Tower02
-      Level: 5
-      Position: {x: 4, y: 0}
     GroundDefault: Grass02
+  InfoStateSettings:
+    PrefabName: 
+    CountMobs: 15
+    RewardSoftCurrency: 10

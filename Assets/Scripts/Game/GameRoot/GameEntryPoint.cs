@@ -130,6 +130,7 @@ namespace Scripts.Game.GameRoot
                 //TODO gameStateProvider.GameState.hasSessionGame = false;
 
                 {
+                    //Debug.Log("enterParams = " + JsonConvert.SerializeObject(gameplayExitParams, Formatting.Indented));
                     _coroutines.StartCoroutine(LoadAndStartMainMenu(gameplayExitParams.MainMenuEnterParams));
                     if (gameplayExitParams.SaveGameplay == false)
                         _rootContainer.Resolve<IGameStateProvider>().ResetGameplayState(); //При выходе сбрасываем данные

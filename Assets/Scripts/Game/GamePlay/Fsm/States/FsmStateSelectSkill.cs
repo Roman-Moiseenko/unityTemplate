@@ -18,7 +18,7 @@ namespace Game.GamePlay.Fsm.States
 
         public override void Enter()
         {
-            _gameplayStateProxy = _container.Resolve<IGameStateProvider>().GameState.GameplayStateProxy; 
+            _gameplayStateProxy = _container.Resolve<IGameStateProvider>().GameplayState; 
             _previousGameSpeed = _gameplayStateProxy.GetCurrentSpeed(); //Запоминаем текущую скорость
             _gameplayStateProxy.SetGameSpeed(1); //Устанавливаем минимальную скорость
         }

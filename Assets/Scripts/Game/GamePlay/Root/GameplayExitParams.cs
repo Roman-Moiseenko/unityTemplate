@@ -7,8 +7,10 @@ namespace Game.GamePlay.Root
         public MainMenuEnterParams MainMenuEnterParams { get; }
         public bool SaveGameplay { get; set; } 
         
+        
         public GameplayExitParams(MainMenuEnterParams mainMenuEnterParams)
         {
+            
             SaveGameplay = false;
             MainMenuEnterParams = mainMenuEnterParams;
         }

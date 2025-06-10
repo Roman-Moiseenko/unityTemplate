@@ -2,6 +2,7 @@
 using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Towers;
+using Game.MainMenu.Services;
 using Game.State.GameResources;
 using Newtonsoft.Json;
 using ObservableCollections;
@@ -12,7 +13,6 @@ namespace Game.GamePlay.Root.View
 {
     public class WorldGameplayRootViewModel
     {
-        private readonly ResourcesService _resourcesService;
         public readonly IObservableCollection<BuildingViewModel> AllBuildings;
         public readonly IObservableCollection<TowerViewModel> AllTowers;
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
@@ -20,11 +20,9 @@ namespace Game.GamePlay.Root.View
         public WorldGameplayRootViewModel(
             BuildingsService buildingsService,
             GroundsService groundsService,
-            ResourcesService resourcesService,
             TowersService towersService
             )
         {
-            _resourcesService = resourcesService;
             
             AllBuildings = buildingsService.AllBuildings;
             AllGrounds = groundsService.AllGrounds;

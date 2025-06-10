@@ -7,7 +7,7 @@ using Game.State.GameResources;
 using ObservableCollections;
 using R3;
 
-namespace Game.GamePlay.Services
+namespace Game.MainMenu.Services
 {
     public class ResourcesService
     {

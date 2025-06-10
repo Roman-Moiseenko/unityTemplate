@@ -3,6 +3,7 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
+using Game.MainMenu.Services;
 using Game.Settings;
 using Game.State;
 using Game.State.GameResources;
@@ -19,7 +20,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         public readonly GameplayUIManager _uiManager;
         //TODO Возможно удалить
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
-        private readonly GameStateProxy _gameplayState;
+        private readonly GameplayStateProxy _gameplayState;
         
         
         //TODO Данные для Binder, возможно заменить в дальнейшем прогрузкой анимации и др.
@@ -39,17 +40,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             _uiManager = uiManager;
             _exitSceneRequest = exitSceneRequest;
+            _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            //_gameplayState = container.Resolve<IGameStateProvider>().GameState;
+            _gameplayState.Progress.Subscribe(newValue => ProgressData.Value = newValue);
+            _gameplayState.SoftCurrency.Subscribe(newValue => SoftCurrency.Value = newValue);
             
-            _gameplayState = container.Resolve<IGameStateProvider>().GameState;
-            _gameplayState.GameplayStateProxy.Progress.Subscribe(newValue => ProgressData.Value = newValue);
- 
-            var resourcesService = container.Resolve<ResourcesService>();
-            resourcesService.ObservableResource(ResourceType.SoftCurrency)
-                .Subscribe(newValue => SoftCurrency.Value = newValue);
-
-            resourcesService.ObservableResource(ResourceType.HardCurrency)
-                .Subscribe(newValue => HardCurrency.Value = newValue);
- 
         }
         
         public void RequestOpenPopupPause()

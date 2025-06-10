@@ -19,7 +19,7 @@ namespace Game.GamePlay.Fsm.States
 
         public override void Enter()
         {
-            _gameplayStateProxy = _container.Resolve<IGameStateProvider>().GameState.GameplayStateProxy;
+            _gameplayStateProxy = _container.Resolve<IGameStateProvider>().GameplayState;
             _gameplayStateProxy.SetPauseGame();
         }
 

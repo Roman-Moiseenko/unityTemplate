@@ -13,6 +13,9 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> GameSpeed;
         public readonly ReactiveProperty<int> Progress;
         public readonly ReactiveProperty<int> ProgressLevel;
+        public readonly ReactiveProperty<int> SoftCurrency;
+
+        public int PreviousGameSpeed => _gameplayState.PreviousGameSpeed;
         
         public ObservableList<Entity> Entities { get; } = new();
         
@@ -20,16 +23,22 @@ namespace Game.State.Root
         {
             _gameplayState = gameplayState;
             GameSpeed = new ReactiveProperty<int>(gameplayState.GameSpeed);
-            GameSpeed.Subscribe(newSpeed => gameplayState.GameSpeed = newSpeed);
+            GameSpeed.Subscribe(newSpeed =>
+            {
+                gameplayState.GameSpeed = newSpeed;
+                //Debug.Log($"Новая гейплей скорость = {newSpeed}");
+            });
             
             Progress = new ReactiveProperty<int>(gameplayState.Progress);
             Progress.Subscribe(newProgress => gameplayState.Progress = newProgress);
             ProgressLevel = new ReactiveProperty<int>(gameplayState.ProgressLevel);
             ProgressLevel.Subscribe(newProgressLevel => gameplayState.ProgressLevel = newProgressLevel);
-            
-            
-            
-           // InitMaps(gameplayState);
+
+            SoftCurrency = new ReactiveProperty<int>(gameplayState.SoftCurrency);
+            SoftCurrency.Subscribe(newValue => gameplayState.SoftCurrency = newValue);
+
+
+            // InitMaps(gameplayState);
         }
 
         private void InitMaps(GameplayState gameplayState)
