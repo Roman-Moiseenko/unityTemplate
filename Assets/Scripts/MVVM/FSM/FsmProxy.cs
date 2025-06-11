@@ -34,10 +34,8 @@ namespace MVVM.FSM
         public void SetState<T>(object enterParams = null) where T : FSMState
         {
             Params = enterParams;
-            if (enterParams != null)
-            {
-                Debug.Log(JsonConvert.SerializeObject(enterParams, Formatting.Indented));
-            }
+            //if (enterParams != null) Debug.Log(JsonConvert.SerializeObject(enterParams, Formatting.Indented));
+            
             var type = typeof(T);
             if (StateCurrent.Value != null && StateCurrent.Value.GetType() == type) return;
 

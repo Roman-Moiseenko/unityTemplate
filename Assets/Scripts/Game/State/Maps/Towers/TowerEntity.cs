@@ -11,8 +11,6 @@ namespace Game.State.Maps.Towers
         public readonly TowerTypeDamage TypeDamage;
         public readonly TowerTypeEnemy TypeEnemy;
         
-        public readonly ReactiveProperty<int> EpicLevel;
-        
         public readonly ReactiveProperty<double> Damage;
         public readonly ReactiveProperty<double> Speed;
 
@@ -23,9 +21,6 @@ namespace Game.State.Maps.Towers
         //    Origin = entityData;
             TypeEnemy = entityData.TypeEnemy;
             TypeDamage = entityData.TypeDamage;
-            
-            EpicLevel = new ReactiveProperty<int>(entityData.EpicLevel);
-            EpicLevel.Subscribe(newValue => entityData.EpicLevel = newValue);
             
             Damage = new ReactiveProperty<double>(entityData.Damage);
             Damage.Subscribe(newValue => entityData.Damage = newValue);

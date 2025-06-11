@@ -20,7 +20,12 @@ namespace Game.State.Entities
             Position.Subscribe(newPosition => entityData.Position = newPosition); //При изменении позиции Position.Value меняем в данных
             
             Level = new ReactiveProperty<int>(entityData.Level);
-            Level.Subscribe(newLevel => entityData.Level = newLevel); //При изменении позиции Position.Value меняем в данных
+            Level.Subscribe(newLevel =>
+            {
+                entityData.Level = newLevel;
+//                Debug.Log($"Объекта { entityData.ConfigId } изменился уровень на { newLevel }");
+                
+            }); //При изменении позиции Position.Value меняем в данных
         }
     }
 }

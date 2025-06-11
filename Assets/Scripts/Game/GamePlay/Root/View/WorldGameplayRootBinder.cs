@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Grounds;
@@ -40,6 +42,7 @@ namespace Game.GamePlay.Root.View
                 viewModel.AllTowers.ObserveRemove().Subscribe(e => DestroyTower(e.Value))
             );
             
+            //viewModel.AllTowers
             CreateCastle(viewModel.CastleViewModel);
 /*
             foreach (var buildingViewModel in viewModel.AllBuildings)
@@ -91,9 +94,10 @@ namespace Game.GamePlay.Root.View
 
         private void CreateTower(TowerViewModel towerViewModel)
         {
-            var towerLevel = towerViewModel.EpicLevel;
+            var towerLevel = towerViewModel.Level;
             var towerType = towerViewModel.ConfigId;
 
+            
             var prefabTowerLevelPath =
                 $"Prefabs/Gameplay/Towers/{towerType}/Level_{towerLevel}"; //Перенести в настройки уровня
             var towerPrefab = Resources.Load<TowerBinder>(prefabTowerLevelPath);
@@ -170,6 +174,6 @@ namespace Game.GamePlay.Root.View
             
             
         }
-
+        
     }
 }

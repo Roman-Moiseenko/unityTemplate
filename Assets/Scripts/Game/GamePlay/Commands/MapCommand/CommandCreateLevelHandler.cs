@@ -102,7 +102,7 @@ namespace Game.GamePlay.Commands.MapCommand
               //  initialEntities.Add(initialBuilding);
             }
             */
-            Debug.Log("newMapInitialStateSettings.Towers " + JsonConvert.SerializeObject(newMapInitialStateSettings.Towers, Formatting.Indented));
+//            Debug.Log("newMapInitialStateSettings.Towers " + JsonConvert.SerializeObject(newMapInitialStateSettings.Towers, Formatting.Indented));
             foreach (var towerSettings in newMapInitialStateSettings.Towers) //Берем список зданий из настроек карты (конфиг)
             {
                 var initialTower = new TowerEntityData // .. и создаем все здания
@@ -111,7 +111,7 @@ namespace Game.GamePlay.Commands.MapCommand
                     ConfigId = towerSettings.ConfigId,
                     Type = EntityType.Tower,
                     Position = towerSettings.Position,
-                    EpicLevel = towerSettings.Level,
+                    Level = 1,
                 };
                 _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialTower));
               //  initialEntities.Add(initialTower);

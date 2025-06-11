@@ -16,8 +16,8 @@ namespace Game.GamePlay.View.Towers
         private readonly Dictionary<int, TowerLevelSettings> _towerLevelSettingsMap = new();
 
         public readonly int TowerEntityId;
-        public ReadOnlyReactiveProperty<int> Level { get; }
-        public ReadOnlyReactiveProperty<int> EpicLevel { get; }
+        public ReactiveProperty<int> Level { get; set; }
+        
         public readonly string ConfigId;
         
         public ReadOnlyReactiveProperty<Vector2Int> Position { get; }
@@ -33,10 +33,8 @@ namespace Game.GamePlay.View.Towers
             _towerService = towerService;
             TowerEntityId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
-            Level = towerEntity.Level; //TODO не нужно ...
-            EpicLevel = towerEntity.EpicLevel;
+            Level = towerEntity.Level;
             
-
             foreach (var towerLevelSettings in towerSettings.Levels)
             {
                 _towerLevelSettingsMap[towerLevelSettings.Level] = towerLevelSettings;

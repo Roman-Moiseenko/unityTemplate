@@ -11,6 +11,5 @@ namespace Game.Settings.Gameplay.Entities.Busts
     public class TowerBustsSettings : ScriptableObject
     {
         [field: SerializeField] public List<TowerBustSettings> Busts;
-        
     }
 }

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Speed
   m_EditorClassIdentifier: 
   Level: 0
+  ConfigId: Speed
   Name: "\u0423\u0440\u043E\u043D"
   MainBust: 3
   SecondBust: 0

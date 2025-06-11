@@ -11,6 +11,7 @@ namespace Game.Settings.Gameplay.Entities.Busts
     public class TowerBustSettings : ScriptableObject
     {
         [field: SerializeField] public int Level;
+        [field: SerializeField] public string ConfigId;
         [field: SerializeField] public string Name;
         [field: SerializeField] public TowerTypeBust MainBust;
         [field: SerializeField] public TowerTypeBust SecondBust;
