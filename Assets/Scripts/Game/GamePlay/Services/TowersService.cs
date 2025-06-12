@@ -68,13 +68,13 @@ namespace Game.GamePlay.Services
             
             Levels.ObserveChanged().Subscribe(x =>
             {
-                 Debug.Log(" Меняем уровнии для " + x.NewItem.Key + " на " + x.NewItem.Value);
+               //  Debug.Log(" Меняем уровнии для " + x.NewItem.Key + " на " + x.NewItem.Value);
 
                 foreach (var entity in _entities)
                 {
                     if (entity is TowerEntity towerEntity && towerEntity.ConfigId == x.NewItem.Key)
                     {
-                        Debug.Log("Нашли towerEntity " + towerEntity.ConfigId + " ЛЕВЕЛ = " + towerEntity.Level.Value + " с Id" + towerEntity.UniqueId );
+                        //Debug.Log("Нашли towerEntity " + towerEntity.ConfigId + " ЛЕВЕЛ = " + towerEntity.Level.Value + " с Id" + towerEntity.UniqueId );
 
                         RemoveTowerViewModel(towerEntity);//TODO Удаляем все модели viewModel.ConfigId == x.NewItem.Key
                         
