@@ -110,7 +110,9 @@ namespace Game.GamePlay.Root.View
         private void CreateGround(GroundViewModel groundViewModel)
         {
             var groundType = groundViewModel.ConfigId;
-            var prefabGroundPath = $"Prefabs/Gameplay/Map/Grounds/{groundType}"; //Перенести в настройки уровня
+            var odd = Math.Abs((groundViewModel.Position.CurrentValue.x + groundViewModel.Position.CurrentValue.y) % 2);
+            var prefabGroundPath = $"Prefabs/Gameplay/Map/Grounds/{groundType}_{odd}"; //Перенести в настройки уровня
+            //TODO Сделать смену материала, вместо загрузки 2х видов префабов
             var groundPrefab = Resources.Load<GroundBinder>(prefabGroundPath);
             var createdGround = Instantiate(groundPrefab, transform);
             createdGround.Bind(groundViewModel);

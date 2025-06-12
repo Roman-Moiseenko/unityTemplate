@@ -12,7 +12,7 @@ namespace Game.GamePlay.View.Grounds
         private readonly GroundSettings _groundSettings;
         private readonly GroundsService _groundsService;
 
-        public ReadOnlyReactiveProperty<Vector2Int> Position { get; }
+        public ReadOnlyReactiveProperty<Vector2Int> Position { get; set; }
         public readonly string ConfigId;
         public readonly int GroundEntityId;
         public ReadOnlyReactiveProperty<bool> Enabled { get; }
