@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.GamePlay.Classes;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace Game.GamePlay.Controllers
 {
@@ -9,29 +11,31 @@ namespace Game.GamePlay.Controllers
     public class CameraController : MonoBehaviour
     {
         [SerializeField] private Camera _camera;
+        [SerializeField] private Transform cameraSystem;
+        
         [Range(0, 20f)] public float moveSpeed = 10f;
         [Range(0f, 10f)] public float sensitivity = 1;
-        private float sens_touch = 0.1f;
+        private float _sensTouch = 0.1f;
 
-        private float tempSens;
-        private bool isDragging, isMoving;
-        private Vector2 tempCenter, targetDirection, tempMousePos;
+        private float _tempSens;
+        private bool _isDragging, _isMoving;
+        private Vector2 _tempCenter, _targetDirection, _tempMousePos;
 
         private RectBorder _border, _cameraBorder;
 
-        private bool isAutoMoving = false;
+        private bool _isAutoMoving = false;
 
-        private Vector3 targetAutoMoving;
+        private Vector3 _targetAutoMoving;
         private void Start()
         {
             _camera = GetComponent<Camera>();
-            isDragging = false;
-            isMoving = false;
+            _isDragging = false;
+            _isMoving = false;
             //Разная чувствительность для Редактора и Телефона
 #if UNITY_EDITOR
             moveSpeed = 4f;
             sensitivity = 1.0f;
-            sens_touch = 0.1f;
+            _sensTouch = 0.1f;
 #elif UNITY_IOS || UNITY_ANDROID
         moveSpeed = 4f;
         sensitivity = 1.7f;
@@ -57,12 +61,10 @@ namespace Game.GamePlay.Controllers
         {
             float _newPosX = Mathf.Clamp(x, _border.BottomX, _border.TopX);
             float _newPosY = Mathf.Clamp(y, _border.BottomY, _border.TopY);
-            transform.position = new Vector3(_newPosX, transform.position.y, _newPosY);
+           transform.position = new Vector3(_newPosX, transform.position.y, _newPosY);
 //            Debug.Log(_newPosX + " " + transform.position.y  + " " + _newPosY);
-            
         }
-
-
+        
         private void Update()
         {
             UpdateInput();
@@ -72,14 +74,13 @@ namespace Game.GamePlay.Controllers
 
         private void AutoMoving()
         {
-            if (isAutoMoving)
+            if (_isAutoMoving)
             {
-                Debug.Log(JsonUtility.ToJson(transform.position));
-                Debug.Log(JsonUtility.ToJson(targetAutoMoving));
-                
-                transform.position = Vector3.Lerp(transform.position, targetAutoMoving, Time.deltaTime * moveSpeed / 3);
-                float _t = (transform.position - targetAutoMoving).sqrMagnitude;
-                if (_t < sens_touch) isAutoMoving = false;
+                //Debug.Log(JsonUtility.ToJson(transform.position));
+                //Debug.Log(JsonUtility.ToJson(targetAutoMoving));
+                transform.position = Vector3.Lerp(transform.position, _targetAutoMoving, Time.deltaTime * moveSpeed / 3);
+                float _t = (transform.position - _targetAutoMoving).sqrMagnitude;
+                if (_t < _sensTouch) _isAutoMoving = false;
             }
         }
 
@@ -145,20 +146,20 @@ namespace Game.GamePlay.Controllers
 
         private void UpdatePosition()
         {
-            if (!isMoving) return;
+            if (!_isMoving) return;
 
             float speed = Time.deltaTime * moveSpeed;
-            if (isDragging)
+            if (_isDragging)
             {
-                tempSens = sensitivity;
+                _tempSens = sensitivity;
             }
-            else if (tempSens > sens_touch)
+            else if (_tempSens > _sensTouch)
             {
-                tempSens = Mathf.Lerp(tempSens, 0f, speed / 5);
+                _tempSens = Mathf.Lerp(_tempSens, 0f, speed / 5);
             }
 
-            if (tempSens <= sens_touch) isMoving = false;
-            Vector3 newPosition = transform.position + new Vector3(targetDirection.x, 0, targetDirection.y) * tempSens;
+            if (_tempSens <= _sensTouch) _isMoving = false;
+            Vector3 newPosition = transform.position + new Vector3(_targetDirection.x, 0, _targetDirection.y) * _tempSens;
             newPosition.x = Mathf.Clamp(newPosition.x, _border.BottomX, _border.TopX);
             newPosition.z = Mathf.Clamp(newPosition.z, _border.BottomY, _border.TopY);
             
@@ -167,28 +168,28 @@ namespace Game.GamePlay.Controllers
 
         private void OnPointDown(Vector2 mousePosition)
         {
-            tempCenter = GetWorldPoint(mousePosition);
-            targetDirection = Vector2.zero;
-            tempMousePos = mousePosition;
-            isDragging = true;
-            isMoving = true;
+            _tempCenter = GetWorldPoint(mousePosition);
+            _targetDirection = Vector2.zero;
+            _tempMousePos = mousePosition;
+            _isDragging = true;
+            _isMoving = true;
         }
 
         private void OnPointMove(Vector2 mousePosition)
         {
-            if (isDragging)
+            if (_isDragging)
             {
                 Vector2 point = GetWorldPoint(mousePosition);
-                float sqrDst = (tempCenter - point).sqrMagnitude;
-                if (sqrDst > sens_touch)
+                float sqrDst = (_tempCenter - point).sqrMagnitude;
+                if (sqrDst > _sensTouch)
                 {
                     //targetDirection = mousePosition.normalized;
-                    if (tempMousePos != mousePosition)
+                    if (_tempMousePos != mousePosition)
                     {
-                        var _targetDirection = (tempMousePos - mousePosition).normalized;
-                        targetDirection = RotateTarget(_targetDirection);
+                        var _targetDirection = (_tempMousePos - mousePosition).normalized;
+                        this._targetDirection = RotateTarget(_targetDirection);
                     }
-                    tempMousePos = mousePosition;
+                    _tempMousePos = mousePosition;
                 }
             }
         }
@@ -207,10 +208,10 @@ namespace Game.GamePlay.Controllers
 
         private void OnPointUp(Vector2 mousePosition)
         {
-            isDragging = false;
+            _isDragging = false;
             Vector2 point = GetWorldPoint(mousePosition);
-            float sqrDst = (tempCenter - point).sqrMagnitude;
-            if (sqrDst <= sens_touch) isMoving = false;
+            float sqrDst = (_tempCenter - point).sqrMagnitude;
+            if (sqrDst <= _sensTouch) _isMoving = false;
         }
 
         //**** Вычисления

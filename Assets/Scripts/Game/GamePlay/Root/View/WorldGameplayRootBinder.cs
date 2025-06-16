@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using Game.GamePlay.Classes;
 using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Grounds;
@@ -9,7 +11,9 @@ using Game.GamePlay.View.Towers;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
+using Scripts.Utils;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Random = UnityEngine.Random;
 
 
@@ -17,6 +21,9 @@ namespace Game.GamePlay.Root.View
 {
     public class WorldGameplayRootBinder : MonoBehaviour
     {
+        [SerializeField] private Camera _camera;
+        [SerializeField] private Transform cameraSystem;
+        
         //      [SerializeField] private BuildingBinder _prefabBuilding;
     //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
         private readonly Dictionary<int, TowerBinder> _createTowersMap = new();
@@ -24,11 +31,19 @@ namespace Game.GamePlay.Root.View
         private CastleBinder _castleBinder;
         private readonly CompositeDisposable _disposables = new();
 
-
+        private Coroutines _coroutines;
+        private bool _clickCoroutines = false;
+        
+        private GameplayCamera _gameplayCamera;
         private WorldGameplayRootViewModel _viewModel;
+        
+        const float ClickTimeThreshold = 0.2f; // Время в секундах, после которого нажатие считается удержанием
+        private float _mouseDownTime;
+        private bool _isMouseDown;
 
         public void Bind(WorldGameplayRootViewModel viewModel)
         {
+            _coroutines = new GameObject("[COROUTINES]").AddComponent<Coroutines>();
             _viewModel = viewModel;
             //1. Создаем все объекты мира из Прехабов
             //2. Подписываемся на добавление объектов в список (Создать) и на удаление (Уничтожить)
@@ -60,7 +75,8 @@ namespace Game.GamePlay.Root.View
             _disposables.Remove(
                 viewModel.AllGrounds.ObserveRemove().Subscribe(e => DestroyGround(e.Value))
             );
-            
+
+            _gameplayCamera = new GameplayCamera(_camera, cameraSystem);
         }
 
         private void OnDestroy()
@@ -68,25 +84,10 @@ namespace Game.GamePlay.Root.View
             if (_castleBinder != null)
             {
                 Destroy(_castleBinder.gameObject);
-                _disposables.Dispose();                
             }
-            
+            _disposables.Dispose(); 
         }
 
-   /*     private void CreateBuilding(BuildingViewModel buildingViewModel)
-        {
-            var buildingLevel = buildingViewModel.Level;
-            var buildingType = buildingViewModel.ConfigId;
-
-            var prefabBuildingLevelPath =
-                $"Prefabs/Gameplay/Buildings/{buildingType}/Level_{buildingLevel}"; //Перенести в настройки уровня
-            var buildingPrefab = Resources.Load<BuildingBinder>(prefabBuildingLevelPath);
-
-            var createdBuilding = Instantiate(buildingPrefab, transform);
-            createdBuilding.Bind(buildingViewModel);
-            //_createBuildingsMap[buildingViewModel.BuildingEntityId] = createdBuilding;
-        }
-*/
         private void CreateCastle(CastleViewModel castleViewModel)
         {
             var prefabPath = "Prefabs/Gameplay/Buildings/Castle"; //Перенести в настройки уровня
@@ -123,15 +124,6 @@ namespace Game.GamePlay.Root.View
             _createGroundsMap[groundViewModel.GroundEntityId] = createdGround;
         }
         
-      /*  private void DestroyBuilding(BuildingViewModel buildingViewModel)
-        {
-            if (_createBuildingsMap.TryGetValue(buildingViewModel.BuildingEntityId, out var buildingBinder))
-            {
-                Destroy(buildingBinder.gameObject);
-                _createBuildingsMap.Remove(buildingViewModel.BuildingEntityId);
-            }
-        }
-*/
         private void DestroyTower(TowerViewModel towerViewModel)
         {
             if (_createTowersMap.TryGetValue(towerViewModel.TowerEntityId, out var towerBinder))
@@ -152,34 +144,170 @@ namespace Game.GamePlay.Root.View
 
         private void Update()
         {
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                Vector2 mousePosition = Input.mousePosition;
+
+                if (Input.GetMouseButtonDown(0) && !_clickCoroutines)
+                {
+                    _coroutines.StartCoroutine(IsClick());
+                    return;
+                }
+
+                if (_isMouseDown) //Имитация GetMouseButtonDown
+                {
+                    _isMouseDown = false;
+                    _gameplayCamera.OnPointDown(mousePosition); //Вызываем функцию начала перетаскивания
+                }
+
+                if (Input.GetMouseButton(0) && !_clickCoroutines)
+                {
+                    _gameplayCamera.OnPointMove(mousePosition); //Debug.Log("Мышь зажата");
+                }
+
+                if (Input.GetMouseButtonUp(0))
+                {
+                    if (_clickCoroutines)
+                    {
+                        Debug.Log("Клик");
+                        _clickCoroutines = false;
+                        Ray ray = Camera.main.ScreenPointToRay(mousePosition);  
+                        RaycastHit rayHit;  
+                        if (Physics.Raycast(ray, out rayHit, 100.0f)) {  
+                            
+                                var GameObjClicked = rayHit.collider.gameObject;
+                                Vector3 point = _camera.ScreenToWorldPoint(mousePosition);
+                                var position = _gameplayCamera.GetWorldPoint(mousePosition);
+                               //  Debug.Log( JsonConvert.SerializeObject(GameObjClicked.GetComponent<GroundBinder>(), Formatting.Indented));
+                               // Debug.Log( JsonUtility.ToJson(GameObjClicked));
+                                Debug.Log( JsonUtility.ToJson(position));
+                        }
+                        
+                        
+                        
+                    }
+                    else
+                    {
+                        _gameplayCamera.OnPointUp(mousePosition);
+                        //Debug.Log("Мышь отпущена");
+                    }
+
+                }
+            }
+
+            _gameplayCamera?.UpdateMoving();
+            
+            // UpdateInput();
+
             //TODO Перемещение камеры
             ///
             ///
-            
+
             //TODO В противном случае отправляем данные в контроллер
-            var position = Input.mousePosition;
-            
-            //Проверка мышки и состояния
-            if (Input.GetMouseButtonDown(0))
-            {
-                var cursorPosition = Input.mousePosition;
-             //   Ray ray = Camera.main.ScreenPointToRay(cursorPosition);
-             if (Physics.Raycast(Camera.main.ScreenPointToRay(cursorPosition), out RaycastHit hit))
-             {
-             //    print(hit.transform.name);
-           //      print(hit.transform.position);
-             }
-             
-           //     Debug.Log(Input.mousePosition.x + ", "+ Input.mousePosition.y + ", " + Input.mousePosition.z);
-                
-            }
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                // _viewModel.HandleTestInput();
-            }
-            
-            
+            /*    var position = Input.mousePosition;
+
+                //Проверка мышки и состояния
+                if (Input.GetMouseButtonDown(0))
+                {
+                    var cursorPosition = Input.mousePosition;
+                 //   Ray ray = Camera.main.ScreenPointToRay(cursorPosition);
+                 if (Physics.Raycast(Camera.main.ScreenPointToRay(cursorPosition), out RaycastHit hit))
+                 {
+                 //    print(hit.transform.name);
+               //      print(hit.transform.position);
+                 }
+
+               //     Debug.Log(Input.mousePosition.x + ", "+ Input.mousePosition.y + ", " + Input.mousePosition.z);
+
+                }
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    // _viewModel.HandleTestInput();
+                }
+                */
+
         }
         
+        
+        
+        private void UpdateInput()
+        {
+#if UNITY_EDITOR
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                    if (Input.GetMouseButtonDown(0)) Debug.Log("Down");
+                     else if (Input.GetMouseButtonUp(0)) Debug.Log("Up");
+                   else if (Input.GetMouseButton(0)) Debug.Log("Button");
+                
+                
+                Vector2 mousePosition = Input.mousePosition;
+            //    if (Input.GetMouseButtonDown(0)) _viewModel.ControlInput(mousePosition);
+           //     else if (Input.GetMouseButtonUp(0)) OnPointUp(mousePosition);
+             //   else if (Input.GetMouseButton(0)) OnPointMove(mousePosition);
+             
+             
+            }
+
+#elif UNITY_IOS || UNITY_ANDROID
+        Touch _touch = Input.GetTouch(0);
+        if (!IsPointerOverUIObject()) {
+            if (Input.touchCount > 0)
+            {
+                
+                Vector2 touchPosition = _touch.position;
+                if (_touch.phase == TouchPhase.Began) OnPointDown(touchPosition);
+                if (_touch.phase == TouchPhase.Moved) OnPointMove(touchPosition);
+                if (_touch.phase == TouchPhase.Ended) OnPointUp(touchPosition);
+                if (_touch.phase == TouchPhase.Stationary) isDragging = false;
+                
+                var hit = new RaycastHit();
+                for (var i = 0; i < Input.touchCount; ++i) {
+                    if (Input.GetTouch(i).phase == TouchPhase.Began) {
+                        var ray = camera.ScreenPointToRay(Input.GetTouch(i).position);
+                        if (Physics.Raycast(ray, out hit)) {
+                            hit.transform.gameObject.SendMessage("OnMouseDown");
+                        }
+                    }
+                }
+            }
+        }
+      /*  else
+        {
+            if (BlockPanel != TypeBlockPanelUI.None && _touch.phase == TouchPhase.Ended)
+            {
+                Messenger<TypeBlockPanelUI>.Broadcast(Events.TOUCH_SCREEN, BlockPanel);
+                BlockPanel = TypeBlockPanelUI.None;
+            }
+        }*/
+#endif
+        }
+        private bool IsPointerOverUIObject() //Проверка для Андроид - EventSystem.current.IsPointerOverGameObject()
+        {
+            if (Input.touchCount > 0)
+            {
+                Touch _touch = Input.GetTouch(0);
+                var touchPosition = _touch.position;
+                var eventData = new PointerEventData(EventSystem.current) { position = touchPosition };
+                var results = new List<RaycastResult>();
+                EventSystem.current.RaycastAll(eventData, results);
+                return results.Count > 0;
+            }
+
+            return false;
+        }
+
+        
+        private IEnumerator IsClick()
+        {
+            _isMouseDown = false;
+            _clickCoroutines = true;
+            yield return new WaitForSeconds(0.2f);
+            if (_clickCoroutines)
+            {
+                _isMouseDown = true;
+                _clickCoroutines = false;                
+            }
+            
+        }
     }
 }
