@@ -65,8 +65,12 @@ namespace Game.GamePlay.Root.View
 
         private void OnDestroy()
         {
-            Destroy(_castleBinder.gameObject);
-            _disposables.Dispose();
+            if (_castleBinder != null)
+            {
+                Destroy(_castleBinder.gameObject);
+                _disposables.Dispose();                
+            }
+            
         }
 
    /*     private void CreateBuilding(BuildingViewModel buildingViewModel)

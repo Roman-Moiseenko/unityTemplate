@@ -29,8 +29,8 @@ namespace Game.GamePlay.Controllers
             isMoving = false;
             //Разная чувствительность для Редактора и Телефона
 #if UNITY_EDITOR
-            moveSpeed = 6f;
-            sensitivity = 1.5f;
+            moveSpeed = 4f;
+            sensitivity = 1.0f;
             sens_touch = 0.1f;
 #elif UNITY_IOS || UNITY_ANDROID
         moveSpeed = 4f;

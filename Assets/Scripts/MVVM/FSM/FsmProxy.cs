@@ -18,11 +18,9 @@ namespace MVVM.FSM
 
         public FsmProxy()
         {
-       
             StateCurrent.Subscribe(newValue =>
             {
                 if (newValue == null) return;
-               // Debug.Log($"Изменилось состояние {newValue.GetType()}");
             });
         }
         
@@ -53,7 +51,9 @@ namespace MVVM.FSM
                     if (!StateCurrent.Value.Exit(newState)) return; //- можно ли из него выйти
                     PreviousState = StateCurrent.Value; //- сохраняем его (если понадобится)
                 }
-                newState.Params = enterParams;
+
+                if (enterParams != null) newState.Params = enterParams; //Чтоб не перезаписать, при возврате к BuildBegin
+                
                 StateCurrent.Value = newState;
                 //StateCurrent.Value.Params = enterParams;
                 

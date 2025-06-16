@@ -42,9 +42,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
             _btnBuild1.onClick.AddListener(OnClickButtonBuild1);            
             _btnBuild2.onClick.AddListener(OnClickButtonBuild2);            
             _btnBuild3.onClick.AddListener(OnClickButtonBuild3);
-
-
-
         }
 
 

@@ -45,10 +45,11 @@ namespace Game.GamePlay.Services
                 if (newState.GetType() == typeof(FsmStateBuild))
                 {
                     //TODO Имитируем работу контроллера ввода
+                    /*
                     var card = ((FsmStateBuild)newState).GetRewardCard();
                     card.Direction = 2;
                     card.Position = new Vector2Int(Random.Range(0, 5), Random.Range(0, 2));
-                    fsm.Fsm.SetState<FsmStateBuildEnd>(card);
+                    fsm.Fsm.SetState<FsmStateBuildEnd>(card); */
                     //
                 }
                 

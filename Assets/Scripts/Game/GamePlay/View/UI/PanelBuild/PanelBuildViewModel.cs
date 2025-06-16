@@ -100,10 +100,12 @@ namespace Game.GamePlay.View.UI.PanelBuild
 //            Debug.Log("Отправка для применения + " + JsonConvert.SerializeObject(cardData, Formatting.Indented));
             if (cardData.IsBuild())
             {
+//                Debug.Log("Строим");
                 _fsmGameplay.Fsm.SetState<FsmStateBuild>(cardData);
             }
             else
             {
+     //           Debug.Log("Бафаем");
                 _fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(cardData);
             }
         }

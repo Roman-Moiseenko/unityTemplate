@@ -5,6 +5,7 @@ using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Root;
 using Game.GamePlay.View.UI.PanelActions;
 using Game.GamePlay.View.UI.PanelBuild;
+using Game.GamePlay.View.UI.PanelConfirmation;
 using Game.GamePlay.View.UI.PopupB;
 using Game.GamePlay.View.UI.PopupPause;
 using Game.GamePlay.View.UI.ScreenGameplay;
@@ -32,6 +33,7 @@ namespace Game.GamePlay.View.UI
             //Создаем панели, необходимые для Геймплея           
             rootUI.AddPanel(new PanelBuildViewModel(container));
             rootUI.AddPanel(new PanelActionsViewModel(this, container));
+            rootUI.AddPanel(new PanelConfirmationViewModel(this, container));
             
             //_gameState = gameStateProvider.GameState;
             _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>();
@@ -41,16 +43,18 @@ namespace Game.GamePlay.View.UI
                 if (newValue == null) return;
                 if (newValue.GetType() == typeof(FsmStateBuildBegin))
                 {
+                    rootUI.HidePanel<PanelConfirmationViewModel>();
                     rootUI.ShowPanel<PanelBuildViewModel>();
                     rootUI.HidePanel<PanelActionsViewModel>();
                 }
                 if (newValue.GetType() == typeof(FsmStateBuild))
                 {
-                    //Прячем Окно Build
                     rootUI.HidePanel<PanelBuildViewModel>();
+                    rootUI.ShowPanel<PanelConfirmationViewModel>();
                 }
                 if (newValue.GetType() == typeof(FsmStateBuildEnd))
                 {
+                    rootUI.HidePanel<PanelConfirmationViewModel>();
                     rootUI.HidePanel<PanelBuildViewModel>();
                     rootUI.ShowPanel<PanelActionsViewModel>();
                 }
