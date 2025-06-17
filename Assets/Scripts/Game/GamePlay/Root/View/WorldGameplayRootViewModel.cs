@@ -1,8 +1,12 @@
 ﻿using System.Collections.ObjectModel;
+using DI;
+using Game.GamePlay.Fsm;
+using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Grounds;
+using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
 using Game.MainMenu.Services;
 using Game.State.GameResources;
@@ -15,20 +19,27 @@ namespace Game.GamePlay.Root.View
 {
     public class WorldGameplayRootViewModel
     {
-      //  public readonly IObservableCollection<BuildingViewModel> AllBuildings;
+        private readonly FsmGameplay _fsmGameplay;
+       // private readonly DIContainer _container;
+
+     //   public readonly IObservableCollection<RoadViewModel> AllRoads;
         public readonly IObservableCollection<TowerViewModel> AllTowers;
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
         public CastleViewModel CastleViewModel { get; private set; }
  
         public WorldGameplayRootViewModel(
-         //   BuildingsService buildingsService,
+          //  RoadService roadsService,
             GroundsService groundsService,
             TowersService towersService,
-            CastleService castleService
+            CastleService castleService,
+            FsmGameplay fsmGameplay
+         //DIContainer container
             )
         {
-            
-         //   AllBuildings = buildingsService.AllBuildings;
+            _fsmGameplay = fsmGameplay;
+            //_container = container;
+
+           // AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
             AllTowers = towersService.AllTowers;
             CastleViewModel = castleService.CastleViewModel;
@@ -47,5 +58,24 @@ namespace Game.GamePlay.Root.View
             
         }
 
+        public void ClickEntity(Vector2 position)
+        {
+            if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
+            {
+                //TODO проверяем, чтоб показать Info()
+                foreach (var towerViewModel in AllTowers)
+                {
+                    if (towerViewModel.IsPosition(position))
+                    {
+                        Debug.Log(" Это башня " + towerViewModel.ConfigId);
+                        return;
+                    }
+                }
+
+                
+                if (CastleViewModel.IsPosition(position))
+                    Debug.Log(" Это крепость " + CastleViewModel.ConfigId);
+            }
+        }
     }
 }

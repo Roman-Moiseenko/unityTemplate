@@ -8,7 +8,7 @@ namespace Game.GamePlay.View.Grounds
         {
             transform.position = new Vector3(
                 viewModel.Position.CurrentValue.x,
-                0,
+                -1,
                 viewModel.Position.CurrentValue.y
             );
         }

@@ -8,7 +8,7 @@ namespace Game.GamePlay.View.Roads
         {
             transform.position = new Vector3(
                 viewModel.Position.CurrentValue.x,
-                1,
+                0,
                 viewModel.Position.CurrentValue.y
             );
         }

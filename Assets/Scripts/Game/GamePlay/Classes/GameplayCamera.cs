@@ -15,13 +15,9 @@ namespace Game.GamePlay.Classes
         private float _tempSens;
         private bool _isDragging = false, _isMoving = false;
         private Vector2 _tempCenter, _targetDirection, _tempMousePos;
-
+        
         private readonly RectBorder _border;//, _cameraBorder;
-
-      //  public bool _isAutoMoving = false;
-
-        //public Vector3 _targetAutoMoving;
-
+        
         public GameplayCamera(Camera _camera, Transform cameraSystem)
         {
             Camera = _camera;
@@ -119,11 +115,12 @@ namespace Game.GamePlay.Classes
         public Vector2 GetWorldPoint(Vector2 mousePosition)
         {
             Vector3 point = Camera.ScreenToWorldPoint(mousePosition);
-            return new Vector2(point.x, point.z);
-            /*
-
+            //TODO ОТКУДА - 4.5f !!!!
+            return new Vector2(point.x - 4.5f, point.z - 4.5f);
+            
+/*
             Vector2 point = Vector2.zero;
-            Ray ray = _camera.ScreenPointToRay(mousePosition);
+            Ray ray = Camera.ScreenPointToRay(mousePosition);
             Vector3 normal = Vector3.forward;
             Vector3 position = Vector3.zero;
             Plane plane = new Plane(normal, position);

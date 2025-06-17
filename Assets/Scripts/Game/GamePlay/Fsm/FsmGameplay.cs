@@ -27,7 +27,38 @@ namespace Game.GamePlay.Fsm
         {
             Fsm?.Update();
         }
+
+        public bool IsStateGamePlay()
+        {
+            return Fsm.StateCurrent.Value.GetType() == typeof(FsmStateGamePlay);
+        }
+        public bool IsStateGamePause()
+        {
+            return Fsm.StateCurrent.Value.GetType() == typeof(FsmStateGamePause);
+        }
         
+        public bool IsStateGaming()
+        {
+            return IsStateGamePlay() || IsStateGamePause();
+        }
+
+        public bool IsStateBuildBegin()
+        {
+            return Fsm.StateCurrent.Value.GetType() == typeof(FsmStateBuildBegin);
+        }
         
+        public bool IsStateBuild()
+        {
+            return Fsm.StateCurrent.Value.GetType() == typeof(FsmStateBuild);
+        }
+        public bool IsStateBuildEnd()
+        {
+            return Fsm.StateCurrent.Value.GetType() == typeof(FsmStateBuildEnd);
+        }
+        
+        public bool IsStateBuilding()
+        {
+            return IsStateBuildBegin() || IsStateBuild() || IsStateBuildEnd();
+        }
     }
 }

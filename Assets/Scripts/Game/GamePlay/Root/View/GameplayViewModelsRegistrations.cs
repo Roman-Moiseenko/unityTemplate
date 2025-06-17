@@ -1,4 +1,5 @@
 ﻿using DI;
+using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
 using Game.MainMenu.Services;
@@ -19,7 +20,8 @@ namespace Game.GamePlay.Root.View
              //   c.Resolve<BuildingsService>(),
                 c.Resolve<GroundsService>(),
                 c.Resolve<TowersService>(),
-                c.Resolve<CastleService>()
+                c.Resolve<CastleService>(),
+             c.Resolve<FsmGameplay>()
                 )).AsSingle();
         }
     }

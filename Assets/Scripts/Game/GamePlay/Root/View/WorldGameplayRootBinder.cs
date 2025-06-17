@@ -169,7 +169,7 @@ namespace Game.GamePlay.Root.View
                 {
                     if (_clickCoroutines)
                     {
-                        Debug.Log("Клик");
+                     //   Debug.Log("Клик");
                         _clickCoroutines = false;
                         Ray ray = Camera.main.ScreenPointToRay(mousePosition);  
                         RaycastHit rayHit;  
@@ -178,18 +178,14 @@ namespace Game.GamePlay.Root.View
                                 var GameObjClicked = rayHit.collider.gameObject;
                                 Vector3 point = _camera.ScreenToWorldPoint(mousePosition);
                                 var position = _gameplayCamera.GetWorldPoint(mousePosition);
-                               //  Debug.Log( JsonConvert.SerializeObject(GameObjClicked.GetComponent<GroundBinder>(), Formatting.Indented));
-                               // Debug.Log( JsonUtility.ToJson(GameObjClicked));
                                 Debug.Log( JsonUtility.ToJson(position));
+
+                                _viewModel.ClickEntity(position);
                         }
-                        
-                        
-                        
                     }
                     else
                     {
-                        _gameplayCamera.OnPointUp(mousePosition);
-                        //Debug.Log("Мышь отпущена");
+                        _gameplayCamera.OnPointUp(mousePosition); //Debug.Log("Мышь отпущена");
                     }
 
                 }

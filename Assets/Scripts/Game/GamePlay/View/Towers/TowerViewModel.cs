@@ -47,5 +47,16 @@ namespace Game.GamePlay.View.Towers
         {
             return _towerLevelSettingsMap[level];
         }
+
+        public bool IsPosition(Vector2 position)
+        {
+            float delta = 0.5f; //Половина ширины клетки
+            int _x = Position.CurrentValue.x;
+            int _y = Position.CurrentValue.y;
+            if ((position.x >= _x - delta && position.x <= _x + delta) && 
+                (position.y >= _y - delta && position.y <= _y + delta))
+                return true;
+            return false;
+        }
     }
 }
