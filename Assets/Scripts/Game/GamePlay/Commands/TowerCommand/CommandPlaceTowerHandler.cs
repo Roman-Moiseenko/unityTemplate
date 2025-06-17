@@ -27,10 +27,9 @@ namespace Game.GamePlay.Commands
                 ConfigId = command.TowerTypeId,
             };
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
+            newTower.IsFrame = true; //Сначала создаем каркас башни
             _gameplayState.Entities.Add(newTower);//Добавляем в список объектов карты
-            //_gameState.Maps.Add();
-            //_gameState.Buildings.Add(newBuildingEntityProxy); 
-            return true;
+            return false;
         }
     }
 }

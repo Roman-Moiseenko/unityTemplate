@@ -14,6 +14,7 @@ namespace Game.State.Maps.Towers
         public readonly ReactiveProperty<double> Damage;
         public readonly ReactiveProperty<double> Speed;
 
+        public bool IsFrame = false;
         public ObservableList<TowerBust> Busts { get; } = new();
         
         public TowerEntity(TowerEntityData entityData) : base(entityData)

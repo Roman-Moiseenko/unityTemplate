@@ -53,7 +53,8 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandTowerBustHandler(gameplayState, gameSettings));
             cmd.RegisterHandler(new CommandCreateLevelHandler(gameSettings, gameplayState)); //Регистрируем команду создания уровня из конфигурации
             cmd.RegisterHandler(new CommandRewardKillMobHandler(gameplayState));
-
+            cmd.RegisterHandler(new CommandDeleteTowerHandler(gameplayState));
+            cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
 
             //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
             if (gameplayState.Entities.Any() != true)

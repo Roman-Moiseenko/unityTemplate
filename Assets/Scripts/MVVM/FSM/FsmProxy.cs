@@ -13,6 +13,7 @@ namespace MVVM.FSM
 
         public ReactiveProperty<FSMState> StateCurrent = new();
         public FSMState PreviousState { get; private set; }
+        public ReactiveProperty<Vector2Int> Position = new();
         public object Params { get; private set; }
         private Dictionary<Type, FSMState> _states = new();
 

@@ -6,14 +6,17 @@ using System.Linq;
 using Game.GamePlay.Classes;
 using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
+using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Towers;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using Scripts.Utils;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
@@ -23,23 +26,22 @@ namespace Game.GamePlay.Root.View
     {
         [SerializeField] private Camera _camera;
         [SerializeField] private Transform cameraSystem;
-        
+
         //      [SerializeField] private BuildingBinder _prefabBuilding;
-    //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
+        //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
         private readonly Dictionary<int, TowerBinder> _createTowersMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
+        private readonly List<FrameBinder> _frames = new();
         private CastleBinder _castleBinder;
         private readonly CompositeDisposable _disposables = new();
 
         private Coroutines _coroutines;
         private bool _clickCoroutines = false;
-        
+        private bool _isMouseDown;
+
         private GameplayCamera _gameplayCamera;
         private WorldGameplayRootViewModel _viewModel;
-        
-        const float ClickTimeThreshold = 0.2f; // Время в секундах, после которого нажатие считается удержанием
-        private float _mouseDownTime;
-        private bool _isMouseDown;
+
 
         public void Bind(WorldGameplayRootViewModel viewModel)
         {
@@ -49,14 +51,24 @@ namespace Game.GamePlay.Root.View
             //2. Подписываемся на добавление объектов в список (Создать) и на удаление (Уничтожить)
             foreach (var towerViewModel in viewModel.AllTowers)
                 CreateTower(towerViewModel);
-            
+
             _disposables.Add(
-                viewModel.AllTowers.ObserveAdd().Subscribe(e => CreateTower(e.Value))
+                viewModel.AllTowers.ObserveAdd().Subscribe(e =>
+                {
+                    CreateTower(e.Value); //Новая башня всегда создается как фрейм
+                    e.Value.IsFrame.Subscribe(newValue =>
+                    {
+                        if (newValue == false)
+                        {
+                            DestroyFrames();
+                        }
+                    });
+                })
             );
             _disposables.Remove(
                 viewModel.AllTowers.ObserveRemove().Subscribe(e => DestroyTower(e.Value))
             );
-            
+
             //viewModel.AllTowers
             CreateCastle(viewModel.CastleViewModel);
 /*
@@ -64,9 +76,10 @@ namespace Game.GamePlay.Root.View
                 CreateBuilding(buildingViewModel);
             _disposables.Add(
                 viewModel.AllBuildings.ObserveAdd().Subscribe(e => CreateBuilding(e.Value))
-            );            
+            );
             */
-            
+
+
             foreach (var groundViewModel in viewModel.AllGrounds)
                 CreateGround(groundViewModel);
             _disposables.Add(
@@ -85,7 +98,16 @@ namespace Game.GamePlay.Root.View
             {
                 Destroy(_castleBinder.gameObject);
             }
-            _disposables.Dispose(); 
+
+            _disposables.Dispose();
+        }
+
+        private void DestroyFrames()
+        {
+            foreach (var frame in _frames)
+            {
+                Destroy(frame.gameObject);
+            }
         }
 
         private void CreateCastle(CastleViewModel castleViewModel)
@@ -102,7 +124,7 @@ namespace Game.GamePlay.Root.View
             var towerLevel = towerViewModel.Level;
             var towerType = towerViewModel.ConfigId;
 
-            
+
             var prefabTowerLevelPath =
                 $"Prefabs/Gameplay/Towers/{towerType}/Level_{towerLevel}"; //Перенести в настройки уровня
             var towerPrefab = Resources.Load<TowerBinder>(prefabTowerLevelPath);
@@ -110,6 +132,16 @@ namespace Game.GamePlay.Root.View
             var createdTower = Instantiate(towerPrefab, transform);
             createdTower.Bind(towerViewModel);
             _createTowersMap[towerViewModel.TowerEntityId] = createdTower;
+
+            if (towerViewModel.IsFrame.CurrentValue)
+            {
+                var prefabTowerFrame = "Prefabs/Gameplay/Towers/TowerFrame";
+                var framePrefab = Resources.Load<FrameBinder>(prefabTowerFrame);
+                var createdFrame = Instantiate(framePrefab, createdTower.transform);
+                createdFrame.Bind(createdTower.transform.position);
+                //createdFrame.GameObject().transform.position = createdTower.GameObject().transform.position;
+                _frames.Add(createdFrame);
+            }
         }
 
         private void CreateGround(GroundViewModel groundViewModel)
@@ -123,7 +155,7 @@ namespace Game.GamePlay.Root.View
             createdGround.Bind(groundViewModel);
             _createGroundsMap[groundViewModel.GroundEntityId] = createdGround;
         }
-        
+
         private void DestroyTower(TowerViewModel towerViewModel)
         {
             if (_createTowersMap.TryGetValue(towerViewModel.TowerEntityId, out var towerBinder))
@@ -144,6 +176,7 @@ namespace Game.GamePlay.Root.View
 
         private void Update()
         {
+            //TODO Добавить обработку Input.GetTouch(0)
             if (!EventSystem.current.IsPointerOverGameObject())
             {
                 Vector2 mousePosition = Input.mousePosition;
@@ -167,32 +200,34 @@ namespace Game.GamePlay.Root.View
 
                 if (Input.GetMouseButtonUp(0))
                 {
-                    if (_clickCoroutines)
+                    if (_clickCoroutines) //  Debug.Log("Клик");
                     {
-                     //   Debug.Log("Клик");
                         _clickCoroutines = false;
-                        Ray ray = Camera.main.ScreenPointToRay(mousePosition);  
-                        RaycastHit rayHit;  
-                        if (Physics.Raycast(ray, out rayHit, 100.0f)) {  
-                            
-                                var GameObjClicked = rayHit.collider.gameObject;
-                                Vector3 point = _camera.ScreenToWorldPoint(mousePosition);
-                                var position = _gameplayCamera.GetWorldPoint(mousePosition);
-                                Debug.Log( JsonUtility.ToJson(position));
+                        var position = _gameplayCamera.GetWorldPoint(mousePosition);
+                        _viewModel.ClickEntity(position);
+                        /*
+                          Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+                          RaycastHit rayHit;
+                          if (Physics.Raycast(ray, out rayHit, 100.0f)) {
 
-                                _viewModel.ClickEntity(position);
-                        }
+                                  var GameObjClicked = rayHit.collider.gameObject;
+                                  Vector3 point = _camera.ScreenToWorldPoint(mousePosition);
+                                  var position = _gameplayCamera.GetWorldPoint(mousePosition);
+                                  Debug.Log( JsonUtility.ToJson(position));
+
+                                  _viewModel.ClickEntity(position);
+                          }
+                          */
                     }
                     else
                     {
                         _gameplayCamera.OnPointUp(mousePosition); //Debug.Log("Мышь отпущена");
                     }
-
                 }
             }
 
             _gameplayCamera?.UpdateMoving();
-            
+
             // UpdateInput();
 
             //TODO Перемещение камеры
@@ -221,27 +256,13 @@ namespace Game.GamePlay.Root.View
                     // _viewModel.HandleTestInput();
                 }
                 */
-
         }
-        
-        
-        
+
         private void UpdateInput()
         {
 #if UNITY_EDITOR
             if (!EventSystem.current.IsPointerOverGameObject())
             {
-                    if (Input.GetMouseButtonDown(0)) Debug.Log("Down");
-                     else if (Input.GetMouseButtonUp(0)) Debug.Log("Up");
-                   else if (Input.GetMouseButton(0)) Debug.Log("Button");
-                
-                
-                Vector2 mousePosition = Input.mousePosition;
-            //    if (Input.GetMouseButtonDown(0)) _viewModel.ControlInput(mousePosition);
-           //     else if (Input.GetMouseButtonUp(0)) OnPointUp(mousePosition);
-             //   else if (Input.GetMouseButton(0)) OnPointMove(mousePosition);
-             
-             
             }
 
 #elif UNITY_IOS || UNITY_ANDROID
@@ -277,6 +298,7 @@ namespace Game.GamePlay.Root.View
         }*/
 #endif
         }
+
         private bool IsPointerOverUIObject() //Проверка для Андроид - EventSystem.current.IsPointerOverGameObject()
         {
             if (Input.touchCount > 0)
@@ -292,7 +314,7 @@ namespace Game.GamePlay.Root.View
             return false;
         }
 
-        
+
         private IEnumerator IsClick()
         {
             _isMouseDown = false;
@@ -301,9 +323,8 @@ namespace Game.GamePlay.Root.View
             if (_clickCoroutines)
             {
                 _isMouseDown = true;
-                _clickCoroutines = false;                
+                _clickCoroutines = false;
             }
-            
         }
     }
 }

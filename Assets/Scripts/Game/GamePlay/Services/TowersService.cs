@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Tower;
@@ -21,20 +20,22 @@ namespace Game.GamePlay.Services
         private readonly ObservableList<TowerViewModel> _allTowers = new();
         private readonly Dictionary<int, TowerViewModel> _towersMap = new();
         private readonly Dictionary<string, TowerSettings> _towerSettingsMap = new();
-        public IObservableCollection<TowerViewModel> AllTowers => _allTowers; //Интерфейс менять нельзя, возвращаем через динамический массив
+
+        public IObservableCollection<TowerViewModel> AllTowers =>
+            _allTowers; //Интерфейс менять нельзя, возвращаем через динамический массив
+
         public readonly ObservableDictionary<string, int> Levels = new(); //Уровни башен по типам ConfigId
-        
-        
+
+
         /**
-         * При загрузке создаем все view-модели из реактивного списка всех строений 
+         * При загрузке создаем все view-модели из реактивного списка всех строений
          * Подписываемся на событие добавления в массив Proxy сущностей
         */
-         
         public TowersService(
             IObservableCollection<Entity> entities,
-            TowersSettings towersSettings, 
+            TowersSettings towersSettings,
             ICommandProcessor cmd
-            )
+        )
         {
             _entities = entities;
             _cmd = cmd;
@@ -45,12 +46,12 @@ namespace Game.GamePlay.Services
                 _towerSettingsMap[towerSettings.ConfigId] = towerSettings;
                 Levels[towerSettings.ConfigId] = 1;
             }
-            
+
             foreach (var entity in entities)
             {
                 if (entity is TowerEntity towerEntity) CreateTowerViewModel(towerEntity);
             }
-            
+
             //Подписка на добавление новых view-моделей текущего класса
             entities.ObserveAdd().Subscribe(e =>
             {
@@ -65,10 +66,10 @@ namespace Game.GamePlay.Services
             {
                 if (e.Value is TowerEntity towerEntity) RemoveTowerViewModel(towerEntity);
             });
-            
+
             Levels.ObserveChanged().Subscribe(x =>
             {
-               //  Debug.Log(" Меняем уровнии для " + x.NewItem.Key + " на " + x.NewItem.Value);
+                //  Debug.Log(" Меняем уровнии для " + x.NewItem.Key + " на " + x.NewItem.Value);
 
                 foreach (var entity in _entities)
                 {
@@ -76,9 +77,9 @@ namespace Game.GamePlay.Services
                     {
                         //Debug.Log("Нашли towerEntity " + towerEntity.ConfigId + " ЛЕВЕЛ = " + towerEntity.Level.Value + " с Id" + towerEntity.UniqueId );
 
-                        RemoveTowerViewModel(towerEntity);//TODO Удаляем все модели viewModel.ConfigId == x.NewItem.Key
-                        
-                        CreateTowerViewModel(towerEntity);//TODO Создаем модели Заново
+                        RemoveTowerViewModel(towerEntity); //TODO Удаляем все модели viewModel.ConfigId == x.NewItem.Key
+
+                        CreateTowerViewModel(towerEntity); //TODO Создаем модели Заново
                     }
                 }
 
@@ -87,12 +88,7 @@ namespace Game.GamePlay.Services
                 {
                     if (viewModel.ConfigId == x.NewItem.Key) viewModel.Level.Value = x.NewItem.Value;
                 }); */
-                
-                
-                
             });
-            
-
         }
 
 
@@ -102,16 +98,29 @@ namespace Game.GamePlay.Services
             return _cmd.Process(command);
         }
 
+
         public bool MoveTower(int towerId, Vector2Int position)
         {
+            var command = new CommandMoveTower(towerId, position);
+            return _cmd.Process(command);
+            //Запустить корутин изменения координат и перемещать башню
+            //return false;
+        }
+
+        public bool TowerBuild(int towerId)
+        {
+            //Удаляем IsFrame
+            //var command = new CommandDeleteTower(towerId);
+            //return _cmd.Process(command);
             return false;
         }
 
         public bool DeleteTower(int towerId)
         {
-            return false;
+            var command = new CommandDeleteTower(towerId);
+            return _cmd.Process(command);
         }
-        
+
         /**
          * 1. По параметрам создается сущность Tower
          * 2. Оборачивается Proxy для навешивания реактивности и событий
@@ -119,8 +128,6 @@ namespace Game.GamePlay.Services
          * 4. Модель добавляем в словарь всех моделей данного класса
          * 5. Кешируем Id и view-модели
          */
-
-
         private void CreateTowerViewModel(TowerEntity towerEntity)
         {
             var towerViewModel = new TowerViewModel(towerEntity, _towerSettingsMap[towerEntity.ConfigId], this); //3
@@ -131,7 +138,6 @@ namespace Game.GamePlay.Services
         /**
          * Удаляем объект из списка моделей и из кеша
          */
-
         private void RemoveTowerViewModel(TowerEntity towerEntity)
         {
             if (_towersMap.TryGetValue(towerEntity.UniqueId, out var towerViewModel))
@@ -153,7 +159,6 @@ namespace Game.GamePlay.Services
             }
 
             return false;
-
         }
 
         public void ReplaceTower(int cardUniqueId, object cardUniqueId2)

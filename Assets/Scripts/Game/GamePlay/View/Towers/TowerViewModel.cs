@@ -12,6 +12,7 @@ namespace Game.GamePlay.View.Towers
         private readonly TowerEntity _towerEntity;
         private readonly TowerSettings _towerSettings;
         private readonly TowersService _towerService;
+        public ReactiveProperty<bool> IsFrame = new();
 
         private readonly Dictionary<int, TowerLevelSettings> _towerLevelSettingsMap = new();
 
@@ -34,6 +35,8 @@ namespace Game.GamePlay.View.Towers
             TowerEntityId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
+            IsFrame = new ReactiveProperty<bool>(towerEntity.IsFrame);
+            IsFrame.Subscribe(newValue => towerEntity.IsFrame = newValue);
             
             foreach (var towerLevelSettings in towerSettings.Levels)
             {
