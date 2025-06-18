@@ -31,7 +31,7 @@ namespace Game.GamePlay.Root.View
         //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
         private readonly Dictionary<int, TowerBinder> _createTowersMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
-        private readonly List<FrameBinder> _frames = new();
+        private readonly Dictionary<int, FrameBinder> _frames = new();
         private CastleBinder _castleBinder;
         private readonly CompositeDisposable _disposables = new();
 
@@ -58,10 +58,7 @@ namespace Game.GamePlay.Root.View
                     CreateTower(e.Value); //Новая башня всегда создается как фрейм
                     e.Value.IsFrame.Subscribe(newValue =>
                     {
-                        if (newValue == false)
-                        {
-                            DestroyFrames();
-                        }
+                        if (newValue == false) DestroyFrame(e.Value.Frame);
                     });
                 })
             );
@@ -69,6 +66,8 @@ namespace Game.GamePlay.Root.View
                 viewModel.AllTowers.ObserveRemove().Subscribe(e => DestroyTower(e.Value))
             );
 
+            //_disposables.Add(viewModel.AllFrames.ObserveAdd().Subscribe(e => {CreateFrame(e.Value); }));
+            //_disposables.Remove(viewModel.AllFrames.ObserveRemove().Subscribe(e => {DestroyFrame(e.Value); }));
             //viewModel.AllTowers
             CreateCastle(viewModel.CastleViewModel);
 /*
@@ -102,11 +101,20 @@ namespace Game.GamePlay.Root.View
             _disposables.Dispose();
         }
 
+        private void DestroyFrame(FrameViewModel viewModel)
+        {
+            if (_frames.TryGetValue(viewModel.EntityId, out var frameBinder))
+            {
+                Destroy(frameBinder.gameObject);
+                _frames.Remove(viewModel.EntityId);
+            }
+        }
+
         private void DestroyFrames()
         {
             foreach (var frame in _frames)
             {
-                Destroy(frame.gameObject);
+                //DestroyFrame(frame.)
             }
         }
 
@@ -124,7 +132,6 @@ namespace Game.GamePlay.Root.View
             var towerLevel = towerViewModel.Level;
             var towerType = towerViewModel.ConfigId;
 
-
             var prefabTowerLevelPath =
                 $"Prefabs/Gameplay/Towers/{towerType}/Level_{towerLevel}"; //Перенести в настройки уровня
             var towerPrefab = Resources.Load<TowerBinder>(prefabTowerLevelPath);
@@ -135,13 +142,26 @@ namespace Game.GamePlay.Root.View
 
             if (towerViewModel.IsFrame.CurrentValue)
             {
-                var prefabTowerFrame = "Prefabs/Gameplay/Towers/TowerFrame";
+                CreateFrame(towerViewModel.Frame, createdTower.transform);
+                /*var prefabTowerFrame = "Prefabs/Gameplay/Towers/TowerFrame";
                 var framePrefab = Resources.Load<FrameBinder>(prefabTowerFrame);
                 var createdFrame = Instantiate(framePrefab, createdTower.transform);
                 createdFrame.Bind(createdTower.transform.position);
                 //createdFrame.GameObject().transform.position = createdTower.GameObject().transform.position;
-                _frames.Add(createdFrame);
+                _frames.Add(towerViewModel.TowerEntityId, createdFrame);
+                */
             }
+        }
+
+        private void CreateFrame(FrameViewModel frameViewModel, Transform _transform)
+        {
+                var prefabTowerFrame = "Prefabs/Gameplay/Towers/TowerFrame";
+                var framePrefab = Resources.Load<FrameBinder>(prefabTowerFrame);
+                
+                var createdFrame = Instantiate(framePrefab, _transform);
+                createdFrame.Bind(frameViewModel);
+                //createdFrame.GameObject().transform.position = createdTower.GameObject().transform.position;
+                _frames.Add(frameViewModel.EntityId, createdFrame);
         }
 
         private void CreateGround(GroundViewModel groundViewModel)

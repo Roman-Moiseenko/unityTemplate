@@ -5,6 +5,7 @@ using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
+using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
@@ -26,6 +27,7 @@ namespace Game.GamePlay.Root.View
         //   public readonly IObservableCollection<RoadViewModel> AllRoads;
         public readonly IObservableCollection<TowerViewModel> AllTowers;
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
+        public readonly IObservableCollection<FrameViewModel> AllFrames;
         public CastleViewModel CastleViewModel { get; private set; }
 
         public WorldGameplayRootViewModel(
@@ -33,7 +35,8 @@ namespace Game.GamePlay.Root.View
             GroundsService groundsService,
             TowersService towersService,
             CastleService castleService,
-            FsmGameplay fsmGameplay
+            FsmGameplay fsmGameplay,
+            FrameService frameService
             //DIContainer container
         )
         {
@@ -43,6 +46,7 @@ namespace Game.GamePlay.Root.View
             // AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
             AllTowers = towersService.AllTowers;
+            AllFrames = frameService.AllFrames;
             CastleViewModel = castleService.CastleViewModel;
 
             //Изменение состояние Геймплея
@@ -61,14 +65,12 @@ namespace Game.GamePlay.Root.View
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
                     //Удаляем фреймы
-                    
                     foreach (var towerViewModel in AllTowers)
                     {
                         if (towerViewModel.IsFrame.CurrentValue)
                         {
                             towerViewModel.IsFrame.Value = false;
-                            //towersService.TowerBuild(towerViewModel.TowerEntityId);
-                            return;
+                           // return;
                         }
                     }
                     
@@ -104,7 +106,7 @@ namespace Game.GamePlay.Root.View
 
             _fsmGameplay.Fsm.Position.Subscribe(newPosition =>
             {
-                Debug.Log("newPosition " + newPosition.x + " / " + newPosition.y);
+//                Debug.Log("newPosition " + newPosition.x + " / " + newPosition.y);
                 if (_fsmGameplay.IsStateBuild())
                 {
                     var card = ((FsmStateBuild)_fsmGameplay.Fsm.StateCurrent.Value).GetRewardCard();
@@ -160,7 +162,7 @@ namespace Game.GamePlay.Root.View
 
             if (_fsmGameplay.IsStateBuild())
             {
-                Debug.Log("position = " + JsonUtility.ToJson(position));
+//                Debug.Log("position = " + JsonUtility.ToJson(position));
                 _fsmGameplay.Fsm.Position.Value =
                     new Vector2Int(Mathf.FloorToInt(position.x + 0.5f), Mathf.FloorToInt(position.y + 0.5f));
                 

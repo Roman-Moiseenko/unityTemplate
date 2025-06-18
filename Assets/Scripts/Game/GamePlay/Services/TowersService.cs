@@ -16,6 +16,7 @@ namespace Game.GamePlay.Services
     {
         private readonly IObservableCollection<Entity> _entities; //кешируем
         private readonly ICommandProcessor _cmd;
+        private readonly FrameService _frameService;
 
         private readonly ObservableList<TowerViewModel> _allTowers = new();
         private readonly Dictionary<int, TowerViewModel> _towersMap = new();
@@ -34,11 +35,13 @@ namespace Game.GamePlay.Services
         public TowersService(
             IObservableCollection<Entity> entities,
             TowersSettings towersSettings,
-            ICommandProcessor cmd
+            ICommandProcessor cmd,
+            FrameService frameService
         )
         {
             _entities = entities;
             _cmd = cmd;
+            _frameService = frameService;
 
             //Кешируем настройки зданий / обектов
             foreach (var towerSettings in towersSettings.AllTowers)
@@ -103,8 +106,6 @@ namespace Game.GamePlay.Services
         {
             var command = new CommandMoveTower(towerId, position);
             return _cmd.Process(command);
-            //Запустить корутин изменения координат и перемещать башню
-            //return false;
         }
 
         public bool TowerBuild(int towerId)
@@ -131,8 +132,10 @@ namespace Game.GamePlay.Services
         private void CreateTowerViewModel(TowerEntity towerEntity)
         {
             var towerViewModel = new TowerViewModel(towerEntity, _towerSettingsMap[towerEntity.ConfigId], this); //3
+            towerViewModel.Frame = _frameService.CreateFrame(towerEntity.Position.Value, towerEntity.UniqueId); 
             _allTowers.Add(towerViewModel); //4
             _towersMap[towerEntity.UniqueId] = towerViewModel;
+            
         }
 
         /**

@@ -17,12 +17,13 @@ namespace Game.GamePlay.Root.View
             container.RegisterFactory(c => new GameplayUIManager(container)).AsSingle();
             container.RegisterFactory(c => new UIGameplayRootViewModel(container)).AsSingle();
             container.RegisterFactory(c => new WorldGameplayRootViewModel(
-             //   c.Resolve<BuildingsService>(),
+                //   c.Resolve<BuildingsService>(),
                 c.Resolve<GroundsService>(),
                 c.Resolve<TowersService>(),
                 c.Resolve<CastleService>(),
-             c.Resolve<FsmGameplay>()
-                )).AsSingle();
+                c.Resolve<FsmGameplay>(),
+                c.Resolve<FrameService>()
+            )).AsSingle();
         }
     }
 }

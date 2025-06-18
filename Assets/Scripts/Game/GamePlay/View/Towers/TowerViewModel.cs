@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.GamePlay.Services;
+using Game.GamePlay.View.Frames;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Maps.Towers;
 using R3;
@@ -12,6 +13,7 @@ namespace Game.GamePlay.View.Towers
         private readonly TowerEntity _towerEntity;
         private readonly TowerSettings _towerSettings;
         private readonly TowersService _towerService;
+        public FrameViewModel Frame;
         public ReactiveProperty<bool> IsFrame = new();
 
         private readonly Dictionary<int, TowerLevelSettings> _towerLevelSettingsMap = new();

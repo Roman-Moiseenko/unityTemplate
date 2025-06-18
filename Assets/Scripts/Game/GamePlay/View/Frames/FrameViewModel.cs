@@ -7,11 +7,15 @@ namespace Game.GamePlay.View.Frames
     {
         public ReadOnlyReactiveProperty<Vector2Int> Position { get; }
         public ReactiveProperty<bool> Enable;
+        public Transform ParentTransform;
+        public int EntityId;
 
-        public FrameViewModel()
+        public FrameViewModel(Vector2Int position, int entityId)
         {
-            Enable = new ReactiveProperty<bool>();
-            Position = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));
+          //  ParentTransform = parentTransform;
+            EntityId = entityId;
+            Enable = new ReactiveProperty<bool>(true);
+            Position = new ReactiveProperty<Vector2Int>(position);
         }
     }
 }

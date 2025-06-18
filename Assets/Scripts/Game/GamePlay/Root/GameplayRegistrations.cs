@@ -68,30 +68,38 @@ namespace Game.GamePlay.Root
                 }
             }
 
+            
             container.RegisterFactory(_ => new CastleService(
                 gameplayState.Castle.Value,
                 cmd)
             ).AsSingle();
 
-            //Регистрируем сервис по Зданиями
-            /*   container.RegisterFactory(_ => new BuildingsService(
+            var frameService = new FrameService(cmd);
+            container.RegisterInstance(frameService);
+            //Регистрируем сервис по Дорогам
+            /*   container.RegisterFactory(_ => new RoadsService(
                    gameplayState.Entities,
-                   gameSettings.BuildingsSettings,
-                   cmd)
+                   gameSettings.RoadsSettings,
+                   cmd,
+                frameService)
                ).AsSingle();
                */
             container.RegisterFactory(_ => new GroundsService(
                 gameplayState.Entities,
-                cmd)
+                cmd,
+                frameService
+                )
             ).AsSingle();
 
             container.RegisterFactory(_ => new TowersService(
                     gameplayState.Entities,
                     gameSettings.TowersSettings,
-                    cmd
+                    cmd,
+                    frameService
                 )
             ).AsSingle();
 
+           // container.RegisterFactory(_ => ).AsSingle();
 
             //Добавить сервисы и команды для
             /// Дорог
