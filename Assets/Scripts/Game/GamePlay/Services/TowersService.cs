@@ -17,6 +17,7 @@ namespace Game.GamePlay.Services
         private readonly IObservableCollection<Entity> _entities; //кешируем
         private readonly ICommandProcessor _cmd;
         private readonly FrameService _frameService;
+        private readonly PlacementService _placementService;
 
         private readonly ObservableList<TowerViewModel> _allTowers = new();
         private readonly Dictionary<int, TowerViewModel> _towersMap = new();
@@ -36,12 +37,14 @@ namespace Game.GamePlay.Services
             IObservableCollection<Entity> entities,
             TowersSettings towersSettings,
             ICommandProcessor cmd,
-            FrameService frameService
+            FrameService frameService,
+            PlacementService placementService
         )
         {
             _entities = entities;
             _cmd = cmd;
             _frameService = frameService;
+            _placementService = placementService;
 
             //Кешируем настройки зданий / обектов
             foreach (var towerSettings in towersSettings.AllTowers)
@@ -61,7 +64,16 @@ namespace Game.GamePlay.Services
                 if (e.Value is TowerEntity towerEntity)
                 {
                     towerEntity.Level.Value = Levels[towerEntity.ConfigId]; //Устанавливаем уровень апгрейда
-                    CreateTowerViewModel(towerEntity);
+                    var viewModel = CreateTowerViewModel(towerEntity); //Создаем View Model
+                    if (towerEntity.IsFrame) //Если это фрейм, то создаем подписку на перемещение
+                    {
+                        //При перемещении проверяем, можно ли строить в текущей позиции
+                        towerEntity.Position.Subscribe(newPosition =>
+                            {
+                                viewModel.Frame.Enable.Value = _placementService.CheckPlacementTower(newPosition, towerEntity.UniqueId);
+                            }
+                        );
+                    }
                 }
             });
             //Если у сущности изменился уровень, меняем его и во вью-модели
@@ -81,7 +93,6 @@ namespace Game.GamePlay.Services
                         //Debug.Log("Нашли towerEntity " + towerEntity.ConfigId + " ЛЕВЕЛ = " + towerEntity.Level.Value + " с Id" + towerEntity.UniqueId );
 
                         RemoveTowerViewModel(towerEntity); //TODO Удаляем все модели viewModel.ConfigId == x.NewItem.Key
-
                         CreateTowerViewModel(towerEntity); //TODO Создаем модели Заново
                     }
                 }
@@ -129,13 +140,17 @@ namespace Game.GamePlay.Services
          * 4. Модель добавляем в словарь всех моделей данного класса
          * 5. Кешируем Id и view-модели
          */
-        private void CreateTowerViewModel(TowerEntity towerEntity)
+        private TowerViewModel CreateTowerViewModel(TowerEntity towerEntity)
         {
             var towerViewModel = new TowerViewModel(towerEntity, _towerSettingsMap[towerEntity.ConfigId], this); //3
-            towerViewModel.Frame = _frameService.CreateFrame(towerEntity.Position.Value, towerEntity.UniqueId); 
+            if (towerEntity.IsFrame)
+            {
+                towerViewModel.Frame = _frameService.CreateFrame(towerEntity.Position.Value, towerEntity.UniqueId);
+            }
+
             _allTowers.Add(towerViewModel); //4
             _towersMap[towerEntity.UniqueId] = towerViewModel;
-            
+            return towerViewModel;
         }
 
         /**

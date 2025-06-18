@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 8838689058108504181}
   - component: {fileID: 4943393243327554164}
   m_Layer: 0
-  m_Name: TowerFrame
+  m_Name: Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,6 +77,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb0a59940a95438a815eb7e54b794a72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  allowed: {fileID: 2100000, guid: 180cdf4ea244e57419ae63dc9fb343ed, type: 2}
+  forbidden: {fileID: 2100000, guid: fac9703a3691eef46baf6cb0bde5fcd9, type: 2}
+  frame: {fileID: 3496800719861116810}
 --- !u!1 &3496800719861116810
 GameObject:
   m_ObjectHideFlags: 0

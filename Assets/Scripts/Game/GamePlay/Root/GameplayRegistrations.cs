@@ -73,9 +73,12 @@ namespace Game.GamePlay.Root
                 gameplayState.Castle.Value,
                 cmd)
             ).AsSingle();
+            
 
             var frameService = new FrameService(cmd);
             container.RegisterInstance(frameService);
+            var placementService = new PlacementService(gameplayState);
+            container.RegisterInstance(placementService);
             //Регистрируем сервис по Дорогам
             /*   container.RegisterFactory(_ => new RoadsService(
                    gameplayState.Entities,
@@ -95,7 +98,8 @@ namespace Game.GamePlay.Root
                     gameplayState.Entities,
                     gameSettings.TowersSettings,
                     cmd,
-                    frameService
+                    frameService,
+                    placementService
                 )
             ).AsSingle();
 

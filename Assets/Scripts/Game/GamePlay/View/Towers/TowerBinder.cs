@@ -10,7 +10,9 @@ namespace Game.GamePlay.View.Towers
         private TowerViewModel _viewModel;
         private Vector3 _targetPosition;
         private bool _isMoving = false;
-        private const int speed = 6;
+        private const int speed = 20;
+        private const float smoothTime = 0.2f;
+        private Vector3 _velocity;
 
         public void Bind(TowerViewModel viewModel)
         {
@@ -21,19 +23,25 @@ namespace Game.GamePlay.View.Towers
                 _isMoving = true;
             });
             
+            
             transform.position = new Vector3(
                 viewModel.Position.CurrentValue.x,
                 0,
                 viewModel.Position.CurrentValue.y
             );
         }
-
+        
         private void Update()
         {
             if (_isMoving)
             {
-                transform.position = Vector3.MoveTowards(transform.position, _targetPosition, speed * Time.deltaTime);
-                if (transform.position == _targetPosition) _isMoving = false;
+                transform.position = Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, smoothTime, speed );
+                if (_velocity.magnitude < 0.0005)
+                {
+                    _isMoving = false;
+                    transform.position = _targetPosition;
+                }
+            
             }
         }
     }

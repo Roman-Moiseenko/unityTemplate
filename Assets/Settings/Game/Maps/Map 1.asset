@@ -40,15 +40,12 @@ MonoBehaviour:
     - Position: {x: 1, y: -2}
     Towers:
     - ConfigId: Tower01
-      Level: 1
       Position: {x: 2, y: 0}
     - ConfigId: Tower01
-      Level: 2
       Position: {x: 4, y: 1}
     - ConfigId: Tower01
-      Level: 3
       Position: {x: 3, y: 0}
-    GroundDefault: Grass02
+    GroundDefault: Snow01
   InfoStateSettings:
     PrefabName: 
     CountMobs: 15

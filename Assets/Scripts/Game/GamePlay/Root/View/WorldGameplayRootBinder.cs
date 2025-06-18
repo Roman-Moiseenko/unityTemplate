@@ -143,24 +143,15 @@ namespace Game.GamePlay.Root.View
             if (towerViewModel.IsFrame.CurrentValue)
             {
                 CreateFrame(towerViewModel.Frame, createdTower.transform);
-                /*var prefabTowerFrame = "Prefabs/Gameplay/Towers/TowerFrame";
-                var framePrefab = Resources.Load<FrameBinder>(prefabTowerFrame);
-                var createdFrame = Instantiate(framePrefab, createdTower.transform);
-                createdFrame.Bind(createdTower.transform.position);
-                //createdFrame.GameObject().transform.position = createdTower.GameObject().transform.position;
-                _frames.Add(towerViewModel.TowerEntityId, createdFrame);
-                */
             }
         }
 
         private void CreateFrame(FrameViewModel frameViewModel, Transform _transform)
         {
-                var prefabTowerFrame = "Prefabs/Gameplay/Towers/TowerFrame";
+                var prefabTowerFrame = "Prefabs/Gameplay/Frame";
                 var framePrefab = Resources.Load<FrameBinder>(prefabTowerFrame);
-                
                 var createdFrame = Instantiate(framePrefab, _transform);
                 createdFrame.Bind(frameViewModel);
-                //createdFrame.GameObject().transform.position = createdTower.GameObject().transform.position;
                 _frames.Add(frameViewModel.EntityId, createdFrame);
         }
 
@@ -168,11 +159,10 @@ namespace Game.GamePlay.Root.View
         {
             var groundType = groundViewModel.ConfigId;
             var odd = Math.Abs((groundViewModel.Position.CurrentValue.x + groundViewModel.Position.CurrentValue.y) % 2);
-            var prefabGroundPath = $"Prefabs/Gameplay/Map/Grounds/{groundType}_{odd}"; //Перенести в настройки уровня
-            //TODO Сделать смену материала, вместо загрузки 2х видов префабов
+            var prefabGroundPath = $"Prefabs/Gameplay/Map/Grounds/{groundType}"; //Перенести в настройки уровня
             var groundPrefab = Resources.Load<GroundBinder>(prefabGroundPath);
             var createdGround = Instantiate(groundPrefab, transform);
-            createdGround.Bind(groundViewModel);
+            createdGround.Bind(groundViewModel, odd);
             _createGroundsMap[groundViewModel.GroundEntityId] = createdGround;
         }
 
