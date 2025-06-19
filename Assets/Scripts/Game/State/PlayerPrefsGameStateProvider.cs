@@ -34,7 +34,7 @@ namespace Game.State
                 TypeNameHandling = TypeNameHandling.Auto,
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
             }; 
-            Debug.Log("!PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY) = "  + !PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY));
+//            Debug.Log("!PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY) = "  + !PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY));
             
             if (!PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY))
             {
@@ -53,7 +53,7 @@ namespace Game.State
         }
         private GameplayStateProxy CreateGameplayStateFromSettings()
         {
-            Debug.Log("CreateGameplayStateFromSettings" );
+            //Debug.Log("CreateGameplayStateFromSettings" );
             //Заполняем карты по умолчанию, и другие бонусы
             _gameplayStateOrigin = new GameplayState
             {

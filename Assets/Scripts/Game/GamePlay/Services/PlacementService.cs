@@ -46,5 +46,11 @@ namespace Game.GamePlay.Services
 
             return result;
         }
+
+        public Vector2Int GetNewPositionTower()
+        {
+            //TODO Вычисляем координаты для башни 
+            return new Vector2Int(Random.Range(-1, 5), Random.Range(-1, 3));
+        }
     }
 }

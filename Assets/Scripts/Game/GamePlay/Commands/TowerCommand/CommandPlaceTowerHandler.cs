@@ -29,7 +29,7 @@ namespace Game.GamePlay.Commands
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
             newTower.IsFrame = true; //Сначала создаем каркас башни
             _gameplayState.Entities.Add(newTower);//Добавляем в список объектов карты
-            return false;
+            return true;
         }
     }
 }

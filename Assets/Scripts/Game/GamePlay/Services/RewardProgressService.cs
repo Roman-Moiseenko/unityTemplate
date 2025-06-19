@@ -58,7 +58,7 @@ namespace Game.GamePlay.Services
                     var card = ((FsmStateBuildEnd)newState).GetRewardCard();
                     _gameplayStateProxy.Progress.Value -= 100;
                     _gameplayStateProxy.ProgressLevel.Value++;
-                    SetReward(card);
+                 //   SetReward(card);
                 }
             });
 
@@ -81,6 +81,7 @@ namespace Game.GamePlay.Services
                 case RewardType.HeroBust: Debug.Log("Усиление героя. В разработке"); break;
                 default: throw new Exception($"Неверный тип награды {card.RewardType}"); 
             }
+            
         }
 
         private RewardsProgress GenerateReward()

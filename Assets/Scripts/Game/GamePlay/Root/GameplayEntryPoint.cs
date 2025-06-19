@@ -23,10 +23,8 @@ namespace Game.GamePlay.Root
         public Observable<GameplayExitParams> Run(DIContainer gameplayContainer, GameplayEnterParams enterParams)
         {
             
-            Debug.Log("enterParams " + JsonConvert.SerializeObject(enterParams, Formatting.Indented));
-            
+//            Debug.Log("enterParams " + JsonConvert.SerializeObject(enterParams, Formatting.Indented));
             GameplayRegistrations.Register(gameplayContainer, enterParams); //Регистрируем все сервисы сцены
-            
             
             var gameplayViewModelsContainer = new DIContainer(gameplayContainer); //Создаем контейнер для view-моделей
             GameplayViewModelsRegistrations.Register(gameplayViewModelsContainer); //Регистрируем все View-модели сцены Gameplay
@@ -34,11 +32,8 @@ namespace Game.GamePlay.Root
             InitWorld(gameplayViewModelsContainer);
             InitUI(gameplayViewModelsContainer);
             
-            
-            
             //Сохраняем начальные параметры игровой сессии
             gameplayContainer.Resolve<IGameStateProvider>().SaveGameplayState();
-            
             
             Debug.Log($"MAIN MENU ENTER POINT: Results MapId {enterParams?.MapId}");
 

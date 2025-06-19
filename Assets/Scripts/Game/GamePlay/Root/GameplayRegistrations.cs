@@ -75,8 +75,7 @@ namespace Game.GamePlay.Root
             ).AsSingle();
             
 
-            var frameService = new FrameService(cmd);
-            container.RegisterInstance(frameService);
+
             var placementService = new PlacementService(gameplayState);
             container.RegisterInstance(placementService);
             //Регистрируем сервис по Дорогам
@@ -89,20 +88,20 @@ namespace Game.GamePlay.Root
                */
             container.RegisterFactory(_ => new GroundsService(
                 gameplayState.Entities,
+                cmd
+                )
+            ).AsSingle();
+
+            var towersService = new TowersService(
+                gameplayState.Entities,
+                gameSettings.TowersSettings,
                 cmd,
-                frameService
-                )
-            ).AsSingle();
-
-            container.RegisterFactory(_ => new TowersService(
-                    gameplayState.Entities,
-                    gameSettings.TowersSettings,
-                    cmd,
-                    frameService,
-                    placementService
-                )
-            ).AsSingle();
-
+                placementService
+            );
+            
+            container.RegisterInstance(towersService);
+            var frameService = new FrameService(gameplayState, placementService, towersService);
+            container.RegisterInstance(frameService);
            // container.RegisterFactory(_ => ).AsSingle();
 
             //Добавить сервисы и команды для

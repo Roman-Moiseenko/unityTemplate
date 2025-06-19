@@ -1,5 +1,7 @@
 ﻿using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Towers;
+using Game.State.Maps.Towers;
+using Game.State.Root;
 using MVVM.CMD;
 using ObservableCollections;
 using R3;
@@ -9,24 +11,79 @@ namespace Game.GamePlay.Services
 {
     public class FrameService
     {
-        private readonly ICommandProcessor _cmd;
-
-        public ReactiveProperty<TowerViewModel> TowerViewModel;
-        public IObservableCollection<FrameViewModel> AllFrames => _allFrames;
-        private readonly ObservableList<FrameViewModel> _allFrames = new();
+        private readonly GameplayStateProxy _gameplayState;
+        private readonly PlacementService _placementService;
+        private readonly TowersService _towerService;
+        
+        private FrameBlock _frameBlock;
+        private readonly ObservableList<FrameBlock> _framesBlock = new();
+        public IObservableCollection<FrameBlock> FramesBlock =>
+            _framesBlock;
+        public ISynchronizedView<FrameViewModel, FrameViewModel> ItemsView { get; set; }
 
         //public 
 
-        public FrameService(ICommandProcessor cmd)
+        public FrameService(
+            GameplayStateProxy gameplayState,
+            PlacementService placementService,
+            TowersService towerService)
         {
-            _cmd = cmd;
+            _gameplayState = gameplayState;
+            _placementService = placementService;
+            _towerService = towerService;
         }
 
-        public FrameViewModel CreateFrame(Vector2Int position, int entityId)
+        public void MoveFrame(Vector2Int position)
         {
-            var frame = new FrameViewModel(position, entityId);
-            _allFrames.Add(frame);
-            return frame;
+            if (_frameBlock.FrameIs(FrameType.Tower))
+            {
+                var towerEntityId = _frameBlock.As<FrameBlockTower>().TowerViewModel.TowerEntityId;
+                _frameBlock.Enable.Value = _placementService.CheckPlacementTower(position, towerEntityId);
+            }
+
+            if (_frameBlock.FrameIs(FrameType.Road))
+            {
+                //
+            }
+            
+            if (_frameBlock.FrameIs(FrameType.Ground))
+            {
+                //
+            }
+            
+            _frameBlock.Move(position);
+        }
+
+        public void RotateFrame()
+        {
+            if (_frameBlock.IsRotate)
+            {
+                _frameBlock.Rotate();
+            }
+        }
+
+        public void CreateFrameTower(Vector2Int position, int level, string configId)
+        {
+            var towerEntityId = _gameplayState.CreateEntityID();
+            var towerEntity = new TowerEntity(new TowerEntityData
+            {
+                UniqueId = towerEntityId,
+                Position = position,
+                Level = level,
+                ConfigId = configId
+            });
+            
+            var towerViewModel = new TowerViewModel(towerEntity, null, _towerService);
+            var frameViewModel = new FrameViewModel(position, _gameplayState.CreateEntityID());
+            _frameBlock = new FrameBlockTower(position, towerViewModel, frameViewModel);
+            _frameBlock.Enable.Value = _placementService.CheckPlacementTower(position, towerEntityId);
+            _framesBlock.Add(_frameBlock);
+        }
+
+        public void RemoveFrame()
+        {
+            _framesBlock.Remove(_frameBlock);
+            _frameBlock.Dispose();
         }
     }
 }

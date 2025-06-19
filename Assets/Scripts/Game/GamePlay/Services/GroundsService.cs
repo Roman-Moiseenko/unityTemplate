@@ -25,8 +25,8 @@ namespace Game.GamePlay.Services
         public GroundsService(
             IObservableCollection<Entity> entities,
            // GroundSettings groundSettings,
-            ICommandProcessor cmd,
-            FrameService frameService)
+            ICommandProcessor cmd
+            )
         {
             _cmd = cmd;
             

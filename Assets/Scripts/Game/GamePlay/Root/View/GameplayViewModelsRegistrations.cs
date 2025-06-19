@@ -22,7 +22,8 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<TowersService>(),
                 c.Resolve<CastleService>(),
                 c.Resolve<FsmGameplay>(),
-                c.Resolve<FrameService>()
+                c.Resolve<FrameService>(),
+                c.Resolve<PlacementService>()
             )).AsSingle();
         }
     }

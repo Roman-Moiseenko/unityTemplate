@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
@@ -27,7 +28,8 @@ namespace Game.GamePlay.Root.View
         //   public readonly IObservableCollection<RoadViewModel> AllRoads;
         public readonly IObservableCollection<TowerViewModel> AllTowers;
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
-        public readonly IObservableCollection<FrameViewModel> AllFrames;
+
+        public readonly IObservableCollection<FrameBlock> FramesBlock;
         public CastleViewModel CastleViewModel { get; private set; }
 
         public WorldGameplayRootViewModel(
@@ -36,7 +38,8 @@ namespace Game.GamePlay.Root.View
             TowersService towersService,
             CastleService castleService,
             FsmGameplay fsmGameplay,
-            FrameService frameService
+            FrameService frameService,
+            PlacementService placementService
             //DIContainer container
         )
         {
@@ -46,7 +49,7 @@ namespace Game.GamePlay.Root.View
             // AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
             AllTowers = towersService.AllTowers;
-            AllFrames = frameService.AllFrames;
+            FramesBlock = frameService.FramesBlock;
             CastleViewModel = castleService.CastleViewModel;
 
             //Изменение состояние Геймплея
@@ -57,22 +60,44 @@ namespace Game.GamePlay.Root.View
                     var reward = ((FsmStateBuild)newState).GetRewardCard();
                     if (reward.RewardType == RewardType.Tower)
                     {
-                        var position = new Vector2Int(Random.Range(-1, 5), Random.Range(-1, 3));
-                        towersService.PlaceTower(reward.ConfigId, position);
+                        var position = placementService.GetNewPositionTower();
+                        var level = towersService.Levels[reward.ConfigId];
+                        //towersService.PlaceTower(reward.ConfigId, position);
+                        frameService.CreateFrameTower(position, level, reward.ConfigId);
                     }
                 }
 
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
-                    //Удаляем фреймы
-                    foreach (var towerViewModel in AllTowers)
+                    var card = ((FsmStateBuildEnd)newState).GetRewardCard();
+                    
+                    switch (card.RewardType)
                     {
-                        if (towerViewModel.IsFrame.CurrentValue)
-                        {
-                            towerViewModel.IsFrame.Value = false;
-                           // return;
-                        }
+                        case RewardType.Tower: towersService.PlaceTower(card.ConfigId, card.Position); break; 
+                        case RewardType.Ground: groundsService.PlaceGround(card.ConfigId, card.Position); break;
+                        case RewardType.Road: Debug.Log("Размещение дороги. В разработке"); break;
+                        case RewardType.TowerBust: towersService.ApplyBust(card.TargetId, card.ConfigId); break;
+                        case RewardType.TowerMove: towersService.MoveTower(card.UniqueId, card.Position); break;
+                        case RewardType.TowerReplace: towersService.ReplaceTower(card.UniqueId, card.UniqueId2); break;
+                        case RewardType.SkillBust: Debug.Log("Усиление навыка. В разработке"); break;
+                        case RewardType.HeroBust: Debug.Log("Усиление героя. В разработке"); break;
+                        default: throw new Exception($"Неверный тип награды {card.RewardType}"); 
                     }
+                    frameService.RemoveFrame();
+                    
+                    
+                  //  if (FramesBlock != null)
+                 //   {
+                       // var newPosition = FramesBlock.CurrentValue.Position.CurrentValue;
+                        //var configId =((FrameBlockTower)FramesBlock.CurrentValue).ConfigId;
+                      //  FramesBlock.Dispose();
+                      //  towersService.PlaceTower(configId, newPosition);
+                  //  }
+
+                    //Удаляем FrameBlockViewModel 
+                                                    
+                  
+
                     
                 }
 
@@ -80,28 +105,12 @@ namespace Game.GamePlay.Root.View
                 {
                     if (newState.Fsm.PreviousState.GetType() == typeof(FsmStateBuild)) //Возврат от режима строим
                     {
-                        foreach (var towerViewModel in AllTowers)
-                        {
-                            if (towerViewModel.IsFrame.CurrentValue)
-                            {
-                                towersService.DeleteTower(towerViewModel.TowerEntityId);
-                                return;
-                            }
-                        }
-                      /*  foreach (var groundViewModel in AllGrounds)
-                        {
-                            if (groundViewModel.IsFrame.CurrentValue) groundViewModel.DeleteGround(groundViewModel.TowerEntityId);
-                        } 
-                        foreach (var roadViewModel in AllRoads)
-                        {
-                            if (roadViewModel.IsFrame.CurrentValue) roadsService.DeleteRoad(roadViewModel.TowerEntityId);
-                        }
-                        */
+                        frameService.RemoveFrame();
                         //Удаляем фреймы
                     }
                 }
 
-                Debug.Log("newState = " + JsonConvert.SerializeObject(newState.Params, Formatting.Indented));
+//                Debug.Log("newState = " + JsonConvert.SerializeObject(newState.Params, Formatting.Indented));
             });
 
             _fsmGameplay.Fsm.Position.Subscribe(newPosition =>
@@ -109,6 +118,8 @@ namespace Game.GamePlay.Root.View
 //                Debug.Log("newPosition " + newPosition.x + " / " + newPosition.y);
                 if (_fsmGameplay.IsStateBuild())
                 {
+                    frameService.MoveFrame(newPosition);
+                  /*  
                     var card = ((FsmStateBuild)_fsmGameplay.Fsm.StateCurrent.Value).GetRewardCard();
                     if (card.RewardType == RewardType.Tower)
                     {
@@ -116,7 +127,7 @@ namespace Game.GamePlay.Root.View
                         {
                             if (towerViewModel.IsFrame.CurrentValue) towersService.MoveTower(towerViewModel.TowerEntityId, newPosition);
                         }
-                    }
+                    }*/
                     //Переносим объект
                 }
 
