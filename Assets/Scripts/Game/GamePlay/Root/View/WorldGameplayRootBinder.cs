@@ -42,7 +42,8 @@ namespace Game.GamePlay.Root.View
         private GameplayCamera _gameplayCamera;
         private WorldGameplayRootViewModel _viewModel;
 
-
+        private bool _isFrameDownClick = false; //Для перемещения FrameBlock фиксируем нажатие
+        
         public void Bind(WorldGameplayRootViewModel viewModel)
         {
             _coroutines = new GameObject("[COROUTINES]").AddComponent<Coroutines>();
@@ -85,7 +86,6 @@ namespace Game.GamePlay.Root.View
             );
             */
 
-
             foreach (var groundViewModel in viewModel.AllGrounds)
                 CreateGround(groundViewModel);
             _disposables.Add(
@@ -104,18 +104,8 @@ namespace Game.GamePlay.Root.View
             {
                 Destroy(_castleBinder.gameObject);
             }
-
             _disposables.Dispose();
         }
-
-        private void DestroyFrames()
-        {
-            foreach (var frame in _createFrameMap)
-            {
-                //DestroyFrame(frame.)
-            }
-        }
-
         private void CreateCastle(CastleViewModel castleViewModel)
         {
             var prefabPath = "Prefabs/Gameplay/Buildings/Castle"; //Перенести в настройки уровня
@@ -124,7 +114,6 @@ namespace Game.GamePlay.Root.View
             createdCastle.Bind(castleViewModel);
             _castleBinder = createdCastle;
         }
-
         private void CreateTower(TowerViewModel towerViewModel)
         {
             var towerLevel = towerViewModel.Level;
@@ -138,7 +127,6 @@ namespace Game.GamePlay.Root.View
             createdTower.Bind(towerViewModel);
             _createTowersMap[towerViewModel.TowerEntityId] = createdTower;
         }
-
         private void CreateFrame(FrameViewModel frameViewModel)
         {
             var prefabFrame = "Prefabs/Gameplay/Frame";
@@ -147,7 +135,6 @@ namespace Game.GamePlay.Root.View
             createdFrame.Bind(frameViewModel);
             _createFrameMap.Add(frameViewModel.EntityId, createdFrame);
         }
-
         private void CreateFrameBlock(FrameBlock frameBlock)
         {
             if (frameBlock.FrameIs(FrameType.Tower))
@@ -160,7 +147,6 @@ namespace Game.GamePlay.Root.View
 //            Debug.Log("Создаем объект FrameBlock");
         //    Debug.Log(JsonConvert.SerializeObject(frameBlock, Formatting.Indented));
         }
-
         private void DestroyFrameBlock(FrameBlock frameBlock)
         {
             if (frameBlock.FrameIs(FrameType.Tower))
@@ -171,7 +157,6 @@ namespace Game.GamePlay.Root.View
             //Создаем на карте строящийся объект
          //   Debug.Log("Удаляем объект FrameBlock");
         }
-
         private void CreateGround(GroundViewModel groundViewModel)
         {
             var groundType = groundViewModel.ConfigId;
@@ -182,7 +167,6 @@ namespace Game.GamePlay.Root.View
             createdGround.Bind(groundViewModel, odd);
             _createGroundsMap[groundViewModel.GroundEntityId] = createdGround;
         }
-
         private void DestroyTower(TowerViewModel towerViewModel)
         {
             if (_createTowersMap.TryGetValue(towerViewModel.TowerEntityId, out var towerBinder))
@@ -191,7 +175,6 @@ namespace Game.GamePlay.Root.View
                 _createTowersMap.Remove(towerViewModel.TowerEntityId);
             }
         }
-
         private void DestroyGround(GroundViewModel groundViewModel)
         {
             if (_createGroundsMap.TryGetValue(groundViewModel.GroundEntityId, out var groundBinder))
@@ -224,12 +207,22 @@ namespace Game.GamePlay.Root.View
                 if (_isMouseDown) //Имитация GetMouseButtonDown
                 {
                     _isMouseDown = false;
-                    _gameplayCamera.OnPointDown(mousePosition); //Вызываем функцию начала перетаскивания
+                    _isFrameDownClick = _viewModel.DownFrame(_gameplayCamera.GetWorldPoint(mousePosition));
+                    //TODO Проверить куда нажали, если фрейм, перетаскиваем фрейм
+                    //Иначе камеру
+                    if (!_isFrameDownClick)
+                        _gameplayCamera.OnPointDown(mousePosition); //Вызываем функцию начала перетаскивания
                 }
 
                 if (Input.GetMouseButton(0) && !_clickCoroutines)
                 {
-                    _gameplayCamera.OnPointMove(mousePosition); //Debug.Log("Мышь зажата");
+                    if (_isFrameDownClick)
+                    {
+                        _viewModel.MoveFrame(_gameplayCamera.GetWorldPoint(mousePosition));
+                    } else
+                    {
+                        _gameplayCamera.OnPointMove(mousePosition); //Debug.Log("Мышь зажата");
+                    }
                 }
 
                 if (Input.GetMouseButtonUp(0))
@@ -255,7 +248,12 @@ namespace Game.GamePlay.Root.View
                     }
                     else
                     {
-                        _gameplayCamera.OnPointUp(mousePosition); //Debug.Log("Мышь отпущена");
+                        if (_isFrameDownClick)
+                        {
+                            _viewModel.UpFrame();
+                        } else {
+                            _gameplayCamera.OnPointUp(mousePosition); //Debug.Log("Мышь отпущена");
+                        }
                     }
                 }
             }

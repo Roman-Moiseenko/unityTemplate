@@ -34,7 +34,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
                 {
                     vector3.y = 0;
                 }
-                Debug.Log(vector3.y);
+//                Debug.Log(vector3.y);
                 //_btnCancel.transform.position = vector3;
                 _btnCancel.transform.localPosition = vector3;
                 //Debug.Log(_btnCancel.transform.position.y);

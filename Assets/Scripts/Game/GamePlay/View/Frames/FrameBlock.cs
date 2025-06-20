@@ -38,5 +38,12 @@ namespace Game.GamePlay.View.Frames
         
         public virtual void Move(Vector2Int position) {}
         public virtual void Rotate() {}
+        public virtual void Selected(bool value = true) { }
+
+        public virtual bool IsPosition(Vector2Int position)
+        {
+            throw new Exception("Не назначена функция определения в позиции");
+        }
+        
     }
 }

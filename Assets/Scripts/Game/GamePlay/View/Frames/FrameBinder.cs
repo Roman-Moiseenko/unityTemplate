@@ -7,7 +7,9 @@ namespace Game.GamePlay.View.Frames
     {
         private FrameViewModel _frameViewModel;
         [SerializeField] private Material allowed;
+        [SerializeField] private Material allowedSelected;
         [SerializeField] private Material forbidden;
+        [SerializeField] private Material forbiddenSelected;
         [SerializeField] private GameObject frame;
         
         private Vector3 _targetPosition;
@@ -30,6 +32,23 @@ namespace Game.GamePlay.View.Frames
                 {
                     frame.GetComponent<MeshRenderer>().material = forbidden; //Debug.Log("Нельзя строить");
                 }
+            });
+
+            frameViewModel.IsSelected.Subscribe(newValue =>
+            {
+                var color = frame.GetComponent<MeshRenderer>().material.color;
+                Debug.Log("color.a = " + color.a);
+                if (newValue)
+                {
+                    //Debug.Log();
+                    color.a = 125f;
+                }
+                else
+                {
+                    color.a = 111f;
+//                    frame.GetComponent<MeshRenderer>().material = forbidden; //Debug.Log("Нельзя строить");
+                }
+                frame.GetComponent<MeshRenderer>().material.color = color;
             });
             
             _frameViewModel.Position.Subscribe(newPosition =>

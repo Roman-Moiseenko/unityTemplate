@@ -8,6 +8,7 @@ namespace Game.GamePlay.View.Frames
     {
         public ReactiveProperty<Vector2Int> Position { get; set; }
         public ReactiveProperty<bool> Enable;
+        public ReactiveProperty<bool> IsSelected;
         public int EntityId; //Для совместимости
 
         public FrameViewModel(Vector2Int position, int entityId)
@@ -15,7 +16,12 @@ namespace Game.GamePlay.View.Frames
             EntityId = entityId;
             Enable = new ReactiveProperty<bool>(true);
             Position = new ReactiveProperty<Vector2Int>(position);
+            IsSelected = new ReactiveProperty<bool>(false);
         }
-        
+
+        public void Selected(bool value = true)
+        {
+            IsSelected.Value = value;
+        }
     }
 }

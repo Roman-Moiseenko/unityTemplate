@@ -23,6 +23,8 @@ namespace Game.GamePlay.Root.View
     public class WorldGameplayRootViewModel
     {
         private readonly FsmGameplay _fsmGameplay;
+
+        private readonly FrameService _frameService;
         // private readonly DIContainer _container;
 
         //   public readonly IObservableCollection<RoadViewModel> AllRoads;
@@ -44,6 +46,7 @@ namespace Game.GamePlay.Root.View
         )
         {
             _fsmGameplay = fsmGameplay;
+            _frameService = frameService;
             //_container = container;
 
             // AllRoads = roadsService.AllRoads;
@@ -183,6 +186,37 @@ namespace Game.GamePlay.Root.View
                 _fsmGameplay.Fsm.StateCurrent.Value.Params = card;
                 
             }
+        }
+
+        //Если при нажатии клавиши, под ним фрейм, то выделяем его и возвращаем true
+        public bool DownFrame(Vector2 position)
+        {
+            Debug.Log(" Нажали на фрейм ");
+            var vectorInt = new Vector2Int(
+                Mathf.FloorToInt(position.x + 0.5f),
+                Mathf.FloorToInt(position.y + 0.5f)
+            );
+            var result = _frameService.IsPosition(vectorInt);
+            Debug.Log(" Нашли фрейм " + result);
+
+            if (result) _frameService.SelectedFrame();
+            return result;
+        }
+
+        public void UpFrame()
+        {
+            Debug.Log(" Отпустили фрейм ");
+            _frameService.UnSelectedFrame();
+        }
+
+        public void MoveFrame(Vector2 position)
+        {
+            Debug.Log(" Двигаем фрейм ");
+            var vectorInt = new Vector2Int(
+                Mathf.FloorToInt(position.x + 0.5f),
+                Mathf.FloorToInt(position.y + 0.5f)
+            );
+            _frameService.MoveFrame(vectorInt);
         }
     }
 }

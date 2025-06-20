@@ -5,6 +5,7 @@ using Game.State.Root;
 using MVVM.CMD;
 using ObservableCollections;
 using R3;
+using Unity.Mathematics.Geometry;
 using UnityEngine;
 
 namespace Game.GamePlay.Services
@@ -54,6 +55,15 @@ namespace Game.GamePlay.Services
             _frameBlock.Move(position);
         }
 
+        public void SelectedFrame()
+        {
+            _frameBlock.Selected(true);
+        }
+        
+        public void UnSelectedFrame()
+        {
+            _frameBlock.Selected(false);
+        }
         public void RotateFrame()
         {
             if (_frameBlock.IsRotate)
@@ -84,6 +94,13 @@ namespace Game.GamePlay.Services
         {
             _framesBlock.Remove(_frameBlock);
             _frameBlock.Dispose();
+        }
+
+        public bool IsPosition(Vector2Int position)
+        {
+            if (_frameBlock == null) return false;
+            
+            return _frameBlock.IsPosition(position);
         }
     }
 }

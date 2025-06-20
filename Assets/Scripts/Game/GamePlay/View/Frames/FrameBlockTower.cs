@@ -33,5 +33,15 @@ namespace Game.GamePlay.View.Frames
             TowerViewModel.Position.Value = position;
             FrameViewModel.Position.Value = position;
         }
+
+        public override void Selected(bool value = true)
+        {
+            FrameViewModel.Selected(value);
+        }
+
+        public override bool IsPosition(Vector2Int position)
+        {
+            return FrameViewModel.Position.Value == position;
+        }
     }
 }
