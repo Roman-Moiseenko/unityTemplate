@@ -93,7 +93,7 @@ namespace Game.GamePlay.Services
         public void RemoveFrame()
         {
             _framesBlock.Remove(_frameBlock);
-            _frameBlock.Dispose();
+            _frameBlock?.Dispose();
         }
 
         public bool IsPosition(Vector2Int position)

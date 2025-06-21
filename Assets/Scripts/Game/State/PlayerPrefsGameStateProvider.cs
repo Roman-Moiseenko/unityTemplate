@@ -46,6 +46,7 @@ namespace Game.State
                 //Загружаем
                 var json = PlayerPrefs.GetString(GAMEPLAY_STATE_KEY);
                 _gameplayStateOrigin = JsonConvert.DeserializeObject<GameplayState>(json);
+                Debug.Log(JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
                 GameplayState = new GameplayStateProxy(_gameplayStateOrigin);
                 Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
             }

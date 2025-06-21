@@ -207,19 +207,19 @@ namespace Game.GamePlay.Root.View
                 if (_isMouseDown) //Имитация GetMouseButtonDown
                 {
                     _isMouseDown = false;
+                    //Проверить куда нажали, если фрейм, перетаскиваем фрейм
                     _isFrameDownClick = _viewModel.DownFrame(_gameplayCamera.GetWorldPoint(mousePosition));
-                    //TODO Проверить куда нажали, если фрейм, перетаскиваем фрейм
-                    //Иначе камеру
-                    if (!_isFrameDownClick)
+                    
+                    if (!_isFrameDownClick) //Иначе камеру
                         _gameplayCamera.OnPointDown(mousePosition); //Вызываем функцию начала перетаскивания
                 }
 
                 if (Input.GetMouseButton(0) && !_clickCoroutines)
                 {
-                    if (_isFrameDownClick)
+                    if (_isFrameDownClick) //Двигаем фрейм 
                     {
                         _viewModel.MoveFrame(_gameplayCamera.GetWorldPoint(mousePosition));
-                    } else
+                    } else //Двигаем камеру
                     {
                         _gameplayCamera.OnPointMove(mousePosition); //Debug.Log("Мышь зажата");
                     }
@@ -227,32 +227,19 @@ namespace Game.GamePlay.Root.View
 
                 if (Input.GetMouseButtonUp(0))
                 {
-                    if (_clickCoroutines) //  Debug.Log("Клик");
+                    if (_clickCoroutines) //  Это был "Клик"
                     {
                         _clickCoroutines = false;
                         var position = _gameplayCamera.GetWorldPoint(mousePosition);
                         _viewModel.ClickEntity(position);
-                        /*
-                          Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-                          RaycastHit rayHit;
-                          if (Physics.Raycast(ray, out rayHit, 100.0f)) {
-
-                                  var GameObjClicked = rayHit.collider.gameObject;
-                                  Vector3 point = _camera.ScreenToWorldPoint(mousePosition);
-                                  var position = _gameplayCamera.GetWorldPoint(mousePosition);
-                                  Debug.Log( JsonUtility.ToJson(position));
-
-                                  _viewModel.ClickEntity(position);
-                          }
-                          */
                     }
                     else
                     {
                         if (_isFrameDownClick)
                         {
-                            _viewModel.UpFrame();
+                            _viewModel.UpFrame(); //Завершаем движение фрейма
                         } else {
-                            _gameplayCamera.OnPointUp(mousePosition); //Debug.Log("Мышь отпущена");
+                            _gameplayCamera.OnPointUp(mousePosition); //Завершаем движение камеры
                         }
                     }
                 }

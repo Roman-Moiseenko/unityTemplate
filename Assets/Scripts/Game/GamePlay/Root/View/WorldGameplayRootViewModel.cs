@@ -73,35 +73,29 @@ namespace Game.GamePlay.Root.View
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
                     var card = ((FsmStateBuildEnd)newState).GetRewardCard();
+                    var position = _fsmGameplay.Fsm.Position.CurrentValue; 
                     
                     switch (card.RewardType)
                     {
-                        case RewardType.Tower: towersService.PlaceTower(card.ConfigId, card.Position); break; 
-                        case RewardType.Ground: groundsService.PlaceGround(card.ConfigId, card.Position); break;
-                        case RewardType.Road: Debug.Log("Размещение дороги. В разработке"); break;
+                        case RewardType.Tower: 
+                            towersService.PlaceTower(card.ConfigId, position); 
+                            frameService.RemoveFrame();
+                            break; 
+                        case RewardType.Ground: 
+                            groundsService.PlaceGround(card.ConfigId, position);
+                            frameService.RemoveFrame();
+                            break;
+                        case RewardType.Road: 
+                            Debug.Log("Размещение дороги. В разработке"); 
+                            frameService.RemoveFrame();
+                            break;
                         case RewardType.TowerBust: towersService.ApplyBust(card.TargetId, card.ConfigId); break;
-                        case RewardType.TowerMove: towersService.MoveTower(card.UniqueId, card.Position); break;
+                        case RewardType.TowerMove: towersService.MoveTower(card.UniqueId, position); break;
                         case RewardType.TowerReplace: towersService.ReplaceTower(card.UniqueId, card.UniqueId2); break;
                         case RewardType.SkillBust: Debug.Log("Усиление навыка. В разработке"); break;
                         case RewardType.HeroBust: Debug.Log("Усиление героя. В разработке"); break;
                         default: throw new Exception($"Неверный тип награды {card.RewardType}"); 
                     }
-                    frameService.RemoveFrame();
-                    
-                    
-                  //  if (FramesBlock != null)
-                 //   {
-                       // var newPosition = FramesBlock.CurrentValue.Position.CurrentValue;
-                        //var configId =((FrameBlockTower)FramesBlock.CurrentValue).ConfigId;
-                      //  FramesBlock.Dispose();
-                      //  towersService.PlaceTower(configId, newPosition);
-                  //  }
-
-                    //Удаляем FrameBlockViewModel 
-                                                    
-                  
-
-                    
                 }
 
                 if (newState.GetType() == typeof(FsmStateBuildBegin))
@@ -191,13 +185,13 @@ namespace Game.GamePlay.Root.View
         //Если при нажатии клавиши, под ним фрейм, то выделяем его и возвращаем true
         public bool DownFrame(Vector2 position)
         {
-            Debug.Log(" Нажали на фрейм ");
+//            Debug.Log(" Нажали на фрейм ");
             var vectorInt = new Vector2Int(
                 Mathf.FloorToInt(position.x + 0.5f),
                 Mathf.FloorToInt(position.y + 0.5f)
             );
             var result = _frameService.IsPosition(vectorInt);
-            Debug.Log(" Нашли фрейм " + result);
+      //      Debug.Log(" Нашли фрейм " + result);
 
             if (result) _frameService.SelectedFrame();
             return result;
@@ -205,13 +199,13 @@ namespace Game.GamePlay.Root.View
 
         public void UpFrame()
         {
-            Debug.Log(" Отпустили фрейм ");
+       //     Debug.Log(" Отпустили фрейм ");
             _frameService.UnSelectedFrame();
         }
 
         public void MoveFrame(Vector2 position)
         {
-            Debug.Log(" Двигаем фрейм ");
+//            Debug.Log(" Двигаем фрейм ");
             var vectorInt = new Vector2Int(
                 Mathf.FloorToInt(position.x + 0.5f),
                 Mathf.FloorToInt(position.y + 0.5f)

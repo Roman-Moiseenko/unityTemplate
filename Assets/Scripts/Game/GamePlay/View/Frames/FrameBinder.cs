@@ -22,6 +22,11 @@ namespace Game.GamePlay.View.Frames
         {
             _frameViewModel = frameViewModel;
 
+            Observable.Merge(frameViewModel.Enable, frameViewModel.IsSelected).Subscribe(v =>
+            {
+                SetMaterail();
+            });
+          /*  
             frameViewModel.Enable.Subscribe(newValue =>
             {
                 if (newValue)
@@ -50,7 +55,7 @@ namespace Game.GamePlay.View.Frames
                 }
                 frame.GetComponent<MeshRenderer>().material.color = color;
             });
-            
+            */
             _frameViewModel.Position.Subscribe(newPosition =>
             {
                 _targetPosition = new Vector3(newPosition.x, 0, newPosition.y);
@@ -77,7 +82,29 @@ namespace Game.GamePlay.View.Frames
                     _isMoving = false;
                     transform.position = _targetPosition;
                 }
-            
+            }
+        }
+
+        private void SetMaterail()
+        {
+            var _e = _frameViewModel.Enable.CurrentValue;
+            var _s = _frameViewModel.IsSelected.CurrentValue;
+//            Debug.Log($"_e = {_e} _s = { _s}");
+            if (_e && _s)
+            {
+                frame.GetComponent<MeshRenderer>().material = allowedSelected; 
+            }
+            if (_e && !_s)
+            {
+                frame.GetComponent<MeshRenderer>().material = allowed; 
+            }
+            if (!_e && _s)
+            {
+                frame.GetComponent<MeshRenderer>().material = forbiddenSelected; 
+            }
+            if (!_e && !_s)
+            {
+                frame.GetComponent<MeshRenderer>().material = forbidden; 
             }
         }
     }

@@ -103,15 +103,7 @@ namespace Game.GamePlay.Services
             var command = new CommandMoveTower(towerId, position);
             return _cmd.Process(command);
         }
-
-        public bool TowerBuild(int towerId)
-        {
-            //Удаляем IsFrame
-            //var command = new CommandDeleteTower(towerId);
-            //return _cmd.Process(command);
-            return false;
-        }
-
+        
         public bool DeleteTower(int towerId)
         {
             var command = new CommandDeleteTower(towerId);

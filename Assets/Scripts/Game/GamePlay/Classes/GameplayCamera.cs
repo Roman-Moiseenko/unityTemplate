@@ -115,10 +115,15 @@ namespace Game.GamePlay.Classes
         public Vector2 GetWorldPoint(Vector2 mousePosition)
         {
             var ray  = Camera.main.ScreenPointToRay(new Vector3(mousePosition.x, mousePosition.y,0));
-            RaycastHit hit;
-            if(Physics.Raycast(ray, out hit))
+            
+            Vector3 normal = Vector3.up;
+            Vector3 position = Vector3.zero;
+            Plane plane = new Plane(normal, position);
+            
+            if (plane.Raycast(ray, out var distance))
             {
-                return new Vector2(hit.point.x, hit.point.z);
+                var point = ray.GetPoint(distance);
+                return new Vector2(point.x, point.z);
             }
             return new Vector2(0, 0);
         }

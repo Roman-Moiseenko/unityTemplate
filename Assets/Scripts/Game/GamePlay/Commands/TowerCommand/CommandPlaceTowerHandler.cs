@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Game.GamePlay.Commands.TowerCommand;
+using Game.State.Entities;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using MVVM.CMD;
@@ -25,6 +26,7 @@ namespace Game.GamePlay.Commands
                 UniqueId = entityId,
                 Position = command.Position,
                 ConfigId = command.TowerTypeId,
+                Type = EntityType.Tower,
             };
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
             newTower.IsFrame = true; //Сначала создаем каркас башни

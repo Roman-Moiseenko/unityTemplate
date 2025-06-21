@@ -25,7 +25,6 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             {
                 _btnRotate.gameObject.SetActive(newValue);
                 var vector3 = _btnCancel.transform.localPosition;
-                Debug.Log(vector3.y);
                 if (newValue)
                 {
                     vector3.y = -70;
@@ -34,11 +33,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
                 {
                     vector3.y = 0;
                 }
-//                Debug.Log(vector3.y);
-                //_btnCancel.transform.position = vector3;
                 _btnCancel.transform.localPosition = vector3;
-                //Debug.Log(_btnCancel.transform.position.y);
-                
             });
         }
         
