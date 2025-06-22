@@ -67,8 +67,9 @@ namespace Game.GamePlay.Commands.MapCommand
                 {
                     UniqueId = _gameplayState.CreateEntityID(),
                     Position = road.Position,
-                    ConfigId = road.ConfigId,
+                    ConfigId = newMapInitialStateSettings.RoadDefault,
                     Rotate = road.Rotate,
+                    IsTurn = road.IsTurn,
                 };
                 _gameplayState.Way.Add(new RoadEntity(initialRoad));// Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
             }
@@ -78,19 +79,22 @@ namespace Game.GamePlay.Commands.MapCommand
                 {
                     UniqueId = _gameplayState.CreateEntityID(),
                     Position = road.Position,
-                    ConfigId = road.ConfigId,
-                    Rotate = road.Rotate
+                    ConfigId = newMapInitialStateSettings.RoadDefault,
+                    Rotate = road.Rotate,
+                    IsTurn = road.IsTurn,
                 };
                 _gameplayState.WaySecond.Add(new RoadEntity(initialRoad));// Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
             }
+            
             foreach (var road in newMapInitialStateSettings.WayDisabled)
             {
                 var initialRoad = new RoadEntityData
                 {
                     UniqueId = _gameplayState.CreateEntityID(),
                     Position = road.Position,
-                    ConfigId = road.ConfigId,
-                    Rotate = road.Rotate
+                    ConfigId = newMapInitialStateSettings.RoadDefault,
+                    Rotate = road.Rotate,
+                    IsTurn = road.IsTurn,
                 };
                 _gameplayState.WayDisabled.Add(new RoadEntity(initialRoad));// Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
             }
@@ -116,24 +120,6 @@ namespace Game.GamePlay.Commands.MapCommand
             };
             _gameplayState.Castle.Value = new CastleEntity(castle);
             
-            /*
-            foreach (var buildingSettings in newMapInitialStateSettings.Buildings) //Берем список зданий из настроек карты (конфиг)
-            {
-                var initialBuilding = new BuildingEntityData // .. и создаем все здания
-                {
-                    UniqueId = _gameplayState.CreateEntityID(),
-                    ConfigId = buildingSettings.ConfigId,
-                    Type = EntityType.Building,
-                    Position = buildingSettings.Position,
-                    Level = buildingSettings.Level,
-                    IsAutoCollectionEnabled = false,
-                    LastClickedTimeMS = 0,
-                };
-                _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialBuilding));
-              //  initialEntities.Add(initialBuilding);
-            }
-            */
-//            Debug.Log("newMapInitialStateSettings.Towers " + JsonConvert.SerializeObject(newMapInitialStateSettings.Towers, Formatting.Indented));
             foreach (var towerSettings in newMapInitialStateSettings.Towers) //Берем список зданий из настроек карты (конфиг)
             {
                 var initialTower = new TowerEntityData // .. и создаем все здания
@@ -145,20 +131,8 @@ namespace Game.GamePlay.Commands.MapCommand
                     Level = 1,
                 };
                 _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialTower));
-              //  initialEntities.Add(initialTower);
             }
             
-/*
-            //Создаем состояние карты
-            var newMapState = new MapData
-            {
-                Id = command.MapId,
-                Entities = initialEntities,
-            };
-            // ... затем оборачиваем прокис
-            var newMapStateProxy = new Map(newMapState);
-            _gameplayState.Entities.Add(newMapStateProxy); //И добавляем в список карт игры 
-            */
             return true;
         }
     }

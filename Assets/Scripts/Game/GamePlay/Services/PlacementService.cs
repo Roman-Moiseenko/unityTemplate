@@ -24,6 +24,13 @@ namespace Game.GamePlay.Services
 
             var result = false;
             
+            //На замке
+            if ((position.y == -1 || position.y == 0 || position.y == 1) && (position.x == -1 || position.x == 0))
+            {
+                return false; //Строить нельзя, принудительный выход
+            }
+            
+            //Сначала проверяем землю
             foreach (var entityData in _gameplayState.Entities)
             {
                 //Проверяем на земле или нет
@@ -31,21 +38,35 @@ namespace Game.GamePlay.Services
                 {
                     if (position == groundEntity.Position.CurrentValue) result = true;
                 }
+            }
+            if (result == false) return false; //Не нашли участок для строительства, выходим
+
+            result = false;
+            
+            //Проверяем башни
+            foreach (var entityData in _gameplayState.Entities)
+            {
                 //На другой башне
                 if (entityData is TowerEntity towerEntity && towerEntity.UniqueId != TowerId)
                 {
-                    if (position == towerEntity.Position.CurrentValue) result = false;
+                    if (towerEntity.PositionNear(position)) result = true;
+                    
+                    if (position == towerEntity.Position.CurrentValue) return false;  //Строить нельзя, принудительный выход
                 }
-                //На дороге
+                
+                //TODO Проверка на размещение возле другой башни
                 
                 //Возле дороги или другой башни
+            }
+
+            foreach (var roadEntity in _gameplayState.Way)
+            {
+                if (roadEntity.PositionNear(position)) result = true;
+                
+                if (position == roadEntity.Position.CurrentValue) return false;
                 
             }
-            //На замке
-            if ((position.y == -1 || position.y == 0 || position.y == 1) && (position.x == -1 || position.x == 0))
-            {
-                return false;
-            }
+            //На дороге
             //if (position == new Vector2Int(0, 0)) result = false;
 
             return result;

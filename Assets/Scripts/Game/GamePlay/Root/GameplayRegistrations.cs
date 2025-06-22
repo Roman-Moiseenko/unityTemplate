@@ -70,7 +70,9 @@ namespace Game.GamePlay.Root
                     throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
                 }
             }
-
+            var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
+            var groundConfigId = newMapSettings.InitialStateSettings.GroundDefault;
+            var roadConfigId = newMapSettings.InitialStateSettings.RoadDefault;
 
             container.RegisterFactory(_ => new CastleService(
                 gameplayState.Castle.Value,
@@ -86,12 +88,14 @@ namespace Game.GamePlay.Root
                 gameplayState.Way,
                 gameplayState.WaySecond,
                 gameplayState.WayDisabled,
+                roadConfigId,
                 cmd)
             ).AsSingle();
             
             //Сервис по земле
             container.RegisterFactory(_ => new GroundsService(
                     gameplayState.Entities,
+                    groundConfigId,
                     cmd
                 )
             ).AsSingle();

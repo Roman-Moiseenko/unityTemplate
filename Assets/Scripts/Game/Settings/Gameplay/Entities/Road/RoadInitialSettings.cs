@@ -10,7 +10,7 @@ namespace Game.Settings.Gameplay.Entities.Road
       //  public Vector2Int PointEnter;
        // public Vector2Int PointExit;
         public Vector2Int Position;
-        public string ConfigId;
         public int Rotate;
+        public bool IsTurn;
     }
 }

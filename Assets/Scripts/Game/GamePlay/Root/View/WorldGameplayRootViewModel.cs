@@ -87,7 +87,7 @@ namespace Game.GamePlay.Root.View
                             frameService.RemoveFrame();
                             break; 
                         case RewardType.Ground: 
-                            groundsService.PlaceGround(card.ConfigId, position);
+                            groundsService.PlaceGround(position);
                             frameService.RemoveFrame();
                             break;
                         case RewardType.Road: 

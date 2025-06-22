@@ -122,9 +122,10 @@ namespace Game.GamePlay.Root.View
 
         private void CreateRoad(RoadViewModel roadViewModel)
         {
-            var roadType = roadViewModel.ConfigId;
+            var roadConfig = roadViewModel.ConfigId;
+            var direction = roadViewModel.IsTurn ? "Turn" : "Line";
             var prefabRoadLevelPath =
-                $"Prefabs/Gameplay/Roads/{roadType}";
+                $"Prefabs/Gameplay/Roads/{roadConfig}{direction}";
             var roadPrefab = Resources.Load<RoadBinder>(prefabRoadLevelPath);
             //Debug.Log("prefabRoadLevelPath = " + prefabRoadLevelPath);
             var createdRoad = Instantiate(roadPrefab, transform);

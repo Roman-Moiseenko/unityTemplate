@@ -27,7 +27,17 @@ namespace Game.State.Maps.Towers
             Speed = new ReactiveProperty<double>(entityData.Speed);
             Speed.Subscribe(newValue => entityData.Speed = newValue);
             
-            
+        }
+
+        public bool PositionNear(Vector2Int position)
+        {
+            var x = Position.CurrentValue.x;
+            var y = Position.CurrentValue.y;
+            if (position.x == x && position.y == y - 1) return true;
+            if (position.x == x && position.y == y + 1) return true;
+            if (position.x == x - 1 && position.y == y) return true;
+            if (position.x == x + 1 && position.y == y) return true;
+            return false;
         }
     }
 }

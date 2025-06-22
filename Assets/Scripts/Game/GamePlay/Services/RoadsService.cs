@@ -15,6 +15,7 @@ namespace Game.GamePlay.Services
         private readonly IObservableCollection<RoadEntity> _way; //кешируем
         private readonly IObservableCollection<RoadEntity> _waySecond; //кешируем
         private readonly IObservableCollection<RoadEntity> _wayDisabled; //кешируем
+        private readonly string _configIdDefault;
         private readonly ICommandProcessor _cmd;
 
         private readonly ObservableList<RoadViewModel> _allRoads = new();
@@ -28,12 +29,14 @@ namespace Game.GamePlay.Services
             IObservableCollection<RoadEntity> way,
             IObservableCollection<RoadEntity> waySecond,
             IObservableCollection<RoadEntity> wayDisabled,
+            string configIdDefault,
             ICommandProcessor cmd
             )
         {
             _way = way;
             _waySecond = waySecond;
             _wayDisabled = wayDisabled;
+            _configIdDefault = configIdDefault;
             _cmd = cmd;
             
             //Основной путь
@@ -53,9 +56,9 @@ namespace Game.GamePlay.Services
             wayDisabled.ObserveRemove().Subscribe(e => RemoveRoadViewModel(e.Value));
         }
 
-        public bool PlaceRoad(string roadTypeId, Vector2Int position, Vector2Int pointEnter, Vector2Int pointExit, int rotate)
+        public bool PlaceRoad( Vector2Int position, Vector2Int pointEnter, Vector2Int pointExit, int rotate)
         {
-            var command = new CommandPlaceRoad(roadTypeId, position, pointEnter, pointExit, rotate);
+            var command = new CommandPlaceRoad(_configIdDefault, position, pointEnter, pointExit, rotate);
             return _cmd.Process(command);
         }
 
@@ -85,6 +88,15 @@ namespace Game.GamePlay.Services
             var roadViewModel = new RoadViewModel(roadEntity, this); //3
             _allRoads.Add(roadViewModel); //4
             _roadsMap[roadEntity.UniqueId] = roadViewModel;
+        }
+
+
+        private void CheckWay()
+        {
+            foreach (var road in _way)
+            {
+                
+            }
         }
     }
 }

@@ -24,6 +24,7 @@ namespace Game.Settings.Gameplay.Maps
         public List<RoadInitialSettings> WayDisabled;
         
         public string GroundDefault;
+        public string RoadDefault = "Road";
         //Доп.настройки карты
     }
 }

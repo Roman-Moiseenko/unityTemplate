@@ -72,7 +72,7 @@ namespace Game.GamePlay.Services
             switch (card.RewardType)
             {
                 //case RewardType.Tower: _towerService.PlaceTower(card.ConfigId, card.Position); break; 
-                case RewardType.Ground: _groundService.PlaceGround(card.ConfigId, card.Position); break;
+                case RewardType.Ground: _groundService.PlaceGround(card.Position); break;
                 case RewardType.Road: Debug.Log("Размещение дороги. В разработке"); break;
                 case RewardType.TowerBust: _towerService.ApplyBust(card.TargetId, card.ConfigId); break;
                 case RewardType.TowerMove: _towerService.MoveTower(card.UniqueId, card.Position); break;

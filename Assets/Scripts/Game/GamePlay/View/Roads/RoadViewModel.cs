@@ -10,6 +10,7 @@ namespace Game.GamePlay.View.Roads
         private readonly RoadEntity _roadEntity;
         private readonly RoadsService _service;
         public string ConfigId => _roadEntity.ConfigId;
+        public bool IsTurn => _roadEntity.IsTurn;
         public ReadOnlyReactiveProperty<Vector2Int> Position { get; }
         public ReadOnlyReactiveProperty<Vector2Int> PointEnter { get; }
         public ReadOnlyReactiveProperty<Vector2Int> PointExit { get; }

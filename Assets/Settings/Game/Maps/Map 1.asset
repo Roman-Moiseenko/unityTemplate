@@ -41,6 +41,8 @@ MonoBehaviour:
     - Position: {x: -1, y: 0}
     - Position: {x: -1, y: 1}
     - Position: {x: 1, y: -2}
+    - Position: {x: 2, y: 2}
+    - Position: {x: 2, y: 3}
     Towers:
     - ConfigId: Tower01
       Position: {x: 2, y: -1}
@@ -50,20 +52,21 @@ MonoBehaviour:
       Position: {x: 3, y: -1}
     WayMain:
     - Position: {x: 1, y: 0}
-      ConfigId: RoadLine
       Rotate: 0
+      IsTurn: 0
     - Position: {x: 2, y: 0}
-      ConfigId: RoadLine
       Rotate: 0
+      IsTurn: 0
     - Position: {x: 3, y: 0}
-      ConfigId: RoadTurn
       Rotate: 0
+      IsTurn: 1
     - Position: {x: 3, y: 1}
-      ConfigId: RoadLine
       Rotate: 1
+      IsTurn: 0
     WaySecond: []
     WayDisabled: []
     GroundDefault: Snow01
+    RoadDefault: Road
   InfoStateSettings:
     PrefabName: 
     CountMobs: 15

@@ -12,9 +12,10 @@ namespace Game.State.Maps.Roads
         public Vector2Int PointEnter; 
         public Vector2Int PointExit;
         public int Rotate; //Кол-во поворотов на 90 - от 0 до 3
+        public bool IsTurn; //Поворот
 
 
-        
+
         //public TypeDirection Direction;
     }
 }
