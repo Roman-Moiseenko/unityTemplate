@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using Game.State.Entities;
 using Game.State.Maps.Castle;
+using Game.State.Maps.Roads;
+using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -23,6 +25,10 @@ namespace Game.State.Root
         public int PreviousGameSpeed => _gameplayState.PreviousGameSpeed;
         
         public ObservableList<Entity> Entities { get; } = new();
+
+        public ObservableList<RoadEntity> Way { get; } = new();
+        public ObservableList<RoadEntity> WaySecond { get; } = new();
+        public ObservableList<RoadEntity> WayDisabled { get; } = new();
         
         public GameplayStateProxy(GameplayState gameplayState)
         {
@@ -46,9 +52,8 @@ namespace Game.State.Root
 
             CurrentWave = new ReactiveProperty<int>(gameplayState.CurrentWave);
             CurrentWave.Subscribe(newValue => gameplayState.CurrentWave = newValue);
-            
 
-             InitMaps(gameplayState);
+            InitMaps(gameplayState);
         }
 
         private void InitMaps(GameplayState gameplayState)
@@ -62,6 +67,32 @@ namespace Game.State.Root
             {
                 var removedMapState = gameplayState.Entities.FirstOrDefault(b => b.UniqueId == e.Value.UniqueId);
                 gameplayState.Entities.Remove(removedMapState);
+            });
+            
+            
+            //Дороги
+            gameplayState.Way.ForEach(roadOriginal => Way.Add(new RoadEntity(roadOriginal)));
+            Way.ObserveAdd().Subscribe(r => gameplayState.Way.Add(r.Value.Origin));
+            Way.ObserveRemove().Subscribe(r =>
+            {
+                var removedRoad = gameplayState.Way.FirstOrDefault(b => b.UniqueId == r.Value.UniqueId);
+                gameplayState.Way.Remove(removedRoad);
+            });
+            
+            gameplayState.WaySecond.ForEach(roadOriginal => WaySecond.Add(new RoadEntity(roadOriginal)));
+            WaySecond.ObserveAdd().Subscribe(r => gameplayState.WaySecond.Add(r.Value.Origin));
+            WaySecond.ObserveRemove().Subscribe(r =>
+            {
+                var removedRoad = gameplayState.WaySecond.FirstOrDefault(b => b.UniqueId == r.Value.UniqueId);
+                gameplayState.WaySecond.Remove(removedRoad);
+            });
+            
+            gameplayState.WayDisabled.ForEach(roadOriginal => WayDisabled.Add(new RoadEntity(roadOriginal)));
+            WayDisabled.ObserveAdd().Subscribe(r => gameplayState.WayDisabled.Add(r.Value.Origin));
+            WayDisabled.ObserveRemove().Subscribe(r =>
+            {
+                var removedRoad = gameplayState.WayDisabled.FirstOrDefault(b => b.UniqueId == r.Value.UniqueId);
+                gameplayState.WayDisabled.Remove(removedRoad);
             });
             
         }

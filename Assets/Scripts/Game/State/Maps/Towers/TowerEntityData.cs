@@ -8,7 +8,7 @@ namespace Game.State.Maps.Towers
         public TowerTypeDamage TypeDamage { get; set; }
         public TowerTypeEnemy TypeEnemy { get; set; }
         //Список усилений, навешанных на башню
-        public List<TowerBust> Busts = new();
+
 
         //TODO Базовые данные.
         ///Урон,

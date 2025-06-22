@@ -23,7 +23,8 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<CastleService>(),
                 c.Resolve<FsmGameplay>(),
                 c.Resolve<FrameService>(),
-                c.Resolve<PlacementService>()
+                c.Resolve<PlacementService>(),
+                c.Resolve<RoadsService>()
             )).AsSingle();
         }
     }

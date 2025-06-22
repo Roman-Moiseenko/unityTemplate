@@ -81,12 +81,6 @@ namespace Game.GamePlay.Services
                         CreateTowerViewModel(towerEntity); //TODO Создаем модели Заново
                     }
                 }
-
-                // Debug.Log(" Меняем уровнии для " + x.NewItem.Key + " на " + x.NewItem.Value);
-                /*_allTowers.ForEach(viewModel =>
-                {
-                    if (viewModel.ConfigId == x.NewItem.Key) viewModel.Level.Value = x.NewItem.Value;
-                }); */
             });
         }
 

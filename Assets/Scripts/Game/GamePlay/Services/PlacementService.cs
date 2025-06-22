@@ -42,7 +42,11 @@ namespace Game.GamePlay.Services
                 
             }
             //На замке
-            if (position == new Vector2Int(0, 0)) result = false;
+            if ((position.y == -1 || position.y == 0 || position.y == 1) && (position.x == -1 || position.x == 0))
+            {
+                return false;
+            }
+            //if (position == new Vector2Int(0, 0)) result = false;
 
             return result;
         }

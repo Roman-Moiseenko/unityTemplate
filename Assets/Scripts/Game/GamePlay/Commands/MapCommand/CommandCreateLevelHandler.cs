@@ -5,6 +5,7 @@ using Game.State.Entities;
 using Game.State.Maps;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
+using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Mergeable.Buildings;
 using Game.State.Root;
@@ -44,9 +45,7 @@ namespace Game.GamePlay.Commands.MapCommand
             //Находим настройки карты по ее Id
             var newMapSettings = _gameSettings.MapsSettings.Maps.First(m => m.MapId == command.MapId);
             
-            
             var newMapInitialStateSettings = newMapSettings.InitialStateSettings;
-           // var initialEntities = new List<EntityData>(); //Создаем список зданий
             
             foreach (var ground in newMapInitialStateSettings.Grounds)
             {
@@ -60,10 +59,42 @@ namespace Game.GamePlay.Commands.MapCommand
                     
                 };
                 _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialGround));
-                //initialEntities.Add(initialGround);
-                
             }
             //Рисуем дорогу
+            foreach (var road in newMapInitialStateSettings.WayMain)
+            {
+                var initialRoad = new RoadEntityData
+                {
+                    UniqueId = _gameplayState.CreateEntityID(),
+                    Position = road.Position,
+                    ConfigId = road.ConfigId,
+                    Rotate = road.Rotate,
+                };
+                _gameplayState.Way.Add(new RoadEntity(initialRoad));// Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
+            }
+            foreach (var road in newMapInitialStateSettings.WaySecond)
+            {
+                var initialRoad = new RoadEntityData
+                {
+                    UniqueId = _gameplayState.CreateEntityID(),
+                    Position = road.Position,
+                    ConfigId = road.ConfigId,
+                    Rotate = road.Rotate
+                };
+                _gameplayState.WaySecond.Add(new RoadEntity(initialRoad));// Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
+            }
+            foreach (var road in newMapInitialStateSettings.WayDisabled)
+            {
+                var initialRoad = new RoadEntityData
+                {
+                    UniqueId = _gameplayState.CreateEntityID(),
+                    Position = road.Position,
+                    ConfigId = road.ConfigId,
+                    Rotate = road.Rotate
+                };
+                _gameplayState.WayDisabled.Add(new RoadEntity(initialRoad));// Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
+            }
+            
             
             //Добавляем Волны и Список врагов, по Волнам
             

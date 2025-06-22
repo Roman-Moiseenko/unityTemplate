@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Newtonsoft.Json;
+using R3;
+using UnityEngine;
 
 namespace Game.GamePlay.View.Roads
 {
@@ -11,6 +13,14 @@ namespace Game.GamePlay.View.Roads
                 0,
                 viewModel.Position.CurrentValue.y
             );
+
+            viewModel.Rotate.Subscribe(newValue =>
+            {
+                transform.localEulerAngles = new Vector3(0, 90f * newValue,0);
+            });
         }
+        
     }
+    
+    
 }

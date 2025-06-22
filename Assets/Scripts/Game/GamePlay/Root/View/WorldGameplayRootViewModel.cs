@@ -25,11 +25,14 @@ namespace Game.GamePlay.Root.View
         private readonly FsmGameplay _fsmGameplay;
 
         private readonly FrameService _frameService;
+
+        private readonly RoadsService _roadsService;
         // private readonly DIContainer _container;
 
         //   public readonly IObservableCollection<RoadViewModel> AllRoads;
         public readonly IObservableCollection<TowerViewModel> AllTowers;
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
+        public readonly IObservableCollection<RoadViewModel> AllRoads;
 
         public readonly IObservableCollection<FrameBlock> FramesBlock;
         public CastleViewModel CastleViewModel { get; private set; }
@@ -41,15 +44,17 @@ namespace Game.GamePlay.Root.View
             CastleService castleService,
             FsmGameplay fsmGameplay,
             FrameService frameService,
-            PlacementService placementService
+            PlacementService placementService,
+            RoadsService roadsService
             //DIContainer container
         )
         {
             _fsmGameplay = fsmGameplay;
             _frameService = frameService;
+            _roadsService = roadsService;
             //_container = container;
 
-            // AllRoads = roadsService.AllRoads;
+            AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
             AllTowers = towersService.AllTowers;
             FramesBlock = frameService.FramesBlock;

@@ -8,6 +8,7 @@ using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
+using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
 using Newtonsoft.Json;
 using ObservableCollections;
@@ -32,6 +33,7 @@ namespace Game.GamePlay.Root.View
         private readonly Dictionary<int, TowerBinder> _createTowersMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
         private readonly Dictionary<int, FrameBinder> _createFrameMap = new();
+        private readonly Dictionary<int, RoadBinder> _createdRoadsMap = new();
         private CastleBinder _castleBinder;
         private readonly CompositeDisposable _disposables = new();
 
@@ -50,42 +52,8 @@ namespace Game.GamePlay.Root.View
             _viewModel = viewModel;
             //1. Создаем все объекты мира из Прехабов
             //2. Подписываемся на добавление объектов в список (Создать) и на удаление (Уничтожить)
-            foreach (var towerViewModel in viewModel.AllTowers)
-                CreateTower(towerViewModel);
 
-        /*    viewModel.FramesBlock.Subscribe(newValue =>
-            {
-                Debug.Log(" --- ");
-                if (newValue != null)
-                {
-                    Debug.Log("newValue.Position.CurrentValue.x" + newValue.Position.CurrentValue.x);
-                    CreateFrameBlock(newValue);
-                }
-            });
-            */
-            _disposables.Add(
-                viewModel.AllTowers.ObserveAdd().Subscribe(e =>
-                {
-                    CreateTower(e.Value); //Новая башня всегда создается как фрейм
-                })
-            );
-            _disposables.Remove(
-                viewModel.AllTowers.ObserveRemove().Subscribe(e => DestroyTower(e.Value))
-            );
-            _disposables.Add(viewModel.FramesBlock.ObserveAdd().Subscribe(e => CreateFrameBlock(e.Value)));
-            _disposables.Remove(viewModel.FramesBlock.ObserveRemove().Subscribe(e => DestroyFrameBlock(e.Value)));
-            //_disposables.Add(viewModel.AllFrames.ObserveAdd().Subscribe(e => {CreateFrame(e.Value); }));
-            //_disposables.Remove(viewModel.AllFrames.ObserveRemove().Subscribe(e => {DestroyFrame(e.Value); }));
-            //viewModel.AllTowers
-            CreateCastle(viewModel.CastleViewModel);
-/*
-            foreach (var buildingViewModel in viewModel.AllBuildings)
-                CreateBuilding(buildingViewModel);
-            _disposables.Add(
-                viewModel.AllBuildings.ObserveAdd().Subscribe(e => CreateBuilding(e.Value))
-            );
-            */
-
+            //Поверхность уровня
             foreach (var groundViewModel in viewModel.AllGrounds)
                 CreateGround(groundViewModel);
             _disposables.Add(
@@ -94,7 +62,31 @@ namespace Game.GamePlay.Root.View
             _disposables.Remove(
                 viewModel.AllGrounds.ObserveRemove().Subscribe(e => DestroyGround(e.Value))
             );
-
+            //Башни
+            foreach (var towerViewModel in viewModel.AllTowers)
+                CreateTower(towerViewModel);
+            _disposables.Add(
+                viewModel.AllTowers.ObserveAdd().Subscribe(e => CreateTower(e.Value))
+            );
+            _disposables.Remove(
+                viewModel.AllTowers.ObserveRemove().Subscribe(e => DestroyTower(e.Value))
+            );
+            //Замок
+            CreateCastle(viewModel.CastleViewModel);
+            //Дорога
+            foreach (var roadViewModel in viewModel.AllRoads)
+                CreateRoad(roadViewModel);
+            _disposables.Add(
+                viewModel.AllRoads.ObserveAdd().Subscribe(e => CreateRoad(e.Value))
+            );
+            _disposables.Remove(
+                viewModel.AllRoads.ObserveRemove().Subscribe(e => DestroyRoad(e.Value))
+            );
+            
+            //Фрейм строительный //только подписка, в начале уровня его нет
+            _disposables.Add(viewModel.FramesBlock.ObserveAdd().Subscribe(e => CreateFrameBlock(e.Value)));
+            _disposables.Remove(viewModel.FramesBlock.ObserveRemove().Subscribe(e => DestroyFrameBlock(e.Value)));
+            
             _gameplayCamera = new GameplayCamera(_camera, cameraSystem);
         }
 
@@ -126,6 +118,27 @@ namespace Game.GamePlay.Root.View
             var createdTower = Instantiate(towerPrefab, transform);
             createdTower.Bind(towerViewModel);
             _createTowersMap[towerViewModel.TowerEntityId] = createdTower;
+        }
+
+        private void CreateRoad(RoadViewModel roadViewModel)
+        {
+            var roadType = roadViewModel.ConfigId;
+            var prefabRoadLevelPath =
+                $"Prefabs/Gameplay/Roads/{roadType}";
+            var roadPrefab = Resources.Load<RoadBinder>(prefabRoadLevelPath);
+            //Debug.Log("prefabRoadLevelPath = " + prefabRoadLevelPath);
+            var createdRoad = Instantiate(roadPrefab, transform);
+            createdRoad.Bind(roadViewModel);
+            _createdRoadsMap[roadViewModel.RoadEntityId] = createdRoad;
+
+        }
+        private void DestroyRoad(RoadViewModel roadViewModel)
+        {
+            if (_createdRoadsMap.TryGetValue(roadViewModel.RoadEntityId, out var roadBinder))
+            {
+                Destroy(roadBinder.gameObject);
+                _createdRoadsMap.Remove(roadViewModel.RoadEntityId);
+            }
         }
         private void CreateFrame(FrameViewModel frameViewModel)
         {
@@ -175,6 +188,7 @@ namespace Game.GamePlay.Root.View
                 _createTowersMap.Remove(towerViewModel.TowerEntityId);
             }
         }
+        
         private void DestroyGround(GroundViewModel groundViewModel)
         {
             if (_createGroundsMap.TryGetValue(groundViewModel.GroundEntityId, out var groundBinder))

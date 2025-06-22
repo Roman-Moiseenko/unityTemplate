@@ -6,6 +6,7 @@ using Game.State.Inventory;
 //using Game.State.Entities.Buildings;
 using Game.State.Maps;
 using Game.State.Maps.Castle;
+using Game.State.Maps.Roads;
 using Game.State.Root;
 using Newtonsoft.Json;
 using R3;
@@ -39,6 +40,8 @@ namespace Game.State
             if (!PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY))
             {
                 GameplayState = CreateGameplayStateFromSettings();
+                Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
+
                 SaveGameplayState(); //Сохраняем дефолтное состояние
             }
             else
@@ -48,7 +51,7 @@ namespace Game.State
                 _gameplayStateOrigin = JsonConvert.DeserializeObject<GameplayState>(json);
                 Debug.Log(JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
                 GameplayState = new GameplayStateProxy(_gameplayStateOrigin);
-                Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
+//                Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
             }
             return Observable.Return(GameplayState);
         }
@@ -63,6 +66,9 @@ namespace Game.State
                 Progress = 0,
                 ProgressLevel = 0,
                 CastleData = new CastleEntityData(),
+                Way = new List<RoadEntityData>(),
+                WaySecond = new List<RoadEntityData>(),
+                WayDisabled = new List<RoadEntityData>(),
                 
                 //TODO Ресурсы игры
             };

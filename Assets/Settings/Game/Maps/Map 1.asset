@@ -34,17 +34,35 @@ MonoBehaviour:
     - Position: {x: 4, y: 2}
     - Position: {x: 0, y: -1}
     - Position: {x: 1, y: -1}
-    - Position: {x: 1, y: -1}
-    - Position: {x: 1, y: -1}
-    - Position: {x: 1, y: -1}
+    - Position: {x: 2, y: -1}
+    - Position: {x: 3, y: -1}
+    - Position: {x: 4, y: -1}
+    - Position: {x: -1, y: -1}
+    - Position: {x: -1, y: 0}
+    - Position: {x: -1, y: 1}
     - Position: {x: 1, y: -2}
     Towers:
     - ConfigId: Tower01
-      Position: {x: 2, y: 0}
+      Position: {x: 2, y: -1}
     - ConfigId: Tower01
       Position: {x: 4, y: 1}
     - ConfigId: Tower01
-      Position: {x: 3, y: 0}
+      Position: {x: 3, y: -1}
+    WayMain:
+    - Position: {x: 1, y: 0}
+      ConfigId: RoadLine
+      Rotate: 0
+    - Position: {x: 2, y: 0}
+      ConfigId: RoadLine
+      Rotate: 0
+    - Position: {x: 3, y: 0}
+      ConfigId: RoadTurn
+      Rotate: 0
+    - Position: {x: 3, y: 1}
+      ConfigId: RoadLine
+      Rotate: 1
+    WaySecond: []
+    WayDisabled: []
     GroundDefault: Snow01
   InfoStateSettings:
     PrefabName: 

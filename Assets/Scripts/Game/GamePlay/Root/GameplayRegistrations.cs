@@ -5,6 +5,7 @@ using Game.Common;
 using Game.GamePlay.Commands;
 using Game.GamePlay.Commands.MapCommand;
 using Game.GamePlay.Commands.RewardCommand;
+using Game.GamePlay.Commands.RoadCommand;
 using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
@@ -51,10 +52,12 @@ namespace Game.GamePlay.Root
             //cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
             cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandTowerBustHandler(gameplayState, gameSettings));
-            cmd.RegisterHandler(new CommandCreateLevelHandler(gameSettings, gameplayState)); //Регистрируем команду создания уровня из конфигурации
+            cmd.RegisterHandler(new CommandCreateLevelHandler(gameSettings,
+                gameplayState)); //Регистрируем команду создания уровня из конфигурации
             cmd.RegisterHandler(new CommandRewardKillMobHandler(gameplayState));
             cmd.RegisterHandler(new CommandDeleteTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
+            cmd.RegisterHandler(new CommandPlaceRoadHandler(gameplayState));
 
             //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
             if (gameplayState.Entities.Any() != true)
@@ -68,30 +71,32 @@ namespace Game.GamePlay.Root
                 }
             }
 
-            
+
             container.RegisterFactory(_ => new CastleService(
                 gameplayState.Castle.Value,
                 cmd)
             ).AsSingle();
-            
 
 
             var placementService = new PlacementService(gameplayState);
             container.RegisterInstance(placementService);
+
             //Регистрируем сервис по Дорогам
-            /*   container.RegisterFactory(_ => new RoadsService(
-                   gameplayState.Entities,
-                   gameSettings.RoadsSettings,
-                   cmd,
-                frameService)
-               ).AsSingle();
-               */
+            container.RegisterFactory(_ => new RoadsService(
+                gameplayState.Way,
+                gameplayState.WaySecond,
+                gameplayState.WayDisabled,
+                cmd)
+            ).AsSingle();
+            
+            //Сервис по земле
             container.RegisterFactory(_ => new GroundsService(
-                gameplayState.Entities,
-                cmd
+                    gameplayState.Entities,
+                    cmd
                 )
             ).AsSingle();
 
+            //Сервис башен
             var towersService = new TowersService(
                 gameplayState.Entities,
                 gameSettings.TowersSettings,
@@ -100,9 +105,10 @@ namespace Game.GamePlay.Root
             );
             
             container.RegisterInstance(towersService);
+            
             var frameService = new FrameService(gameplayState, placementService, towersService);
             container.RegisterInstance(frameService);
-           // container.RegisterFactory(_ => ).AsSingle();
+            // container.RegisterFactory(_ => ).AsSingle();
 
             //Добавить сервисы и команды для
             /// Дорог
@@ -112,8 +118,7 @@ namespace Game.GamePlay.Root
 
 
             Fsm.Fsm.SetState<FsmStateGamePlay>();
-
-
+            
             //Регистрируем сервисы, завия
             var rewardService = new RewardProgressService(container);
             container.RegisterInstance(rewardService);
