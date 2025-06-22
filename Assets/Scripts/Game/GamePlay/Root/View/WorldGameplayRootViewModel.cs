@@ -73,6 +73,12 @@ namespace Game.GamePlay.Root.View
                         //towersService.PlaceTower(reward.ConfigId, position);
                         frameService.CreateFrameTower(position, level, reward.ConfigId);
                     }
+
+                    if (reward.RewardType == RewardType.Road)
+                    {
+                        var position = placementService.GetNewPositionRoad();
+                        frameService.CreateFrameRoad(position, reward.ConfigId);
+                    }
                 }
 
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
@@ -90,15 +96,18 @@ namespace Game.GamePlay.Root.View
                             groundsService.PlaceGround(position);
                             frameService.RemoveFrame();
                             break;
-                        case RewardType.Road: 
-                            Debug.Log("Размещение дороги. В разработке"); 
+                        case RewardType.Road:
+                            foreach (var road in frameService.GetRoads())
+                            {
+                                roadsService.PlaceRoad(road.Position.CurrentValue, road.IsTurn, road.Rotate.CurrentValue);
+                            }
                             frameService.RemoveFrame();
                             break;
-                        case RewardType.TowerBust: towersService.ApplyBust(card.TargetId, card.ConfigId); break;
+                        case RewardType.TowerLevelUp: towersService.LevelUpTower(card.ConfigId); break;
                         case RewardType.TowerMove: towersService.MoveTower(card.UniqueId, position); break;
                         case RewardType.TowerReplace: towersService.ReplaceTower(card.UniqueId, card.UniqueId2); break;
-                        case RewardType.SkillBust: Debug.Log("Усиление навыка. В разработке"); break;
-                        case RewardType.HeroBust: Debug.Log("Усиление героя. В разработке"); break;
+                        case RewardType.SkillLevelUp: Debug.Log("Усиление навыка. В разработке"); break;
+                        case RewardType.HeroLevelUp: Debug.Log("Усиление героя. В разработке"); break;
                         default: throw new Exception($"Неверный тип награды {card.RewardType}"); 
                     }
                 }

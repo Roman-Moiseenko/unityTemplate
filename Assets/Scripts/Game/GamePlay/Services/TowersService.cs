@@ -130,14 +130,14 @@ namespace Game.GamePlay.Services
             }
         }
 
-        public bool ApplyBust(string configIdTower, string configIdBust)
+        public bool LevelUpTower(string configId)
         {
             //Повышаем уровень башен
             //Нужно для кеширования при строительстве новой башни и замены модели
-            var command = new CommandTowerBust(configIdTower, configIdBust);
+            var command = new CommandTowerLevelUp(configId);
             if (_cmd.Process(command))
             {
-                Levels[configIdTower] += 1;
+                Levels[configId] += 1;
                 return true;
             }
 

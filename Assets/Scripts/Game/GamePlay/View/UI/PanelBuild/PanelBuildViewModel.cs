@@ -49,9 +49,9 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 case RewardType.Tower : return "Построить башню";
                 case RewardType.Ground : return "Построить участок";
                 case RewardType.Road : return "Построить дорогу";
-                case RewardType.TowerBust : return "Улучшить башню";
-                case RewardType.SkillBust : return "Улучшить навык";
-                case RewardType.HeroBust : return "Улучшить героя";
+                case RewardType.TowerLevelUp : return "Улучшить башню";
+                case RewardType.SkillLevelUp : return "Улучшить навык";
+                case RewardType.HeroLevelUp : return "Улучшить героя";
                 case RewardType.TowerMove : return "Передвинуть башню";
                 case RewardType.TowerReplace : return "Заменить башни";
                 default: return "Не известное значение";

@@ -22,10 +22,9 @@ namespace Game.GamePlay.Commands.RoadCommand
             {
                 UniqueId = entityId,
                 Position = command.Position,
-                PointEnter = command.PointEnter,
-                PointExit = command.PointExit,
                 ConfigId = command.RoadTypeId,
                 Rotate = command.Rotate,
+                IsTurn = command.IsTurn,
             };
             var newRoad = new RoadEntity(newRoadEntity);
             if (command.IsMainWay)

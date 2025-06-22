@@ -3,6 +3,7 @@ using Game.GamePlay.Commands.RoadCommand;
 using Game.GamePlay.View.Roads;
 using Game.State.Entities;
 using Game.State.Maps.Roads;
+using Game.State.Root;
 using MVVM.CMD;
 using ObservableCollections;
 using R3;
@@ -56,9 +57,9 @@ namespace Game.GamePlay.Services
             wayDisabled.ObserveRemove().Subscribe(e => RemoveRoadViewModel(e.Value));
         }
 
-        public bool PlaceRoad( Vector2Int position, Vector2Int pointEnter, Vector2Int pointExit, int rotate)
+        public bool PlaceRoad(Vector2Int position, bool isTurn, int rotate)
         {
-            var command = new CommandPlaceRoad(_configIdDefault, position, pointEnter, pointExit, rotate);
+            var command = new CommandPlaceRoad(_configIdDefault, position, isTurn, rotate);
             return _cmd.Process(command);
         }
 
@@ -98,5 +99,6 @@ namespace Game.GamePlay.Services
                 
             }
         }
+
     }
 }

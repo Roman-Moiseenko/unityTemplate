@@ -88,6 +88,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
 
         public void RequestRotate()
         {
+            _frameService.RotateFrame();
             //TODO Поворот объекта
         }
         

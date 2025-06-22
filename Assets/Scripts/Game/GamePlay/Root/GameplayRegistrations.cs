@@ -51,7 +51,7 @@ namespace Game.GamePlay.Root
 
             //cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
             cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState));
-            cmd.RegisterHandler(new CommandTowerBustHandler(gameplayState, gameSettings));
+            cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
             cmd.RegisterHandler(new CommandCreateLevelHandler(gameSettings,
                 gameplayState)); //Регистрируем команду создания уровня из конфигурации
             cmd.RegisterHandler(new CommandRewardKillMobHandler(gameplayState));
@@ -83,14 +83,14 @@ namespace Game.GamePlay.Root
             var placementService = new PlacementService(gameplayState);
             container.RegisterInstance(placementService);
 
-            //Регистрируем сервис по Дорогам
-            container.RegisterFactory(_ => new RoadsService(
+            var roadsService = new RoadsService(
                 gameplayState.Way,
                 gameplayState.WaySecond,
                 gameplayState.WayDisabled,
                 roadConfigId,
-                cmd)
-            ).AsSingle();
+                cmd);
+            //Регистрируем сервис по Дорогам
+            container.RegisterInstance(roadsService);
             
             //Сервис по земле
             container.RegisterFactory(_ => new GroundsService(
@@ -110,7 +110,7 @@ namespace Game.GamePlay.Root
             
             container.RegisterInstance(towersService);
             
-            var frameService = new FrameService(gameplayState, placementService, towersService);
+            var frameService = new FrameService(gameplayState, placementService, towersService, roadsService);
             container.RegisterInstance(frameService);
             // container.RegisterFactory(_ => ).AsSingle();
 

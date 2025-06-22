@@ -22,7 +22,7 @@ namespace Game.GamePlay.View.Frames
         {
             
         }
-
+        
         public override bool FrameIs(FrameType frameType)
         {
             return FrameType.Tower == frameType;
@@ -38,8 +38,8 @@ namespace Game.GamePlay.View.Frames
         {
             FrameViewModel.Selected(value);
         }
-
-        public override bool IsPosition(Vector2Int position)
+        
+        public override bool IsPosition(Vector2Int position) 
         {
             return FrameViewModel.Position.Value == position;
         }

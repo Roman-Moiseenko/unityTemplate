@@ -7,31 +7,25 @@ using UnityEngine;
 
 namespace Game.GamePlay.Commands.TowerCommand
 {
-    public class CommandTowerBustHandler : ICommandHandler<CommandTowerBust>
+    public class CommandTowerLevelUpHandler : ICommandHandler<CommandTowerLevelUp>
     {
         private readonly GameplayStateProxy _gameplayState;
         private readonly TowerBustsSettings _bustsSettings;
 
-        public CommandTowerBustHandler(GameplayStateProxy gameplayState, GameSettings gameSettings)
+        public CommandTowerLevelUpHandler(GameplayStateProxy gameplayState, GameSettings gameSettings)
         {
             _gameplayState = gameplayState;
             _bustsSettings = gameSettings.TowerBustsSettings;
         }
-        public bool Handle(CommandTowerBust command)
+        public bool Handle(CommandTowerLevelUp command)
         {
-            //Загружаем настройки бустеров
-            foreach (var bust in _bustsSettings.Busts)
-            {
-                if (bust.ConfigId == command.ConfigIdBust)
-                {                
-                    ApplyBustTower(command.ConfigIdTower, bust);
-                    return true;
-                }
-            }
-            return false;
+            //Загружаем настройки уровней башен
+            ApplyLevelUpTower(command.ConfigId);
+
+            return true;
         }
 
-        private void ApplyBustTower(string configIdTower, TowerBustSettings bustSettings)
+        private void ApplyLevelUpTower(string configIdTower)
         {
             foreach (var entity in _gameplayState.Entities)
             {

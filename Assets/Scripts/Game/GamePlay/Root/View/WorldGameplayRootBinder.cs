@@ -156,6 +156,19 @@ namespace Game.GamePlay.Root.View
                 CreateTower(frameBlock.As<FrameBlockTower>().TowerViewModel);
                 CreateFrame(frameBlock.As<FrameBlockTower>().FrameViewModel);
             }
+
+            if (frameBlock.FrameIs(FrameType.Road))
+            {
+                foreach (var roadViewModel in frameBlock.As<FrameBlockRoad>().RoadViewModels)
+                {
+                    CreateRoad(roadViewModel);
+                }
+                
+                foreach (var frameViewModel in frameBlock.As<FrameBlockRoad>().FrameViewModels)
+                {
+                    CreateFrame(frameViewModel);
+                }
+            }
             
             //Создаем на карте строящийся объект
 //            Debug.Log("Создаем объект FrameBlock");
@@ -167,6 +180,18 @@ namespace Game.GamePlay.Root.View
             {
                 DestroyTower(frameBlock.As<FrameBlockTower>().TowerViewModel);
                 DestroyFrame(frameBlock.As<FrameBlockTower>().FrameViewModel);
+            }
+            if (frameBlock.FrameIs(FrameType.Road))
+            {
+                foreach (var roadViewModel in frameBlock.As<FrameBlockRoad>().RoadViewModels)
+                {
+                    DestroyRoad(roadViewModel);
+                }
+                
+                foreach (var frameViewModel in frameBlock.As<FrameBlockRoad>().FrameViewModels)
+                {
+                    DestroyFrame(frameViewModel);
+                }
             }
             //Создаем на карте строящийся объект
          //   Debug.Log("Удаляем объект FrameBlock");

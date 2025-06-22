@@ -67,7 +67,7 @@ namespace Game.GamePlay.Services
         /**
          * По типу награды, который вернулся от игрока запускаем метод сервиса, передав данные
          */ 
-        private void SetReward(RewardCardData card)
+      /*  private void SetReward(RewardCardData card)
         {
             switch (card.RewardType)
             {
@@ -83,7 +83,7 @@ namespace Game.GamePlay.Services
             }
             
         }
-
+*/
         private RewardsProgress GenerateReward()
         {
             //TODO Генерация награды, в зависимости от
@@ -95,12 +95,13 @@ namespace Game.GamePlay.Services
             rewards.Card1.RewardType = RewardType.Tower;
             rewards.Card1.ConfigId = "Tower02";
 
-            rewards.Card2.RewardType = RewardType.TowerBust;
-            rewards.Card2.TargetId = "Tower01";
-            rewards.Card2.ConfigId = "Damage";
+            rewards.Card2.RewardType = RewardType.TowerLevelUp;
+            rewards.Card2.ConfigId = "Tower01";
             
-            rewards.Card3.RewardType = RewardType.Ground;
-            rewards.Card3.ConfigId = "Glass01"; //TODO Брать из текущих настроек карты
+            rewards.Card3.RewardType = RewardType.Road;
+            rewards.Card3.ConfigId = "8";
+
+            //rewards.Card3.ConfigId = Random.Range(0, 9).ToString();
             
             return rewards;
         }
