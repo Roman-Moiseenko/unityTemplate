@@ -11,6 +11,8 @@ namespace Game.GamePlay.View.Frames
         public List<RoadViewModel> RoadViewModels { get; } = new();
         public List<FrameViewModel> FrameViewModels { get; } = new();
 
+        private Dictionary<int, Vector2Int> _rotations = new();
+
         public FrameBlockRoad(Vector2Int position) : base(position)
         {
             IsRotate = true;
@@ -21,6 +23,11 @@ namespace Game.GamePlay.View.Frames
                     frameViewModel.Enable.Value = newValue;
                 }
             });
+            
+            _rotations.Add(0, new Vector2Int(0, 1));
+            _rotations.Add(1, new Vector2Int(1, 0));
+            _rotations.Add(2, new Vector2Int(0, -1));
+            _rotations.Add(3, new Vector2Int(-1, 0));
         }
 
         public void AddItem(RoadViewModel roadViewModel, FrameViewModel frameViewModel)
@@ -51,6 +58,19 @@ namespace Game.GamePlay.View.Frames
         {
             //Обходим циклом и меняем координаты
             Debug.Log("Поворачиваем фрейм");
+            var index = 0;
+            foreach (var roadViewModel in RoadViewModels)
+            {
+                roadViewModel.Rotate.Value++;
+                roadViewModel.Position.Value += _rotations[index];
+                index++;
+            }
+            index = 0;
+            foreach (var frameViewModel in FrameViewModels)
+            {
+                frameViewModel.Position.Value += _rotations[index];
+                index++;
+            }
         }
         
         public override void Selected(bool value = true)

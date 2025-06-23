@@ -32,7 +32,8 @@ namespace Game.GamePlay.Root.View
         //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
         private readonly Dictionary<int, TowerBinder> _createTowersMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
-        private readonly Dictionary<int, FrameBinder> _createFrameMap = new();
+       // private readonly Dictionary<int, FrameBlockBinder> _createFrameMap = new();
+        private FrameBlockBinder _frameBlockBinder;
         private readonly Dictionary<int, RoadBinder> _createdRoadsMap = new();
         private CastleBinder _castleBinder;
         private readonly CompositeDisposable _disposables = new();
@@ -84,8 +85,12 @@ namespace Game.GamePlay.Root.View
             );
             
             //Фрейм строительный //только подписка, в начале уровня его нет
-            _disposables.Add(viewModel.FramesBlock.ObserveAdd().Subscribe(e => CreateFrameBlock(e.Value)));
-            _disposables.Remove(viewModel.FramesBlock.ObserveRemove().Subscribe(e => DestroyFrameBlock(e.Value)));
+            _disposables.Add(
+                viewModel.FrameBlockViewModels.ObserveAdd().Subscribe(e => CreateFrameBlock(e.Value))
+                );
+            _disposables.Remove(
+                viewModel.FrameBlockViewModels.ObserveRemove().Subscribe(e => DestroyFrameBlock(e.Value))
+                );
             
             _gameplayCamera = new GameplayCamera(_camera, cameraSystem);
         }
@@ -106,7 +111,7 @@ namespace Game.GamePlay.Root.View
             createdCastle.Bind(castleViewModel);
             _castleBinder = createdCastle;
         }
-        private void CreateTower(TowerViewModel towerViewModel)
+        private void CreateTower(TowerViewModel towerViewModel, Transform parentTransform = null)
         {
             var towerLevel = towerViewModel.Level;
             var towerType = towerViewModel.ConfigId;
@@ -114,21 +119,21 @@ namespace Game.GamePlay.Root.View
             var prefabTowerLevelPath =
                 $"Prefabs/Gameplay/Towers/{towerType}/Level_{towerLevel}"; //Перенести в настройки уровня
             var towerPrefab = Resources.Load<TowerBinder>(prefabTowerLevelPath);
-
-            var createdTower = Instantiate(towerPrefab, transform);
+            var createdTower = Instantiate(towerPrefab, parentTransform ?? transform);
             createdTower.Bind(towerViewModel);
             _createTowersMap[towerViewModel.TowerEntityId] = createdTower;
         }
 
-        private void CreateRoad(RoadViewModel roadViewModel)
+        private void CreateRoad(RoadViewModel roadViewModel, Transform parentTransform = null)
         {
+            Debug.Log("CreateRoad = " + roadViewModel.Position.CurrentValue.x + " " + roadViewModel.Position.CurrentValue.y);
             var roadConfig = roadViewModel.ConfigId;
             var direction = roadViewModel.IsTurn ? "Turn" : "Line";
             var prefabRoadLevelPath =
                 $"Prefabs/Gameplay/Roads/{roadConfig}{direction}";
             var roadPrefab = Resources.Load<RoadBinder>(prefabRoadLevelPath);
-            //Debug.Log("prefabRoadLevelPath = " + prefabRoadLevelPath);
-            var createdRoad = Instantiate(roadPrefab, transform);
+            var createdRoad = Instantiate(roadPrefab, parentTransform ?? transform);
+ 
             createdRoad.Bind(roadViewModel);
             _createdRoadsMap[roadViewModel.RoadEntityId] = createdRoad;
 
@@ -143,58 +148,57 @@ namespace Game.GamePlay.Root.View
         }
         private void CreateFrame(FrameViewModel frameViewModel)
         {
-            var prefabFrame = "Prefabs/Gameplay/Frame";
+         /*   var prefabFrame = "Prefabs/Gameplay/Frame";
             var framePrefab = Resources.Load<FrameBinder>(prefabFrame);
             var createdFrame = Instantiate(framePrefab, transform);
             createdFrame.Bind(frameViewModel);
-            _createFrameMap.Add(frameViewModel.EntityId, createdFrame);
+            _createFrameMap.Add(frameViewModel.EntityId, createdFrame);*/
         }
-        private void CreateFrameBlock(FrameBlock frameBlock)
+        private void CreateFrameBlock(FrameBlockViewModel frameBlockViewModel)
         {
-            if (frameBlock.FrameIs(FrameType.Tower))
+            var prefabFrame = $"Prefabs/Gameplay/Frames/block_{frameBlockViewModel.GetCountFrames()}";
+            var framePrefab = Resources.Load<FrameBlockBinder>(prefabFrame);
+            var createdFrame = Instantiate(framePrefab, transform);
+            createdFrame.Bind(frameBlockViewModel);
+            _frameBlockBinder = createdFrame;
+            
+            if (frameBlockViewModel.IsTower())
             {
-                CreateTower(frameBlock.As<FrameBlockTower>().TowerViewModel);
-                CreateFrame(frameBlock.As<FrameBlockTower>().FrameViewModel);
+                CreateTower((TowerViewModel)frameBlockViewModel.EntityViewModels[0], createdFrame.transform);
             }
 
-            if (frameBlock.FrameIs(FrameType.Road))
+            if (frameBlockViewModel.IsRoad())
             {
-                foreach (var roadViewModel in frameBlock.As<FrameBlockRoad>().RoadViewModels)
+                foreach (var roadViewModel in frameBlockViewModel.EntityViewModels.Cast<RoadViewModel>().ToList())
                 {
-                    CreateRoad(roadViewModel);
-                }
-                
-                foreach (var frameViewModel in frameBlock.As<FrameBlockRoad>().FrameViewModels)
-                {
-                    CreateFrame(frameViewModel);
+                    CreateRoad(roadViewModel, createdFrame.transform);
                 }
             }
-            
+
+            if (frameBlockViewModel.IsGround())
+            {
+                //TODO !!!!
+            }
             //Создаем на карте строящийся объект
 //            Debug.Log("Создаем объект FrameBlock");
         //    Debug.Log(JsonConvert.SerializeObject(frameBlock, Formatting.Indented));
         }
-        private void DestroyFrameBlock(FrameBlock frameBlock)
+        private void DestroyFrameBlock(FrameBlockViewModel frameBlockViewModel)
         {
-            if (frameBlock.FrameIs(FrameType.Tower))
+            if (frameBlockViewModel.IsTower())
             {
-                DestroyTower(frameBlock.As<FrameBlockTower>().TowerViewModel);
-                DestroyFrame(frameBlock.As<FrameBlockTower>().FrameViewModel);
+                DestroyTower((TowerViewModel)frameBlockViewModel.EntityViewModels[0]);
             }
-            if (frameBlock.FrameIs(FrameType.Road))
+            if (frameBlockViewModel.IsRoad())
             {
-                foreach (var roadViewModel in frameBlock.As<FrameBlockRoad>().RoadViewModels)
+                foreach (var roadViewModel in frameBlockViewModel.EntityViewModels.Cast<RoadViewModel>().ToList())
                 {
                     DestroyRoad(roadViewModel);
                 }
-                
-                foreach (var frameViewModel in frameBlock.As<FrameBlockRoad>().FrameViewModels)
-                {
-                    DestroyFrame(frameViewModel);
-                }
             }
-            //Создаем на карте строящийся объект
-         //   Debug.Log("Удаляем объект FrameBlock");
+            
+            Destroy(_frameBlockBinder.gameObject);
+            Destroy(_frameBlockBinder);
         }
         private void CreateGround(GroundViewModel groundViewModel)
         {
@@ -223,14 +227,7 @@ namespace Game.GamePlay.Root.View
                 _createGroundsMap.Remove(groundViewModel.GroundEntityId);
             }
         }
-        private void DestroyFrame(FrameViewModel frameViewModel)
-        {
-            if (_createFrameMap.TryGetValue(frameViewModel.EntityId, out var frameBinder))
-            {
-                Destroy(frameBinder.gameObject);
-                _createFrameMap.Remove(frameViewModel.EntityId);
-            }
-        }
+
         private void Update()
         {
             //TODO Добавить обработку Input.GetTouch(0)

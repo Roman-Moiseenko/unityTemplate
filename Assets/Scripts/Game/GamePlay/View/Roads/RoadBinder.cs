@@ -29,11 +29,11 @@ namespace Game.GamePlay.View.Roads
                 _targetPosition = new Vector3(newPosition.x, 0, newPosition.y);
                 _isMoving = true;
             });
-                        transform.position = new Vector3(
-                            viewModel.Position.CurrentValue.x,
-                            0,
-                            viewModel.Position.CurrentValue.y
-                        );
+            transform.localPosition = new Vector3(
+                viewModel.Position.CurrentValue.x,
+                0,
+                viewModel.Position.CurrentValue.y
+            );
             
         }
         
@@ -41,11 +41,11 @@ namespace Game.GamePlay.View.Roads
         {
             if (_isMoving)
             {
-                transform.position = Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, smoothTime, speed );
+                transform.localPosition = Vector3.SmoothDamp(transform.localPosition, _targetPosition, ref _velocity, smoothTime, speed );
                 if (_velocity.magnitude < 0.0005)
                 {
                     _isMoving = false;
-                    transform.position = _targetPosition;
+                    transform.localPosition = _targetPosition;
                 }
             
             }

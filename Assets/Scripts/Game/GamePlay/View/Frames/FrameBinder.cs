@@ -24,7 +24,7 @@ namespace Game.GamePlay.View.Frames
 
             Observable.Merge(frameViewModel.Enable, frameViewModel.IsSelected).Subscribe(v =>
             {
-                SetMaterail();
+                SetMaterial();
             });
           /*  
             frameViewModel.Enable.Subscribe(newValue =>
@@ -85,11 +85,10 @@ namespace Game.GamePlay.View.Frames
             }
         }
 
-        private void SetMaterail()
+        private void SetMaterial()
         {
             var _e = _frameViewModel.Enable.CurrentValue;
             var _s = _frameViewModel.IsSelected.CurrentValue;
-//            Debug.Log($"_e = {_e} _s = { _s}");
             if (_e && _s)
             {
                 frame.GetComponent<MeshRenderer>().material = allowedSelected; 

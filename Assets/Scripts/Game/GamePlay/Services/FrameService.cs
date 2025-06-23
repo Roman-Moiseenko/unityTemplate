@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Game.GamePlay.View;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
@@ -23,12 +25,17 @@ namespace Game.GamePlay.Services
         private readonly RoadsService _roadsService;
 
         private FrameBlock _frameBlock;
+        
+        private FrameBlockViewModel _viewModel;
+        private readonly ObservableList<FrameBlockViewModel> _viewModels = new();
+        public IObservableCollection<FrameBlockViewModel> ViewModels => _viewModels;
+        
         private readonly ObservableList<FrameBlock> _framesBlock = new();
         public IObservableCollection<FrameBlock> FramesBlock =>
             _framesBlock;
-        public ISynchronizedView<FrameViewModel, FrameViewModel> ItemsView { get; set; }
 
         //public 
+        private Dictionary<int, Vector2Int> _rotations = new();
 
         public FrameService(
             GameplayStateProxy gameplayState,
@@ -41,10 +48,29 @@ namespace Game.GamePlay.Services
             _placementService = placementService;
             _towerService = towerService;
             _roadsService = roadsService;
+            
+            _rotations.Add(0, new Vector2Int(0, 1));
+            _rotations.Add(1, new Vector2Int(1, 0));
+            _rotations.Add(2, new Vector2Int(0, -1));
+            _rotations.Add(3, new Vector2Int(-1, 0));
         }
 
         public void MoveFrame(Vector2Int position)
         {
+            _viewModel.MoveFrame(position);
+            
+            if (_viewModel.IsTower())
+                _viewModel.Enable.Value = _placementService.CheckPlacementTower(position, _viewModel.GetTowerId());
+            if (_viewModel.IsRoad())
+                _viewModel.Enable.Value = _placementService.CheckPlacementRoad(position, _viewModel.GetRoads());
+
+            if (_viewModel.IsGround())
+            {
+                //TODO Получить список, где появится земля
+                //_viewModel.SetEnabledGround(_placementService.CheckPlacementGround(position, _viewModel.GetGrounds()));
+                //_viewModel.Enable.Value = ;
+            }
+            /*
             if (_frameBlock.FrameIs(FrameType.Tower))
             {
                 var towerEntityId = _frameBlock.As<FrameBlockTower>().TowerViewModel.TowerEntityId;
@@ -62,23 +88,21 @@ namespace Game.GamePlay.Services
             }
             
             _frameBlock.Move(position);
+            */
         }
 
         public void SelectedFrame()
         {
-            _frameBlock.Selected(true);
+            _viewModel.Selected(true);
         }
         
         public void UnSelectedFrame()
         {
-            _frameBlock.Selected(false);
+            _viewModel.Selected(false);
         }
         public void RotateFrame()
         {
-            if (_frameBlock.IsRotate)
-            {
-                _frameBlock.Rotate();
-            }
+            _viewModel.RotateFrame();
         }
 
         public void CreateFrameTower(Vector2Int position, int level, string configId)
@@ -93,95 +117,112 @@ namespace Game.GamePlay.Services
             });
             
             var towerViewModel = new TowerViewModel(towerEntity, null, _towerService);
-            var frameViewModel = new FrameViewModel(position, _gameplayState.CreateEntityID());
-            _frameBlock = new FrameBlockTower(position, towerViewModel, frameViewModel);
-            _frameBlock.Enable.Value = _placementService.CheckPlacementTower(position, towerEntityId);
-            _framesBlock.Add(_frameBlock);
+
+            _viewModel = new FrameBlockViewModel(position);
+            _viewModel.AddItem(towerViewModel);
+            _viewModels.Add(_viewModel);
+            _viewModel.Enable.Value = _placementService.CheckPlacementTower(position, towerEntityId);
         }
 
         public void RemoveFrame()
         {
-            _framesBlock.Remove(_frameBlock);
-            _frameBlock?.Dispose();
+            _viewModels.Remove(_viewModel);
+            _viewModel?.Dispose();
+         //   _framesBlock.Remove(_frameBlock);
+         //   _frameBlock?.Dispose();
         }
 
         public bool IsPosition(Vector2Int position)
         {
-            if (_frameBlock == null) return false;
-            
-            return _frameBlock.IsPosition(position);
+            if (_viewModel == null) return false;
+            return _viewModel.IsPosition(position);
         }
 
         public void CreateFrameRoad(Vector2Int position, string configId)
         {
 
-            Debug.Log("CreateFrameRoad  configId = " + configId);
-            List<RoadViewModel> list = new();
-            _frameBlock = new FrameBlockRoad(position);
+            //Debug.Log("CreateFrameRoad  configId = " + configId);
+            //List<RoadViewModel> list = new();
+            //_frameBlock = new FrameBlockRoad(position);
+            _viewModel = new FrameBlockViewModel(position);
             switch (configId)
             {
                 case "0":
-                    list.Add(TemplateCreateRoad(position, true, 0)); // |-
+                    _viewModel.AddItem(TemplateCreateRoad(true, 0));
+                    //list.Add(TemplateCreateRoad(position, true, 0)); // |-
                     break;
                 
                 case "1":
-                    list.Add(TemplateCreateRoad(position, false, 0)); // |
+                    _viewModel.AddItem(TemplateCreateRoad(false, 0)); // |
                     break;
                 //
                 case "2":
-                    list.Add(TemplateCreateRoad(position, false, 0)); // |
-                    list.Add(TemplateCreateRoad(position, false, 0, 1)); // |
+                    _viewModel.AddItem(TemplateCreateRoad(false, 0)); // |
+                    _viewModel.AddItem(TemplateCreateRoad(false, 0, 1)); // |
                     break;
                 case "3":
-                    list.Add(TemplateCreateRoad(position, false, 1)); // |
-                    list.Add(TemplateCreateRoad(position, true, 3, 1)); // |_
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); // |
+                    _viewModel.AddItem(TemplateCreateRoad(true, 3, 1)); // |_
                     break;
                 case "4":
-                    list.Add(TemplateCreateRoad(position, false, 1)); //  |
-                    list.Add(TemplateCreateRoad(position, true, 2, 1)); // _|
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); //  |
+                    _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); // _|
                     break;
                 case "5":
-                    list.Add(TemplateCreateRoad(position, true, 1)); // -|
-                    list.Add(TemplateCreateRoad(position, true, 3, 1)); //  |_
+                    _viewModel.AddItem(TemplateCreateRoad(true, 1)); // -|
+                    _viewModel.AddItem(TemplateCreateRoad(true, 3, 1)); //  |_
                     break;
                 case "6":
-                    list.Add(TemplateCreateRoad(position, true, 0)); //  |-
-                    list.Add(TemplateCreateRoad(position, true, 2, 1)); // _|
+                    _viewModel.AddItem(TemplateCreateRoad(true, 0)); //  |-
+                    _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); // _|
                     break;
                 case "7":
-                    list.Add(TemplateCreateRoad(position, true, 1)); // -|
-                    list.Add(TemplateCreateRoad(position, true, 2, 1)); // _|
+                    _viewModel.AddItem(TemplateCreateRoad(true, 1)); // -|
+                    _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); // _|
                     break;
                 case "8":
-                    list.Add(TemplateCreateRoad(position, false, 1)); // |
-                    list.Add(TemplateCreateRoad(position, true, 2, 1)); // _|
-                    list.Add(TemplateCreateRoad(position, false, 0, 2)); // --
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); // |
+                    _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); // _|
+                    _viewModel.AddItem(TemplateCreateRoad(false, 0, 2)); // --
                     break;
-                
             }
-
+/*
             foreach (var roadViewModel in list)
             {
                 _frameBlock.As<FrameBlockRoad>().AddItem(
                     roadViewModel, 
                     new FrameViewModel(roadViewModel.Position.CurrentValue, _gameplayState.CreateEntityID()));
             }
-            
-            _frameBlock.Enable.Value = _placementService.CheckPlacementRoad(position, _frameBlock.As<FrameBlockRoad>().GetRoadIds());
-            Debug.Log(JsonConvert.SerializeObject(_frameBlock, Formatting.Indented));
-            _framesBlock.Add(_frameBlock);
+            */
+            _viewModel.Enable.Value = _placementService.CheckPlacementRoad(position, _viewModel.GetRoads());
+         //   Debug.Log(JsonConvert.SerializeObject(_frameBlock, Formatting.Indented));
+            _viewModels.Add(_viewModel);
             
         }
 
         public List<RoadViewModel> GetRoads()
         {
-            return _frameBlock.As<FrameBlockRoad>().RoadViewModels;
+            var roads = _viewModel.EntityViewModels.Cast<RoadViewModel>().ToList();
+            var index = 0;
+            var rotateIndex = _viewModel.GetRotateValue();
+            Debug.Log("rotateIndex = " + rotateIndex);
+            Debug.Log("_viewModel.Position.CurrentValue = " + _viewModel.Position.CurrentValue.x + " " + _viewModel.Position.CurrentValue.y);
+            foreach (var road in roads)
+            {
+                //road.Rotate.Value = rotateIndex;
+                index++;
+                Debug.Log("road.Position.Value = " + road.Position.Value.x + " " + road.Position.Value.y);
+
+                road.Position.Value += _viewModel.Position.CurrentValue;
+                //road.Position.Value += _rotations[rotateIndex];
+
+            }
+
+
+            return roads;
         }
         
-        
-        
-        
-        private RoadViewModel TemplateCreateRoad(Vector2Int position, bool isTurn, int rotate, int indexOf = 0)
+        private RoadViewModel TemplateCreateRoad(bool isTurn, int rotate, int indexOf = 0)
         {
           //  Vector2Int delta = new Vector2Int(0, 0);;
             Vector2Int delta = indexOf switch
@@ -194,7 +235,7 @@ namespace Game.GamePlay.Services
             var roadEntity = new RoadEntity(new RoadEntityData
             {
                 UniqueId = _gameplayState.CreateEntityID(),
-                Position = position + delta,
+                Position = delta,
                 ConfigId = "Road",
                 Rotate = rotate,
                 IsTurn = isTurn,

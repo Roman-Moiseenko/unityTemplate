@@ -33,7 +33,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
         public ReactiveProperty<bool> IsEnable;
         public ReactiveProperty<bool> IsRotate;
 
-        private IObservableCollection<FrameBlock> _frameBlocks;
+        private IObservableCollection<FrameBlockViewModel> _frameBlocksView;
 
         public PanelConfirmationViewModel(
             GameplayUIManager uiManager, 
@@ -46,22 +46,22 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             _fsmGameplay = container.Resolve<FsmGameplay>();
             _frameService = container.Resolve<FrameService>();
-            _frameBlocks = _frameService.FramesBlock;
+            _frameBlocksView = _frameService.ViewModels;
 
             IsEnable = new ReactiveProperty<bool>(true);
             IsRotate = new ReactiveProperty<bool>(true);
             
-            _frameBlocks.ObserveAdd().Subscribe(newValue =>
+            _frameBlocksView.ObserveAdd().Subscribe(newValue =>
             {
                 IsEnable.Value = newValue.Value.Enable.Value;
                 newValue.Value.Enable.Subscribe(e =>
                 {
                     IsEnable.Value = e;
                 });
-                IsRotate.Value = newValue.Value.IsRotate;
+                IsRotate.Value = newValue.Value.IsRotate();
             });
 
-            _frameBlocks.ObserveRemove().Subscribe(_ =>
+            _frameBlocksView.ObserveRemove().Subscribe(_ =>
             {
                 IsEnable.Value = true;
                 IsRotate.Value = true;

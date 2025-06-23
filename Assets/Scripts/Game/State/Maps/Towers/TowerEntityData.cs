@@ -5,10 +5,10 @@ namespace Game.State.Maps.Towers
 {
     public class TowerEntityData : EntityData
     {
-        public TowerTypeDamage TypeDamage { get; set; }
         public TowerTypeEnemy TypeEnemy { get; set; }
         //Список усилений, навешанных на башню
 
+        public Dictionary<TowerParameterType, TowerParameterData> Parameters;
 
         //TODO Базовые данные.
         ///Урон,

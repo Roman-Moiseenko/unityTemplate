@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.GamePlay.View.Roads;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Towers;
 using Game.State.Root;
@@ -85,7 +86,7 @@ namespace Game.GamePlay.Services
 
         }
 
-        public bool CheckPlacementRoad(Vector2Int position, List<int> getRoadIds)
+        public bool CheckPlacementRoad(Vector2Int position, List<RoadViewModel> getRoadIds)
         {
             //TODO проверить все дороги, попадает хотя бы одна на землю, и не попадает ли каждая на крепость, башню и дорогу
             //TODO Проверить крайние на совпадение с маршрутом Way или WaySecond

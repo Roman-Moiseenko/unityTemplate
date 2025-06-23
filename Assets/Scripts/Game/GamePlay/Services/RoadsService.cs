@@ -59,6 +59,7 @@ namespace Game.GamePlay.Services
 
         public bool PlaceRoad(Vector2Int position, bool isTurn, int rotate)
         {
+            Debug.Log("PlaceRoad = " + position.x + " " + position.y);
             var command = new CommandPlaceRoad(_configIdDefault, position, isTurn, rotate);
             return _cmd.Process(command);
         }

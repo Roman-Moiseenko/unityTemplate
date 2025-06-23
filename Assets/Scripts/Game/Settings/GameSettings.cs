@@ -1,6 +1,6 @@
 ﻿using Game.Settings.Gameplay.Buildings;
 using Game.Settings.Gameplay.Entities.Buildings;
-using Game.Settings.Gameplay.Entities.Busts;
+
 using Game.Settings.Gameplay.Entities.Castle;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.Settings.Gameplay.Maps;
@@ -13,7 +13,6 @@ namespace Game.Settings
     {
        // public BuildingsSettings BuildingsSettings;
         public MapsSettings MapsSettings;
-        public TowerBustsSettings TowerBustsSettings;
         public TowersSettings TowersSettings;
         public CastleInitialSettings CastleInitialSettings;
     }

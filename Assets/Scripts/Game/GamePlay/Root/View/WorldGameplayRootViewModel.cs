@@ -34,7 +34,7 @@ namespace Game.GamePlay.Root.View
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
         public readonly IObservableCollection<RoadViewModel> AllRoads;
 
-        public readonly IObservableCollection<FrameBlock> FramesBlock;
+        public readonly IObservableCollection<FrameBlockViewModel> FrameBlockViewModels;
         public CastleViewModel CastleViewModel { get; private set; }
 
         public WorldGameplayRootViewModel(
@@ -57,7 +57,7 @@ namespace Game.GamePlay.Root.View
             AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
             AllTowers = towersService.AllTowers;
-            FramesBlock = frameService.FramesBlock;
+            FrameBlockViewModels = frameService.ViewModels;
             CastleViewModel = castleService.CastleViewModel;
 
             //Изменение состояние Геймплея
@@ -70,7 +70,6 @@ namespace Game.GamePlay.Root.View
                     {
                         var position = placementService.GetNewPositionTower();
                         var level = towersService.Levels[reward.ConfigId];
-                        //towersService.PlaceTower(reward.ConfigId, position);
                         frameService.CreateFrameTower(position, level, reward.ConfigId);
                     }
 
@@ -78,6 +77,11 @@ namespace Game.GamePlay.Root.View
                     {
                         var position = placementService.GetNewPositionRoad();
                         frameService.CreateFrameRoad(position, reward.ConfigId);
+                    }
+                    if (reward.RewardType == RewardType.Ground)
+                    {
+                    //    var position = placementService.GetNewPositionGround();
+                    //    frameService.CreateFrameGround(position);
                     }
                 }
 
@@ -93,6 +97,10 @@ namespace Game.GamePlay.Root.View
                             frameService.RemoveFrame();
                             break; 
                         case RewardType.Ground: 
+                        /*    foreach (var position in frameService.GetGrounds())
+                            {
+                                groundsService.PlaceGround(position);
+                            }*/
                             groundsService.PlaceGround(position);
                             frameService.RemoveFrame();
                             break;
@@ -184,7 +192,6 @@ namespace Game.GamePlay.Root.View
 
             if (_fsmGameplay.IsStateBuild())
             {
-//                Debug.Log("position = " + JsonUtility.ToJson(position));
                 _fsmGameplay.Fsm.Position.Value =
                     new Vector2Int(Mathf.FloorToInt(position.x + 0.5f), Mathf.FloorToInt(position.y + 0.5f));
                 
@@ -199,32 +206,28 @@ namespace Game.GamePlay.Root.View
         //Если при нажатии клавиши, под ним фрейм, то выделяем его и возвращаем true
         public bool DownFrame(Vector2 position)
         {
-//            Debug.Log(" Нажали на фрейм ");
             var vectorInt = new Vector2Int(
                 Mathf.FloorToInt(position.x + 0.5f),
                 Mathf.FloorToInt(position.y + 0.5f)
             );
             var result = _frameService.IsPosition(vectorInt);
-      //      Debug.Log(" Нашли фрейм " + result);
-
             if (result) _frameService.SelectedFrame();
-            return result;
+            return result; //Нашли или нет Фрейм
         }
 
         public void UpFrame()
         {
-       //     Debug.Log(" Отпустили фрейм ");
+       //    Отпустили фрейм 
             _frameService.UnSelectedFrame();
         }
 
         public void MoveFrame(Vector2 position)
         {
-//            Debug.Log(" Двигаем фрейм ");
             var vectorInt = new Vector2Int(
                 Mathf.FloorToInt(position.x + 0.5f),
                 Mathf.FloorToInt(position.y + 0.5f)
             );
-            _frameService.MoveFrame(vectorInt);
+            _frameService.MoveFrame(vectorInt);//Двигаем фрейм
         }
     }
 }

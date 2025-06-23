@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.View.Towers
 {
-    public class TowerViewModel
+    public class TowerViewModel : IMovingEntityViewModel
     {
         private readonly TowerEntity _towerEntity;
         private readonly TowerSettings _towerSettings;
@@ -20,7 +20,8 @@ namespace Game.GamePlay.View.Towers
         public ReactiveProperty<int> Level { get; set; }
         
         public readonly string ConfigId;
-        
+        private IMovingEntityViewModel _movingEntityViewModelImplementation;
+
         public ReactiveProperty<Vector2Int> Position { get; set; }
 
         public TowerViewModel(
@@ -60,6 +61,16 @@ namespace Game.GamePlay.View.Towers
                 (position.y >= _y - delta && position.y <= _y + delta))
                 return true;
             return false;
+        }
+
+        public void SetPosition(Vector2Int position)
+        {
+            Position.Value = position;
+        }
+
+        public Vector2Int GetPosition()
+        {
+            return Position.CurrentValue;
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Game.Settings;
-using Game.Settings.Gameplay.Entities.Busts;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using MVVM.CMD;
@@ -10,12 +9,11 @@ namespace Game.GamePlay.Commands.TowerCommand
     public class CommandTowerLevelUpHandler : ICommandHandler<CommandTowerLevelUp>
     {
         private readonly GameplayStateProxy _gameplayState;
-        private readonly TowerBustsSettings _bustsSettings;
+
 
         public CommandTowerLevelUpHandler(GameplayStateProxy gameplayState, GameSettings gameSettings)
         {
             _gameplayState = gameplayState;
-            _bustsSettings = gameSettings.TowerBustsSettings;
         }
         public bool Handle(CommandTowerLevelUp command)
         {
