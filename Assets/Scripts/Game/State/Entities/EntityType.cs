@@ -5,9 +5,9 @@
         Unknown = 0,
         Tower = 1,
         Resource = 2,
-        Road = 3,
+        //Road = 3,
         Base = 4,
-        Ground = 5,
+      //  Ground = 5,
         
         ////
         Building = 15,

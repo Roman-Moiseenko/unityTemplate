@@ -51,14 +51,13 @@ namespace Game.GamePlay.Commands.MapCommand
             {
                 var initialGround = new GroundEntityData
                 {
-                    Type = EntityType.Ground,
                     UniqueId = _gameplayState.CreateEntityID(),
                     ConfigId = newMapInitialStateSettings.GroundDefault,
                     Position = ground.Position,
                     Enabled = ground.Enabled,
                     
                 };
-                _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialGround));
+                _gameplayState.Grounds.Add(new GroundEntity(initialGround));
             }
             //Рисуем дорогу
             foreach (var road in newMapInitialStateSettings.WayMain)

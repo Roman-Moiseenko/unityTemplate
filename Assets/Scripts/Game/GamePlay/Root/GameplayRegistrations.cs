@@ -94,7 +94,7 @@ namespace Game.GamePlay.Root
             
             //Сервис по земле
             container.RegisterFactory(_ => new GroundsService(
-                    gameplayState.Entities,
+                    gameplayState.Grounds,
                     groundConfigId,
                     cmd
                 )

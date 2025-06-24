@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using Unity.Mathematics.Geometry;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Game.GamePlay.Services
@@ -35,7 +36,8 @@ namespace Game.GamePlay.Services
             _framesBlock;
 
         //public 
-        private Dictionary<int, Vector2Int> _rotations = new();
+    //    private Dictionary<int, Vector2Int> _rotations = new();
+        private Dictionary<int, Vector2Int> matrixRoads = new();
 
         public FrameService(
             GameplayStateProxy gameplayState,
@@ -48,11 +50,10 @@ namespace Game.GamePlay.Services
             _placementService = placementService;
             _towerService = towerService;
             _roadsService = roadsService;
-            
-            _rotations.Add(0, new Vector2Int(0, 1));
-            _rotations.Add(1, new Vector2Int(1, 0));
-            _rotations.Add(2, new Vector2Int(0, -1));
-            _rotations.Add(3, new Vector2Int(-1, 0));
+            matrixRoads.Add(0, new Vector2Int(0, 0));
+            matrixRoads.Add(1, new Vector2Int(0, 1));
+            matrixRoads.Add(2, new Vector2Int(1, 1));
+            matrixRoads.Add(3, new Vector2Int(1, 0));
         }
 
         public void MoveFrame(Vector2Int position)
@@ -62,7 +63,7 @@ namespace Game.GamePlay.Services
             if (_viewModel.IsTower())
                 _viewModel.Enable.Value = _placementService.CheckPlacementTower(position, _viewModel.GetTowerId());
             if (_viewModel.IsRoad())
-                _viewModel.Enable.Value = _placementService.CheckPlacementRoad(position, _viewModel.GetRoads());
+                _viewModel.Enable.Value = _placementService.CheckPlacementRoad(position, GetRoads());
 
             if (_viewModel.IsGround())
             {
@@ -128,28 +129,33 @@ namespace Game.GamePlay.Services
         {
             _viewModels.Remove(_viewModel);
             _viewModel?.Dispose();
-         //   _framesBlock.Remove(_frameBlock);
-         //   _frameBlock?.Dispose();
         }
 
         public bool IsPosition(Vector2Int position)
         {
             if (_viewModel == null) return false;
-            return _viewModel.IsPosition(position);
+            
+            if (_viewModel.IsTower() || _viewModel.IsGround())
+                return _viewModel.Position.CurrentValue == position;
+            if (_viewModel.IsRoad())
+            {
+                var rotateIndex = _viewModel.GetRotateValue();
+                var realPosition = _viewModel.Position.CurrentValue - matrixRoads[rotateIndex];
+                foreach (var entityViewModel in _viewModel.EntityViewModels)
+                {
+                    if (position == entityViewModel.GetPosition() + realPosition) return true;
+                }
+            }
+            return false;
         }
 
         public void CreateFrameRoad(Vector2Int position, string configId)
         {
-
-            //Debug.Log("CreateFrameRoad  configId = " + configId);
-            //List<RoadViewModel> list = new();
-            //_frameBlock = new FrameBlockRoad(position);
             _viewModel = new FrameBlockViewModel(position);
             switch (configId)
             {
                 case "0":
                     _viewModel.AddItem(TemplateCreateRoad(true, 0));
-                    //list.Add(TemplateCreateRoad(position, true, 0)); // |-
                     break;
                 
                 case "1":
@@ -186,56 +192,47 @@ namespace Game.GamePlay.Services
                     _viewModel.AddItem(TemplateCreateRoad(false, 0, 2)); // --
                     break;
             }
-/*
-            foreach (var roadViewModel in list)
-            {
-                _frameBlock.As<FrameBlockRoad>().AddItem(
-                    roadViewModel, 
-                    new FrameViewModel(roadViewModel.Position.CurrentValue, _gameplayState.CreateEntityID()));
-            }
-            */
-            _viewModel.Enable.Value = _placementService.CheckPlacementRoad(position, _viewModel.GetRoads());
-         //   Debug.Log(JsonConvert.SerializeObject(_frameBlock, Formatting.Indented));
+
+            _viewModel.Enable.Value = _placementService.CheckPlacementRoad(position, GetRoads());
             _viewModels.Add(_viewModel);
             
         }
 
-        public List<RoadViewModel> GetRoads()
+        public List<RoadEntityData> GetRoads()
         {
+
+            List<RoadEntityData> result = new();
+            
             var roads = _viewModel.EntityViewModels.Cast<RoadViewModel>().ToList();
-            var index = 0;
+            
+            var i = 0;
             var rotateIndex = _viewModel.GetRotateValue();
-            Debug.Log("rotateIndex = " + rotateIndex);
-            Debug.Log("_viewModel.Position.CurrentValue = " + _viewModel.Position.CurrentValue.x + " " + _viewModel.Position.CurrentValue.y);
+            var realPosition = _viewModel.Position.CurrentValue - matrixRoads[rotateIndex];
+            
             foreach (var road in roads)
             {
-                //road.Rotate.Value = rotateIndex;
-                index++;
-                Debug.Log("road.Position.Value = " + road.Position.Value.x + " " + road.Position.Value.y);
-
-                road.Position.Value += _viewModel.Position.CurrentValue;
-                //road.Position.Value += _rotations[rotateIndex];
-
+                result.Add(new RoadEntityData
+                {
+                    ConfigId = road.ConfigId,
+                    UniqueId = road.RoadEntityId,
+                    IsTurn = road.IsTurn,
+                    Position = realPosition + matrixRoads[(i + rotateIndex) % 4],
+                    Rotate = road.Rotate.Value + rotateIndex
+                    
+                });
+                i++;
             }
-
-
-            return roads;
+            
+            return result;
         }
         
         private RoadViewModel TemplateCreateRoad(bool isTurn, int rotate, int indexOf = 0)
         {
-          //  Vector2Int delta = new Vector2Int(0, 0);;
-            Vector2Int delta = indexOf switch
-            {
-                1 => new Vector2Int(0, 1),
-                2 => new Vector2Int(1, 1),
-                _ => new Vector2Int(0, 0)
-            };
 
             var roadEntity = new RoadEntity(new RoadEntityData
             {
                 UniqueId = _gameplayState.CreateEntityID(),
-                Position = delta,
+                Position = matrixRoads[indexOf],
                 ConfigId = "Road",
                 Rotate = rotate,
                 IsTurn = isTurn,

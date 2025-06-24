@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Game.State.Entities;
 using Game.State.Maps.Castle;
+using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
 
 namespace Game.State.Root
@@ -29,6 +30,8 @@ namespace Game.State.Root
         public int Id { get; set; }
         public List<EntityData> Entities;  //Либо разделить на Tower и Ground 
 
+        public List<GroundEntityData> Grounds;
+        
         public List<RoadEntityData> Way; //Основная Дорога
         public List<RoadEntityData> WaySecond;
         public List<RoadEntityData> WayDisabled;

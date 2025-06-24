@@ -66,23 +66,29 @@ namespace Game.GamePlay.Root.View
                 if (newState.GetType() == typeof(FsmStateBuild))
                 {
                     var reward = ((FsmStateBuild)newState).GetRewardCard();
+                    Vector2Int position = new Vector2Int();
                     if (reward.RewardType == RewardType.Tower)
                     {
-                        var position = placementService.GetNewPositionTower();
+                        position = placementService.GetNewPositionTower();
                         var level = towersService.Levels[reward.ConfigId];
                         frameService.CreateFrameTower(position, level, reward.ConfigId);
+                      //  _fsmGameplay.Fsm.Position.Value = position; //Сохраняем позицию башни в состоянии 
+                        
                     }
 
                     if (reward.RewardType == RewardType.Road)
                     {
-                        var position = placementService.GetNewPositionRoad();
+                        position = placementService.GetNewPositionRoad();
                         frameService.CreateFrameRoad(position, reward.ConfigId);
+                         
+
                     }
                     if (reward.RewardType == RewardType.Ground)
                     {
-                    //    var position = placementService.GetNewPositionGround();
+                        position = placementService.GetNewPositionGround();
                     //    frameService.CreateFrameGround(position);
                     }
+                    _fsmGameplay.Fsm.Position.Value = position; //Сохраняем позицию сущности в состоянии
                 }
 
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
@@ -107,7 +113,7 @@ namespace Game.GamePlay.Root.View
                         case RewardType.Road:
                             foreach (var road in frameService.GetRoads())
                             {
-                                roadsService.PlaceRoad(road.Position.CurrentValue, road.IsTurn, road.Rotate.CurrentValue);
+                                roadsService.PlaceRoad(road.Position, road.IsTurn, road.Rotate);
                             }
                             frameService.RemoveFrame();
                             break;

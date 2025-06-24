@@ -98,7 +98,8 @@ namespace Game.GamePlay.View.Frames
                 return Position.CurrentValue == position;
             if (IsRoad())
             {
-                //TODO Определяем координаты 
+                //TODO Определяем координаты
+                Debug.Log("position = " + Position.Value.x + " " + Position.Value.y);
                 var p0 = EntityViewModels[0].GetPosition();
                 foreach (var entityViewModel in EntityViewModels)
                 {

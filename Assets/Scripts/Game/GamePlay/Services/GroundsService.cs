@@ -24,7 +24,7 @@ namespace Game.GamePlay.Services
             _allGrounds; //Интерфейс менять нельзя, возвращаем через динамический массив
 
         public GroundsService(
-            IObservableCollection<Entity> entities,
+            IObservableCollection<GroundEntity> grounds,
             string configIdDefault,
            // GroundSettings groundSettings,
             ICommandProcessor cmd
@@ -34,20 +34,20 @@ namespace Game.GamePlay.Services
             _cmd = cmd;
             
             
-            foreach (var entity in entities)
+            foreach (var ground in grounds)
             {
-                if (entity is GroundEntity groundEntity) CreateGroundViewModel(groundEntity);
+                CreateGroundViewModel(ground);
             }
             
             //Подписка на добавление новых view-моделей текущего класса
-            entities.ObserveAdd().Subscribe(e =>
+            grounds.ObserveAdd().Subscribe(e =>
             {
-                if (e.Value is GroundEntity groundEntity) CreateGroundViewModel(groundEntity);
+                CreateGroundViewModel(e.Value);
             });
             // и на удаление
-            entities.ObserveRemove().Subscribe(e =>
+            grounds.ObserveRemove().Subscribe(e =>
             {
-                if (e.Value is GroundEntity groundEntity) RemoveGroundViewModel(groundEntity);
+                RemoveGroundViewModel(e.Value);
             });
             
         }

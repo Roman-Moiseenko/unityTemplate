@@ -6,6 +6,7 @@ using Game.State.Inventory;
 //using Game.State.Entities.Buildings;
 using Game.State.Maps;
 using Game.State.Maps.Castle;
+using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
 using Game.State.Root;
 using Newtonsoft.Json;
@@ -69,6 +70,7 @@ namespace Game.State
                 Way = new List<RoadEntityData>(),
                 WaySecond = new List<RoadEntityData>(),
                 WayDisabled = new List<RoadEntityData>(),
+                Grounds = new List<GroundEntityData>()
                 
                 //TODO Ресурсы игры
             };

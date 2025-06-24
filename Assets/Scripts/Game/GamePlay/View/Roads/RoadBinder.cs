@@ -22,6 +22,7 @@ namespace Game.GamePlay.View.Roads
             viewModel.Rotate.Subscribe(newValue =>
             {
                 transform.localEulerAngles = new Vector3(0, 90f * newValue,0);
+//                Debug.Log("localEulerAngles = " + newValue + " " + viewModel.IsTurn);
             });
             
             viewModel.Position.Subscribe(newPosition =>

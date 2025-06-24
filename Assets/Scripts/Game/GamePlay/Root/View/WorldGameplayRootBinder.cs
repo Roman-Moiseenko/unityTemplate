@@ -126,7 +126,7 @@ namespace Game.GamePlay.Root.View
 
         private void CreateRoad(RoadViewModel roadViewModel, Transform parentTransform = null)
         {
-            Debug.Log("CreateRoad = " + roadViewModel.Position.CurrentValue.x + " " + roadViewModel.Position.CurrentValue.y);
+         //   Debug.Log("CreateRoad = " + roadViewModel.Position.CurrentValue.x + " " + roadViewModel.Position.CurrentValue.y);
             var roadConfig = roadViewModel.ConfigId;
             var direction = roadViewModel.IsTurn ? "Turn" : "Line";
             var prefabRoadLevelPath =

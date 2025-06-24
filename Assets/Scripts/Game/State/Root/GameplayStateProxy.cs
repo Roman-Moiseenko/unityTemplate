@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Game.State.Entities;
 using Game.State.Maps.Castle;
+using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
 using Newtonsoft.Json;
 using ObservableCollections;
@@ -25,6 +26,7 @@ namespace Game.State.Root
         public int PreviousGameSpeed => _gameplayState.PreviousGameSpeed;
         
         public ObservableList<Entity> Entities { get; } = new();
+        public ObservableList<GroundEntity> Grounds { get; } = new();
 
         public ObservableList<RoadEntity> Way { get; } = new();
         public ObservableList<RoadEntity> WaySecond { get; } = new();
@@ -53,11 +55,24 @@ namespace Game.State.Root
             CurrentWave = new ReactiveProperty<int>(gameplayState.CurrentWave);
             CurrentWave.Subscribe(newValue => gameplayState.CurrentWave = newValue);
 
+         //   Debug.Log("gameplayState = " + JsonConvert.SerializeObject(gameplayState, Formatting.Indented));
             InitMaps(gameplayState);
         }
 
         private void InitMaps(GameplayState gameplayState)
         {
+            gameplayState.Grounds.ForEach(
+                groundOriginal => Grounds.Add(new GroundEntity(groundOriginal))
+            );
+            Grounds.ObserveAdd().Subscribe(e => gameplayState.Grounds.Add(e.Value.Origin));
+
+            Grounds.ObserveRemove().Subscribe(e =>
+            {
+                var removedMapState = gameplayState.Grounds.FirstOrDefault(b => b.UniqueId == e.Value.UniqueId);
+                gameplayState.Grounds.Remove(removedMapState);
+            });
+            
+            
             gameplayState.Entities.ForEach(
                 entityOriginal => Entities.Add(EntitiesFactory.CreateEntity(entityOriginal))
             );

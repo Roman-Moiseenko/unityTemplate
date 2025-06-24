@@ -1,4 +1,5 @@
-﻿using Game.State.Entities;
+﻿using System.Collections.Generic;
+using Game.State.Entities;
 using R3;
 using UnityEngine;
 
@@ -22,7 +23,10 @@ namespace Game.State.Maps.Roads
             Origin = roadData;
 
             Rotate = new ReactiveProperty<int>(roadData.Rotate);
-            Rotate.Subscribe(newRotate => roadData.Rotate = newRotate);
+            Rotate.Subscribe(newRotate =>
+            {
+                roadData.Rotate = newRotate % 4;
+            });
             
             Position = new ReactiveProperty<Vector2Int>(roadData.Position);
             Position.Subscribe(newPosition => roadData.Position = newPosition);
@@ -69,6 +73,15 @@ namespace Game.State.Maps.Roads
         {
             var x = Position.CurrentValue.x;
             var y = Position.CurrentValue.y;
+            
+            foreach (var nearPosition in GetNearPositions())
+            {
+                if (position == nearPosition) return true;
+            }
+
+            return false;
+            
+            /*
             if (IsTurn) //Поворот
             {
                 switch (Rotate.CurrentValue)
@@ -112,6 +125,59 @@ namespace Game.State.Maps.Roads
                 }
             }
             return false;
+            */
+        }
+
+
+        public List<Vector2Int> GetNearPositions()
+        {
+            var x = Position.CurrentValue.x;
+            var y = Position.CurrentValue.y;
+            List<Vector2Int> list = new();
+            if (IsTurn) //Поворот
+            {
+                switch (Rotate.CurrentValue)
+                {
+                    case 0:
+                        list.Add(new Vector2Int(x, y - 1));
+                        list.Add(new Vector2Int(x + 1, y - 1));
+                        list.Add(new Vector2Int(x + 1, y));
+                        break;
+                    case 1: 
+                        list.Add(new Vector2Int(x, y - 1));
+                        list.Add(new Vector2Int(x - 1, y - 1));
+                        list.Add(new Vector2Int(x - 1, y));
+                        break;
+                    case 2: 
+                        list.Add(new Vector2Int(x - 1, y));
+                        list.Add(new Vector2Int(x - 1, y + 1));
+                        list.Add(new Vector2Int(x, y + 1));
+                        break;
+                    case 3: 
+                        list.Add(new Vector2Int(x + 1, y));
+                        list.Add(new Vector2Int(x + 1, y + 1));
+                        list.Add(new Vector2Int(x, y + 1));
+                        break;
+                }
+            }
+            else
+            {
+                switch (Rotate.CurrentValue)
+                {
+                    case 0: 
+                    case 2: 
+                        list.Add(new Vector2Int(x, y - 1));
+                        list.Add(new Vector2Int(x, y + 1));
+                        break;
+                    case 1: 
+                    case 3:
+                        list.Add(new Vector2Int(x - 1, y));
+                        list.Add(new Vector2Int(x + 1, y));
+                        break;
+                }
+            }
+
+            return list;
         }
     }
 }
