@@ -9,7 +9,6 @@ namespace Game.Settings.Gameplay.Entities.Tower
     public class TowerInitialSettings
     {
         public string ConfigId;
-        public int Level;
         public Vector2Int Position;
     }
 }

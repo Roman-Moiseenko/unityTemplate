@@ -1,5 +1,6 @@
 ﻿using System;
 using Game.State.Maps.Grounds;
+using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Mergeable.Buildings;
 using Game.State.Mergeable.ResourcesEntities;
@@ -21,9 +22,6 @@ namespace Game.State.Entities
                     return new TowerEntity(entityData as TowerEntityData);
                 case EntityType.Ground:
                     return new GroundEntity(entityData as GroundEntityData);
-                
-                case EntityType.Road:
-          //          return new RoadEntity(entityData as RoadEntityData);
                 case EntityType.Base:
             //        return new BaseEntity(entityData as BaseEntityData);
                 default:

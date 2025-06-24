@@ -10,7 +10,7 @@ namespace Game.GamePlay.Fsm.States
     public class FsmStateSetSkill : FSMState
     {
         private int _previousGameSpeed;
-        private GameplayState _gameplayState;
+        private GameplayStateProxy _gameplayStateProxy;
 
         public FsmStateSetSkill(FsmProxy fsm, DIContainer container) : base(fsm, container)
         {

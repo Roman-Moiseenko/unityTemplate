@@ -5,6 +5,7 @@ using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
 using Game.MainMenu.Root;
 using Game.State;
+using Newtonsoft.Json;
 using R3;
 using Scripts.Game.GameRoot;
 using UnityEngine;
@@ -21,25 +22,28 @@ namespace Game.GamePlay.Root
         
         public Observable<GameplayExitParams> Run(DIContainer gameplayContainer, GameplayEnterParams enterParams)
         {
+            
+//            Debug.Log("enterParams " + JsonConvert.SerializeObject(enterParams, Formatting.Indented));
             GameplayRegistrations.Register(gameplayContainer, enterParams); //Регистрируем все сервисы сцены
+            
             var gameplayViewModelsContainer = new DIContainer(gameplayContainer); //Создаем контейнер для view-моделей
             GameplayViewModelsRegistrations.Register(gameplayViewModelsContainer); //Регистрируем все View-модели сцены Gameplay
             
             InitWorld(gameplayViewModelsContainer);
             InitUI(gameplayViewModelsContainer);
             
-            GameplaySaveService.Run(gameplayContainer);
-            
+            //Сохраняем начальные параметры игровой сессии
+            gameplayContainer.Resolve<IGameStateProvider>().SaveGameplayState();
             
             Debug.Log($"MAIN MENU ENTER POINT: Results MapId {enterParams?.MapId}");
 
             //Создаем выходные параметры для входа в Меню
-            var mainMenuEnterParams = new MainMenuEnterParams("Fatality");
-            var exitParams = new GameplayExitParams(mainMenuEnterParams);
+         //   var mainMenuEnterParams = new MainMenuEnterParams("Fatality");
+           // var exitParams = new GameplayExitParams(mainMenuEnterParams);
             //Формируем сигнал для подписки
-            var exitSceneRequest = gameplayContainer.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
-            var exitToMainMenuSignal = exitSceneRequest.Select(_ => exitParams);//В сигнал кладем в выходные параметры
-            return exitToMainMenuSignal;
+            var exitSceneRequest = gameplayContainer.Resolve<Subject<GameplayExitParams>>();
+           // var exitToMainMenuSignal = exitSceneRequest.Select(_ => exitParams);//В сигнал кладем в выходные параметры
+            return exitSceneRequest;
         }
 
         private void InitWorld(DIContainer viewContainer)

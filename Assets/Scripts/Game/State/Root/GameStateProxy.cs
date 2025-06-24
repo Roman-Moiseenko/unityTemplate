@@ -17,10 +17,9 @@ namespace Game.State.Root
     {
         private readonly GameState _gameState;
         public ReactiveProperty<int> CurrentMapId = new();
+        public ReactiveProperty<int> GameSpeed;
         
-        public GameplayState GameplayState;
-        //public ReactiveProperty<GameplayStateData> GameplayStateData = new();
-        public ObservableList<Map> Maps { get; } = new();
+     //   public ObservableList<Map> Maps { get; } = new();
         public ObservableList<Inventory.Inventory> Inventory { get; } = new();
 
         public ObservableList<Resource> Resources { get; } = new();
@@ -28,31 +27,24 @@ namespace Game.State.Root
         public GameStateProxy(GameState gameState)
         {
             _gameState = gameState;
-            
-            GameplayState = new GameplayState(gameState.GameplayStateData);
-            GameplayState.GameSpeed.Subscribe(newSpeed =>
-            {
-                if (newSpeed == 0)
-                {
-                  //  gameState.PreviousGameSpeed;
-                    Debug.Log("Игра на паузе");
-                }
-                else
-                {
-                    Debug.Log($"Скорость игры {newSpeed}");
-                }
-          //      gameState.StateData.GameSpeed = newSpeed;
-                
-            });
 
-            InitMaps(gameState);
+            GameSpeed = new ReactiveProperty<int>(gameState.GameSpeed);
+            GameSpeed.Subscribe(newValue =>
+            {
+                gameState.GameSpeed = newValue;
+                Debug.Log($"Сохраняем скорость игры в GameState = {newValue}");
+            });
+  
+            
+
+       //     InitMaps(gameState);
             InitResource(gameState);
             InitInventory(gameState);
             
             CurrentMapId.Subscribe(newValue => { gameState.CurrentMapId = newValue; });
         }
 
-        private void InitMaps(GameState gameState)
+     /*   private void InitMaps(GameState gameState)
         {
             gameState.Maps.ForEach(
                 mapOriginal => Maps.Add(new Map(mapOriginal))
@@ -64,7 +56,7 @@ namespace Game.State.Root
                 var removedMapState = gameState.Maps.FirstOrDefault(b => b.Id == e.Value.Id);
                 gameState.Maps.Remove(removedMapState);
             });
-        }
+        }*/
 
         private void InitResource(GameState gameState)
         {
@@ -93,9 +85,9 @@ namespace Game.State.Root
             });
         }
         
-        public int CreateEntityID()
+        public int CreateInventoryID()
         {
-            return _gameState.CreateEntityID();
+            return _gameState.CreateInventoryID();
         }
     }
 }

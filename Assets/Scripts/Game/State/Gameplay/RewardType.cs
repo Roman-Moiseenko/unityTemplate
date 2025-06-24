@@ -6,9 +6,9 @@
         Road,
         Ground,
         
-        TowerBust,
-        SkillBust,
-        HeroBust,
+        TowerLevelUp,
+        SkillLevelUp,
+        HeroLevelUp,
         
         TowerMove,
         TowerReplace,

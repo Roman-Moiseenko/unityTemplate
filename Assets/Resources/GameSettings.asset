@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b2276df0ee141fbb0abb7610b53b461, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
-  BuildingsSettings: {fileID: 11400000, guid: 1308c14217b2005478fa31ec921b6409, type: 2}
   MapsSettings: {fileID: 11400000, guid: 10e8e4e8ebbd3244b989ae50a5ecce16, type: 2}
   TowerBustsSettings: {fileID: 11400000, guid: 1414b853bc8b0eb49a408e4ae8cc3f84, type: 2}
   TowersSettings: {fileID: 11400000, guid: 3c8853ae75226e444b2ed2d733f552a2, type: 2}
+  CastleInitialSettings: {fileID: 11400000, guid: 066d2e8608c7b9c4cab825ea54468a91, type: 2}

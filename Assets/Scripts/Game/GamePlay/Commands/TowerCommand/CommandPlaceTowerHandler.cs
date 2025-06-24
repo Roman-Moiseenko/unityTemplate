@@ -1,40 +1,35 @@
 ﻿using System.Linq;
 using Game.GamePlay.Commands.TowerCommand;
-using Game.State.CMD;
+using Game.State.Entities;
 using Game.State.Maps.Towers;
 using Game.State.Root;
+using MVVM.CMD;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Game.GamePlay.Commands
 {
     public class CommandPlaceTowerHandler : ICommandHandler<CommandPlaceTower>
     {
-        private readonly GameStateProxy _gameState;
+        private readonly GameplayStateProxy _gameplayState;
 
-        public CommandPlaceTowerHandler(GameStateProxy gameState)
+        public CommandPlaceTowerHandler(GameplayStateProxy gameplayState)
         {
-            _gameState = gameState;
+            _gameplayState = gameplayState;
         }
         
         public bool Handle(CommandPlaceTower command)
         {
-            var currentMap = _gameState.Maps.FirstOrDefault(m => m.Id == _gameState.CurrentMapId.CurrentValue);
-            if (currentMap == null)
-            {
-                Debug.Log($" Карта не найдена { _gameState.CurrentMapId.CurrentValue}");
-                return false;
-            }
-            
-           // var entityId = _gameState.CreateEntityID(); //Получаем уникальный ID
+            var entityId = _gameplayState.CreateEntityID(); //Получаем уникальный ID
             var newTowerEntity = new TowerEntityData() //Создаем сущность игрового объекта
             {
+                UniqueId = entityId,
                 Position = command.Position,
                 ConfigId = command.TowerTypeId,
+                Type = EntityType.Tower,
             };
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
-            currentMap.Entities.Add(newTower);//Добавляем в список объектов карты
-            //_gameState.Maps.Add();
-            //_gameState.Buildings.Add(newBuildingEntityProxy); 
+            _gameplayState.Entities.Add(newTower);//Добавляем в список объектов карты
             return true;
         }
     }

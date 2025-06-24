@@ -4,7 +4,7 @@ using Game.GamePlay.Root;
 using Game.MainMenu.Root;
 using Game.Settings;
 using Game.State;
-using Game.State.CMD;
+using Newtonsoft.Json;
 using R3;
 using Scripts.Game.GameRoot.Services;
 using Scripts.Utils;
@@ -60,12 +60,13 @@ namespace Scripts.Game.GameRoot
             gameStateProvider.LoadSettingsState(); //Загрузили настройки игры
             //Применяем настройки к окружению - звук, вибрация и т.п.
             
+            gameStateProvider.LoadGameState(); //Загружаем данные игрока
+            
             _rootContainer.RegisterInstance<IGameStateProvider>(gameStateProvider);
             
             _rootContainer.RegisterFactory(c => new SomeCommonService()).AsSingle(); //Сервис ... создастся при первом вызове
             
-            var cmd = new CommandProcessor(gameStateProvider); //Создаем обработчик команд
-            _rootContainer.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
+
             
             //Положить в контейнер настройки игры ....
             //Сервисы аналитики, платежки, 
@@ -81,6 +82,7 @@ namespace Scripts.Game.GameRoot
             if (sceneName == Scenes.GAMEPLAY)
             {
                 var enterParams = new GameplayEnterParams(0);
+              //  enterParams.HasSessionGameplay = true;
                 _coroutines.StartCoroutine(LoadAndStartGameplay(enterParams));
                 return;
             }
@@ -101,6 +103,7 @@ namespace Scripts.Game.GameRoot
 
         private IEnumerator LoadAndStartGameplay(GameplayEnterParams enterParams)
         {
+
             _uiRoot.ShowLoadingScreen();
             _cachedSceneContainer?.Dispose();
             yield return LoadScene(Scenes.BOOT);
@@ -110,15 +113,26 @@ namespace Scripts.Game.GameRoot
             //Ждем когда загрузится сохранение игры
             var isGameStateLoaded = false; //не загружено
             //При загрузке, по подписке поменяем флажок на Загружено
-            _rootContainer.Resolve<IGameStateProvider>().LoadGameState().Subscribe(_ => isGameStateLoaded = true);
+            
+            _rootContainer.Resolve<IGameStateProvider>().LoadGameplayState().Subscribe(_ => isGameStateLoaded = true);
+            
             yield return new WaitUntil(() => isGameStateLoaded);
  
             //Контейнер
             var sceneEntryPoint = Object.FindFirstObjectByType<GameplayEntryPoint>();
             var gameplayContainer = _cachedSceneContainer = new DIContainer(_rootContainer);
+            
+            
             sceneEntryPoint.Run(gameplayContainer, enterParams).Subscribe(gameplayExitParams =>
             {
-                _coroutines.StartCoroutine(LoadAndStartMainMenu(gameplayExitParams.MainMenuEnterParams));
+                //TODO gameStateProvider.GameState.hasSessionGame = false;
+
+                {
+                    //Debug.Log("enterParams = " + JsonConvert.SerializeObject(gameplayExitParams, Formatting.Indented));
+                    _coroutines.StartCoroutine(LoadAndStartMainMenu(gameplayExitParams.MainMenuEnterParams));
+                    if (gameplayExitParams.SaveGameplay == false)
+                        _rootContainer.Resolve<IGameStateProvider>().ResetGameplayState(); //При выходе сбрасываем данные
+                }
             });
             
 

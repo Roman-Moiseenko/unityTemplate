@@ -4,13 +4,16 @@ using DI;
 using Game.Common;
 using Game.GamePlay.Commands;
 using Game.GamePlay.Commands.MapCommand;
+using Game.GamePlay.Commands.RewardCommand;
+using Game.GamePlay.Commands.RoadCommand;
 using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Services;
+using Game.MainMenu.Services;
 using Game.Settings;
 using Game.State;
-using Game.State.CMD;
+using MVVM.CMD;
 using MVVM.FSM;
 using Newtonsoft.Json;
 using R3;
@@ -27,82 +30,105 @@ namespace Game.GamePlay.Root
         public static void Register(DIContainer container, GameplayEnterParams gameplayEnterParams)
         {
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
-            var gameState = gameStateProvider.GameState;
+            var gameState = gameStateProvider.GameState; //TODO Получим кристалы для изменения
+
+            var gameplayState = gameStateProvider.GameplayState;
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
             //Регистрируем машину состояния
             var Fsm = new FsmGameplay(container);
             container.RegisterInstance(Fsm);
-            
-            container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG, new Subject<Unit>()); //Событие, требующее смены сцены
-           // container.RegisterInstance(AppConstants.GAME_PLAY_STATE, new Subject<Unit>()); //Событие, меняющее состояние игры
+            var subjectExitParams = new Subject<GameplayExitParams>();
+            container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
 
-            var cmd = container.Resolve<ICommandProcessor>(); // new CommandProcessor(gameStateProvider); //Создаем обработчик команд
-            //container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
-            
+            //    var cmd = container.Resolve<ICommandProcessor>(); //Создаем обработчик команд
+            var cmd = new CommandProcessorGameplay(gameStateProvider); //Создаем обработчик команд
+            container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
+
+            gameplayState.GameSpeed.Value =
+                gameplayEnterParams.GameSpeed; //Получаем скорость игры из настроек GameState
+
+
             //cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
-            //cmd.RegisterHandler(new CommandPlaceTowerHandler(gameState));
-            cmd.RegisterHandler(new CommandCreateMapHandler(gameState, gameSettings)); //Регистрируем команды обработки зданий
+            cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState));
+            cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
+            cmd.RegisterHandler(new CommandCreateLevelHandler(gameSettings,
+                gameplayState)); //Регистрируем команду создания уровня из конфигурации
+            cmd.RegisterHandler(new CommandRewardKillMobHandler(gameplayState));
+            cmd.RegisterHandler(new CommandDeleteTowerHandler(gameplayState));
+            cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
+            cmd.RegisterHandler(new CommandPlaceRoadHandler(gameplayState));
 
-            //TODO CommandProcessor и команды Resources регистрировать раньше, т.к. используются в меню 
-            //TODO либо делать 2 уровня ресурсов - ОбщеИгровые и Игровые (сессионные) 
-            cmd.RegisterHandler(new CommandResourcesAddHandler(gameState));
-            cmd.RegisterHandler(new CommandResourcesSpendHandler(gameState));
-            
             //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
-            var loadingMapId = gameplayEnterParams.MapId;
-            var loadingMap = gameState.Maps.FirstOrDefault(m => m.Id == loadingMapId);
-           // Debug.Log("loadingMapId " + loadingMapId);
-            
-            if (loadingMap == null)
+            if (gameplayState.Entities.Any() != true)
             {
-                var command = new CommandCreateMap(loadingMapId);
+                //Debug.Log(" Загружаем из настроек");
+                var command = new CommandCreateLevel(gameplayEnterParams.MapId);
                 var success = cmd.Process(command);
                 if (!success)
                 {
-                    throw new Exception($"Карта не создалась с id = {loadingMapId}");
+                    throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
                 }
-
-                loadingMap = gameState.Maps.First(m => m.Id == loadingMapId); //??
-                //Debug.Log("loadingMap: " + JsonConvert.SerializeObject(loadingMap, Formatting.Indented));
             }
-           // Debug.Log("*** gameSettings: " + JsonConvert.SerializeObject(gameState, Formatting.Indented));
+            var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
+            var groundConfigId = newMapSettings.InitialStateSettings.GroundDefault;
+            var roadConfigId = newMapSettings.InitialStateSettings.RoadDefault;
 
-            //Регистрируем сервис по Зданиями
-               container.RegisterFactory(_ => new BuildingsService(
-                   loadingMap.Entities,
-                   gameSettings.BuildingsSettings,
-                   cmd)
-               ).AsSingle();
-               container.RegisterFactory(_ => new GroundsService(
-                   loadingMap.Entities,
-                   cmd)
-               ).AsSingle();
-               
-               container.RegisterFactory(_ => new TowersService(
-                   loadingMap.Entities,
-                   gameSettings.TowersSettings,
-                   cmd
-                   )
-               ).AsSingle();
-
-               container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
-               
-               //Добавить сервисы и команды для
-               /// Дорог
-               /// Земли
-               /// Монстров
-               /// Башни вместо Здания
+            container.RegisterFactory(_ => new CastleService(
+                gameplayState.Castle.Value,
+                cmd)
+            ).AsSingle();
 
 
-               Fsm.Fsm.SetState<FsmStateGamePlay>();
-               
-               
-                
-               //Регистрируем сервисы, завия
-               var rewardService = new RewardProgressService(container);
-               container.RegisterInstance(rewardService);
-               
+            var placementService = new PlacementService(gameplayState);
+            container.RegisterInstance(placementService);
+
+            var roadsService = new RoadsService(
+                gameplayState.Way,
+                gameplayState.WaySecond,
+                gameplayState.WayDisabled,
+                roadConfigId,
+                cmd);
+            //Регистрируем сервис по Дорогам
+            container.RegisterInstance(roadsService);
+            
+            //Сервис по земле
+            container.RegisterFactory(_ => new GroundsService(
+                    gameplayState.Entities,
+                    groundConfigId,
+                    cmd
+                )
+            ).AsSingle();
+
+            //Сервис башен
+            var towersService = new TowersService(
+                gameplayState.Entities,
+                gameSettings.TowersSettings,
+                cmd,
+                placementService
+            );
+            
+            container.RegisterInstance(towersService);
+            
+            var frameService = new FrameService(gameplayState, placementService, towersService, roadsService);
+            container.RegisterInstance(frameService);
+            // container.RegisterFactory(_ => ).AsSingle();
+
+            //Добавить сервисы и команды для
+            /// Дорог
+            /// Земли
+            /// Монстров
+            /// Башни вместо Здания
+
+
+            Fsm.Fsm.SetState<FsmStateGamePlay>();
+            
+            //Регистрируем сервисы, завия
+            var rewardService = new RewardProgressService(container);
+            container.RegisterInstance(rewardService);
+
+            container.RegisterFactory(_ => new GameplayService(subjectExitParams, container))
+                .AsSingle(); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
         }
     }
 }

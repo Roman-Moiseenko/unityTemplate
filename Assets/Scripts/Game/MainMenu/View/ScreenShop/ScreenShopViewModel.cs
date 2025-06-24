@@ -6,18 +6,18 @@ namespace Game.MainMenu.View.ScreenShop
     public class ScreenShopViewModel : WindowViewModel
     {
         private readonly MainMenuUIManager _uiManager;
-        private readonly Subject<Unit> _exitSceneRequest;
+  //      private readonly Subject<Unit> _exitSceneRequest;
         public override string Id => "ScreenShop";
         public override string Path => "MainMenu/";
         
-        public ScreenShopViewModel(MainMenuUIManager uiManager, Subject<Unit> exitSceneRequest)
+        public ScreenShopViewModel(MainMenuUIManager uiManager)
         {
             _uiManager = uiManager;
-            _exitSceneRequest = exitSceneRequest;
+     //       _exitSceneRequest = exitSceneRequest;
         }
         public void RequestGoToPlay()
         {
-            _exitSceneRequest.OnNext(Unit.Default);
+  //          _exitSceneRequest.OnNext(Unit.Default);
         }
     }
 }

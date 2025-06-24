@@ -49,9 +49,9 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 case RewardType.Tower : return "Построить башню";
                 case RewardType.Ground : return "Построить участок";
                 case RewardType.Road : return "Построить дорогу";
-                case RewardType.TowerBust : return "Улучшить башню";
-                case RewardType.SkillBust : return "Улучшить навык";
-                case RewardType.HeroBust : return "Улучшить героя";
+                case RewardType.TowerLevelUp : return "Улучшить башню";
+                case RewardType.SkillLevelUp : return "Улучшить навык";
+                case RewardType.HeroLevelUp : return "Улучшить героя";
                 case RewardType.TowerMove : return "Передвинуть башню";
                 case RewardType.TowerReplace : return "Заменить башни";
                 default: return "Не известное значение";
@@ -100,10 +100,12 @@ namespace Game.GamePlay.View.UI.PanelBuild
 //            Debug.Log("Отправка для применения + " + JsonConvert.SerializeObject(cardData, Formatting.Indented));
             if (cardData.IsBuild())
             {
+//                Debug.Log("Строим");
                 _fsmGameplay.Fsm.SetState<FsmStateBuild>(cardData);
             }
             else
             {
+     //           Debug.Log("Бафаем");
                 _fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(cardData);
             }
         }

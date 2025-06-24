@@ -2,9 +2,9 @@
 using Game.GamePlay.Commands.GroundCommands;
 using Game.GamePlay.View.Grounds;
 using Game.Settings.Gameplay.Grounds;
-using Game.State.CMD;
 using Game.State.Entities;
 using Game.State.Maps.Grounds;
+using MVVM.CMD;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -13,6 +13,7 @@ namespace Game.GamePlay.Services
 {
     public class GroundsService
     {
+        private readonly string _configIdDefault;
         private readonly ICommandProcessor _cmd;
 
         private readonly ObservableList<GroundViewModel> _allGrounds = new();
@@ -24,9 +25,12 @@ namespace Game.GamePlay.Services
 
         public GroundsService(
             IObservableCollection<Entity> entities,
+            string configIdDefault,
            // GroundSettings groundSettings,
-            ICommandProcessor cmd)
+            ICommandProcessor cmd
+            )
         {
+            _configIdDefault = configIdDefault;
             _cmd = cmd;
             
             
@@ -48,11 +52,9 @@ namespace Game.GamePlay.Services
             
         }
         
-        
-        
-        public bool PlaceGround(string groundTypeId, Vector2Int position)
+        public bool PlaceGround(Vector2Int position)
         {
-            var command = new CommandCreateGround(groundTypeId, position);
+            var command = new CommandCreateGround(_configIdDefault, position);
             return _cmd.Process(command);
         }
         

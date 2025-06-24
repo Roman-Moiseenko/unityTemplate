@@ -10,7 +10,6 @@ namespace Game.Settings.Gameplay.Entities.Tower
         menuName = "Game Settings/Towers/New Tower Settings")]
     public class TowerSettings : EntitySettings<TowerLevelSettings>
     {
-        [field: SerializeField] public TowerTypeDamage TypeDamage { get; private set; }
         [field: SerializeField] public TowerTypeEnemy TypeEnemy { get; private set; }
 
         //TODO Базовые настройки

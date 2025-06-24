@@ -13,16 +13,15 @@ namespace MVVM.FSM
 
         public ReactiveProperty<FSMState> StateCurrent = new();
         public FSMState PreviousState { get; private set; }
+        public ReactiveProperty<Vector2Int> Position = new();
         public object Params { get; private set; }
         private Dictionary<Type, FSMState> _states = new();
 
         public FsmProxy()
         {
-       
             StateCurrent.Subscribe(newValue =>
             {
                 if (newValue == null) return;
-                Debug.Log($"Изменилось состояние {newValue.GetType()}");
             });
         }
         
@@ -34,10 +33,8 @@ namespace MVVM.FSM
         public void SetState<T>(object enterParams = null) where T : FSMState
         {
             Params = enterParams;
-            if (enterParams != null)
-            {
-                Debug.Log(JsonConvert.SerializeObject(enterParams, Formatting.Indented));
-            }
+            //if (enterParams != null) Debug.Log(JsonConvert.SerializeObject(enterParams, Formatting.Indented));
+            
             var type = typeof(T);
             if (StateCurrent.Value != null && StateCurrent.Value.GetType() == type) return;
 
@@ -55,7 +52,9 @@ namespace MVVM.FSM
                     if (!StateCurrent.Value.Exit(newState)) return; //- можно ли из него выйти
                     PreviousState = StateCurrent.Value; //- сохраняем его (если понадобится)
                 }
-                newState.Params = enterParams;
+
+                if (enterParams != null) newState.Params = enterParams; //Чтоб не перезаписать, при возврате к BuildBegin
+                
                 StateCurrent.Value = newState;
                 //StateCurrent.Value.Params = enterParams;
                 

@@ -42,12 +42,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             ViewModel.RequestOpenPopupB();
         }
-
-        private void OnGoToMenuButtonClicked()
-        {
-            ViewModel.RequestGoToMainMenu();
-        }
-
+        
         private void OnPopupPauseButtonClicked()
         {
             ViewModel.RequestOpenPopupPause();

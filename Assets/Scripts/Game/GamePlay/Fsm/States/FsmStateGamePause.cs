@@ -17,7 +17,7 @@ namespace Game.GamePlay.Fsm.States
         public override void Enter()
         {
             //Ставим игру на паузу
-            _container.Resolve<IGameStateProvider>().GameState.GameplayState.SetPauseGame();
+            _container.Resolve<IGameStateProvider>().GameplayState.SetPauseGame();
         }
 
         public override bool Exit(FSMState _next)

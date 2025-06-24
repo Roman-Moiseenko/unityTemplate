@@ -1,18 +1,23 @@
-﻿namespace Game.State.Gameplay
+﻿using UnityEngine;
+
+namespace Game.State.Gameplay
 {
     public class RewardCardData
     {
-        public int Position;
         public RewardType RewardType;
         public string TargetId; //Цель Конфиг башни
         public int RewardLevel; //Уровень наград
         public string ConfigId; //Конфиг бустера ()
+        public int Direction; //Направление 1-4
+        public Vector2Int Position;
+        public int UniqueId;
+        public object UniqueId2;
 
 
         public bool IsBuild()
         {
-            if (this.RewardType == RewardType.Ground || this.RewardType == RewardType.Tower ||
-                this.RewardType == RewardType.Road)
+            if (RewardType == RewardType.Ground || RewardType == RewardType.Tower ||
+                RewardType == RewardType.Road)
                 return true;
             return false;
         }

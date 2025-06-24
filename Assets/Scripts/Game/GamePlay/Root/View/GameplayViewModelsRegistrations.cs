@@ -1,6 +1,8 @@
 ﻿using DI;
+using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
+using Game.MainMenu.Services;
 
 namespace Game.GamePlay.Root.View
 {
@@ -15,11 +17,15 @@ namespace Game.GamePlay.Root.View
             container.RegisterFactory(c => new GameplayUIManager(container)).AsSingle();
             container.RegisterFactory(c => new UIGameplayRootViewModel(container)).AsSingle();
             container.RegisterFactory(c => new WorldGameplayRootViewModel(
-                c.Resolve<BuildingsService>(),
+                //   c.Resolve<BuildingsService>(),
                 c.Resolve<GroundsService>(),
-                c.Resolve<ResourcesService>(),
-                c.Resolve<TowersService>()
-                )).AsSingle();
+                c.Resolve<TowersService>(),
+                c.Resolve<CastleService>(),
+                c.Resolve<FsmGameplay>(),
+                c.Resolve<FrameService>(),
+                c.Resolve<PlacementService>(),
+                c.Resolve<RoadsService>()
+            )).AsSingle();
         }
     }
 }

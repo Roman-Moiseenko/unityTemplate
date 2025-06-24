@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DamageSpeed
   m_EditorClassIdentifier: 
   Level: 1
+  ConfigId: DamageSpeed
   Name: "\u0423\u0440\u043E\u043D \u0438 \u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C"
   MainBust: 1
   SecondBust: 3

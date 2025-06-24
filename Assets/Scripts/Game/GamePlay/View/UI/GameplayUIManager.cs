@@ -2,8 +2,10 @@
 using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
+using Game.GamePlay.Root;
 using Game.GamePlay.View.UI.PanelActions;
 using Game.GamePlay.View.UI.PanelBuild;
+using Game.GamePlay.View.UI.PanelConfirmation;
 using Game.GamePlay.View.UI.PopupB;
 using Game.GamePlay.View.UI.PopupPause;
 using Game.GamePlay.View.UI.ScreenGameplay;
@@ -17,7 +19,7 @@ namespace Game.GamePlay.View.UI
 {
     public class GameplayUIManager : UIManager
     {
-        private readonly Subject<Unit> _exitSceneRequest;
+        private readonly Subject<GameplayExitParams> _exitSceneRequest;
         private readonly FsmGameplay _fsmGameplay;
 
         public GameplayUIManager(DIContainer container) : base(container)
@@ -31,25 +33,28 @@ namespace Game.GamePlay.View.UI
             //Создаем панели, необходимые для Геймплея           
             rootUI.AddPanel(new PanelBuildViewModel(container));
             rootUI.AddPanel(new PanelActionsViewModel(this, container));
+            rootUI.AddPanel(new PanelConfirmationViewModel(this, container));
             
             //_gameState = gameStateProvider.GameState;
-            _exitSceneRequest = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
+            _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>();
 
             _fsmGameplay.Fsm.StateCurrent.Subscribe(newValue =>
             {
                 if (newValue == null) return;
                 if (newValue.GetType() == typeof(FsmStateBuildBegin))
                 {
+                    rootUI.HidePanel<PanelConfirmationViewModel>();
                     rootUI.ShowPanel<PanelBuildViewModel>();
                     rootUI.HidePanel<PanelActionsViewModel>();
                 }
                 if (newValue.GetType() == typeof(FsmStateBuild))
                 {
-                    //Прячем Окно Build
                     rootUI.HidePanel<PanelBuildViewModel>();
+                    rootUI.ShowPanel<PanelConfirmationViewModel>();
                 }
                 if (newValue.GetType() == typeof(FsmStateBuildEnd))
                 {
+                    rootUI.HidePanel<PanelConfirmationViewModel>();
                     rootUI.HidePanel<PanelBuildViewModel>();
                     rootUI.ShowPanel<PanelActionsViewModel>();
                 }
