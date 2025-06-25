@@ -12,7 +12,7 @@ namespace Game.State.Root
 {
     public class GameplayStateProxy
     {
-        private readonly GameplayState _gameplayState;
+        public readonly GameplayState Origin;
 
         public readonly ReactiveProperty<int> GameSpeed;
         public readonly ReactiveProperty<int> Progress;
@@ -23,7 +23,7 @@ namespace Game.State.Root
 
         public readonly ReactiveProperty<CastleEntity> Castle;
 
-        public int PreviousGameSpeed => _gameplayState.PreviousGameSpeed;
+        public int PreviousGameSpeed => Origin.PreviousGameSpeed;
         
         public ObservableList<Entity> Entities { get; } = new();
         public ObservableList<GroundEntity> Grounds { get; } = new();
@@ -32,31 +32,31 @@ namespace Game.State.Root
         public ObservableList<RoadEntity> WaySecond { get; } = new();
         public ObservableList<RoadEntity> WayDisabled { get; } = new();
         
-        public GameplayStateProxy(GameplayState gameplayState)
+        public GameplayStateProxy(GameplayState origin)
         {
-            _gameplayState = gameplayState;
-            Castle = new ReactiveProperty<CastleEntity>(new CastleEntity(gameplayState.CastleData));
+            Origin = origin;
+            Castle = new ReactiveProperty<CastleEntity>(new CastleEntity(origin.CastleData));
             
-            GameSpeed = new ReactiveProperty<int>(gameplayState.GameSpeed);
+            GameSpeed = new ReactiveProperty<int>(origin.GameSpeed);
             GameSpeed.Subscribe(newSpeed =>
             {
-                gameplayState.GameSpeed = newSpeed;
+                origin.GameSpeed = newSpeed;
                 //Debug.Log($"Новая гейплей скорость = {newSpeed}");
             });
             
-            Progress = new ReactiveProperty<int>(gameplayState.Progress);
-            Progress.Subscribe(newProgress => gameplayState.Progress = newProgress);
-            ProgressLevel = new ReactiveProperty<int>(gameplayState.ProgressLevel);
-            ProgressLevel.Subscribe(newProgressLevel => gameplayState.ProgressLevel = newProgressLevel);
+            Progress = new ReactiveProperty<int>(origin.Progress);
+            Progress.Subscribe(newProgress => origin.Progress = newProgress);
+            ProgressLevel = new ReactiveProperty<int>(origin.ProgressLevel);
+            ProgressLevel.Subscribe(newProgressLevel => origin.ProgressLevel = newProgressLevel);
 
-            SoftCurrency = new ReactiveProperty<int>(gameplayState.SoftCurrency);
-            SoftCurrency.Subscribe(newValue => gameplayState.SoftCurrency = newValue);
+            SoftCurrency = new ReactiveProperty<int>(origin.SoftCurrency);
+            SoftCurrency.Subscribe(newValue => origin.SoftCurrency = newValue);
 
-            CurrentWave = new ReactiveProperty<int>(gameplayState.CurrentWave);
-            CurrentWave.Subscribe(newValue => gameplayState.CurrentWave = newValue);
+            CurrentWave = new ReactiveProperty<int>(origin.CurrentWave);
+            CurrentWave.Subscribe(newValue => origin.CurrentWave = newValue);
 
          //   Debug.Log("gameplayState = " + JsonConvert.SerializeObject(gameplayState, Formatting.Indented));
-            InitMaps(gameplayState);
+            InitMaps(origin);
         }
 
         private void InitMaps(GameplayState gameplayState)
@@ -125,7 +125,7 @@ namespace Game.State.Root
          */
         public void SetPauseGame() 
         {
-            _gameplayState.PreviousGameSpeed = GameSpeed.Value;
+            Origin.PreviousGameSpeed = GameSpeed.Value;
             GameSpeed.Value = 0;
         }
         
@@ -134,12 +134,12 @@ namespace Game.State.Root
          */
         public void GameplayReturn() 
         {
-            if (_gameplayState.PreviousGameSpeed == 0)
+            if (Origin.PreviousGameSpeed == 0)
             {
                 GameSpeed.Value = 1;
             } else
             {
-                GameSpeed.Value = _gameplayState.PreviousGameSpeed;
+                GameSpeed.Value = Origin.PreviousGameSpeed;
             }
         }
 
@@ -174,7 +174,7 @@ namespace Game.State.Root
         
         public int CreateEntityID()
         {
-            return _gameplayState.CreateEntityID();
+            return Origin.CreateEntityID();
         }
     }
 }

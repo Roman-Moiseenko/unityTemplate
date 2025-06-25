@@ -15,8 +15,8 @@ namespace Game.State.Maps.Roads
 
         public readonly ReactiveProperty<Vector2Int> Position;
         
-        public readonly ReactiveProperty<Vector2Int> PointEnter;
-        public readonly ReactiveProperty<Vector2Int> PointExit;
+  //      public readonly ReactiveProperty<Vector2Int> PointEnter;
+ //       public readonly ReactiveProperty<Vector2Int> PointExit;
         
         public RoadEntity(RoadEntityData roadData)
         {
@@ -31,11 +31,11 @@ namespace Game.State.Maps.Roads
             Position = new ReactiveProperty<Vector2Int>(roadData.Position);
             Position.Subscribe(newPosition => roadData.Position = newPosition);
             
-            PointEnter = new ReactiveProperty<Vector2Int>(roadData.PointEnter);
-            PointEnter.Subscribe(newValue => roadData.PointEnter = newValue);
+      //      PointEnter = new ReactiveProperty<Vector2Int>(roadData.PointEnter);
+      //      PointEnter.Subscribe(newValue => roadData.PointEnter = newValue);
             
-            PointExit = new ReactiveProperty<Vector2Int>(roadData.PointExit);
-            PointExit.Subscribe(newValue => roadData.PointExit = newValue);
+      //      PointExit = new ReactiveProperty<Vector2Int>(roadData.PointExit);
+       //     PointExit.Subscribe(newValue => roadData.PointExit = newValue);
             
             //Обсчет координат ???
             if (Origin.IsTurn)

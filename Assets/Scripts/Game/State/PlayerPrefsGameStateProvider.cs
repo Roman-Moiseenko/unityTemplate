@@ -52,7 +52,7 @@ namespace Game.State
                 _gameplayStateOrigin = JsonConvert.DeserializeObject<GameplayState>(json);
                 Debug.Log(JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
                 GameplayState = new GameplayStateProxy(_gameplayStateOrigin);
-//                Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
+                Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
             }
             return Observable.Return(GameplayState);
         }

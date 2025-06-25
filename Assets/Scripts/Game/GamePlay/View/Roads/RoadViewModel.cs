@@ -13,8 +13,8 @@ namespace Game.GamePlay.View.Roads
     public string ConfigId => _roadEntity.ConfigId;
     public bool IsTurn => _roadEntity.IsTurn;
     public ReactiveProperty<Vector2Int> Position { get; set; }
-    public ReadOnlyReactiveProperty<Vector2Int> PointEnter { get; }
-    public ReadOnlyReactiveProperty<Vector2Int> PointExit { get; }
+  //  public ReadOnlyReactiveProperty<Vector2Int> PointEnter { get; }
+ //   public ReadOnlyReactiveProperty<Vector2Int> PointExit { get; }
     public readonly int RoadEntityId;
     public ReactiveProperty<int> Rotate { get; set; }
 
@@ -28,18 +28,18 @@ namespace Game.GamePlay.View.Roads
         _service = service;
         RoadEntityId = roadEntity.UniqueId;
         Position = roadEntity.Position;
-        PointEnter = roadEntity.PointEnter;
-        PointExit = roadEntity.PointExit;
+      //  PointEnter = roadEntity.PointEnter;
+     //   PointExit = roadEntity.PointExit;
         Rotate = roadEntity.Rotate;
 
     }
 
-    public bool IsLine()
+  /*  public bool IsLine()
     {
         return PointEnter.CurrentValue.x == PointExit.CurrentValue.x ||
                PointEnter.CurrentValue.y == PointExit.CurrentValue.y;
     }
-
+*/
     public bool IsPosition(Vector2 position)
     {
         float delta = 0.5f; //Половина ширины клетки

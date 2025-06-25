@@ -63,7 +63,7 @@ namespace Game.GamePlay.Services
             if (_viewModel.IsTower())
                 _viewModel.Enable.Value = _placementService.CheckPlacementTower(position, _viewModel.GetTowerId());
             if (_viewModel.IsRoad())
-                _viewModel.Enable.Value = _placementService.CheckPlacementRoad(position, GetRoads());
+                _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());
 
             if (_viewModel.IsGround())
             {
@@ -103,7 +103,11 @@ namespace Game.GamePlay.Services
         }
         public void RotateFrame()
         {
-            _viewModel.RotateFrame();
+            if (_viewModel.IsRoad())
+            {
+                _viewModel.RotateFrame();
+                _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());    
+            }
         }
 
         public void CreateFrameTower(Vector2Int position, int level, string configId)
@@ -149,6 +153,9 @@ namespace Game.GamePlay.Services
             return false;
         }
 
+        /**
+         * Создаем блок дороги в зависимости от конфигурации
+         */
         public void CreateFrameRoad(Vector2Int position, string configId)
         {
             _viewModel = new FrameBlockViewModel(position);
@@ -189,16 +196,20 @@ namespace Game.GamePlay.Services
                 case "8":
                     _viewModel.AddItem(TemplateCreateRoad(false, 1)); // |
                     _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); // _|
-                    _viewModel.AddItem(TemplateCreateRoad(false, 0, 2)); // --
+                    _viewModel.AddItem(TemplateCreateRoad(false, 2, 2)); // --
                     break;
             }
 
-            _viewModel.Enable.Value = _placementService.CheckPlacementRoad(position, GetRoads());
+            _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());
             _viewModels.Add(_viewModel);
             
         }
 
-        public List<RoadEntityData> GetRoads()
+        /**
+         * Копия списка дорог во фрейме типа <RoadEntityData>
+         * для внутренней обработки - проверка присоединения, проверка размещения
+         */
+        private List<RoadEntityData> GetRoads()
         {
 
             List<RoadEntityData> result = new();
@@ -218,17 +229,33 @@ namespace Game.GamePlay.Services
                     IsTurn = road.IsTurn,
                     Position = realPosition + matrixRoads[(i + rotateIndex) % 4],
                     Rotate = road.Rotate.Value + rotateIndex
-                    
                 });
                 i++;
             }
             
             return result;
         }
-        
+
+
+        /**
+         * Список дорог для передачи в строительство,
+         * при присоединении к последнему road, делаем реверс 
+         */
+        public List<RoadEntityData> GetRoadsForBuild()
+        {
+            var list = GetRoads();
+            if (_placementService.IsLastPontForWay(list))
+            {
+                list.Reverse();
+            }
+            return list;
+
+        }
+        /**
+         * Создаем RoadViewModel по шаблону, для генерации видов блоков дорог
+         */
         private RoadViewModel TemplateCreateRoad(bool isTurn, int rotate, int indexOf = 0)
         {
-
             var roadEntity = new RoadEntity(new RoadEntityData
             {
                 UniqueId = _gameplayState.CreateEntityID(),
@@ -240,6 +267,15 @@ namespace Game.GamePlay.Services
             
             return new RoadViewModel(roadEntity, _roadsService);
             
+        }
+
+        /**
+         * Проверка, к какому пути присоединили фрейм с дорогой
+         */
+        public bool IsMainPath()
+        {
+            //Проверка на главный путь
+            return _placementService.IsMainWay(GetRoads());
         }
     }
 }

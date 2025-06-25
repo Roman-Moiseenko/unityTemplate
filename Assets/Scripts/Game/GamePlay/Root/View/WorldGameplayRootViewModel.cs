@@ -60,6 +60,7 @@ namespace Game.GamePlay.Root.View
             FrameBlockViewModels = frameService.ViewModels;
             CastleViewModel = castleService.CastleViewModel;
 
+            
             //Изменение состояние Геймплея
             _fsmGameplay.Fsm.StateCurrent.Subscribe(newState =>
             {
@@ -111,11 +112,14 @@ namespace Game.GamePlay.Root.View
                             frameService.RemoveFrame();
                             break;
                         case RewardType.Road:
-                            foreach (var road in frameService.GetRoads())
+                            
+                            var isMainPath = frameService.IsMainPath();
+                            foreach (var road in frameService.GetRoadsForBuild())
                             {
-                                roadsService.PlaceRoad(road.Position, road.IsTurn, road.Rotate);
+                                roadsService.PlaceRoad(road.Position, road.IsTurn, road.Rotate, isMainPath);
                             }
                             frameService.RemoveFrame();
+                            
                             break;
                         case RewardType.TowerLevelUp: towersService.LevelUpTower(card.ConfigId); break;
                         case RewardType.TowerMove: towersService.MoveTower(card.UniqueId, position); break;

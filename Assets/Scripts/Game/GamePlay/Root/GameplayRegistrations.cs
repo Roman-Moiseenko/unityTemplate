@@ -79,8 +79,10 @@ namespace Game.GamePlay.Root
                 cmd)
             ).AsSingle();
 
-
-            var placementService = new PlacementService(gameplayState);
+            var wayService = new WayService(); //Сервис обсчета дороги
+            container.RegisterInstance(wayService);
+            
+            var placementService = new PlacementService(gameplayState, wayService);
             container.RegisterInstance(placementService);
 
             var roadsService = new RoadsService(

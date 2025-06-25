@@ -99,7 +99,7 @@ namespace Game.GamePlay.Services
             rewards.Card2.ConfigId = "Tower01";
             
             rewards.Card3.RewardType = RewardType.Road;
-            rewards.Card3.ConfigId = "8";
+            rewards.Card3.ConfigId = "0";
 
             //rewards.Card3.ConfigId = Random.Range(0, 9).ToString();
             

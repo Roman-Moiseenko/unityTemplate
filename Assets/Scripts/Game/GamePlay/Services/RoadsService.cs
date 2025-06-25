@@ -57,10 +57,10 @@ namespace Game.GamePlay.Services
             wayDisabled.ObserveRemove().Subscribe(e => RemoveRoadViewModel(e.Value));
         }
 
-        public bool PlaceRoad(Vector2Int position, bool isTurn, int rotate)
+        public bool PlaceRoad(Vector2Int position, bool isTurn, int rotate, bool isMainWay = true)
         {
             //Debug.Log("PlaceRoad = " + position.x + " " + position.y);
-            var command = new CommandPlaceRoad(_configIdDefault, position, isTurn, rotate);
+            var command = new CommandPlaceRoad(_configIdDefault, position, isTurn, rotate, isMainWay);
             return _cmd.Process(command);
         }
 

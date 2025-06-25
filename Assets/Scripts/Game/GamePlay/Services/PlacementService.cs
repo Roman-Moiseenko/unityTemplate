@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Game.GamePlay.View.Roads;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
@@ -15,31 +16,33 @@ namespace Game.GamePlay.Services
     public class PlacementService
     {
         private readonly GameplayStateProxy _gameplayState;
+        private readonly WayService _wayService;
 
-        public PlacementService(GameplayStateProxy gameplayState)
+        public PlacementService(GameplayStateProxy gameplayState, WayService wayService)
         {
             _gameplayState = gameplayState;
+            _wayService = wayService;
         }
 
 
         public bool CheckPlacementTower(Vector2Int position, int TowerId)
         {
-            
             var result = false;
-            
+
             //На замке
             if (IsCastle(position)) return false; //Строить нельзя, принудительный выход
-            
+
             //Сначала проверяем землю
             foreach (var groundData in _gameplayState.Grounds)
             {
                 //Проверяем на земле или нет
                 if (position == groundData.Position.CurrentValue) result = true;
             }
+
             if (result == false) return false; //Не нашли участок для строительства, выходим
 
             result = false;
-            
+
             //Проверяем башни
             foreach (var entityData in _gameplayState.Entities)
             {
@@ -47,8 +50,9 @@ namespace Game.GamePlay.Services
                 if (entityData is TowerEntity towerEntity && towerEntity.UniqueId != TowerId)
                 {
                     if (towerEntity.PositionNear(position)) result = true;
-                    
-                    if (position == towerEntity.Position.CurrentValue) return false;  //Строить нельзя, принудительный выход
+
+                    if (position == towerEntity.Position.CurrentValue)
+                        return false; //Строить нельзя, принудительный выход
                 }
             }
 
@@ -57,7 +61,7 @@ namespace Game.GamePlay.Services
                 if (position == roadEntity.Position.CurrentValue) return false; //На дороге
                 if (roadEntity.PositionNear(position)) result = true;
             }
-            
+
 
             return result;
         }
@@ -71,17 +75,16 @@ namespace Game.GamePlay.Services
                     if (CheckPlacementTower(nearPosition, -1)) return nearPosition;
                 }
             }
-            
+
             return _gameplayState.Way[0].Position.CurrentValue; //Вычисляем координаты для башни 
         }
 
         public Vector2Int GetNewPositionRoad()
         {
             return new Vector2Int(Random.Range(-1, 5), Random.Range(-1, 3));
-
         }
 
-        public bool CheckPlacementRoad(Vector2Int position, List<RoadEntityData> roads)
+        public bool CheckPlacementRoad(List<RoadEntityData> roads)
         {
             var result = false;
 
@@ -95,16 +98,17 @@ namespace Game.GamePlay.Services
                         result = true;
                         break;
                     }
+
                     if (result) break;
-                    
                 }
             }
+
             //На замке
             foreach (var road in roads)
             {
                 if (IsCastle(road.Position)) return false; //Строить нельзя, принудительный выход 
             }
-            
+
             //На башне
             foreach (var groundEntity in _gameplayState.Entities)
             {
@@ -115,28 +119,29 @@ namespace Game.GamePlay.Services
                         result = true;
                         break;
                     }
+
                     if (result) break;
-                    
                 }
             }
-            
-            //На дороге
-            foreach (var VARIABLE in _gameplayState.Entities)
-            {
-                
-                
-            }
-            
-            
-            //TODO проверить все дороги, попадает хотя бы одна на землю, и не попадает ли каждая на крепость, башню и дорогу
-            //TODO Проверить крайние на совпадение с маршрутом Way или WaySecond
+
+            //На дороге 
+            if (_gameplayState.Way.Any(roadWay => roads.Any(road => road.Position == roadWay.Position.CurrentValue)))
+                return false;
+            if (_gameplayState.WaySecond.Any(roadWay =>
+                    roads.Any(road => road.Position == roadWay.Position.CurrentValue))) return false;
+            if (_gameplayState.WayDisabled.Any(roadWay =>
+                    roads.Any(road => road.Position == roadWay.Position.CurrentValue))) return false;
+            var checkWay = CheckCombinationPointsRoad(_gameplayState.Origin.Way, roads);
+            var checkWaySecond = CheckCombinationPointsRoad(_gameplayState.Origin.WaySecond, roads);
+            //if (checkWay && checkWaySecond) return false; //
+            result = checkWay ^ checkWaySecond; //Исключающее "или", Закольцовывание дороги
+
             return result;
         }
 
         public Vector2Int GetNewPositionGround()
         {
             return new Vector2Int(Random.Range(-1, 5), Random.Range(-1, 3));
-
         }
 
         private bool IsCastle(Vector2Int position)
@@ -144,7 +149,45 @@ namespace Game.GamePlay.Services
             if ((position.y == -1 || position.y == 0 || position.y == 1) && (position.x == -1 || position.x == 0))
                 return true;
             return false;
+        }
 
+
+        private bool CheckCombinationPointsRoad(List<RoadEntityData> way, List<RoadEntityData> roads)
+        {
+            if (way.Count == 0) return false;
+            if (CheckForFirstPoint(way, roads)) return true;
+            return CheckForLastPoint(way, roads);
+        }
+
+        private bool CheckForFirstPoint(List<RoadEntityData> way, List<RoadEntityData> roads)
+        {
+            if (way.Count == 0) return false;
+            return _wayService.GetExitPointForWay(way) == _wayService.GetFirstPoint(roads)
+                   && _wayService.GetLastPoint(way) == _wayService.GetEnterPoint(roads);
+        }
+
+        private bool CheckForLastPoint(List<RoadEntityData> way, List<RoadEntityData> roads, bool _t = false)
+        {
+            if (way.Count == 0) return false;
+            return _wayService.GetExitPointForWay(way) == _wayService.GetLastPoint(roads)
+                   && _wayService.GetLastPoint(way) == _wayService.GetExitPoint(roads);
+        }
+
+        /**
+         * Присоединились к концу дороги
+         */
+        public bool IsLastPontForWay(List<RoadEntityData> roads)
+        {
+            return CheckForLastPoint(_gameplayState.Origin.Way, roads) ||
+                   CheckForLastPoint(_gameplayState.Origin.WaySecond, roads);
+        }
+
+        /**
+         * Присоединились к главной дороге
+         */
+        public bool IsMainWay(List<RoadEntityData> roads)
+        {
+            return CheckCombinationPointsRoad(_gameplayState.Origin.Way, roads);
         }
     }
 }
