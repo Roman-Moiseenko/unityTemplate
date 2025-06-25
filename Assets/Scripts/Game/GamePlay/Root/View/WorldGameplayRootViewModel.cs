@@ -159,15 +159,6 @@ namespace Game.GamePlay.Root.View
                 if (_fsmGameplay.IsStateBuild())
                 {
                     frameService.MoveFrame(newPosition);
-                  /*  
-                    var card = ((FsmStateBuild)_fsmGameplay.Fsm.StateCurrent.Value).GetRewardCard();
-                    if (card.RewardType == RewardType.Tower)
-                    {
-                        foreach (TowerViewModel towerViewModel in AllTowers)
-                        {
-                            if (towerViewModel.IsFrame.CurrentValue) towersService.MoveTower(towerViewModel.TowerEntityId, newPosition);
-                        }
-                    }*/
                     //Переносим объект
                 }
 
@@ -239,6 +230,7 @@ namespace Game.GamePlay.Root.View
         public void UpFrame()
         {
        //    Отпустили фрейм 
+            //_fsmGameplay.Fsm.Position.Value = _frameService.
             _frameService.UnSelectedFrame();
         }
 

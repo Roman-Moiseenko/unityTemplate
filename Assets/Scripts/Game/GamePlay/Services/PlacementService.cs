@@ -176,12 +176,12 @@ namespace Game.GamePlay.Services
         private bool CheckForLastPoint(List<RoadEntityData> way, List<RoadEntityData> roads, bool _t = false)
         {
             if (way.Count == 0) return false;
-            Debug.Log(JsonConvert.SerializeObject(roads, Formatting.Indented));
+        /*    Debug.Log(JsonConvert.SerializeObject(roads, Formatting.Indented));
             Debug.Log("1");
             Debug.Log(_wayService.GetExitPoint(way));
             Debug.Log(_wayService.GetLastPoint(roads));
             Debug.Log(_wayService.GetLastPoint(way));
-            Debug.Log(_wayService.GetExitPoint(roads));
+            Debug.Log(_wayService.GetExitPoint(roads));*/
             return _wayService.GetExitPoint(way) == _wayService.GetLastPoint(roads)
                    && _wayService.GetLastPoint(way) == _wayService.GetExitPoint(roads);
         }

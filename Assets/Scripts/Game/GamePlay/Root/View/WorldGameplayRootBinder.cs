@@ -255,7 +255,10 @@ namespace Game.GamePlay.Root.View
                 {
                     if (_isFrameDownClick) //Двигаем фрейм 
                     {
-                        _viewModel.MoveFrame(_gameplayCamera.GetWorldPoint(mousePosition));
+                        var position = _gameplayCamera.GetWorldPoint(mousePosition);
+                        _viewModel.ClickEntity(position);
+                        
+                        //_viewModel.MoveFrame(_gameplayCamera.GetWorldPoint(mousePosition));
                     } else //Двигаем камеру
                     {
                         _gameplayCamera.OnPointMove(mousePosition); //Debug.Log("Мышь зажата");
@@ -374,7 +377,7 @@ namespace Game.GamePlay.Root.View
         {
             _isMouseDown = false;
             _clickCoroutines = true;
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.1f);
             if (_clickCoroutines)
             {
                 _isMouseDown = true;
