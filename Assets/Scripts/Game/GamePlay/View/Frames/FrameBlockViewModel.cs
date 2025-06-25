@@ -25,6 +25,7 @@ namespace Game.GamePlay.View.Frames
             Enable = new ReactiveProperty<bool>(true);
             Rotate = new ReactiveProperty<int>(0);
             IsSelected = new ReactiveProperty<bool>(false);
+            _type = FrameType.Ground;
         }
         
         public void AddItem(IMovingEntityViewModel entityViewModel)

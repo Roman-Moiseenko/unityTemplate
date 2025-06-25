@@ -229,7 +229,6 @@ namespace Game.GamePlay.Services
                 list.Reverse();
             }
             return list;
-
         }
         /**
          * Создаем RoadViewModel по шаблону, для генерации видов блоков дорог
@@ -256,6 +255,15 @@ namespace Game.GamePlay.Services
         {
             //Проверка на главный путь
             return _placementService.IsMainWay(GetRoads());
+        }
+
+        public void CreateFrameGround(Vector2Int position)
+        {
+            Debug.Log("CreateFrameGround " + position);
+            _viewModel = new FrameBlockViewModel(position);
+            //_viewModel.AddItem(towerViewModel);
+            _viewModels.Add(_viewModel);
+            //_viewModel.Enable.Value = _placementService.CheckPlacementGround(position);
         }
     }
 }

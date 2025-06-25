@@ -177,6 +177,7 @@ namespace Game.GamePlay.Root.View
 
             if (frameBlockViewModel.IsGround())
             {
+                Debug.Log("IsGround");
                 //TODO !!!!
             }
             //Создаем на карте строящийся объект

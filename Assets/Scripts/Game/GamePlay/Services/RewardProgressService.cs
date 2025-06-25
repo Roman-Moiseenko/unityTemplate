@@ -94,8 +94,8 @@ namespace Game.GamePlay.Services
             rewards.Card1.RewardType = RewardType.Tower;
             rewards.Card1.ConfigId = "Tower02";
 
-            rewards.Card2.RewardType = RewardType.TowerLevelUp;
-            rewards.Card2.ConfigId = "Tower01";
+            rewards.Card2.RewardType = RewardType.Ground;
+            //rewards.Card2.ConfigId = "Tower01";
 
             rewards.Card3.RewardType = RewardType.Road;
             //rewards.Card3.ConfigId = "3";

@@ -73,21 +73,17 @@ namespace Game.GamePlay.Root.View
                         position = placementService.GetNewPositionTower();
                         var level = towersService.Levels[reward.ConfigId];
                         frameService.CreateFrameTower(position, level, reward.ConfigId);
-                      //  _fsmGameplay.Fsm.Position.Value = position; //Сохраняем позицию башни в состоянии 
-                        
                     }
 
                     if (reward.RewardType == RewardType.Road)
                     {
                         position = placementService.GetNewPositionRoad();
                         frameService.CreateFrameRoad(position, reward.ConfigId);
-                         
-
                     }
                     if (reward.RewardType == RewardType.Ground)
                     {
                         position = placementService.GetNewPositionGround();
-                    //    frameService.CreateFrameGround(position);
+                        frameService.CreateFrameGround(position);
                     }
                     _fsmGameplay.Fsm.Position.Value = position; //Сохраняем позицию сущности в состоянии
                 }
