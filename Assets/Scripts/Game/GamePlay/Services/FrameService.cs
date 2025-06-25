@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.GamePlay.View;
 using Game.GamePlay.View.Frames;
+using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
 using Game.State.Maps.Roads;
@@ -67,6 +68,30 @@ namespace Game.GamePlay.Services
 
             if (_viewModel.IsGround())
             {
+                var centerFrame = _viewModel.EntityViewModels.Cast<GroundFrameViewModel>().ToList()[0]; 
+                if (!_placementService.CheckPlacementFrameGround(centerFrame.GetPosition() + _viewModel.Position.CurrentValue))
+                {  //Центральный фрейм не на земле
+                    foreach (var item in _viewModel.EntityViewModels.Cast<GroundFrameViewModel>())
+                    {
+                        item.Enabled.Value = false;
+                    }
+                        
+                    _viewModel.Enable.Value = false;
+                }
+                else
+                {
+                    var enableItems = false;
+                    foreach (var item in _viewModel.EntityViewModels.Cast<GroundFrameViewModel>())
+                    {
+                        item.Enabled.Value = !_placementService.CheckPlacementFrameGround(item.GetPosition() + _viewModel.Position.CurrentValue);
+                        if (item.Enabled.Value) enableItems = true;
+                    }
+                        
+                    _viewModel.Enable.Value = enableItems;
+                }
+                
+
+
                 //TODO Получить список, где появится земля
                 //_viewModel.SetEnabledGround(_placementService.CheckPlacementGround(position, _viewModel.GetGrounds()));
                 //_viewModel.Enable.Value = ;
@@ -259,11 +284,32 @@ namespace Game.GamePlay.Services
 
         public void CreateFrameGround(Vector2Int position)
         {
-            Debug.Log("CreateFrameGround " + position);
+           // Debug.Log("CreateFrameGround " + position);
             _viewModel = new FrameBlockViewModel(position);
             //_viewModel.AddItem(towerViewModel);
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, 0)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(1, 0)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(1, 1)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, 1)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(-1, 1)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(-1, 0)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(-1, -1)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, -1)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(1, -1)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(2, 0)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(-2, 0)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, 2)));
+            _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, -2)));
+            
+            
             _viewModels.Add(_viewModel);
             //_viewModel.Enable.Value = _placementService.CheckPlacementGround(position);
+        }
+
+        public IEnumerable<Vector2Int> GetGrounds()
+        {
+            return _viewModel.EntityViewModels.Select(item => item.GetPosition() + _viewModel.Position.CurrentValue).ToList();
+            //return _viewModel.EntityViewModels.Cast<GroundFrameViewModel>().ToList()
         }
     }
 }

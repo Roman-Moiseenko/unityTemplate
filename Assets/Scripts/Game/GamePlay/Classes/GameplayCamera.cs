@@ -12,9 +12,17 @@ namespace Game.GamePlay.Classes
         public float Sensitivity = 0.5f;
         public float SensTouch = 0.1f;
 
+        private const int speed = 20;
+        private const float smoothTime = 0.2f;
+        private Vector3 _velocity;
+        
+        
         private float _tempSens;
         private bool _isDragging = false, _isMoving = false;
         private Vector2 _tempCenter, _targetDirection, _tempMousePos;
+
+        private bool _autoMoving = false;
+        private Vector3 _targetAutoMoving;
         
         private readonly RectBorder _border;//, _cameraBorder;
         
@@ -126,6 +134,23 @@ namespace Game.GamePlay.Classes
                 return new Vector2(point.x, point.z);
             }
             return new Vector2(0, 0);
+        }
+
+        public void AutoMoving()
+        {
+            if (!_autoMoving) return;
+            CameraSystem.transform.position = Vector3.SmoothDamp(CameraSystem.transform.position, _targetAutoMoving, ref _velocity, smoothTime, speed );
+            if (_velocity.magnitude < 0.0005)
+            {
+                _isMoving = false;
+                CameraSystem.transform.position = _targetAutoMoving;
+            }
+        }
+        
+        public void MoveCamera(Vector2Int position)
+        {
+            _autoMoving = true;
+            _targetAutoMoving = new Vector3(position.x, CameraSystem.transform.position.y, position.y);
         }
     }
 }

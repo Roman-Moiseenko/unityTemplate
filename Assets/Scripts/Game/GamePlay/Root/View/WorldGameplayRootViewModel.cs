@@ -36,6 +36,7 @@ namespace Game.GamePlay.Root.View
 
         public readonly IObservableCollection<FrameBlockViewModel> FrameBlockViewModels;
         public CastleViewModel CastleViewModel { get; private set; }
+        public ReactiveProperty<Vector2Int> CameraMove;
 
         public WorldGameplayRootViewModel(
             //  RoadService roadsService,
@@ -60,10 +61,12 @@ namespace Game.GamePlay.Root.View
             FrameBlockViewModels = frameService.ViewModels;
             CastleViewModel = castleService.CastleViewModel;
 
+            CameraMove = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));
             
             //Изменение состояние Геймплея
             _fsmGameplay.Fsm.StateCurrent.Subscribe(newState =>
             {
+                //Режим строительства
                 if (newState.GetType() == typeof(FsmStateBuild))
                 {
                     var reward = ((FsmStateBuild)newState).GetRewardCard();
@@ -86,8 +89,9 @@ namespace Game.GamePlay.Root.View
                         frameService.CreateFrameGround(position);
                     }
                     _fsmGameplay.Fsm.Position.Value = position; //Сохраняем позицию сущности в состоянии
+                    //TODO центрируем карту
                 }
-
+                //Режим завершения строительства
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
                     var card = ((FsmStateBuildEnd)newState).GetRewardCard();
@@ -100,10 +104,10 @@ namespace Game.GamePlay.Root.View
                             frameService.RemoveFrame();
                             break; 
                         case RewardType.Ground: 
-                        /*    foreach (var position in frameService.GetGrounds())
+                            foreach (var groundPosition in frameService.GetGrounds())
                             {
-                                groundsService.PlaceGround(position);
-                            }*/
+                                groundsService.PlaceGround(groundPosition);
+                            }
                             groundsService.PlaceGround(position);
                             frameService.RemoveFrame();
                             break;
@@ -114,16 +118,6 @@ namespace Game.GamePlay.Root.View
                             {
                                 roadsService.PlaceRoad(road.Position, road.IsTurn, road.Rotate, isMainPath);
                                 groundsService.PlaceGround(road.Position);
-                                //TODO 
-                                groundsService.PlaceGround(road.Position + new Vector2Int(1, 1));
-                                groundsService.PlaceGround(road.Position + new Vector2Int(0, 1));
-                                groundsService.PlaceGround(road.Position + new Vector2Int(1, 0));
-                                
-                                groundsService.PlaceGround(road.Position + new Vector2Int(-1, -1));
-                                groundsService.PlaceGround(road.Position + new Vector2Int(0, -1));
-                                groundsService.PlaceGround(road.Position + new Vector2Int(-1, 0));
-                                
-                                
                             }
                             frameService.RemoveFrame();
                             
@@ -137,6 +131,7 @@ namespace Game.GamePlay.Root.View
                     }
                 }
 
+                //Режим начала строительства/выбора наград
                 if (newState.GetType() == typeof(FsmStateBuildBegin))
                 {
                     if (newState.Fsm.PreviousState.GetType() == typeof(FsmStateBuild)) //Возврат от режима строим

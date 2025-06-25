@@ -61,8 +61,7 @@ namespace Game.GamePlay.Services
                 if (position == roadEntity.Position.CurrentValue) return false; //На дороге
                 if (roadEntity.PositionNear(position)) result = true;
             }
-
-
+            
             return result;
         }
 
@@ -201,6 +200,11 @@ namespace Game.GamePlay.Services
         public bool IsMainWay(List<RoadEntityData> roads)
         {
             return CheckCombinationPointsRoad(_gameplayState.Origin.Way, roads);
+        }
+
+        public bool CheckPlacementFrameGround(Vector2Int position)
+        {
+            return _gameplayState.Origin.Grounds.Any(ground => ground.Position == position);
         }
     }
 }

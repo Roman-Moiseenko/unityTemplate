@@ -93,6 +93,11 @@ namespace Game.GamePlay.Root.View
                 );
             
             _gameplayCamera = new GameplayCamera(_camera, cameraSystem);
+        /*    _viewModel.CameraMove.Subscribe(newValue =>
+            {
+                _gameplayCamera.MoveCamera(newValue);
+            });*/
+
         }
 
         private void OnDestroy()
@@ -146,14 +151,7 @@ namespace Game.GamePlay.Root.View
                 _createdRoadsMap.Remove(roadViewModel.RoadEntityId);
             }
         }
-        private void CreateFrame(FrameViewModel frameViewModel)
-        {
-         /*   var prefabFrame = "Prefabs/Gameplay/Frame";
-            var framePrefab = Resources.Load<FrameBinder>(prefabFrame);
-            var createdFrame = Instantiate(framePrefab, transform);
-            createdFrame.Bind(frameViewModel);
-            _createFrameMap.Add(frameViewModel.EntityId, createdFrame);*/
-        }
+        
         private void CreateFrameBlock(FrameBlockViewModel frameBlockViewModel)
         {
             var prefabFrame = $"Prefabs/Gameplay/Frames/block_{frameBlockViewModel.GetCountFrames()}";
@@ -177,13 +175,24 @@ namespace Game.GamePlay.Root.View
 
             if (frameBlockViewModel.IsGround())
             {
-                Debug.Log("IsGround");
-                //TODO !!!!
+                foreach (var groundFrameViewModel in frameBlockViewModel.EntityViewModels.Cast<GroundFrameViewModel>().ToList())
+                {
+                    CreateGroundFrame(groundFrameViewModel, createdFrame.transform);
+                }
             }
-            //Создаем на карте строящийся объект
-//            Debug.Log("Создаем объект FrameBlock");
-        //    Debug.Log(JsonConvert.SerializeObject(frameBlock, Formatting.Indented));
         }
+
+        private void CreateGroundFrame(GroundFrameViewModel groundFrameViewModel, Transform parentTransform)
+        {
+            //var groundType = groundViewModel.ConfigId;
+            //var odd = Math.Abs((groundViewModel.Position.CurrentValue.x + groundViewModel.Position.CurrentValue.y) % 2);
+            var prefabGroundFramePath = $"Prefabs/Gameplay/Grounds/Frame"; //Перенести в настройки уровня
+            var groundFramePrefab = Resources.Load<GroundFrameBinder>(prefabGroundFramePath);
+            var createdGroundFrame = Instantiate(groundFramePrefab, parentTransform);
+            createdGroundFrame.Bind(groundFrameViewModel);
+           // _createGroundsMap[groundViewModel.GroundEntityId] = createdGround;
+        }
+        
         private void DestroyFrameBlock(FrameBlockViewModel frameBlockViewModel)
         {
             if (frameBlockViewModel.IsTower())
@@ -205,7 +214,7 @@ namespace Game.GamePlay.Root.View
         {
             var groundType = groundViewModel.ConfigId;
             var odd = Math.Abs((groundViewModel.Position.CurrentValue.x + groundViewModel.Position.CurrentValue.y) % 2);
-            var prefabGroundPath = $"Prefabs/Gameplay/Map/Grounds/{groundType}"; //Перенести в настройки уровня
+            var prefabGroundPath = $"Prefabs/Gameplay/Grounds/{groundType}"; //Перенести в настройки уровня
             var groundPrefab = Resources.Load<GroundBinder>(prefabGroundPath);
             var createdGround = Instantiate(groundPrefab, transform);
             createdGround.Bind(groundViewModel, odd);
@@ -288,6 +297,7 @@ namespace Game.GamePlay.Root.View
 
             _gameplayCamera?.UpdateMoving();
 
+            _gameplayCamera?.AutoMoving();
             // UpdateInput();
 
             //TODO Перемещение камеры
