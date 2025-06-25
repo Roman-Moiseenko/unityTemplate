@@ -71,25 +71,6 @@ namespace Game.GamePlay.Services
                 //_viewModel.SetEnabledGround(_placementService.CheckPlacementGround(position, _viewModel.GetGrounds()));
                 //_viewModel.Enable.Value = ;
             }
-            /*
-            if (_frameBlock.FrameIs(FrameType.Tower))
-            {
-                var towerEntityId = _frameBlock.As<FrameBlockTower>().TowerViewModel.TowerEntityId;
-                _frameBlock.Enable.Value = _placementService.CheckPlacementTower(position, towerEntityId);
-            }
-
-            if (_frameBlock.FrameIs(FrameType.Road))
-            {
-                //TODO Проверка на размещение
-            }
-            
-            if (_frameBlock.FrameIs(FrameType.Ground))
-            {
-                //
-            }
-            
-            _frameBlock.Move(position);
-            */
         }
 
         public void SelectedFrame()
@@ -170,27 +151,27 @@ namespace Game.GamePlay.Services
                     break;
                 //
                 case "2":
-                    _viewModel.AddItem(TemplateCreateRoad(false, 0)); // |
-                    _viewModel.AddItem(TemplateCreateRoad(false, 0, 1)); // |
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); // |
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1, 1)); // |
                     break;
                 case "3":
-                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); // |
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); //          |
                     _viewModel.AddItem(TemplateCreateRoad(true, 3, 1)); // |_
                     break;
                 case "4":
-                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); //  |
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); //           |
                     _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); // _|
                     break;
                 case "5":
-                    _viewModel.AddItem(TemplateCreateRoad(true, 1)); // -|
+                    _viewModel.AddItem(TemplateCreateRoad(true, 1)); //          -|
                     _viewModel.AddItem(TemplateCreateRoad(true, 3, 1)); //  |_
                     break;
                 case "6":
-                    _viewModel.AddItem(TemplateCreateRoad(true, 0)); //  |-
-                    _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); // _|
+                    _viewModel.AddItem(TemplateCreateRoad(true, 0)); //            |-
+                    _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); //  _|
                     break;
                 case "7":
-                    _viewModel.AddItem(TemplateCreateRoad(true, 1)); // -|
+                    _viewModel.AddItem(TemplateCreateRoad(true, 1)); //          -|
                     _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); // _|
                     break;
                 case "8":
@@ -235,7 +216,6 @@ namespace Game.GamePlay.Services
             
             return result;
         }
-
 
         /**
          * Список дорог для передачи в строительство,

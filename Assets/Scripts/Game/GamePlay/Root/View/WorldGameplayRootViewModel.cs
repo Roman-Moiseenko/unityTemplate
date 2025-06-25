@@ -117,6 +117,17 @@ namespace Game.GamePlay.Root.View
                             foreach (var road in frameService.GetRoadsForBuild())
                             {
                                 roadsService.PlaceRoad(road.Position, road.IsTurn, road.Rotate, isMainPath);
+                                groundsService.PlaceGround(road.Position);
+                                //TODO 
+                                groundsService.PlaceGround(road.Position + new Vector2Int(1, 1));
+                                groundsService.PlaceGround(road.Position + new Vector2Int(0, 1));
+                                groundsService.PlaceGround(road.Position + new Vector2Int(1, 0));
+                                
+                                groundsService.PlaceGround(road.Position + new Vector2Int(-1, -1));
+                                groundsService.PlaceGround(road.Position + new Vector2Int(0, -1));
+                                groundsService.PlaceGround(road.Position + new Vector2Int(-1, 0));
+                                
+                                
                             }
                             frameService.RemoveFrame();
                             

@@ -162,14 +162,27 @@ namespace Game.GamePlay.Services
         private bool CheckForFirstPoint(List<RoadEntityData> way, List<RoadEntityData> roads)
         {
             if (way.Count == 0) return false;
-            return _wayService.GetExitPointForWay(way) == _wayService.GetFirstPoint(roads)
+     /*       Debug.Log(JsonConvert.SerializeObject(roads, Formatting.Indented));
+            Debug.Log("0");
+            Debug.Log(_wayService.GetExitPoint(way));
+            Debug.Log(_wayService.GetFirstPoint(roads));
+            Debug.Log(_wayService.GetLastPoint(way));
+            Debug.Log(_wayService.GetEnterPoint(roads));
+            */
+            return _wayService.GetExitPoint(way) == _wayService.GetFirstPoint(roads)
                    && _wayService.GetLastPoint(way) == _wayService.GetEnterPoint(roads);
         }
 
         private bool CheckForLastPoint(List<RoadEntityData> way, List<RoadEntityData> roads, bool _t = false)
         {
             if (way.Count == 0) return false;
-            return _wayService.GetExitPointForWay(way) == _wayService.GetLastPoint(roads)
+            Debug.Log(JsonConvert.SerializeObject(roads, Formatting.Indented));
+            Debug.Log("1");
+            Debug.Log(_wayService.GetExitPoint(way));
+            Debug.Log(_wayService.GetLastPoint(roads));
+            Debug.Log(_wayService.GetLastPoint(way));
+            Debug.Log(_wayService.GetExitPoint(roads));
+            return _wayService.GetExitPoint(way) == _wayService.GetLastPoint(roads)
                    && _wayService.GetLastPoint(way) == _wayService.GetExitPoint(roads);
         }
 

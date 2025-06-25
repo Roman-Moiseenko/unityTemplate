@@ -15,42 +15,56 @@ namespace Game.GamePlay.Services
         }
 
 
-        public Vector2Int GetExitPointForWay(List<RoadEntityData> roads)
+        public Vector2Int GetExitPoint(List<RoadEntityData> roads)
         {
             var road = roads[^1];
-            var preRoad = roads[^2];
             var point = GetVectorExit(road);
-            if (point == preRoad.Position) //Точка выхода совпала с предыдущей дорогой
+      //      Debug.Log("point = " + point + " road = " + road.Position + ", " + road.Rotate);
+            if (roads.Count > 1)
             {
-                point = GetVectorEnter(road);
+                var preRoad = roads[^2];
+                if (point == preRoad.Position) //Точка выхода совпала с предыдущей дорогой
+                {
+            //        Debug.Log("Точка выхода совпала с предыдущей дорогой = ");
+                    point = GetVectorEnter(road);
+             //       Debug.Log("point = " + point);
+                }
             }
-
+            
             return point;
         }
         
-
-        public Vector2Int GetExitPoint(List<RoadEntityData> roads, bool _t = false)
+        public Vector2Int GetEnterPoint(List<RoadEntityData> roads)
         {
-            var road = roads[roads.Count - 1];
-            if (_t)
+            var road = roads[0];
+            var point = GetVectorEnter(road);
+            if (roads.Count > 1)
             {
-                Debug.Log(JsonConvert.SerializeObject(roads[^1], Formatting.Indented));
+                var nextRoad = roads[1];
+                if (point == nextRoad.Position)
+                {
+                    point = GetVectorExit(road);
+                }
             }
             
-            return GetVectorExit(road, _t);
+            return point;
         }
         
+        
+   /*     public Vector2Int GetExitPoint(List<RoadEntityData> roads)
+        {
+            var road = roads[roads.Count - 1];
+            
+            return GetVectorExit(road);
+        }
+        */
         
         public Vector2Int GetFirstPoint(List<RoadEntityData> roads)
         {
             return roads[0].Position;
         }
 
-        public Vector2Int GetEnterPoint(List<RoadEntityData> roads)
-        {
-            var road = roads[0];
-            return GetVectorEnter(road);
-        }
+
 
         private Vector2Int GetVectorExit(RoadEntityData road, bool _t = false)
         {
@@ -64,7 +78,7 @@ namespace Game.GamePlay.Services
             var delta = Vector2Int.zero;
             if (road.IsTurn)
             {
-                switch (road.Rotate)
+                switch (road.Rotate % 4)
                 {
                     case 0: 
                         delta = new Vector2Int(0, 1);    
@@ -82,7 +96,7 @@ namespace Game.GamePlay.Services
             }
             else
             {
-                switch (road.Rotate)
+                switch (road.Rotate % 4)
                 {
                     case 0:
                         delta = new Vector2Int(1, 0); //<-
@@ -107,7 +121,7 @@ namespace Game.GamePlay.Services
             var delta = Vector2Int.zero;
             if (road.IsTurn)
             {
-                switch (road.Rotate)
+                switch (road.Rotate % 4)
                 {
                     case 0: 
                         delta = new Vector2Int(-1, 0);    
@@ -125,7 +139,7 @@ namespace Game.GamePlay.Services
             }
             else
             {
-                switch (road.Rotate)
+                switch (road.Rotate % 4)
                 {
                     case 0:
                         delta = new Vector2Int(-1, 0); //->

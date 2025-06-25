@@ -3,6 +3,7 @@ using System.Linq;
 using DI;
 using Game.Common;
 using Game.GamePlay.Commands;
+using Game.GamePlay.Commands.GroundCommands;
 using Game.GamePlay.Commands.MapCommand;
 using Game.GamePlay.Commands.RewardCommand;
 using Game.GamePlay.Commands.RoadCommand;
@@ -49,7 +50,7 @@ namespace Game.GamePlay.Root
                 gameplayEnterParams.GameSpeed; //Получаем скорость игры из настроек GameState
 
 
-            //cmd.RegisterHandler(new CommandPlaceBuildingHandler(gameState)); //Регистрируем команды обработки зданий
+            cmd.RegisterHandler(new CommandCreateGroundHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
             cmd.RegisterHandler(new CommandCreateLevelHandler(gameSettings,

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Game.State.Maps.Grounds;
 using Game.State.Root;
 using MVVM.CMD;
 using UnityEngine;
@@ -16,15 +17,22 @@ namespace Game.GamePlay.Commands.GroundCommands
         }
         public bool Handle(CommandCreateGround command)
         {
-            /*
-            var currentMap = _gameplayState.Maps.FirstOrDefault(m => m.Id == _gameplayState.CurrentMapId.CurrentValue);
-            if (currentMap == null)
+            foreach (var ground in _gameplayState.Grounds)
             {
-                Debug.Log($" Карта не найдена { _gameplayState.CurrentMapId.CurrentValue}");
-                return false;
+                if (ground.Position.CurrentValue == command.Position) return false;
             }
-*/
-            throw new Exception("***");
+            
+            
+            var entityId = _gameplayState.CreateEntityID(); //Получаем уникальный ID
+            var newgroundEntity = new GroundEntityData() //Создаем сущность игрового объекта
+            {
+                UniqueId = entityId,
+                Position = command.Position,
+                ConfigId = command.GroundType,
+            };
+            var newGround = new GroundEntity(newgroundEntity); //Оборачиваем его Прокси
+            _gameplayState.Grounds.Add(newGround);//Добавляем в список объектов карты
+            return true;
         }
     }
 }

@@ -54,6 +54,7 @@ namespace Game.GamePlay.Services
         
         public bool PlaceGround(Vector2Int position)
         {
+           // Debug.Log("Строим землю");
             var command = new CommandCreateGround(_configIdDefault, position);
             return _cmd.Process(command);
         }
