@@ -98,8 +98,7 @@ namespace Game.GamePlay.Services
             //rewards.Card2.ConfigId = "Tower01";
 
             rewards.Card3.RewardType = RewardType.Road;
-            //rewards.Card3.ConfigId = "3";
-
+            //rewards.Card3.ConfigId = "5";
             
             var number = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999);
             rewards.Card3.ConfigId = (number % 9).ToString();

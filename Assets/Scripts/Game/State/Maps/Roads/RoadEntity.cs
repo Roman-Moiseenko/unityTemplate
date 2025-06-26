@@ -73,9 +73,11 @@ namespace Game.State.Maps.Roads
         {
             var x = Position.CurrentValue.x;
             var y = Position.CurrentValue.y;
-            
+        //    Debug.Log("Точка проверки " + position);
+        //    Debug.Log("Дорога " + Position.CurrentValue);
             foreach (var nearPosition in GetNearPositions())
             {
+             //   Debug.Log("nearPosition " + nearPosition);
                 if (position == nearPosition) return true;
             }
 
@@ -136,7 +138,7 @@ namespace Game.State.Maps.Roads
             List<Vector2Int> list = new();
             if (IsTurn) //Поворот
             {
-                switch (Rotate.CurrentValue)
+                switch (Rotate.CurrentValue % 4)
                 {
                     case 0:
                         list.Add(new Vector2Int(x, y - 1));
@@ -162,7 +164,7 @@ namespace Game.State.Maps.Roads
             }
             else
             {
-                switch (Rotate.CurrentValue)
+                switch (Rotate.CurrentValue % 4)
                 {
                     case 0: 
                     case 2: 

@@ -12,7 +12,7 @@ namespace Game.GamePlay.Classes
         public float Sensitivity = 0.5f;
         public float SensTouch = 0.1f;
 
-        private const int speed = 20;
+        private const int speed = 10;
         private const float smoothTime = 0.2f;
         private Vector3 _velocity;
         
@@ -138,11 +138,14 @@ namespace Game.GamePlay.Classes
 
         public void AutoMoving()
         {
+//            Debug.Log("1");
+
             if (!_autoMoving) return;
+//            Debug.Log("2");
             CameraSystem.transform.position = Vector3.SmoothDamp(CameraSystem.transform.position, _targetAutoMoving, ref _velocity, smoothTime, speed );
             if (_velocity.magnitude < 0.0005)
             {
-                _isMoving = false;
+                _autoMoving = false;
                 CameraSystem.transform.position = _targetAutoMoving;
             }
         }

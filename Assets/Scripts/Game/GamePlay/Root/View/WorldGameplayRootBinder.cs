@@ -93,10 +93,10 @@ namespace Game.GamePlay.Root.View
                 );
             
             _gameplayCamera = new GameplayCamera(_camera, cameraSystem);
-        /*    _viewModel.CameraMove.Subscribe(newValue =>
+           _viewModel.CameraMove.Subscribe(newValue =>
             {
                 _gameplayCamera.MoveCamera(newValue);
-            });*/
+            });
 
         }
 

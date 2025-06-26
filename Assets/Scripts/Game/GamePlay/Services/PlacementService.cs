@@ -29,16 +29,17 @@ namespace Game.GamePlay.Services
         {
             var result = false;
 
+     //       Debug.Log("1");
             //На замке
             if (IsCastle(position)) return false; //Строить нельзя, принудительный выход
-
+         //   Debug.Log("2");
             //Сначала проверяем землю
             foreach (var groundData in _gameplayState.Grounds)
             {
                 //Проверяем на земле или нет
                 if (position == groundData.Position.CurrentValue) result = true;
             }
-
+         //   Debug.Log("3");
             if (result == false) return false; //Не нашли участок для строительства, выходим
 
             result = false;
@@ -55,13 +56,14 @@ namespace Game.GamePlay.Services
                         return false; //Строить нельзя, принудительный выход
                 }
             }
-
+         //   Debug.Log("4");
+          //  Debug.Log(JsonConvert.SerializeObject(_gameplayState.Way, Formatting.Indented));
             foreach (var roadEntity in _gameplayState.Way)
             {
                 if (position == roadEntity.Position.CurrentValue) return false; //На дороге
                 if (roadEntity.PositionNear(position)) result = true;
             }
-            
+          //  Debug.Log("5" + result);
             return result;
         }
 

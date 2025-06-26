@@ -69,6 +69,7 @@ namespace Game.GamePlay.Root.View
                 //Режим строительства
                 if (newState.GetType() == typeof(FsmStateBuild))
                 {
+                    CameraMove.Value = Vector2Int.zero;
                     var reward = ((FsmStateBuild)newState).GetRewardCard();
                     Vector2Int position = new Vector2Int();
                     if (reward.RewardType == RewardType.Tower)
@@ -89,7 +90,8 @@ namespace Game.GamePlay.Root.View
                         frameService.CreateFrameGround(position);
                     }
                     _fsmGameplay.Fsm.Position.Value = position; //Сохраняем позицию сущности в состоянии
-                    //TODO центрируем карту
+                    CameraMove.Value = position; //центрируем карту
+                    
                 }
                 //Режим завершения строительства
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
