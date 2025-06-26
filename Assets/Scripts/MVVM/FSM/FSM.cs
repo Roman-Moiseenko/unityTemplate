@@ -5,7 +5,6 @@ namespace MVVM.FSM
 {
     public class FSM
     {
-        //TODO Нужна подписка
         public FSMState StateCurrent { get; private set; }
         public FSMState PreviousState { get; private set; }
         public Dictionary<Type, FSMState> States = new();

@@ -11,7 +11,6 @@ namespace Game.State.Entities
     {
         public static Entity CreateEntity(EntityData entityData)
         {
-            //TODO Добавить новые типы сущностей
             switch (entityData.Type)
             {
                 case EntityType.Building:

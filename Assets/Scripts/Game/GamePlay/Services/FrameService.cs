@@ -25,17 +25,12 @@ namespace Game.GamePlay.Services
         private readonly PlacementService _placementService;
         private readonly TowersService _towerService;
         private readonly RoadsService _roadsService;
-
-        private FrameBlock _frameBlock;
         
         private FrameBlockViewModel _viewModel;
         private readonly ObservableList<FrameBlockViewModel> _viewModels = new();
         public IObservableCollection<FrameBlockViewModel> ViewModels => _viewModels;
         
-        private readonly ObservableList<FrameBlock> _framesBlock = new();
-        public IObservableCollection<FrameBlock> FramesBlock =>
-            _framesBlock;
-
+        
         //public 
     //    private Dictionary<int, Vector2Int> _rotations = new();
         private Dictionary<int, Vector2Int> matrixRoads = new();
@@ -86,15 +81,9 @@ namespace Game.GamePlay.Services
                         item.Enabled.Value = !_placementService.CheckPlacementFrameGround(item.GetPosition() + _viewModel.Position.CurrentValue);
                         if (item.Enabled.Value) enableItems = true;
                     }
-                        
                     _viewModel.Enable.Value = enableItems;
                 }
                 
-
-
-                //TODO Получить список, где появится земля
-                //_viewModel.SetEnabledGround(_placementService.CheckPlacementGround(position, _viewModel.GetGrounds()));
-                //_viewModel.Enable.Value = ;
             }
         }
 

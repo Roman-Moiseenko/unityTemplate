@@ -77,8 +77,8 @@ namespace Game.GamePlay.Services
                 {
                     if (entity is TowerEntity towerEntity && towerEntity.ConfigId == x.NewItem.Key)
                     {
-                        RemoveTowerViewModel(towerEntity); //TODO Удаляем все модели viewModel.ConfigId == x.NewItem.Key
-                        CreateTowerViewModel(towerEntity); //TODO Создаем модели Заново
+                        RemoveTowerViewModel(towerEntity); //Удаляем все модели viewModel.ConfigId == x.NewItem.Key
+                        CreateTowerViewModel(towerEntity); //Создаем модели Заново
                     }
                 }
             });

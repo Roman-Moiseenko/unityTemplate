@@ -122,6 +122,9 @@ namespace Game.State
         private GameStateProxy CreateGameStateFromSettings()
         {
             //Заполняем карты по умолчанию, и другие бонусы
+            var inventory = new List<InventoryData>(); //TODO Загрузить из настроек
+            
+            
             _gameStateOrigin = new GameState
             {
                 CurrentMapId = 0,
@@ -130,7 +133,7 @@ namespace Game.State
                     new() { Amount = 0, ResourceType = ResourceType.SoftCurrency },
                     new() { Amount = 0, ResourceType = ResourceType.HardCurrency },
                 },
-                Inventory = new List<InventoryData>(),
+                Inventory = inventory,  
             };
             _gameStateOrigin.GameSpeed = 1;
        //     Debug.Log("_gameStateOrigin = " + JsonUtility.ToJson(_gameStateOrigin));

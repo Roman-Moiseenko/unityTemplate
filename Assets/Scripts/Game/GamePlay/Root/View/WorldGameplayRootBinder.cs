@@ -295,16 +295,10 @@ namespace Game.GamePlay.Root.View
                 }
             }
 
-            _gameplayCamera?.UpdateMoving();
-
+            _gameplayCamera?.UpdateMoving(); //Движение камеры
             _gameplayCamera?.AutoMoving();
             // UpdateInput();
-
-            //TODO Перемещение камеры
-            ///
-            ///
-
-            //TODO В противном случае отправляем данные в контроллер
+            
             /*    var position = Input.mousePosition;
 
                 //Проверка мышки и состояния

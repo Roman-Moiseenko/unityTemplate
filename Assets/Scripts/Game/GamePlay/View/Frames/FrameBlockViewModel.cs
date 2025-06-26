@@ -25,7 +25,6 @@ namespace Game.GamePlay.View.Frames
             Enable = new ReactiveProperty<bool>(true);
             Rotate = new ReactiveProperty<int>(0);
             IsSelected = new ReactiveProperty<bool>(false);
-            _type = FrameType.Ground;
         }
         
         public void AddItem(IMovingEntityViewModel entityViewModel)
@@ -33,7 +32,7 @@ namespace Game.GamePlay.View.Frames
             EntityViewModels.Add(entityViewModel);
             if (entityViewModel is TowerViewModel) _type = FrameType.Tower;
             if (entityViewModel is RoadViewModel) _type = FrameType.Road;
-            if (entityViewModel is GroundFlagViewModel) _type = FrameType.Ground;
+            if (entityViewModel is GroundFrameViewModel) _type = FrameType.Ground;
         }
 
         public void MoveFrame(Vector2Int position)
@@ -91,25 +90,6 @@ namespace Game.GamePlay.View.Frames
         public void Selected(bool value = true)
         {
             IsSelected.Value = value;
-        }
-
-        public bool IsPosition(Vector2Int position)
-        {
-            if (IsTower() || IsGround())
-                return Position.CurrentValue == position;
-            if (IsRoad())
-            {
-                //TODO Определяем координаты
-                Debug.Log("position = " + Position.Value.x + " " + Position.Value.y);
-                var p0 = EntityViewModels[0].GetPosition();
-                foreach (var entityViewModel in EntityViewModels)
-                {
-                    Debug.Log("position = " + entityViewModel.GetPosition().x + " " + entityViewModel.GetPosition().y);
-                }
-            }
-            return false;
-            //return Position.CurrentValue == position;
-            //return EntityViewModels.Any(entityViewModel => entityViewModel is not GroundFrameViewModel && entityViewModel.GetPosition() == position);
         }
 
         public void Dispose()
