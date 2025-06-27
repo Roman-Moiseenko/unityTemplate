@@ -38,7 +38,7 @@ namespace Game.GamePlay.View.Towers
             Level = towerEntity.Level;
             if (towerSettings != null)
             {
-                foreach (var towerLevelSettings in towerSettings.Levels)
+                foreach (var towerLevelSettings in towerSettings.GameplayLevels)
                 {
                     _towerLevelSettingsMap[towerLevelSettings.Level] = towerLevelSettings;
                 }

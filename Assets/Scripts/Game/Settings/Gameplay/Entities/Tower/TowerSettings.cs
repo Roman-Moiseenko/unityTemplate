@@ -16,11 +16,12 @@ namespace Game.Settings.Gameplay.Entities.Tower
         [field: SerializeField] public string DescriptionLid { get; private set; }
         [field: SerializeField] public string PrefabPath { get; private set; }
         [field: SerializeField] public bool OnRoad { get; private set; }
+         [field: SerializeField] public TowerTypeEnemy TypeEnemy { get; private set; }       
         //  [field: SerializeField] public string PrefabName { get; private set; }
-        [field: SerializeField] public List<TowerLevelSettings> Levels { get; private set; }
-        [field: SerializeField] public TowerTypeEnemy TypeEnemy { get; private set; }
-        [field: SerializeField] public List<TowerParameterSettings> BaseParameters { get; private set; }
+        [field: SerializeField] public List<TowerLevelSettings> GameplayLevels { get; private set; }
 
+        [field: SerializeField] public List<TowerParameterSettings> BaseParameters { get; private set; }
+        [field: SerializeField] public List<TowerEpicLevelCard> EpicLevels { get; private set; }
         //TODO Базовые настройки
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using Game.State.GameResources;
 using Game.State.Inventory;
+using Game.State.Inventory.Deck;
+using Game.State.Inventory.TowerCards;
 using Game.State.Maps;
 using ObservableCollections;
 using R3;
@@ -18,11 +20,17 @@ namespace Game.State.Root
         private readonly GameState _gameState;
         public ReactiveProperty<int> CurrentMapId = new();
         public ReactiveProperty<int> GameSpeed;
-        
+                public ObservableList<Resource> Resources { get; } = new();
      //   public ObservableList<Map> Maps { get; } = new();
-        public ObservableList<Inventory.Inventory> Inventory { get; } = new();
+        public ObservableList<Inventory.InventoryItem> Inventory { get; } = new();
 
-        public ObservableList<Resource> Resources { get; } = new();
+
+        public ObservableList<TowerCardData> TowerCards { get; set; }
+        public ObservableDictionary<string, TowerPlanData> TowerPlans { get; set; }
+        
+        public ObservableDictionary<int, DeckCard> DeckCards { get; set; } //Колоды карт
+
+        public ReactiveProperty<int> BattleDeck;
 
         public GameStateProxy(GameState gameState)
         {
@@ -74,6 +82,12 @@ namespace Game.State.Root
 
         private void InitInventory(GameState gameState)
         {
+            BattleDeck = new ReactiveProperty<int>(gameState.BattleDeck);
+            BattleDeck.Subscribe(newValue => gameState.BattleDeck = newValue);
+            
+            
+            
+            
             gameState.Inventory.ForEach(originInventory => Inventory.Add(InventoryFactory.CreateInventory(originInventory)));
             Inventory.ObserveAdd().Subscribe(e => gameState.Inventory.Add(e.Value.Origin));
             

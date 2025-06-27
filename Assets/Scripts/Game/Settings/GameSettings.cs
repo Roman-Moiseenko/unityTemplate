@@ -3,6 +3,7 @@ using Game.Settings.Gameplay.Entities.Buildings;
 
 using Game.Settings.Gameplay.Entities.Castle;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.Settings.Gameplay.Inventory;
 using Game.Settings.Gameplay.Maps;
 using UnityEngine;
 
@@ -15,5 +16,6 @@ namespace Game.Settings
         public MapsSettings MapsSettings;
         public TowersSettings TowersSettings;
         public CastleInitialSettings CastleInitialSettings;
+        public InventoryInitialSettings InventoryInitialSettings;
     }
 }

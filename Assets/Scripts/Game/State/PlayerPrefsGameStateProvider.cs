@@ -133,7 +133,7 @@ namespace Game.State
                     new() { Amount = 0, ResourceType = ResourceType.SoftCurrency },
                     new() { Amount = 0, ResourceType = ResourceType.HardCurrency },
                 },
-                Inventory = new List<InventoryData>(),  
+                Inventory = new List<InventoryItemData>(),  
             };
             _gameStateOrigin.GameSpeed = 1;
        //     Debug.Log("_gameStateOrigin = " + JsonUtility.ToJson(_gameStateOrigin));

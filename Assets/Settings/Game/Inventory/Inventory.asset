@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cbfacdaa4e34900a31ce12fc11c06c4, type: 3}
+  m_Name: Inventory
+  m_EditorClassIdentifier: 
+  TowerCards:
+  - {fileID: 11400000, guid: 7b06613fc7ac4b442a21335764e7b2c8, type: 2}
+  - {fileID: 11400000, guid: 7dc76211fcd355a42a9cee518f068632, type: 2}
