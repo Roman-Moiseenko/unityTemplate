@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc7296470140475f9390ad5151b068a3, type: 3}
   m_Name: Tower01
   m_EditorClassIdentifier: 
-  <EntityType>k__BackingField: 1
   <ConfigId>k__BackingField: Tower01
   <TitleLid>k__BackingField: Crazy Town
   <DescriptionLid>k__BackingField: 
@@ -23,5 +22,13 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 96fbabff35a94344784af9a392c0d46d, type: 2}
   - {fileID: 11400000, guid: eb111bc80b1e9cf408ec5b5bbd58551d, type: 2}
   - {fileID: 11400000, guid: 0a6013112f057584b93b2c13fb99ef7c, type: 2}
-  <TypeDamage>k__BackingField: 0
   <TypeEnemy>k__BackingField: 0
+  <BaseParameters>k__BackingField:
+  - ParameterType: 0
+    Value: 30
+  - ParameterType: 7
+    Value: 0.2
+  - ParameterType: 8
+    Value: 20
+  - ParameterType: 4
+    Value: 0.9

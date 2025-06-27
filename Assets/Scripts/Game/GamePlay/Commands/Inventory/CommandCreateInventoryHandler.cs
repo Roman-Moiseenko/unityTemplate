@@ -5,12 +5,12 @@ using MVVM.CMD;
 
 namespace Game.GamePlay.Commands.Inventory
 {
-    public class CommandCreateInventoryHandle : ICommandHandler<CommandCreateInventory>
+    public class CommandCreateInventoryHandler : ICommandHandler<CommandCreateInventory>
     {
         private readonly GameStateProxy _gameState;
         private readonly GameSettings _gameSettings;
 
-        public CommandCreateInventoryHandle(GameStateProxy gameState, GameSettings gameSettings)
+        public CommandCreateInventoryHandler(GameStateProxy gameState, GameSettings gameSettings)
         {
             _gameState = gameState;
             _gameSettings = gameSettings;

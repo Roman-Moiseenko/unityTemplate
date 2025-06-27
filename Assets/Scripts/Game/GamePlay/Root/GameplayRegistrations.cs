@@ -71,6 +71,8 @@ namespace Game.GamePlay.Root
                     throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
                 }
             }
+            
+            
             var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
             var groundConfigId = newMapSettings.InitialStateSettings.GroundDefault;
             var roadConfigId = newMapSettings.InitialStateSettings.RoadDefault;

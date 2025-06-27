@@ -1,6 +1,9 @@
-﻿using DI;
+﻿using System;
+using System.Linq;
+using DI;
 using Game.Common;
 using Game.GamePlay.Commands;
+using Game.GamePlay.Commands.Inventory;
 using Game.MainMenu.Commands.ResourceCommands;
 using Game.MainMenu.Services;
 using Game.Settings;
@@ -36,10 +39,21 @@ namespace Game.MainMenu.Root
             //TODO Командный процессор - команды работы с инвентарем
             cmd.RegisterHandler(new CommandResourcesAddHandler(gameState));
             cmd.RegisterHandler(new CommandResourcesSpendHandler(gameState));
+            cmd.RegisterHandler(new CommandCreateInventoryHandler(gameState, gameSettings)); //Создание базового инвентаря
             //Сервисы работы с карточками, кланом (присоединиться, запрос и др.) и другое
 
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
             container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
+
+            if (gameState.Inventory.Any() != true)
+            {
+                var command = new CommandCreateInventory();
+                var success = cmd.Process(command);
+                if (!success)
+                {
+                    throw new Exception($"Инвентарь не создался");
+                }
+            }
         }
     }
 }
