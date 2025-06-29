@@ -1,4 +1,6 @@
-﻿using Scripts.Game.GameRoot;
+﻿using System.Collections.Generic;
+using Game.State.Inventory.TowerCards;
+using Scripts.Game.GameRoot;
 
 namespace Game.GamePlay.Root
 {
@@ -7,13 +9,15 @@ namespace Game.GamePlay.Root
         public int MapId { get; }
         public int GameSpeed { get; set; }
         //public bool HasSessionGameplay { get; set; }
-        public float DamageTowerBust { get; set; }
-        
+        //public float DamageTowerBust { get; set; }
+        public List<TowerCardData> Towers { get; } = new();
+
         public GameplayEnterParams(int mapId) : base(Scenes.GAMEPLAY)
         {
             GameSpeed = 1;
             MapId = mapId;
-          //  HasSessionGameplay = false;
+            //Towers = towers;
+            //  HasSessionGameplay = false;
         }
     }
 }

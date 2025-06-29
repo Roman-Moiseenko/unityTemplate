@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Entities;
+using Game.State.Inventory.TowerCards;
 using Game.State.Maps.Towers;
 using MVVM.CMD;
 using Newtonsoft.Json;
@@ -15,12 +18,13 @@ namespace Game.GamePlay.Services
     public class TowersService
     {
         private readonly IObservableCollection<Entity> _entities; //кешируем
+        private readonly List<TowerCardData> _baseTowerCards; //
         private readonly ICommandProcessor _cmd;
         private readonly PlacementService _placementService;
 
         private readonly ObservableList<TowerViewModel> _allTowers = new();
         private readonly Dictionary<int, TowerViewModel> _towersMap = new();
-        private readonly Dictionary<string, TowerSettings> _towerSettingsMap = new();
+        private readonly Dictionary<string, List<TowerLevelSettings>> _towerSettingsMap = new();
 
         public IObservableCollection<TowerViewModel> AllTowers =>
             _allTowers; //Интерфейс менять нельзя, возвращаем через динамический массив
@@ -35,18 +39,21 @@ namespace Game.GamePlay.Services
         public TowersService(
             IObservableCollection<Entity> entities,
             TowersSettings towersSettings,
+            List<TowerCardData> baseTowerCards, //Базовые настройки колоды
             ICommandProcessor cmd,
             PlacementService placementService
         )
         {
+            Debug.Log("Входные данные для башен " + JsonConvert.SerializeObject(baseTowerCards, Formatting.Indented));
             _entities = entities;
+            _baseTowerCards = baseTowerCards;
             _cmd = cmd;
             _placementService = placementService;
 
             //Кешируем настройки зданий / обектов
             foreach (var towerSettings in towersSettings.AllTowers)
             {
-                _towerSettingsMap[towerSettings.ConfigId] = towerSettings;
+                _towerSettingsMap[towerSettings.ConfigId] = towerSettings.GameplayLevels;
                 Levels[towerSettings.ConfigId] = 1;
             }
 
@@ -73,6 +80,16 @@ namespace Game.GamePlay.Services
 
             Levels.ObserveChanged().Subscribe(x =>
             {
+                var configId = x.NewItem.Key;
+                var newLevel = x.NewItem.Value;
+                var towerCardBaseSetting = baseTowerCards.FirstOrDefault(card => card.ConfigId == configId);
+                var levelSettings = _towerSettingsMap[configId].FirstOrDefault(l => l.Level == newLevel);
+
+                foreach (var settingsParameter in levelSettings.Parameters)
+                {
+                    //TODO находим в towerCardBaseSetting settingsParameter и меняем параметр в %%
+                }
+                
                 foreach (var entity in _entities)
                 {
                     if (entity is TowerEntity towerEntity && towerEntity.ConfigId == x.NewItem.Key)
@@ -113,6 +130,14 @@ namespace Game.GamePlay.Services
          */
         private void CreateTowerViewModel(TowerEntity towerEntity)
         {
+            var towerCardBaseSetting = _baseTowerCards.FirstOrDefault(card => card.ConfigId == towerEntity.ConfigId);
+            if (towerCardBaseSetting == null) throw new Exception("Не найден параметр в настройках");
+            
+            foreach (var keyValue in towerCardBaseSetting.Parameters)
+            {
+                towerEntity.Parameters.Add(keyValue.Key, new TowerParameter(keyValue.Value));
+            }
+            
             var towerViewModel = new TowerViewModel(towerEntity, _towerSettingsMap[towerEntity.ConfigId], this); //3
             _allTowers.Add(towerViewModel); //4
             _towersMap[towerEntity.UniqueId] = towerViewModel;
@@ -147,6 +172,14 @@ namespace Game.GamePlay.Services
         public void ReplaceTower(int cardUniqueId, object cardUniqueId2)
         {
             //TODO Меняем местами две башни
+        }
+
+        /**
+         * Список доступных башен на текущем уровне
+         */
+        public List<string> GetAvailableTowers()
+        {
+            return _baseTowerCards.Select(towerCard => towerCard.ConfigId).ToList();
         }
     }
 }

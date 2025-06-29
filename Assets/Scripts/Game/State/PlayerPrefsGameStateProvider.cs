@@ -50,9 +50,9 @@ namespace Game.State
                 //Загружаем
                 var json = PlayerPrefs.GetString(GAMEPLAY_STATE_KEY);
                 _gameplayStateOrigin = JsonConvert.DeserializeObject<GameplayState>(json);
-                Debug.Log(JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
+              //  Debug.Log(JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
                 GameplayState = new GameplayStateProxy(_gameplayStateOrigin);
-                Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
+             //   Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
             }
             return Observable.Return(GameplayState);
         }
@@ -123,20 +123,17 @@ namespace Game.State
         {
             //Заполняем карты по умолчанию, и другие бонусы
             //  var inventory = new List<InventoryData>(); //TODO Загрузить из настроек
-            
-            
+
             _gameStateOrigin = new GameState
             {
-                CurrentMapId = 0,
                 Resources = new List<ResourceData>()
                 {
                     new() { Amount = 0, ResourceType = ResourceType.SoftCurrency },
                     new() { Amount = 0, ResourceType = ResourceType.HardCurrency },
                 },
-                Inventory = new List<InventoryItemData>(),  
+                GameSpeed = 1
             };
-            _gameStateOrigin.GameSpeed = 1;
-       //     Debug.Log("_gameStateOrigin = " + JsonUtility.ToJson(_gameStateOrigin));
+            //     Debug.Log("_gameStateOrigin = " + JsonUtility.ToJson(_gameStateOrigin));
 
             return new GameStateProxy(_gameStateOrigin);
         }

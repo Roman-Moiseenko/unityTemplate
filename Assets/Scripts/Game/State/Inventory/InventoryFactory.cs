@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.TowerCards;
 
 //using Game.State.Inventory.TowerPlan;
@@ -14,13 +15,13 @@ namespace Game.State.Inventory
             switch (inventoryItemData.TypeItem)
             {
                 case InventoryType.TowerCard:
-                    return new TowerCards.TowerCard(inventoryItemData as TowerCardData);
-                /*case InventoryType.TowerPlan:
-                    return new TowerPlan.TowerPlan(inventoryData as TowerPlanData);*/
+                    return new TowerCard(inventoryItemData as TowerCardData);
+                case InventoryType.TowerPlan:
+                    return new TowerPlan(inventoryItemData as TowerPlanData);
                 case InventoryType.SkillCard:
-                //            return new SkillCard(inventoryData as ...);
+                            return new SkillCard(inventoryItemData as SkillCardData);
                 case InventoryType.SkillPlan:
-                //          return new SkillPlan(inventoryData as ...);
+                          //return new SkillPlan(inventoryItemData as SkillPlanData);
 
                 default:
                     throw new Exception($"Unsupported entity type: " + inventoryItemData.TypeItem);

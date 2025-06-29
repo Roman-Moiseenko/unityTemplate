@@ -35,7 +35,7 @@ namespace Game.GamePlay.Root
             //Сохраняем начальные параметры игровой сессии
             gameplayContainer.Resolve<IGameStateProvider>().SaveGameplayState();
             
-            Debug.Log($"MAIN MENU ENTER POINT: Results MapId {enterParams?.MapId}");
+            Debug.Log($"GAME PLAY ENTER POINT: Results MapId {enterParams?.MapId}");
 
             //Создаем выходные параметры для входа в Меню
          //   var mainMenuEnterParams = new MainMenuEnterParams("Fatality");

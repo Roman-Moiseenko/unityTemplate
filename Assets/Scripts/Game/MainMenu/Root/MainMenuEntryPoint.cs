@@ -55,10 +55,15 @@ namespace Game.MainMenu.Root
             
             InitUI(mainMenuViewModelsContainer);
             InitPopup(mainMenuViewModelsContainer);
+            
+//            Debug.Log($"MAIN MENU ENTER POINT: Results {enterParams?.Result}");
+            
+            //var gameStateProvider = mainMenuViewModelsContainer.Resolve<IGameStateProvider>(); //Получаем репозиторий
+           // var gameState = gameStateProvider.GameState;
+            
+            //Debug.Log("Инвентарь " + JsonConvert.SerializeObject(gameState._gameState.InventoryItems, Formatting.Indented));
 
-
-            Debug.Log($"MAIN MENU ENTER POINT: Results {enterParams?.Result}");
-
+            
             //Загружаем входные параметры
             //   var gameplayEnterParams = new GameplayEnterParams(0); //Имитация выбора уровня 0
             //  var mainMenuExitParams = new MainMenuExitParams(gameplayEnterParams);

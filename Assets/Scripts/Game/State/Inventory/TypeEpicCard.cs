@@ -2,11 +2,11 @@
 {
     public enum TypeEpicCard
     {
-        Normal,
-        Good,
-        Rare,
-        Epic,
-        EpicPlus,
-        Legend
+        Normal = 0,
+        Good = 1,
+        Rare = 2,
+        Epic = 3,
+        EpicPlus = 4,
+        Legend = 5
     }
 }

@@ -4,6 +4,7 @@ using Game.State.Inventory;
 using Game.State.Inventory.Deck;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps;
+using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -17,16 +18,16 @@ namespace Game.State.Root
      */
     public class GameStateProxy
     {
-        private readonly GameState _gameState;
+        public readonly GameState _gameState; //TODO Для теста, сделать private
         public ReactiveProperty<int> CurrentMapId = new();
         public ReactiveProperty<int> GameSpeed;
                 public ObservableList<Resource> Resources { get; } = new();
      //   public ObservableList<Map> Maps { get; } = new();
-        public ObservableList<Inventory.InventoryItem> Inventory { get; } = new();
+        public ObservableList<InventoryItem> InventoryItems { get; } = new();
 
 
-        public ObservableList<TowerCardData> TowerCards { get; set; }
-        public ObservableDictionary<string, TowerPlanData> TowerPlans { get; set; }
+    //    public ObservableList<TowerCard> TowerCards { get; set; }
+       //// public ObservableDictionary<string, TowerPlanData> TowerPlans { get; set; } = new();
         
         public ObservableDictionary<int, DeckCard> DeckCards { get; set; } //Колоды карт
 
@@ -42,29 +43,14 @@ namespace Game.State.Root
                 gameState.GameSpeed = newValue;
                 Debug.Log($"Сохраняем скорость игры в GameState = {newValue}");
             });
-  
             
-
        //     InitMaps(gameState);
             InitResource(gameState);
+            
             InitInventory(gameState);
             
             CurrentMapId.Subscribe(newValue => { gameState.CurrentMapId = newValue; });
         }
-
-     /*   private void InitMaps(GameState gameState)
-        {
-            gameState.Maps.ForEach(
-                mapOriginal => Maps.Add(new Map(mapOriginal))
-            );
-            Maps.ObserveAdd().Subscribe(e => gameState.Maps.Add(e.Value.Origin));
-
-            Maps.ObserveRemove().Subscribe(e =>
-            {
-                var removedMapState = gameState.Maps.FirstOrDefault(b => b.Id == e.Value.Id);
-                gameState.Maps.Remove(removedMapState);
-            });
-        }*/
 
         private void InitResource(GameState gameState)
         {
@@ -84,18 +70,42 @@ namespace Game.State.Root
         {
             BattleDeck = new ReactiveProperty<int>(gameState.BattleDeck);
             BattleDeck.Subscribe(newValue => gameState.BattleDeck = newValue);
+            DeckCards = new ObservableDictionary<int, DeckCard>();
             
+            foreach (var keyValue in gameState.DeckCards)
+            {
+                DeckCards.Add(keyValue.Key, new DeckCard(keyValue.Value));
+            }
+
+            DeckCards.ObserveAdd().Subscribe(e =>
+            {
+                gameState.DeckCards.Add(e.Value.Key, e.Value.Value.Origin);
+            });
+            DeckCards.ObserveChanged().Subscribe(e =>
+            {
+                //TODO ?
+            });
+/*
+            TowerCards = new ObservableList<TowerCard>();
+            foreach (var towerCardData in gameState.TowerCards)
+            {
+                TowerCards.Add(new TowerCard(towerCardData));
+            }
+            TowerCards.ObserveAdd().Subscribe(e => gameState.TowerCards.Add((TowerCardData)e.Value.Origin));
+            TowerCards.ObserveRemove().Subscribe(e =>
+            {
+                var removedTowerCard = gameState.TowerCards.FirstOrDefault(c => c.UniqueId == e.Value.UniqueId);
+                gameState.TowerCards.Remove(removedTowerCard);
+            });
+            */
+            gameState.InventoryItems.ForEach(originInventory => InventoryItems.Add(InventoryFactory.CreateInventory(originInventory)));
+            InventoryItems.ObserveAdd().Subscribe(e => gameState.InventoryItems.Add(e.Value.Origin));
             
-            
-            
-            gameState.Inventory.ForEach(originInventory => Inventory.Add(InventoryFactory.CreateInventory(originInventory)));
-            Inventory.ObserveAdd().Subscribe(e => gameState.Inventory.Add(e.Value.Origin));
-            
-            Inventory.ObserveRemove().Subscribe(e =>
+            InventoryItems.ObserveRemove().Subscribe(e =>
             {
                 var removedInventoryData =
-                    gameState.Inventory.FirstOrDefault(b => b.TypeItem == e.Value.TypeItem);
-                gameState.Inventory.Remove(removedInventoryData);
+                    gameState.InventoryItems.FirstOrDefault(b => b.UniqueId == e.Value.UniqueId);
+                gameState.InventoryItems.Remove(removedInventoryData);
             });
         }
         

@@ -11,7 +11,7 @@ namespace Game.GamePlay.View.Towers
     public class TowerViewModel : IMovingEntityViewModel
     {
         private readonly TowerEntity _towerEntity;
-        private readonly TowerSettings _towerSettings;
+        private readonly List<TowerLevelSettings> _towerLevelSettings;
         private readonly TowersService _towerService;
         
         private readonly Dictionary<int, TowerLevelSettings> _towerLevelSettingsMap = new();
@@ -26,21 +26,21 @@ namespace Game.GamePlay.View.Towers
 
         public TowerViewModel(
             TowerEntity towerEntity,
-            TowerSettings towerSettings,
+            List<TowerLevelSettings> towerLevelSettings,
             TowersService towerService
         )
         {
             _towerEntity = towerEntity;
-            _towerSettings = towerSettings;
+            _towerLevelSettings = towerLevelSettings;
             _towerService = towerService;
             TowerEntityId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
-            if (towerSettings != null)
+            if (towerLevelSettings != null)
             {
-                foreach (var towerLevelSettings in towerSettings.GameplayLevels)
+                foreach (var towerLevelSetting in towerLevelSettings)
                 {
-                    _towerLevelSettingsMap[towerLevelSettings.Level] = towerLevelSettings;
+                    _towerLevelSettingsMap[towerLevelSetting.Level] = towerLevelSetting;
                 }
             }
             

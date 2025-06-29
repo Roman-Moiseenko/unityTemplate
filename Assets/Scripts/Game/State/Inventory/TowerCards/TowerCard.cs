@@ -1,6 +1,8 @@
 ﻿using Game.State.Maps.Towers;
+using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 
 namespace Game.State.Inventory.TowerCards
 {
@@ -22,6 +24,7 @@ namespace Game.State.Inventory.TowerCards
             Level.Subscribe(newAmount => data.Level = newAmount);
             
             Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
+            //Debug.Log(JsonConvert.SerializeObject(data, Formatting.Indented));
             foreach (var parameter in data.Parameters)
             {
                 Parameters.Add(parameter.Key, new TowerParameter(parameter.Value));

@@ -109,6 +109,7 @@ namespace Game.GamePlay.Root
             var towersService = new TowersService(
                 gameplayState.Entities,
                 gameSettings.TowersSettings,
+                gameplayEnterParams.Towers,
                 cmd,
                 placementService
             );

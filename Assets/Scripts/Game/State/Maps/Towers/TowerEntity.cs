@@ -13,7 +13,7 @@ namespace Game.State.Maps.Towers
         public readonly ReactiveProperty<double> Damage;
         public readonly ReactiveProperty<double> Speed;
         
-        public ObservableDictionary<TowerParameterType, TowerParameterData> Parameters;
+        public ObservableDictionary<TowerParameterType, TowerParameter> Parameters;
 
         
         public TowerEntity(TowerEntityData entityData) : base(entityData)
@@ -26,8 +26,12 @@ namespace Game.State.Maps.Towers
             Speed = new ReactiveProperty<double>(entityData.Speed);
             Speed.Subscribe(newValue => entityData.Speed = newValue);
 
-            Parameters = new ObservableDictionary<TowerParameterType, TowerParameterData>();
-            
+            Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
+            Parameters.ObserveAdd().Subscribe(e =>
+            {
+                entityData.Parameters.Add(e.Value.Key, e.Value.Value.Origin);
+            });
+
         }
 
         public bool PositionNear(Vector2Int position)

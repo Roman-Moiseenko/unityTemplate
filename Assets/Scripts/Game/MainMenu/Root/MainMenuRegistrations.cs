@@ -11,6 +11,7 @@ using Game.State;
 using MVVM.CMD;
 using R3;
 using Scripts.Game.GameRoot.Services;
+using UnityEngine;
 
 namespace Game.MainMenu.Root
 {
@@ -45,8 +46,10 @@ namespace Game.MainMenu.Root
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
             container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
 
-            if (gameState.Inventory.Any() != true)
+            //Для нового игрока загружаем базовый инвентарь
+            if (gameState.InventoryItems.Any() != true)
             {
+                Debug.Log("Загружаем Инвентраь из Настроек");
                 var command = new CommandCreateInventory();
                 var success = cmd.Process(command);
                 if (!success)
@@ -54,6 +57,22 @@ namespace Game.MainMenu.Root
                     throw new Exception($"Инвентарь не создался");
                 }
             }
+            //TODO Загружаем настройки и другое с сервера. Либо перенести в GameRoot 
+
+            
+            //var commandLoad = new CommandLoadSettings();
+            //cmd.Process(commandLoad);
+            
+            //Сервисы карточек
+
+            var towerCardService = new TowerCardService(
+                gameState.InventoryItems,
+                gameSettings.TowersSettings,
+                cmd
+                );
+            container.RegisterInstance(towerCardService);
+            
+            
         }
     }
 }
