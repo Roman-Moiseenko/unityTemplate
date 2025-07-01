@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using MVVM.UI;
+using ObservableCollections;
 using R3;
 using TMPro;
 using Unity.VisualScripting;
@@ -13,12 +15,38 @@ namespace Game.GamePlay.View.UI.PanelBuild
         [SerializeField] private Button _btnBuild1;
         [SerializeField] private Button _btnBuild2;
         [SerializeField] private Button _btnBuild3;
+        private Dictionary<int, Button> Buttons = new();
         
         private void Start()
         {
-            ViewModel.TextButton1.Subscribe(newText => _btnBuild1.GetComponentInChildren<TMP_Text>().text = newText);
+            Buttons.Add(1, _btnBuild1);
+            Buttons.Add(2, _btnBuild2);
+            Buttons.Add(3, _btnBuild3);
+            
+            ViewModel.ButtonCards.ObserveAdd().Subscribe(e =>
+            {
+                var indexButton = e.Value.Key;
+                var buttonData = e.Value.Value;
+                if (Buttons.TryGetValue(indexButton, out var button))
+                    UpdateTextButton(button, buttonData);
+            });
+         /*   ViewModel.TextButton1.Subscribe(newText => _btnBuild1.GetComponentInChildren<TMP_Text>().text = newText);
             ViewModel.TextButton2.Subscribe(newText => _btnBuild2.GetComponentInChildren<TMP_Text>().text = newText);
-            ViewModel.TextButton3.Subscribe(newText => _btnBuild3.GetComponentInChildren<TMP_Text>().text = newText);
+            ViewModel.TextButton3.Subscribe(newText => _btnBuild3.GetComponentInChildren<TMP_Text>().text = newText);*/
+        }
+
+        private void UpdateTextButton(Button button, ButtonData buttonData)
+        {
+            button.transform.Find("Caption").GetComponentInChildren<TMP_Text>().text = buttonData.Caption;
+            button.transform.Find("Level").GetComponentInChildren<TMP_Text>().text = buttonData.Level;
+            button.transform.Find("Description").GetComponentInChildren<TMP_Text>().text = buttonData.Description;
+            
+            if (buttonData.PrehabImage != "")
+            {
+                button.transform.Find("Image").GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>($"Images/{buttonData.PrehabImage}");
+            }
+            
+            //Debug.Log(button.name + " " + caption.name);
         }
 
         public override void Show()

@@ -14,12 +14,99 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ConfigId>k__BackingField: Tower03
   <TitleLid>k__BackingField: "\u0422\u0435\u0441\u043B\u0430"
-  <DescriptionLid>k__BackingField: 
+  <DescriptionLid>k__BackingField: "\u041C\u0430\u0441\u0441\u043E\u0432\u044B\u0439
+    \u0443\u0440\u043E\u043D \u043F\u043E \u043E\u0431\u043B\u0430\u0441\u0442\u0438,
+    \u043F\u043E \u043D\u0430\u0437\u043C\u0435\u043D\u044B\u043C \u0438 \u0432\u043E\u0437\u0434\u0443\u0448\u043D\u044B\u043C
+    \u0446\u0435\u043B\u044F\u043C"
   <PrefabPath>k__BackingField: 
   <OnRoad>k__BackingField: 0
   <TypeEnemy>k__BackingField: 0
   <GameplayLevels>k__BackingField:
   - Level: 0
-    Parameters: []
-  <BaseParameters>k__BackingField: []
-  <EpicLevels>k__BackingField: []
+    Parameters:
+    - ParameterType: 3
+      Value: 4
+  - Level: 2
+    Parameters:
+    - ParameterType: 3
+      Value: 19.2
+  - Level: 3
+    Parameters:
+    - ParameterType: 8
+      Value: 2
+    - ParameterType: 4
+      Value: 25
+  - Level: 4
+    Parameters:
+    - ParameterType: 3
+      Value: 19.36
+  - Level: 5
+    Parameters:
+    - ParameterType: 8
+      Value: 2
+    - ParameterType: 4
+      Value: 20
+  - Level: 6
+    Parameters:
+    - ParameterType: 3
+      Value: 20
+  <BaseParameters>k__BackingField:
+  - ParameterType: 3
+    Value: 22.9
+  - ParameterType: 7
+    Value: 0.57
+  - ParameterType: 8
+    Value: 2
+  - ParameterType: 4
+    Value: 1
+  <EpicLevels>k__BackingField:
+  - Level: 0
+    UpgradeParameters: []
+    LevelCardParameters:
+    - ParameterType: 3
+      Value: 1.14
+  - Level: 1
+    UpgradeParameters:
+    - ParameterType: 3
+      Value: 3
+    - ParameterType: 7
+      Value: -2
+    LevelCardParameters:
+    - ParameterType: 3
+      Value: 1.35
+  - Level: 2
+    UpgradeParameters:
+    - ParameterType: 3
+      Value: 5
+    - ParameterType: 7
+      Value: -5
+    LevelCardParameters:
+    - ParameterType: 3
+      Value: 1.64
+  - Level: 3
+    UpgradeParameters:
+    - ParameterType: 3
+      Value: 7
+    - ParameterType: 7
+      Value: -7
+    LevelCardParameters:
+    - ParameterType: 3
+      Value: 2.01
+  - Level: 4
+    UpgradeParameters:
+    - ParameterType: 3
+      Value: 13
+    - ParameterType: 7
+      Value: -3
+    LevelCardParameters:
+    - ParameterType: 3
+      Value: 2.52
+  - Level: 5
+    UpgradeParameters:
+    - ParameterType: 3
+      Value: 25
+    - ParameterType: 7
+      Value: -5
+    LevelCardParameters:
+    - ParameterType: 3
+      Value: 3.14

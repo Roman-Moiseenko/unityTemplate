@@ -26,9 +26,10 @@ namespace Game.GamePlay.Commands.Inventory
         
         public bool Handle(CommandCreateInventory commandCreate)
         {
-            Debug.Log("Загрузка инвентаря из настроек");
+           
             var towerCards = _gameSettings.InventoryInitialSettings.TowerCards;
             var towers = _gameSettings.TowersSettings.AllTowers;
+            Debug.Log("Загрузка инвентаря из настроек " + JsonConvert.SerializeObject(towers, Formatting.Indented));
             var initialDeck = new DeckCardData(); //Создаем начальную колоду
             var index = 0;
             foreach (var towerCard in towerCards) //Начальные башни из настроек
@@ -45,7 +46,7 @@ namespace Game.GamePlay.Commands.Inventory
                     Parameters = new Dictionary<TowerParameterType, TowerParameterData>(),
                 };
                 
-                
+                //Debug.Log(index + " " + towerCard.ConfigId);
                 var towerConfig = towers.FirstOrDefault(t => t.ConfigId == towerCard.ConfigId);
                 foreach (var baseParameter in towerConfig.BaseParameters)
                 {
@@ -57,7 +58,7 @@ namespace Game.GamePlay.Commands.Inventory
             //TODO Начальные навыки из настроек
             //TODO Начальный герой из настроек
             
-            Debug.Log("5555 " + JsonConvert.SerializeObject(initialDeck, Formatting.Indented));
+//            Debug.Log("5555 " + JsonConvert.SerializeObject(initialDeck, Formatting.Indented));
             _gameState.DeckCards.Add(1, new DeckCard(initialDeck));
             
             return true;

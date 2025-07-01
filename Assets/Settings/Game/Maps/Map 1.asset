@@ -46,9 +46,9 @@ MonoBehaviour:
     Towers:
     - ConfigId: Tower01
       Position: {x: 2, y: -1}
-    - ConfigId: Tower01
+    - ConfigId: Tower02
       Position: {x: 4, y: 1}
-    - ConfigId: Tower01
+    - ConfigId: Tower03
       Position: {x: 3, y: -1}
     WayMain:
     - Position: {x: 1, y: 0}

@@ -130,7 +130,7 @@ namespace Game.GamePlay.Root
             Fsm.Fsm.SetState<FsmStateGamePlay>();
             
             //Регистрируем сервисы, завия
-            var rewardService = new RewardProgressService(container);
+            var rewardService = new RewardProgressService(container, gameSettings.TowersSettings);
             container.RegisterInstance(rewardService);
 
             container.RegisterFactory(_ => new GameplayService(subjectExitParams, container))

@@ -67,7 +67,11 @@ namespace Game.GamePlay.Root.View
             foreach (var towerViewModel in viewModel.AllTowers)
                 CreateTower(towerViewModel);
             _disposables.Add(
-                viewModel.AllTowers.ObserveAdd().Subscribe(e => CreateTower(e.Value))
+                viewModel.AllTowers.ObserveAdd().Subscribe(e =>
+                {
+                    CreateTower(e.Value);
+                    
+                })
             );
             _disposables.Remove(
                 viewModel.AllTowers.ObserveRemove().Subscribe(e => DestroyTower(e.Value))

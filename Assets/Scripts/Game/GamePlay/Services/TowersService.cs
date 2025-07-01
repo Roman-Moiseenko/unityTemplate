@@ -51,6 +51,7 @@ namespace Game.GamePlay.Services
             _placementService = placementService;
 
             //Кешируем настройки зданий / обектов
+            
             foreach (var towerSettings in towersSettings.AllTowers)
             {
                 _towerSettingsMap[towerSettings.ConfigId] = towerSettings.GameplayLevels;
@@ -59,7 +60,12 @@ namespace Game.GamePlay.Services
 
             foreach (var entity in entities)
             {
-                if (entity is TowerEntity towerEntity) CreateTowerViewModel(towerEntity);
+                if (entity is TowerEntity towerEntity)
+                {
+                   // Debug.Log(towerEntity.ConfigId + " " + towerEntity.Level.CurrentValue);
+                    Levels[towerEntity.ConfigId] = towerEntity.Level.CurrentValue;
+                    CreateTowerViewModel(towerEntity);
+                }
             }
 
             //Подписка на добавление новых view-моделей текущего класса
@@ -69,7 +75,6 @@ namespace Game.GamePlay.Services
                 {
                     towerEntity.Level.Value = Levels[towerEntity.ConfigId]; //Устанавливаем уровень апгрейда
                     CreateTowerViewModel(towerEntity); //Создаем View Model
-   
                 }
             });
             //Если у сущности изменился уровень, меняем его и во вью-модели
@@ -94,11 +99,24 @@ namespace Game.GamePlay.Services
                 {
                     if (entity is TowerEntity towerEntity && towerEntity.ConfigId == x.NewItem.Key)
                     {
+                        //Debug.Log("Текущая башня = " + JsonConvert.SerializeObject(towerEntity, Formatting.Indented));
+
                         RemoveTowerViewModel(towerEntity); //Удаляем все модели viewModel.ConfigId == x.NewItem.Key
+                        //Debug.Log("Пересоздаем башни = " + JsonConvert.SerializeObject(towerEntity, Formatting.Indented));
                         CreateTowerViewModel(towerEntity); //Создаем модели Заново
                     }
                 }
             });
+/*
+            _allTowers.ObserveAdd().Subscribe(e =>
+            {
+                Debug.Log("Добавлена башня в _allTowers = " + e.Value.ConfigId);
+            });
+            AllTowers.ObserveAdd().Subscribe(e =>
+            {
+                Debug.Log("Добавлена башня в AllTowers = " + e.Value.ConfigId);
+            });
+*/
         }
 
 
@@ -132,12 +150,10 @@ namespace Game.GamePlay.Services
         {
             var towerCardBaseSetting = _baseTowerCards.FirstOrDefault(card => card.ConfigId == towerEntity.ConfigId);
             if (towerCardBaseSetting == null) throw new Exception("Не найден параметр в настройках");
-            
             foreach (var keyValue in towerCardBaseSetting.Parameters)
             {
-                towerEntity.Parameters.Add(keyValue.Key, new TowerParameter(keyValue.Value));
+                towerEntity.Parameters.TryAdd(keyValue.Key, new TowerParameter(keyValue.Value));
             }
-            
             var towerViewModel = new TowerViewModel(towerEntity, _towerSettingsMap[towerEntity.ConfigId], this); //3
             _allTowers.Add(towerViewModel); //4
             _towersMap[towerEntity.UniqueId] = towerViewModel;
@@ -177,9 +193,36 @@ namespace Game.GamePlay.Services
         /**
          * Список доступных башен на текущем уровне
          */
-        public List<string> GetAvailableTowers()
+        public Dictionary<string, int> GetAvailableTowers()
         {
-            return _baseTowerCards.Select(towerCard => towerCard.ConfigId).ToList();
+            var towers = new Dictionary<string, int>();
+
+            foreach (var towerCard in _baseTowerCards)
+            {
+                towers.Add(towerCard.ConfigId, Levels[towerCard.ConfigId]);
+            }
+
+            return towers;
+            //return _baseTowerCards.Select(towerCard => towerCard.ConfigId).ToList();
         }
+
+        /**
+         * Список доступных башен для апгрейда, должна быть построена и иметь уровень <6
+         */
+        public Dictionary<string, int> GetAvailableUpgradeTowers()
+        {
+            var towers = new Dictionary<string, int>();
+
+            foreach (var towerViewModel in _allTowers) //Все построенные башни
+            {
+                if (Levels[towerViewModel.ConfigId] < 6)
+                {
+                    towers.TryAdd(towerViewModel.ConfigId, Levels[towerViewModel.ConfigId]); //Добавлять один раз
+                }
+            }
+            return towers;
+            
+        }
+        
     }
 }
