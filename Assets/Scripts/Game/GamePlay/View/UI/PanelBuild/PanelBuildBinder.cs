@@ -22,6 +22,11 @@ namespace Game.GamePlay.View.UI.PanelBuild
             Buttons.Add(1, _btnBuild1);
             Buttons.Add(2, _btnBuild2);
             Buttons.Add(3, _btnBuild3);
+            foreach (var buttonCard in ViewModel.ButtonCards)
+            {
+                if (Buttons.TryGetValue(buttonCard.Key, out var button))
+                    UpdateTextButton(button, buttonCard.Value);
+            }
             
             ViewModel.ButtonCards.ObserveAdd().Subscribe(e =>
             {

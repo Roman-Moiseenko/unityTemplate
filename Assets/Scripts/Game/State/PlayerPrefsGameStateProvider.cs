@@ -87,7 +87,7 @@ namespace Game.State
         }
         public Observable<bool> ResetGameplayState()
         {
-            Debug.Log("ResetGameplayState" );
+            //Debug.Log("ResetGameplayState" );
 
             PlayerPrefs.DeleteKey(GAMEPLAY_STATE_KEY);
           //  GameplayState = CreateGameplayStateFromSettings();

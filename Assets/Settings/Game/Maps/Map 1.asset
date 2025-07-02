@@ -43,13 +43,7 @@ MonoBehaviour:
     - Position: {x: 1, y: -2}
     - Position: {x: 2, y: 2}
     - Position: {x: 2, y: 3}
-    Towers:
-    - ConfigId: Tower01
-      Position: {x: 2, y: -1}
-    - ConfigId: Tower02
-      Position: {x: 4, y: 1}
-    - ConfigId: Tower03
-      Position: {x: 3, y: -1}
+    Towers: []
     WayMain:
     - Position: {x: 1, y: 0}
       Rotate: 0
@@ -57,12 +51,9 @@ MonoBehaviour:
     - Position: {x: 2, y: 0}
       Rotate: 0
       IsTurn: 0
-    - Position: {x: 3, y: 0}
+    - Position: {x: 3, y: 1}
       Rotate: 0
       IsTurn: 1
-    - Position: {x: 3, y: 1}
-      Rotate: 1
-      IsTurn: 0
     WaySecond: []
     WayDisabled: []
     GroundDefault: Snow01

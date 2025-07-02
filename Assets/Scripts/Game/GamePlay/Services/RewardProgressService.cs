@@ -69,10 +69,20 @@ namespace Game.GamePlay.Services
 
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
-                    _gameplayStateProxy.Progress.Value -= 100;
+                    if (_gameplayStateProxy.Progress.Value >= 100) _gameplayStateProxy.Progress.Value -= 100;
                     _gameplayStateProxy.ProgressLevel.Value++;
                 }
             });
+        }
+
+        public void StartRewardCard()
+        {
+            var fsm = _container.Resolve<FsmGameplay>();
+            var rewards = new RewardsProgress();
+            rewards.Cards.Add(1, GetTower(rewards));
+            rewards.Cards.Add(2, GetTower(rewards));
+            rewards.Cards.Add(3, GetTower(rewards));
+            fsm.Fsm.SetState<FsmStateBuildBegin>(rewards);
         }
 
         /**

@@ -60,17 +60,7 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceRoadHandler(gameplayState));
 
-            //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
-            if (gameplayState.Entities.Any() != true)
-            {
-                //Debug.Log(" Загружаем из настроек");
-                var command = new CommandCreateLevel(gameplayEnterParams.MapId);
-                var success = cmd.Process(command);
-                if (!success)
-                {
-                    throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
-                }
-            }
+
             
             
             var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
@@ -135,6 +125,20 @@ namespace Game.GamePlay.Root
 
             container.RegisterFactory(_ => new GameplayService(subjectExitParams, container))
                 .AsSingle(); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
+            
+            
+            //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
+            if (gameplayState.Entities.Any() != true)
+            {
+                //Debug.Log(" Загружаем из настроек");
+                var command = new CommandCreateLevel(gameplayEnterParams.MapId);
+                var success = cmd.Process(command);
+                if (!success)
+                {
+                    throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
+                }
+                rewardService.StartRewardCard();
+            }
         }
     }
 }
