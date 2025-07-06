@@ -38,6 +38,7 @@ namespace Game.GamePlay.Root.View
         private FrameBlockBinder _frameBlockBinder;
         private readonly Dictionary<int, RoadBinder> _createdRoadsMap = new();
         private readonly Dictionary<int, MobBinder> _createMobsMap = new();
+        private readonly List<GateWaveBinder> _createGateMap = new();
         private CastleBinder _castleBinder;
         private readonly CompositeDisposable _disposables = new();
 
@@ -134,14 +135,17 @@ namespace Game.GamePlay.Root.View
                 Destroy(_castleBinder.gameObject);
             }
             _disposables.Dispose();
+            _createGateMap.ForEach(item => Destroy(item.gameObject));
         }
 
         private void CreateGateWave(GateWaveViewModel viewModel)
         {
             if (viewModel == null) return;
-            
-            //TODO 
-            
+            var prefabPath = $"Prefabs/Gameplay/GateWave"; //Перенести в настройки уровня
+            var gatePrefab = Resources.Load<GateWaveBinder>(prefabPath);
+            var createdGate = Instantiate(gatePrefab, transform);
+            createdGate.Bind(viewModel);
+            _createGateMap.Add(createdGate);
         }
 
         private void CreateMob(MobViewModel mobViewModel)

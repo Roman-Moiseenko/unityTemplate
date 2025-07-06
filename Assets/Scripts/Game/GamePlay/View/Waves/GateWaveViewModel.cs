@@ -23,10 +23,19 @@ namespace Game.GamePlay.View.Waves
             {
                 //TODO если true => ворота иначе инфо поле
             });
+            //_waveService
 
         }
-        
 
-        
+
+        public void ShowGateModel()
+        {
+            ShowInfo.Value = false;
+        }
+
+        public void ShowInfoModel()
+        {
+            ShowInfo.Value = true;
+        }
     }
 }

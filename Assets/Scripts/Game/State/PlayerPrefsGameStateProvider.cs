@@ -42,8 +42,6 @@ namespace Game.State
             if (!PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY))
             {
                 GameplayState = CreateGameplayStateFromSettings();
-                Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
-
                 SaveGameplayState(); //Сохраняем дефолтное состояние
             }
             else

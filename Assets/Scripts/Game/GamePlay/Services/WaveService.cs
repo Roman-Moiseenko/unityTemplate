@@ -36,7 +36,7 @@ namespace Game.GamePlay.Services
 
 
         //public ObservableList<MobEntity> CurrentWave = new(); //Список мобов на дороге
-        public ReactiveProperty<bool> IsMobsOnWay = new();
+        public ReactiveProperty<bool> IsMobsOnWay = new(); //Мобы на дороге 
         private readonly ObservableList<MobViewModel> _allMobsOnWay = new();
         public IObservableCollection<MobViewModel> AllMobsOnWay => _allMobsOnWay;
         private readonly Dictionary<int, MobViewModel> _mobsMap = new();
@@ -67,14 +67,10 @@ namespace Game.GamePlay.Services
                 TimeOutNewWave
             ).Skip(1).Subscribe(newValue =>
             {
-              /*  Debug.Log(" !_fsmGameplay.IsGamePause.CurrentValue = " + !_fsmGameplay.IsGamePause.CurrentValue);
-                Debug.Log(" !IsMobsOnWay.CurrentValue = " + !IsMobsOnWay.CurrentValue);
-                Debug.Log(" TimeOutNewWave.CurrentValue = " + TimeOutNewWave.CurrentValue);*/
                 StartForced.Value = !_fsmGameplay.IsGamePause.CurrentValue && !IsMobsOnWay.CurrentValue &&
                                     TimeOutNewWave.CurrentValue;
             });
-            //Debug.Log(JsonConvert.SerializeObject(gameplayState.Waves, Formatting.Indented));
-
+            
             //Подписка на новую волну, при изменении номера волны, запускаем корутин старт волны
             gameplayState.CurrentWave.Skip(1).Subscribe(newValue =>
             {
@@ -116,11 +112,12 @@ namespace Game.GamePlay.Services
 
         private IEnumerator StartNewWave(int numberWave)
         {
-            Debug.Log("StartNewWave старт Ждем подтверждения запуска");
             yield return new WaitUntil(() => StartForced.CurrentValue); //Ждем когда разрешиться запуск волны
+            Debug.Log(StartForced.CurrentValue);
+            GateWaveViewModel.ShowGateModel();
             yield return _coroutines.StartCoroutine(GenerateMob(numberWave)); //Выводим мобов на дорогу
             yield return new WaitForSeconds(TimeEndWave); //Пауза между волнами
-            Debug.Log("Новая волна");
+            GateWaveViewModel.ShowInfoModel(); //Убрать ворота и Показать инфо модель
             _gameplayState.CurrentWave.Value++;
         }
 
@@ -128,8 +125,7 @@ namespace Game.GamePlay.Services
         {
             if (_gameplayState.Waves.TryGetValue(numberWave, out var waveEntity))
             {
-                Debug.Log(JsonConvert.SerializeObject(waveEntity.Origin.Mobs, Formatting.Indented));
-                
+                //Debug.Log(JsonConvert.SerializeObject(waveEntity.Origin.Mobs, Formatting.Indented));
                 
                 foreach (var entityMob in waveEntity.Mobs)
                 {

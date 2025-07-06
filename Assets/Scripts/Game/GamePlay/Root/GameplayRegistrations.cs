@@ -110,10 +110,6 @@ namespace Game.GamePlay.Root
             //сервис волн мобов
             var waveService = new WaveService(container, gameplayState);
             container.RegisterInstance(waveService);
-            //Сервис ворот для волн
-            //var gateWaveService = new GateWaveService(waveService);
-                //container.RegisterInstance(gateWaveService);
-            //container.RegisterFactory(_ => new GateWaveService(container)).AsSingle();
             
             Fsm.Fsm.SetState<FsmStateGamePlay>();
             
