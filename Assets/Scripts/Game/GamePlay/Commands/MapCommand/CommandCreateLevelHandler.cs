@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Settings;
 using Game.State.Entities;
 using Game.State.Maps;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
+using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
+using Game.State.Maps.Waves;
 using Game.State.Mergeable.Buildings;
 using Game.State.Root;
 using MVVM.CMD;
@@ -47,6 +50,7 @@ namespace Game.GamePlay.Commands.MapCommand
             
             var newMapInitialStateSettings = newMapSettings.InitialStateSettings;
             
+            //TODO Генерируем карту земли
             foreach (var ground in newMapInitialStateSettings.Grounds)
             {
                 var initialGround = new GroundEntityData
@@ -100,6 +104,40 @@ namespace Game.GamePlay.Commands.MapCommand
             
             
             //Добавляем Волны и Список врагов, по Волнам
+
+            var index = 0;
+            foreach (var wave in newMapInitialStateSettings.Waves)
+            {
+                index++;
+                var initialWave = new WaveEntityData //Создаем волну и присваиваем ей порядковый номер
+                {
+                    Number = index,
+                    Mobs = new List<MobEntityData>(),
+                };
+
+                foreach (var waveItem in wave.WaveItems) //Настройки каждой волны - группы мобов
+                {
+                    //Создаем моба из настроек
+                    var mob = new MobEntityData  
+                    {
+                        ConfigId = waveItem.Mob.ConfigId,
+                        UniqueId = _gameplayState.CreateEntityID(),
+                        Health = waveItem.Mob.Health,
+                        Type = waveItem.Mob.Type,
+                        Armor = waveItem.Mob.Armor,
+                        Attack = waveItem.Mob.Attack,
+                        Speed = waveItem.Mob.Speed,
+                        IsFly = waveItem.Mob.IsFly,
+                        RewardCurrency = waveItem.Mob.RewardCurrency,
+                    };
+                    //Добавляем кол-во данного типа мобов в список
+                    for (int i = 0; i < waveItem.Quantity; i++)
+                    {
+                        initialWave.Mobs.Add(mob);
+                    }
+                }
+                _gameplayState.Waves.Add(index, new WaveEntity(initialWave));
+            }
             
             //Загружаем базовые параметры
             //Создаем замок
@@ -131,7 +169,9 @@ namespace Game.GamePlay.Commands.MapCommand
                 };
                 _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialTower));
             }
+
             
+            _gameplayState.CurrentWave.Value = 0;
             return true;
         }
     }

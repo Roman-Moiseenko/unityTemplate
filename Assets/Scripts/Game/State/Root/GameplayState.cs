@@ -3,6 +3,7 @@ using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
+using Game.State.Maps.Waves;
 
 namespace Game.State.Root
 {
@@ -35,7 +36,9 @@ namespace Game.State.Root
         public List<RoadEntityData> Way; //Основная Дорога
         public List<RoadEntityData> WaySecond;
         public List<RoadEntityData> WayDisabled;
-      
+
+        //public List<WaveEntityData> Waves;
+        public Dictionary<int, WaveEntityData> Waves;
         
         public int CreateEntityID()
         {

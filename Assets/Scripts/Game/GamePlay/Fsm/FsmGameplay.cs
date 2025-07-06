@@ -1,12 +1,16 @@
 ﻿using DI;
 using Game.GamePlay.Fsm.States;
 using MVVM.FSM;
+using R3;
+using UnityEngine;
 
 namespace Game.GamePlay.Fsm
 {
     public class FsmGameplay
     {
         public FsmProxy Fsm;
+
+        public ReactiveProperty<bool> IsGamePause; //Во все состояния, кроме FsmStateGamePlay пауза для движения
 
         public FsmGameplay(DIContainer container)
         {
@@ -21,6 +25,13 @@ namespace Game.GamePlay.Fsm
             Fsm.AddState(new FsmStateBuildEnd(Fsm, container));
             
             Fsm.SetState<FsmStateGamePlay>();
+
+            IsGamePause = new ReactiveProperty<bool>();
+            //Общедоступное реактивное свойство Игра на Паузе 
+            Fsm.StateCurrent.Subscribe(newState =>
+            {
+                IsGamePause.Value = newState.GetType() != typeof(FsmStateGamePlay);
+            });
         }
 
         public void UpdateState()

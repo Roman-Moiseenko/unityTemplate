@@ -8,8 +8,10 @@ using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
+using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
+using Game.GamePlay.View.Waves;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
@@ -35,10 +37,11 @@ namespace Game.GamePlay.Root.View
        // private readonly Dictionary<int, FrameBlockBinder> _createFrameMap = new();
         private FrameBlockBinder _frameBlockBinder;
         private readonly Dictionary<int, RoadBinder> _createdRoadsMap = new();
+        private readonly Dictionary<int, MobBinder> _createMobsMap = new();
         private CastleBinder _castleBinder;
         private readonly CompositeDisposable _disposables = new();
 
-        private Coroutines _coroutines;
+//private Coroutines _coroutines;
         private bool _clickCoroutines = false;
         private bool _isMouseDown;
 
@@ -49,7 +52,7 @@ namespace Game.GamePlay.Root.View
         
         public void Bind(WorldGameplayRootViewModel viewModel)
         {
-            _coroutines = new GameObject("[COROUTINES]").AddComponent<Coroutines>();
+           
             _viewModel = viewModel;
             //1. Создаем все объекты мира из Прехабов
             //2. Подписываемся на добавление объектов в список (Создать) и на удаление (Уничтожить)
@@ -76,6 +79,19 @@ namespace Game.GamePlay.Root.View
             _disposables.Remove(
                 viewModel.AllTowers.ObserveRemove().Subscribe(e => DestroyTower(e.Value))
             );
+            //Мобы
+            foreach (var mobViewModel in viewModel.AllMobs)
+                CreateMob(mobViewModel);
+            _disposables.Add(
+                viewModel.AllMobs.ObserveAdd().Subscribe(e =>
+                {
+                    CreateMob(e.Value);
+                })
+            );
+            _disposables.Remove(
+                viewModel.AllMobs.ObserveRemove().Subscribe(e => DestroyMob(e.Value))
+            );
+            
             //Замок
             CreateCastle(viewModel.CastleViewModel);
             //Дорога
@@ -96,11 +112,18 @@ namespace Game.GamePlay.Root.View
                 viewModel.FrameBlockViewModels.ObserveRemove().Subscribe(e => DestroyFrameBlock(e.Value))
                 );
             
+            
             _gameplayCamera = new GameplayCamera(_camera, cameraSystem);
            _viewModel.CameraMove.Subscribe(newValue =>
             {
                 _gameplayCamera.MoveCamera(newValue);
             });
+           //Создаем view-модель ворот из прехаба
+           CreateGateWave(_viewModel.GateWaveViewModel);
+           CreateGateWave(_viewModel.GateWaveViewModelSecond);
+
+           //Запускаем следующую волну
+            _viewModel.StartNextWave();
 
         }
 
@@ -112,6 +135,25 @@ namespace Game.GamePlay.Root.View
             }
             _disposables.Dispose();
         }
+
+        private void CreateGateWave(GateWaveViewModel viewModel)
+        {
+            if (viewModel == null) return;
+            
+            //TODO 
+            
+        }
+
+        private void CreateMob(MobViewModel mobViewModel)
+        {
+            var prefabPath = $"Prefabs/Gameplay/Mobs/{mobViewModel.ConfigId}"; //Перенести в настройки уровня
+            var mobPrefab = Resources.Load<MobBinder>(prefabPath);
+            var createdMob = Instantiate(mobPrefab, transform);
+            createdMob.Bind(mobViewModel);
+            //_castleBinder = createdCastle;
+            _createMobsMap[mobViewModel.MobEntityId] = createdMob;
+        }
+        
         private void CreateCastle(CastleViewModel castleViewModel)
         {
             var prefabPath = "Prefabs/Gameplay/Buildings/Castle"; //Перенести в настройки уровня
@@ -233,6 +275,15 @@ namespace Game.GamePlay.Root.View
             }
         }
         
+        private void DestroyMob(MobViewModel mobViewModel)
+        {
+            if (_createMobsMap.TryGetValue(mobViewModel.MobEntityId, out var mobBinder))
+            {
+                Destroy(mobBinder.gameObject);
+                _createMobsMap.Remove(mobViewModel.MobEntityId);
+            }
+        }
+        
         private void DestroyGround(GroundViewModel groundViewModel)
         {
             if (_createGroundsMap.TryGetValue(groundViewModel.GroundEntityId, out var groundBinder))
@@ -251,7 +302,7 @@ namespace Game.GamePlay.Root.View
 
                 if (Input.GetMouseButtonDown(0) && !_clickCoroutines)
                 {
-                    _coroutines.StartCoroutine(IsClick());
+                    StartCoroutine(IsClick());
                     return;
                 }
 
@@ -301,6 +352,8 @@ namespace Game.GamePlay.Root.View
 
             _gameplayCamera?.UpdateMoving(); //Движение камеры
             _gameplayCamera?.AutoMoving();
+            
+            
             // UpdateInput();
             
             /*    var position = Input.mousePosition;

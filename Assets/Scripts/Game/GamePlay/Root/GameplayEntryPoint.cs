@@ -3,6 +3,7 @@ using Game.Common;
 using Game.GamePlay.Root.View;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
+using Game.GamePlay.View.Waves;
 using Game.MainMenu.Root;
 using Game.State;
 using Newtonsoft.Json;
@@ -28,6 +29,7 @@ namespace Game.GamePlay.Root
             
             var gameplayViewModelsContainer = new DIContainer(gameplayContainer); //Создаем контейнер для view-моделей
             GameplayViewModelsRegistrations.Register(gameplayViewModelsContainer); //Регистрируем все View-модели сцены Gameplay
+            
             
             InitWorld(gameplayViewModelsContainer);
             InitUI(gameplayViewModelsContainer);

@@ -7,9 +7,10 @@ namespace Game.GamePlay.Services
 {
     public class WayService
     {
-
+        
         public Vector2Int GetLastPoint(List<RoadEntityData> roads)
         {
+            if (roads.Count == 0) return Vector2Int.zero;
             var result = roads[roads.Count - 1].Position;
             return result;
         }
@@ -17,17 +18,15 @@ namespace Game.GamePlay.Services
 
         public Vector2Int GetExitPoint(List<RoadEntityData> roads)
         {
+            if (roads.Count == 0) return Vector2Int.zero;
             var road = roads[^1];
             var point = GetVectorExit(road);
-      //      Debug.Log("point = " + point + " road = " + road.Position + ", " + road.Rotate);
             if (roads.Count > 1)
             {
                 var preRoad = roads[^2];
                 if (point == preRoad.Position) //Точка выхода совпала с предыдущей дорогой
                 {
-            //        Debug.Log("Точка выхода совпала с предыдущей дорогой = ");
                     point = GetVectorEnter(road);
-             //       Debug.Log("point = " + point);
                 }
             }
             
@@ -36,6 +35,7 @@ namespace Game.GamePlay.Services
         
         public Vector2Int GetEnterPoint(List<RoadEntityData> roads)
         {
+            if (roads.Count == 0) return Vector2Int.zero;
             var road = roads[0];
             var point = GetVectorEnter(road);
             if (roads.Count > 1)
@@ -61,11 +61,10 @@ namespace Game.GamePlay.Services
         
         public Vector2Int GetFirstPoint(List<RoadEntityData> roads)
         {
+            if (roads.Count == 0) return Vector2Int.zero;
             return roads[0].Position;
         }
-
-
-
+        
         private Vector2Int GetVectorExit(RoadEntityData road, bool _t = false)
         {
             if (_t)

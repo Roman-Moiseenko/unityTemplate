@@ -2,6 +2,7 @@
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
+using Game.GamePlay.View.Waves;
 using Game.MainMenu.Services;
 
 namespace Game.GamePlay.Root.View
@@ -14,8 +15,11 @@ namespace Game.GamePlay.Root.View
         public static void Register(DIContainer container)
         {
             //Добавить сервис если нужен в UIGameplayRootViewModel и WorldGameplayRootViewModel
-            container.RegisterFactory(c => new GameplayUIManager(container)).AsSingle();
             container.RegisterFactory(c => new UIGameplayRootViewModel(container)).AsSingle();
+            //container.RegisterFactory(c => new GateWaveViewModel(c.Resolve<WaveService>())).AsSingle();
+            container.RegisterFactory(c => new GameplayUIManager(container)).AsSingle();          
+            
+            //Всегда последний
             container.RegisterFactory(c => new WorldGameplayRootViewModel(
                 //   c.Resolve<BuildingsService>(),
                 c.Resolve<GroundsService>(),
@@ -24,8 +28,10 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<FsmGameplay>(),
                 c.Resolve<FrameService>(),
                 c.Resolve<PlacementService>(),
-                c.Resolve<RoadsService>()
+                c.Resolve<RoadsService>(),
+                c.Resolve<WaveService>()
             )).AsSingle();
+            
         }
     }
 }

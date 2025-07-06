@@ -8,6 +8,7 @@ using Game.State.Maps;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
+using Game.State.Maps.Waves;
 using Game.State.Root;
 using Newtonsoft.Json;
 using R3;
@@ -70,7 +71,8 @@ namespace Game.State
                 Way = new List<RoadEntityData>(),
                 WaySecond = new List<RoadEntityData>(),
                 WayDisabled = new List<RoadEntityData>(),
-                Grounds = new List<GroundEntityData>()
+                Grounds = new List<GroundEntityData>(),
+                Waves = new Dictionary<int, WaveEntityData>(),
                 
                 //TODO Ресурсы игры
             };

@@ -3,6 +3,7 @@ using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
+using Game.State.Maps.Waves;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
@@ -31,6 +32,7 @@ namespace Game.State.Root
         public ObservableList<RoadEntity> Way { get; } = new();
         public ObservableList<RoadEntity> WaySecond { get; } = new();
         public ObservableList<RoadEntity> WayDisabled { get; } = new();
+        public ObservableDictionary<int, WaveEntity> Waves { get; } = new();
         
         public GameplayStateProxy(GameplayState origin)
         {
@@ -54,6 +56,7 @@ namespace Game.State.Root
 
             CurrentWave = new ReactiveProperty<int>(origin.CurrentWave);
             CurrentWave.Subscribe(newValue => origin.CurrentWave = newValue);
+            
 
          //   Debug.Log("gameplayState = " + JsonConvert.SerializeObject(gameplayState, Formatting.Indented));
             InitMaps(origin);
@@ -109,7 +112,23 @@ namespace Game.State.Root
                 var removedRoad = gameplayState.WayDisabled.FirstOrDefault(b => b.UniqueId == r.Value.UniqueId);
                 gameplayState.WayDisabled.Remove(removedRoad);
             });
-            
+
+            foreach (var stateWave in gameplayState.Waves)
+            {
+                Waves.Add(stateWave.Key, new WaveEntity(stateWave.Value));
+            }
+            //gameplayState.Waves.ForEach(wave => Waves.Add(new WaveEntity(wave)));
+            Waves.ObserveAdd().Subscribe(r => gameplayState.Waves.Add(r.Value.Key, r.Value.Value.Origin));
+            Waves.ObserveRemove().Subscribe(r =>
+            {
+                if (Waves.TryGetValue(r.Value.Key, out var waveEntity))
+                {
+                    gameplayState.Waves.Remove(r.Value.Key);
+                }
+                //var removedWave = gameplayState.Waves.FirstOrDefault(b => b.Number == r.Value.Number);
+                //gameplayState.Waves.Remove(removedWave);
+            });
+
         }
 
 

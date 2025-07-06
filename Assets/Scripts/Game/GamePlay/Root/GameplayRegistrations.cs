@@ -59,9 +59,6 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandDeleteTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceRoadHandler(gameplayState));
-
-
-            
             
             var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
             var groundConfigId = newMapSettings.InitialStateSettings.GroundDefault;
@@ -110,35 +107,34 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(frameService);
             // container.RegisterFactory(_ => ).AsSingle();
 
-            //Добавить сервисы и команды для
-            /// Дорог
-            /// Земли
-            /// Монстров
-            /// Башни вместо Здания
-
-
+            //сервис волн мобов
+            var waveService = new WaveService(container, gameplayState);
+            container.RegisterInstance(waveService);
+            //Сервис ворот для волн
+            //var gateWaveService = new GateWaveService(waveService);
+                //container.RegisterInstance(gateWaveService);
+            //container.RegisterFactory(_ => new GateWaveService(container)).AsSingle();
+            
             Fsm.Fsm.SetState<FsmStateGamePlay>();
             
-            //Регистрируем сервисы, завия
+            //Сервис наград
             var rewardService = new RewardProgressService(container, gameSettings.TowersSettings);
             container.RegisterInstance(rewardService);
 
             container.RegisterFactory(_ => new GameplayService(subjectExitParams, container))
                 .AsSingle(); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             
-            
-            //Нужно загрузить карту, если ее нет, нужно брать по умолчанию
+            //Загружаем уровень из настроек, если gameplayState пуст.
             if (gameplayState.Entities.Any() != true)
             {
-                //Debug.Log(" Загружаем из настроек");
                 var command = new CommandCreateLevel(gameplayEnterParams.MapId);
                 var success = cmd.Process(command);
-                if (!success)
-                {
-                    throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
-                }
-                rewardService.StartRewardCard();
+                if (!success) throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
+                
+                rewardService.StartRewardCard(); //Устанавливаем начальный режим строительства
             }
+            
+            
         }
     }
 }

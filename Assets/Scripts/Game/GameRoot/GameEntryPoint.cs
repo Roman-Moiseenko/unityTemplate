@@ -44,7 +44,7 @@ namespace Scripts.Game.GameRoot
             _coroutines = new GameObject("[COROUTINES]").AddComponent<Coroutines>();
             Object.DontDestroyOnLoad(_coroutines.gameObject);
           //  _coroutines.StartCoroutine(LoadFirstBoot());
-            
+          
             //Находим прехаб UIRoot и присоединяем его к проекту
             var prefabUIRoot = Resources.Load<UIRootView>("UIRoot");
             _uiRoot = Object.Instantiate(prefabUIRoot);
@@ -109,7 +109,7 @@ namespace Scripts.Game.GameRoot
             yield return LoadScene(Scenes.BOOT);
             yield return LoadScene(Scenes.GAMEPLAY);
 
-            yield return new WaitForSeconds(1);
+          //  yield return new WaitForSeconds(1);
             //Ждем когда загрузится сохранение игры
             var isGameStateLoaded = false; //не загружено
             //При загрузке, по подписке поменяем флажок на Загружено
@@ -125,8 +125,6 @@ namespace Scripts.Game.GameRoot
             
             sceneEntryPoint.Run(gameplayContainer, enterParams).Subscribe(gameplayExitParams =>
             {
-                //TODO gameStateProvider.GameState.hasSessionGame = false;
-
                 {
                     //Debug.Log("enterParams = " + JsonConvert.SerializeObject(gameplayExitParams, Formatting.Indented));
                     _coroutines.StartCoroutine(LoadAndStartMainMenu(gameplayExitParams.MainMenuEnterParams));

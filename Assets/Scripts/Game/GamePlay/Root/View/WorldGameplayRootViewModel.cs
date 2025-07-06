@@ -8,8 +8,10 @@ using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
+using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
+using Game.GamePlay.View.Waves;
 using Game.MainMenu.Services;
 using Game.State.Gameplay;
 using Game.State.GameResources;
@@ -27,15 +29,21 @@ namespace Game.GamePlay.Root.View
         private readonly FrameService _frameService;
 
         private readonly RoadsService _roadsService;
+
+        private readonly WaveService _waveService;
         // private readonly DIContainer _container;
 
         //   public readonly IObservableCollection<RoadViewModel> AllRoads;
         public readonly IObservableCollection<TowerViewModel> AllTowers;
+        public readonly IObservableCollection<MobViewModel> AllMobs;
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
         public readonly IObservableCollection<RoadViewModel> AllRoads;
 
         public readonly IObservableCollection<FrameBlockViewModel> FrameBlockViewModels;
         public CastleViewModel CastleViewModel { get; private set; }
+        public GateWaveViewModel GateWaveViewModel { get; private set; }
+        public GateWaveViewModel GateWaveViewModelSecond { get; private set; }
+        
         public ReactiveProperty<Vector2Int> CameraMove;
 
         public WorldGameplayRootViewModel(
@@ -46,21 +54,26 @@ namespace Game.GamePlay.Root.View
             FsmGameplay fsmGameplay,
             FrameService frameService,
             PlacementService placementService,
-            RoadsService roadsService
+            RoadsService roadsService,
+            WaveService waveService
             //DIContainer container
         )
         {
             _fsmGameplay = fsmGameplay;
             _frameService = frameService;
             _roadsService = roadsService;
+            _waveService = waveService;
             //_container = container;
 
             AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
             AllTowers = towersService.AllTowers;
+            AllMobs = waveService.AllMobsOnWay;
             FrameBlockViewModels = frameService.ViewModels;
             CastleViewModel = castleService.CastleViewModel;
-
+            GateWaveViewModel = waveService.GateWaveViewModel;
+            GateWaveViewModelSecond = waveService.GateWaveViewModelSecond;
+            
             CameraMove = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));
             
             //Изменение состояние Геймплея
@@ -223,7 +236,6 @@ namespace Game.GamePlay.Root.View
         public void UpFrame()
         {
        //    Отпустили фрейм 
-            //_fsmGameplay.Fsm.Position.Value = _frameService.
             _frameService.UnSelectedFrame();
         }
 
@@ -234,6 +246,16 @@ namespace Game.GamePlay.Root.View
                 Mathf.FloorToInt(position.y + 0.5f)
             );
             _frameService.MoveFrame(vectorInt);//Двигаем фрейм
+        }
+
+        public void UpdateWaves()
+        {
+            
+        }
+
+        public void StartNextWave()
+        {
+            _waveService.StartNextWave();
         }
     }
 }

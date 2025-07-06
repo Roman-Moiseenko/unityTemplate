@@ -51,11 +51,94 @@ MonoBehaviour:
     - Position: {x: 2, y: 0}
       Rotate: 0
       IsTurn: 0
-    - Position: {x: 3, y: 1}
+    - Position: {x: 3, y: 0}
       Rotate: 0
       IsTurn: 1
     WaySecond: []
     WayDisabled: []
+    Waves:
+    - WaveItems:
+      - Quantity: 3
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 4
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 4
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 2
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+      - Quantity: 3
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 3
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+      - Quantity: 2
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 5
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+    - WaveItems:
+      - Quantity: 8
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 2
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+      - Quantity: 4
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 6
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+    - WaveItems:
+      - Quantity: 2
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+      - Quantity: 9
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 5
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+    - WaveItems:
+      - Quantity: 4
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+      - Quantity: 8
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 5
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+      - Quantity: 8
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 9
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+    - WaveItems:
+      - Quantity: 7
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+      - Quantity: 11
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 6
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+      - Quantity: 6
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 7
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+      - Quantity: 9
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 6
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+      - Quantity: 12
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 9
+        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+      - Quantity: 10
+        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
+    - WaveItems:
+      - Quantity: 1
+        Mob: {fileID: 11400000, guid: 97fd5f3ea0eea134aa2b6af974272479, type: 2}
     GroundDefault: Snow01
     RoadDefault: Road
   InfoStateSettings:

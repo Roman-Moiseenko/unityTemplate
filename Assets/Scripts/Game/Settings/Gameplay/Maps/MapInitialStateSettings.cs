@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.Settings.Gameplay.Buildings;
+using Game.Settings.Gameplay.Enemies;
 using Game.Settings.Gameplay.Entities.Road;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.Settings.Gameplay.Grounds;
@@ -22,6 +23,8 @@ namespace Game.Settings.Gameplay.Maps
         public List<RoadInitialSettings> WayMain;
         public List<RoadInitialSettings> WaySecond;
         public List<RoadInitialSettings> WayDisabled;
+
+        public List<WaveSettings> Waves;
         
         public string GroundDefault;
         public string RoadDefault = "Road";

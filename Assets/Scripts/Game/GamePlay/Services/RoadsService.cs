@@ -26,6 +26,9 @@ namespace Game.GamePlay.Services
         public IObservableCollection<RoadViewModel> AllRoads =>
             _allRoads; //Интерфейс менять нельзя, возвращаем через динамический массив
 
+        public IObservableCollection<RoadEntity> Way => _way;
+        public IObservableCollection<RoadEntity> WaySecond => _waySecond;
+
         public RoadsService(
             IObservableCollection<RoadEntity> way,
             IObservableCollection<RoadEntity> waySecond,
