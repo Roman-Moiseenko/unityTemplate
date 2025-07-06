@@ -16,7 +16,9 @@ namespace Game.GamePlay.View.Mobs
         public MobViewModel(MobEntity mobEntity)
         {
             _mobEntity = mobEntity;
-            Debug.Log("Создаем View Model для " + ConfigId);
+            
+            Debug.Log("Создаем View Model для " + ConfigId + " MobEntityId " + MobEntityId);
+            //Debug.Log("mobEntity.Origin.UniqueId = " + mobEntity.Origin.UniqueId);
             
             //TODO Заполняем данными модель
         }

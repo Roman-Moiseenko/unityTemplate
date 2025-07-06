@@ -58,6 +58,8 @@ namespace Game.GamePlay.Services
             _wayService = container.Resolve<WayService>();
             _roadsService = container.Resolve<RoadsService>();
             
+            //Debug.Log(JsonConvert.SerializeObject(gameplayState.Origin.Waves, Formatting.Indented));
+            
             //Комбинированная подписка, с одним результатом => Запустить процесс создания мобов на новой волне 
             Observable.Merge(
                 _fsmGameplay.IsGamePause,
@@ -65,6 +67,9 @@ namespace Game.GamePlay.Services
                 TimeOutNewWave
             ).Skip(1).Subscribe(newValue =>
             {
+              /*  Debug.Log(" !_fsmGameplay.IsGamePause.CurrentValue = " + !_fsmGameplay.IsGamePause.CurrentValue);
+                Debug.Log(" !IsMobsOnWay.CurrentValue = " + !IsMobsOnWay.CurrentValue);
+                Debug.Log(" TimeOutNewWave.CurrentValue = " + TimeOutNewWave.CurrentValue);*/
                 StartForced.Value = !_fsmGameplay.IsGamePause.CurrentValue && !IsMobsOnWay.CurrentValue &&
                                     TimeOutNewWave.CurrentValue;
             });
@@ -106,6 +111,7 @@ namespace Game.GamePlay.Services
             //При добавлении дороги на путь, перемещаем модель ворот
             _roadsService.Way.ObserveAdd().Subscribe(e => MoveGateWaveViewModel());
             _roadsService.WaySecond.ObserveAdd().Subscribe(e => MoveGateWaveViewModelSecond());
+            _coroutines.StartCoroutine(TimerNewWave()); //Первоначальный запуска таймера
         }
 
         private IEnumerator StartNewWave(int numberWave)
@@ -122,6 +128,9 @@ namespace Game.GamePlay.Services
         {
             if (_gameplayState.Waves.TryGetValue(numberWave, out var waveEntity))
             {
+                Debug.Log(JsonConvert.SerializeObject(waveEntity.Origin.Mobs, Formatting.Indented));
+                
+                
                 foreach (var entityMob in waveEntity.Mobs)
                 {
                     yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //Пауза игры
@@ -139,7 +148,6 @@ namespace Game.GamePlay.Services
             {
                 yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //При паузе не срабатывает
                 yield return new WaitForSeconds(0.1f);
-                Debug.Log("Timer работает");
             }
 
             TimeOutNewWave.Value = true;

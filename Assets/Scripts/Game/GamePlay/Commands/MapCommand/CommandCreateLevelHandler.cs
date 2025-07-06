@@ -22,13 +22,11 @@ namespace Game.GamePlay.Commands.MapCommand
     public class CommandCreateLevelHandler
         : ICommandHandler<CommandCreateLevel>
     {
-        
         private readonly GameSettings _gameSettings;
         private readonly GameplayStateProxy _gameplayState;
 
         public CommandCreateLevelHandler(GameSettings gameSettings, GameplayStateProxy gameplayState)
         {
-           
             _gameSettings = gameSettings;
             _gameplayState = gameplayState;
         }
@@ -40,16 +38,17 @@ namespace Game.GamePlay.Commands.MapCommand
                 Debug.Log($"Map id={command.MapId} already exist");
                 return false;
             }
-           /* var isMapAlreadyExisted = _gameState.Maps.Any(m => m.Id == command.MapId);
-            if (isMapAlreadyExisted) //Если карта была создана, то ошибка
-            {
 
-            } */
+            /* var isMapAlreadyExisted = _gameState.Maps.Any(m => m.Id == command.MapId);
+             if (isMapAlreadyExisted) //Если карта была создана, то ошибка
+             {
+
+             } */
             //Находим настройки карты по ее Id
             var newMapSettings = _gameSettings.MapsSettings.Maps.First(m => m.MapId == command.MapId);
-            
+
             var newMapInitialStateSettings = newMapSettings.InitialStateSettings;
-            
+
             //TODO Генерируем карту земли
             foreach (var ground in newMapInitialStateSettings.Grounds)
             {
@@ -59,10 +58,10 @@ namespace Game.GamePlay.Commands.MapCommand
                     ConfigId = newMapInitialStateSettings.GroundDefault,
                     Position = ground.Position,
                     Enabled = ground.Enabled,
-                    
                 };
                 _gameplayState.Grounds.Add(new GroundEntity(initialGround));
             }
+
             //Рисуем дорогу
             foreach (var road in newMapInitialStateSettings.WayMain)
             {
@@ -74,8 +73,10 @@ namespace Game.GamePlay.Commands.MapCommand
                     Rotate = road.Rotate,
                     IsTurn = road.IsTurn,
                 };
-                _gameplayState.Way.Add(new RoadEntity(initialRoad));// Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
+                _gameplayState.Way.Add(
+                    new RoadEntity(initialRoad)); // Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
             }
+
             foreach (var road in newMapInitialStateSettings.WaySecond)
             {
                 var initialRoad = new RoadEntityData
@@ -86,9 +87,10 @@ namespace Game.GamePlay.Commands.MapCommand
                     Rotate = road.Rotate,
                     IsTurn = road.IsTurn,
                 };
-                _gameplayState.WaySecond.Add(new RoadEntity(initialRoad));// Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
+                _gameplayState.WaySecond.Add(
+                    new RoadEntity(initialRoad)); // Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
             }
-            
+
             foreach (var road in newMapInitialStateSettings.WayDisabled)
             {
                 var initialRoad = new RoadEntityData
@@ -99,10 +101,10 @@ namespace Game.GamePlay.Commands.MapCommand
                     Rotate = road.Rotate,
                     IsTurn = road.IsTurn,
                 };
-                _gameplayState.WayDisabled.Add(new RoadEntity(initialRoad));// Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
+                _gameplayState.WayDisabled.Add(
+                    new RoadEntity(initialRoad)); // Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
             }
-            
-            
+
             //Добавляем Волны и Список врагов, по Волнам
 
             var index = 0;
@@ -117,28 +119,31 @@ namespace Game.GamePlay.Commands.MapCommand
 
                 foreach (var waveItem in wave.WaveItems) //Настройки каждой волны - группы мобов
                 {
-                    //Создаем моба из настроек
-                    var mob = new MobEntityData  
-                    {
-                        ConfigId = waveItem.Mob.ConfigId,
-                        UniqueId = _gameplayState.CreateEntityID(),
-                        Health = waveItem.Mob.Health,
-                        Type = waveItem.Mob.Type,
-                        Armor = waveItem.Mob.Armor,
-                        Attack = waveItem.Mob.Attack,
-                        Speed = waveItem.Mob.Speed,
-                        IsFly = waveItem.Mob.IsFly,
-                        RewardCurrency = waveItem.Mob.RewardCurrency,
-                    };
                     //Добавляем кол-во данного типа мобов в список
                     for (int i = 0; i < waveItem.Quantity; i++)
                     {
+                        //Создаем моба из настроек
+                        var mob = new MobEntityData
+                        {
+                            ConfigId = waveItem.Mob.ConfigId,
+                            UniqueId = _gameplayState.CreateEntityID(),
+                            Health = waveItem.Mob.Health,
+                            Type = waveItem.Mob.Type,
+                            Armor = waveItem.Mob.Armor,
+                            Attack = waveItem.Mob.Attack,
+                            Speed = waveItem.Mob.Speed,
+                            IsFly = waveItem.Mob.IsFly,
+                            RewardCurrency = waveItem.Mob.RewardCurrency,
+                        };
+
+
                         initialWave.Mobs.Add(mob);
                     }
                 }
+
                 _gameplayState.Waves.Add(index, new WaveEntity(initialWave));
             }
-            
+
             //Загружаем базовые параметры
             //Создаем замок
             var castle = new CastleEntityData()
@@ -156,8 +161,9 @@ namespace Game.GamePlay.Commands.MapCommand
                 Level = 0,
             };
             _gameplayState.Castle.Value = new CastleEntity(castle);
-            
-            foreach (var towerSettings in newMapInitialStateSettings.Towers) //Берем список зданий из настроек карты (конфиг)
+
+            foreach (var towerSettings in
+                     newMapInitialStateSettings.Towers) //Берем список зданий из настроек карты (конфиг)
             {
                 var initialTower = new TowerEntityData // .. и создаем все здания
                 {
@@ -170,7 +176,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialTower));
             }
 
-            
+
             _gameplayState.CurrentWave.Value = 0;
             return true;
         }
