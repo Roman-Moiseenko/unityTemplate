@@ -157,5 +157,11 @@ namespace Game.GamePlay.Services
             
             return road.Position + delta;
         }
+
+        public Vector2Int GetDirection(List<RoadEntityData> roads, int index)
+        {
+            //TODO выичслить поворот
+            return Vector2Int.zero;
+        }
     }
 }

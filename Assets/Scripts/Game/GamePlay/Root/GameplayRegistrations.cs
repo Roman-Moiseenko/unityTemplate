@@ -119,6 +119,10 @@ namespace Game.GamePlay.Root
 
             container.RegisterFactory(_ => new GameplayService(subjectExitParams, container))
                 .AsSingle(); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
+
+            var damageService = new DamageService(Fsm, gameplayState, waveService, towersService);
+            
+            container.RegisterInstance(damageService);
             
             //Загружаем уровень из настроек, если gameplayState пуст.
             if (gameplayState.Entities.Any() != true)

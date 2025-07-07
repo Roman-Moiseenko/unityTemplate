@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
@@ -43,7 +44,7 @@ namespace Game.State.Root
             GameSpeed.Subscribe(newSpeed =>
             {
                 origin.GameSpeed = newSpeed;
-                //Debug.Log($"Новая гейплей скорость = {newSpeed}");
+//                Debug.Log($"Новая гейплей скорость = {newSpeed}");
             });
             
             Progress = new ReactiveProperty<int>(origin.Progress);

@@ -20,7 +20,7 @@ namespace Game.GamePlay.View.Waves
                 }
                 else
                 {
-                    Debug.Log("Показываем ворота");
+                   // Debug.Log("Показываем ворота");
                     _gate.gameObject.SetActive(true);
                     //TODO Показываем ворота
                 }

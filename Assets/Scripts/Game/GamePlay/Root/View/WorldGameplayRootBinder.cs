@@ -150,6 +150,7 @@ namespace Game.GamePlay.Root.View
 
         private void CreateMob(MobViewModel mobViewModel)
         {
+//            Debug.Log("Создаем 3д модель = " + mobViewModel.MobEntityId);
             var prefabPath = $"Prefabs/Gameplay/Mobs/{mobViewModel.ConfigId}"; //Перенести в настройки уровня
             var mobPrefab = Resources.Load<MobBinder>(prefabPath);
             var createdMob = Instantiate(mobPrefab, transform);
