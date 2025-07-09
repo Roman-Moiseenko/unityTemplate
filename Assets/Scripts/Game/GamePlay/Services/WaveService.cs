@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DI;
+using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Waves;
@@ -21,7 +23,7 @@ namespace Game.GamePlay.Services
     {
         private const float SpeedGenerateMobs = 0.5f; //Скорость генерации новых мобов
         private const float TimeEndWave = 1f; //Задержка между волнами
-        private const int TimeNewWave = 50; //Кол-во задержек по 0.1сек перед новой волной
+        //private const int TimeNewWave = 50; //Кол-во задержек по 0.1сек перед новой волной
 
         private readonly DIContainer _container;
         private readonly GameplayStateProxy _gameplayState;
@@ -36,6 +38,7 @@ namespace Game.GamePlay.Services
             StartForced = new(false); //Комбинация различных подписок для разрешения запуска новой волны
 
         public ReactiveProperty<bool> TimeOutNewWave = new(false); //Таймер ожидания волны закончился
+        public ReactiveProperty<float> TimeOutNewWaveValue = new(0f);  
         public ReactiveProperty<bool> ShowGate = new(false); //Для подписки внешним ViewModel
 
 
@@ -70,7 +73,6 @@ namespace Game.GamePlay.Services
                 }
             });*/
             GameSpeed = gameplayState.GameSpeed;
-
             //Debug.Log(JsonConvert.SerializeObject(gameplayState.Origin.Waves, Formatting.Indented));
 
             //Комбинированная подписка, с одним результатом => Запустить процесс создания мобов на новой волне 
@@ -193,7 +195,7 @@ namespace Game.GamePlay.Services
         private IEnumerator TimerNewWave()
         {
             TimeOutNewWave.Value = false;
-            int timeWave = (GameSpeed.CurrentValue == 0) ? TimeNewWave : TimeNewWave / GameSpeed.CurrentValue;
+            int timeWave = (GameSpeed.CurrentValue == 0) ? AppConstants.TIME_WAVE_NEW : AppConstants.TIME_WAVE_NEW / GameSpeed.CurrentValue;
             //Разбиваем цикл на доли, всего 5 секунд 
 
             for (var i = 0; i < timeWave; i++) //Ускоряем при новой скорости
@@ -202,10 +204,10 @@ namespace Game.GamePlay.Services
                 {
                     yield return null;
                 }
-
-                //Debug.Log();
                 //yield return new WaitUntil(() => _fsmGameplay.IsGamePause.Value);
-                yield return new WaitForSeconds(0.1f);
+                TimeOutNewWaveValue.Value = Convert.ToSingle(i) / timeWave;
+                yield return new WaitForSeconds(0.05f);
+                
             }
 
             TimeOutNewWave.Value = true;

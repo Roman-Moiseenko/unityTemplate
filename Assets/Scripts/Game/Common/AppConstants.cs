@@ -6,6 +6,8 @@
         public const string GAME_PLAY_STATE = nameof(GAME_PLAY_STATE);
         public const string CAMERA_MOVING = nameof(CAMERA_MOVING);
 
+        public const int TIME_WAVE_NEW = 50;
+        
         public const string MAIN_MENU_SHOP = nameof(MAIN_MENU_SHOP);
         public const string MAIN_MENU_INVENTORY = nameof(MAIN_MENU_INVENTORY);
         public const string MAIN_MENU_PLAY = nameof(MAIN_MENU_PLAY);
