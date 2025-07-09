@@ -29,14 +29,16 @@ namespace Game.GamePlay.Services
         private readonly FsmGameplay _fsmGameplay;
         private readonly Coroutines _coroutines;
         private readonly RoadsService _roadsService;
-        
+
         public readonly ReactiveProperty<int> GameSpeed = new(1);
 
         public ReactiveProperty<bool>
             StartForced = new(false); //Комбинация различных подписок для разрешения запуска новой волны
 
         public ReactiveProperty<bool> TimeOutNewWave = new(false); //Таймер ожидания волны закончился
-        
+        public ReactiveProperty<bool> ShowGate = new(false); //Для подписки внешним ViewModel
+
+
         //public ObservableList<MobEntity> CurrentWave = new(); //Список мобов на дороге
         public ReactiveProperty<bool> IsMobsOnWay = new(); //Мобы на дороге 
         private readonly ObservableList<MobViewModel> _allMobsOnWay = new();
@@ -59,6 +61,7 @@ namespace Game.GamePlay.Services
             _fsmGameplay = container.Resolve<FsmGameplay>();
             _wayService = container.Resolve<WayService>();
             _roadsService = container.Resolve<RoadsService>();
+
             /*gameplayState.GameSpeed.Subscribe(e =>
             {
                 if (e != 0)
@@ -67,9 +70,9 @@ namespace Game.GamePlay.Services
                 }
             });*/
             GameSpeed = gameplayState.GameSpeed;
-            
+
             //Debug.Log(JsonConvert.SerializeObject(gameplayState.Origin.Waves, Formatting.Indented));
-            
+
             //Комбинированная подписка, с одним результатом => Запустить процесс создания мобов на новой волне 
             Observable.Merge(
                 _fsmGameplay.IsGamePause,
@@ -79,10 +82,9 @@ namespace Game.GamePlay.Services
             {
                 StartForced.Value = !_fsmGameplay.IsGamePause.CurrentValue && !IsMobsOnWay.CurrentValue &&
                                     TimeOutNewWave.CurrentValue;
-                
-                if (!StartForced.Value) Debug.Log("StartForced.Value = " + !_fsmGameplay.IsGamePause.CurrentValue + !IsMobsOnWay.CurrentValue + TimeOutNewWave.CurrentValue);
+                // if (!StartForced.Value) Debug.Log("StartForced.Value = " + !_fsmGameplay.IsGamePause.CurrentValue + !IsMobsOnWay.CurrentValue + TimeOutNewWave.CurrentValue);
             });
-            
+
             //Подписка на новую волну, при изменении номера волны, запускаем корутин старт волны
             gameplayState.CurrentWave.Skip(1).Subscribe(newValue =>
             {
@@ -90,13 +92,6 @@ namespace Game.GamePlay.Services
                     _coroutines.StartCoroutine(StartNewWave(newValue));
             });
 
-            /*
-            gameplayState.CurrentWave.Subscribe();
-            gameplayState.Waves.ObserveRemove().Subscribe(e =>
-            {
-                //TODO Если кол-во оставшихся волн = 0, то победа
-            });
-*/
             _allMobsOnWay.ObserveAdd().Subscribe(newValue =>
             {
                 if (!IsMobsOnWay.CurrentValue) //На дороге есть мобы
@@ -104,24 +99,20 @@ namespace Game.GamePlay.Services
                     IsMobsOnWay.Value = true;
                     _coroutines.StopCoroutine(TimerNewWave());
                 }
-                //При добавление моба, запускаем его движение
-                _coroutines.StartCoroutine(MovingMobOnWay(newValue.Value));
-                
+
+                _coroutines.StartCoroutine(
+                    MovingMobOnWay(newValue.Value)); //При добавление моба, запускаем его движение
             });
             _allMobsOnWay.ObserveRemove().Subscribe(e =>
             {
-                
-                if (_allMobsOnWay.Count == 0) //На дороге нет мобов
-                {
-                    IsMobsOnWay.Value = false;
-                    _coroutines.StartCoroutine(TimerNewWave());
-                }
+                if (_allMobsOnWay.Count != 0) return; //На дороге нет мобов
+                IsMobsOnWay.Value = false;
+                _coroutines.StartCoroutine(TimerNewWave());
             });
-            
             AllMobsMap.ObserveRemove().Subscribe(e =>
             {
-                //Сущность удалена с дороги, запускаем корутину удаления модели
-                _coroutines.StartCoroutine(RemoveMobViewModel(e.Value.Key));
+                _coroutines.StartCoroutine(
+                    RemoveMobViewModel(e.Value.Key)); //Сущность удалена с дороги, запускаем корутину удаления модели
             });
             //Создаем модель ворот
             CreateGateWaveViewModel();
@@ -135,17 +126,17 @@ namespace Game.GamePlay.Services
         {
             //mobViewModel.SetStartPosition(GateWaveViewModel.Position.CurrentValue, GateWaveViewModel.Direction.CurrentValue);
             var way = _gameplayState.Origin.Way;
-            List <Vector2> roads = new();
+            List<Vector2> roads = new();
             for (int i = way.Count - 1; i >= 0; i--)
             {
                 //Определяем направление кроме начальной позиции
-              /*  if (i != way.Count - 1)
-                {
-                    var direction = _wayService.GetDirection(way, i);
-                    
-                    //Запускаем поворот
-                    yield return mobViewModel.RotateModel(direction);
-                }*/
+                /*  if (i != way.Count - 1)
+                  {
+                      var direction = _wayService.GetDirection(way, i);
+
+                      //Запускаем поворот
+                      yield return mobViewModel.RotateModel(direction);
+                  }*/
                 //Определяем новые координаты моба
                 Vector2 position = way[i].Position;
                 if (i == 0)
@@ -153,6 +144,7 @@ namespace Game.GamePlay.Services
                     //TODO проверяем позицию Замка
                     position.x -= 0.25f;
                 }
+
                 //TODO если i = 0, то добавляем 0.25 по направлению
                 //TODO для IsFly при i = 1, а при i = 0 нет движения
                 roads.Add(position); //Список точек движения 
@@ -160,7 +152,7 @@ namespace Game.GamePlay.Services
 
                 //Запускаем движение
             }
-            
+
             yield return mobViewModel.MovingModel(roads);
             //TODO Моб дошел до замка
             yield return DamageToMob(mobViewModel); //Наносим урон мобу --- заменить на урон Замку
@@ -169,13 +161,19 @@ namespace Game.GamePlay.Services
 
         private IEnumerator StartNewWave(int numberWave)
         {
+            //   Debug.Log("1 TimeOutNewWave.Value = " + TimeOutNewWave.Value);
             yield return new WaitUntil(() => StartForced.CurrentValue); //Ждем когда разрешиться запуск волны
-            //Debug.Log(StartForced.CurrentValue);
-            GateWaveViewModel.ShowGateModel();
+            //   Debug.Log("2 TimeOutNewWave.Value = " + TimeOutNewWave.Value);
+            ShowGate.Value = true; //Показать ворота
+            //GateWaveViewModel.ShowGateModel();
             yield return _coroutines.StartCoroutine(GenerateMob(numberWave)); //Выводим мобов на дорогу
+            //  Debug.Log("3 TimeOutNewWave.Value = " + TimeOutNewWave.Value);
             yield return new WaitForSeconds(TimeEndWave); //Пауза между волнами
-            GateWaveViewModel.ShowInfoModel(); //Убрать ворота и Показать инфо модель
+//            Debug.Log("4 TimeOutNewWave.Value = " + TimeOutNewWave.Value);
+            ShowGate.Value = false; //Убрать ворота и Показать инфо модель
+            //GateWaveViewModel.ShowInfoModel(); 
             _gameplayState.CurrentWave.Value++;
+            //         Debug.Log("5 TimeOutNewWave.Value = " + TimeOutNewWave.Value);
         }
 
         private IEnumerator GenerateMob(int numberWave)
@@ -186,7 +184,8 @@ namespace Game.GamePlay.Services
                 {
                     yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //Пауза игры
                     CreateMobViewModel(entityMob);
-                    yield return new WaitForSeconds(SpeedGenerateMobs / GameSpeed.CurrentValue); //Задержка создания нового моба
+                    yield return
+                        new WaitForSeconds(SpeedGenerateMobs / GameSpeed.CurrentValue); //Задержка создания нового моба
                 }
             }
         }
@@ -196,13 +195,14 @@ namespace Game.GamePlay.Services
             TimeOutNewWave.Value = false;
             int timeWave = (GameSpeed.CurrentValue == 0) ? TimeNewWave : TimeNewWave / GameSpeed.CurrentValue;
             //Разбиваем цикл на доли, всего 5 секунд 
-            
+
             for (var i = 0; i < timeWave; i++) //Ускоряем при новой скорости
             {
                 while (_fsmGameplay.IsGamePause.Value)
                 {
                     yield return null;
                 }
+
                 //Debug.Log();
                 //yield return new WaitUntil(() => _fsmGameplay.IsGamePause.Value);
                 yield return new WaitForSeconds(0.1f);
@@ -223,7 +223,7 @@ namespace Game.GamePlay.Services
         {
             var lastPoint = _wayService.GetLastPoint(_gameplayState.Origin.Way);
             var exitPoint = _wayService.GetExitPoint(_gameplayState.Origin.Way);
-            
+
             Vector2 position = new Vector2((lastPoint.x + exitPoint.x) / 2f, (lastPoint.y + exitPoint.y) / 2f);
             var direction = exitPoint - lastPoint;
             //new Vector2Int(exitPoint.x - lastPoint.x, exitPoint.y - lastPoint.y);
@@ -240,7 +240,7 @@ namespace Game.GamePlay.Services
             };
         }
 
-        
+
         /**
          * Перемещаем главные ворота
          */
@@ -274,7 +274,7 @@ namespace Game.GamePlay.Services
             //TODO Загружаем параметры моба из настроек и передаем их в созданую модель
             var position = GateWaveViewModel.Position.Value;
             var direction = GateWaveViewModel.Direction.Value;
-            
+
             mobEntity.Position.Value = new Vector3(position.x, position.y);
             mobEntity.Direction.Value = direction;
             mobEntity.IsWay = true;
@@ -304,6 +304,13 @@ namespace Game.GamePlay.Services
         {
             AllMobsMap[mobViewModel.MobEntityId].Health.Value -= 1000;
             yield return null;
+        }
+
+        public void StartForcedNewWave()
+        {
+            _coroutines.StopCoroutine(TimerNewWave());
+            TimeOutNewWave.Value = false;
+            StartForced.Value = true;
         }
     }
 }

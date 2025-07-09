@@ -13,12 +13,13 @@ namespace Game.GamePlay.View.Waves
         public ReactiveProperty<Vector2> Position = new();
         public ReactiveProperty<Vector2Int> Direction = new();
 
-        public ReactiveProperty<bool> ShowInfo;
+        public ReactiveProperty<bool> ShowGate;
         public GateWaveViewModel(WaveService waveService)
         {
-            ShowInfo = new ReactiveProperty<bool>(true);
+            ShowGate = new ReactiveProperty<bool>(true);
             
             _waveService = waveService;
+            ShowGate = _waveService.ShowGate;
             _waveService.StartForced.Subscribe(newValue =>
             {
                 //TODO если true => ворота иначе инфо поле
@@ -30,12 +31,12 @@ namespace Game.GamePlay.View.Waves
 
         public void ShowGateModel()
         {
-            ShowInfo.Value = false;
+            ShowGate.Value = false;
         }
 
         public void ShowInfoModel()
         {
-            ShowInfo.Value = true;
+            ShowGate.Value = true;
         }
     }
 }

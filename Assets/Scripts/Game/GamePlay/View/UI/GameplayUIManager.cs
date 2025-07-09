@@ -6,6 +6,7 @@ using Game.GamePlay.Root;
 using Game.GamePlay.View.UI.PanelActions;
 using Game.GamePlay.View.UI.PanelBuild;
 using Game.GamePlay.View.UI.PanelConfirmation;
+using Game.GamePlay.View.UI.PanelGateWave;
 using Game.GamePlay.View.UI.PopupB;
 using Game.GamePlay.View.UI.PopupPause;
 using Game.GamePlay.View.UI.ScreenGameplay;
@@ -34,6 +35,7 @@ namespace Game.GamePlay.View.UI
             rootUI.AddPanel(new PanelBuildViewModel(container));
             rootUI.AddPanel(new PanelActionsViewModel(this, container));
             rootUI.AddPanel(new PanelConfirmationViewModel(this, container));
+            rootUI.AddPanel(new PanelGateWaveViewModel(this, container));
             
             //_gameState = gameStateProvider.GameState;
             _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>();

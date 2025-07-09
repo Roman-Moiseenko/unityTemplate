@@ -11,19 +11,9 @@ namespace Game.GamePlay.View.Waves
         {
             _viewModel = viewModel;
             
-            _viewModel.ShowInfo.Subscribe(show =>
+            _viewModel.ShowGate.Subscribe(show =>
             {
-                if (show)
-                {
-                    _gate.gameObject.SetActive(false);
-                    //TODO Показываем UI элемент
-                }
-                else
-                {
-                   // Debug.Log("Показываем ворота");
-                    _gate.gameObject.SetActive(true);
-                    //TODO Показываем ворота
-                }
+                _gate.gameObject.SetActive(show);
             });
             _viewModel.Position.Subscribe(newPosition =>
             {
@@ -37,10 +27,7 @@ namespace Game.GamePlay.View.Waves
                 _gate.gameObject.transform.localEulerAngles = new Vector3(0, 90f * newDirection.y + 180f * newDirection.x,0);
             });
 
-        }
-
-
-        
-        
+        }  
+ 
     }
 }

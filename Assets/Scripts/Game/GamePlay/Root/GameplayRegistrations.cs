@@ -2,6 +2,7 @@
 using System.Linq;
 using DI;
 using Game.Common;
+using Game.GamePlay.Classes;
 using Game.GamePlay.Commands;
 using Game.GamePlay.Commands.GroundCommands;
 using Game.GamePlay.Commands.MapCommand;
@@ -123,7 +124,7 @@ namespace Game.GamePlay.Root
             var damageService = new DamageService(Fsm, gameplayState, waveService, towersService);
             
             container.RegisterInstance(damageService);
-            
+            container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();
             //Загружаем уровень из настроек, если gameplayState пуст.
             if (gameplayState.Entities.Any() != true)
             {

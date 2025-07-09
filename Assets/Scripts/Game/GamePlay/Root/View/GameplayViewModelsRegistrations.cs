@@ -1,4 +1,5 @@
 ﻿using DI;
+using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
@@ -29,7 +30,8 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<FrameService>(),
                 c.Resolve<PlacementService>(),
                 c.Resolve<RoadsService>(),
-                c.Resolve<WaveService>()
+                c.Resolve<WaveService>(),
+                c.Resolve<GameplayCamera>()
             )).AsSingle();
             
         }

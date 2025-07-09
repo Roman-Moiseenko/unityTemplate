@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using DI;
+using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Services;
@@ -31,6 +32,8 @@ namespace Game.GamePlay.Root.View
         private readonly RoadsService _roadsService;
 
         private readonly WaveService _waveService;
+
+        private readonly GameplayCamera _cameraService;
         // private readonly DIContainer _container;
 
         //   public readonly IObservableCollection<RoadViewModel> AllRoads;
@@ -46,6 +49,8 @@ namespace Game.GamePlay.Root.View
         
         public ReactiveProperty<Vector2Int> CameraMove;
 
+        private bool _isFrameDownClick = false; //Отслеживаем что перетаскивать Фрейм ил Камеру
+        
         public WorldGameplayRootViewModel(
             //  RoadService roadsService,
             GroundsService groundsService,
@@ -55,7 +60,8 @@ namespace Game.GamePlay.Root.View
             FrameService frameService,
             PlacementService placementService,
             RoadsService roadsService,
-            WaveService waveService
+            WaveService waveService,
+            GameplayCamera cameraService
             //DIContainer container
         )
         {
@@ -63,6 +69,7 @@ namespace Game.GamePlay.Root.View
             _frameService = frameService;
             _roadsService = roadsService;
             _waveService = waveService;
+            _cameraService = cameraService;
             //_container = container;
 
             AllRoads = roadsService.AllRoads;
@@ -75,7 +82,7 @@ namespace Game.GamePlay.Root.View
             GateWaveViewModelSecond = waveService.GateWaveViewModelSecond;
             
             CameraMove = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));
-            
+            CameraMove.Subscribe(p => _cameraService.MoveCamera(p));
             //Изменение состояние Геймплея
             _fsmGameplay.Fsm.StateCurrent.Subscribe(newState =>
             {
@@ -161,16 +168,13 @@ namespace Game.GamePlay.Root.View
 
             _fsmGameplay.Fsm.Position.Subscribe(newPosition =>
             {
-//                Debug.Log("newPosition " + newPosition.x + " / " + newPosition.y);
                 if (_fsmGameplay.IsStateBuild())
                 {
-                    frameService.MoveFrame(newPosition);
-                    //Переносим объект
+                    frameService.MoveFrame(newPosition); //Переносим объект
                 }
-
                 if (_fsmGameplay.IsStateGaming())
                 {
-                    //Центрируем карту ??
+                    _cameraService.MoveCamera(Vector2Int.zero);   //Центрируем карту
                 }
             });
 /*
@@ -182,13 +186,9 @@ namespace Game.GamePlay.Root.View
             */
         }
 
-
-        public void ControlInput(Vector3Int position, string ConfigId)
+        public void ClickEntity(Vector2 mousePosition)
         {
-        }
-
-        public void ClickEntity(Vector2 position)
-        {
+            var position = _cameraService.GetWorldPoint(mousePosition);
             if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
             {
                 //TODO проверяем, чтоб показать Info()
@@ -222,40 +222,58 @@ namespace Game.GamePlay.Root.View
         }
 
         //Если при нажатии клавиши, под ним фрейм, то выделяем его и возвращаем true
-        public bool DownFrame(Vector2 position)
+        public void StartMoving(Vector2 mousePosition)
         {
+            var position = _cameraService.GetWorldPoint(mousePosition);
+                
             var vectorInt = new Vector2Int(
                 Mathf.FloorToInt(position.x + 0.5f),
                 Mathf.FloorToInt(position.y + 0.5f)
             );
-            var result = _frameService.IsPosition(vectorInt);
-            if (result) _frameService.SelectedFrame();
-            return result; //Нашли или нет Фрейм
+            _isFrameDownClick = _frameService.IsPosition(vectorInt);
+            if (_isFrameDownClick)
+            {
+                _frameService.SelectedFrame();
+            }
+            else
+            {
+                _cameraService.OnPointDown(mousePosition);
+            }
         }
-
-        public void UpFrame()
-        {
-       //    Отпустили фрейм 
-            _frameService.UnSelectedFrame();
-        }
-
-        public void MoveFrame(Vector2 position)
-        {
-            var vectorInt = new Vector2Int(
-                Mathf.FloorToInt(position.x + 0.5f),
-                Mathf.FloorToInt(position.y + 0.5f)
-            );
-            _frameService.MoveFrame(vectorInt);//Двигаем фрейм
-        }
-
-        public void UpdateWaves()
-        {
-            
-        }
-
+        
         public void StartNextWave()
         {
             _waveService.StartNextWave();
+        }
+
+        public void Update()
+        {
+            _cameraService?.UpdateMoving(); //Движение камеры
+            _cameraService?.AutoMoving();
+        }
+        
+        public void FinishMoving(Vector2 mousePosition)
+        {
+            if (_isFrameDownClick)
+            {
+                _frameService.UnSelectedFrame(); //Завершаем движение фрейма //    Отпустили фрейм 
+            }
+            else
+            {
+                _cameraService.OnPointUp(mousePosition);//Завершаем движение камеры
+            }
+        }
+
+        public void ProcessMoving(Vector2 mousePosition)
+        {
+            if (_isFrameDownClick) //Двигаем фрейм или показываем инфо 
+            {
+                ClickEntity(mousePosition);
+            }
+            else //Двигаем камеру
+            {
+                _cameraService.OnPointMove(mousePosition);
+            }
         }
     }
 }

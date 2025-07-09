@@ -42,7 +42,7 @@ namespace Game.GamePlay.Services
                     {
                         if (v)
                         {
-                            gameplayState.Progress.Value += 50;
+                            gameplayState.Progress.Value += 5;
                             waveService.AllMobsMap.Remove(e.Value.Key);
                         }
                     }

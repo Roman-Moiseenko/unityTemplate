@@ -1,5 +1,6 @@
 ﻿using DI;
 using Game.Common;
+using Game.GamePlay.Classes;
 using Game.GamePlay.Root.View;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
@@ -23,7 +24,9 @@ namespace Game.GamePlay.Root
         
         public Observable<GameplayExitParams> Run(DIContainer gameplayContainer, GameplayEnterParams enterParams)
         {
-            
+            //Регистрируем событие движение камеры
+            var positionGameplayCamera = new Subject<Unit>();
+            gameplayContainer.RegisterInstance(AppConstants.CAMERA_MOVING, positionGameplayCamera);
 //            Debug.Log("enterParams " + JsonConvert.SerializeObject(enterParams, Formatting.Indented));
             GameplayRegistrations.Register(gameplayContainer, enterParams); //Регистрируем все сервисы сцены
             

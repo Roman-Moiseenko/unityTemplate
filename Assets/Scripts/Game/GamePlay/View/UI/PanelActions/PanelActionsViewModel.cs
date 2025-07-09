@@ -18,10 +18,10 @@ namespace Game.GamePlay.View.UI.PanelActions
         public override string Id => "PanelActions";
         public override string Path => "Gameplay/";
         
-        public readonly int CurrentSpeed;
         public readonly GameplayUIManager _uiManager;
         private readonly DIContainer _container;
-
+        
+        public readonly ReactiveProperty<int> CurrentSpeed;
         private readonly GameplayStateProxy _gameplayStateProxy;
         
         //Для теста
@@ -36,12 +36,12 @@ namespace Game.GamePlay.View.UI.PanelActions
 
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             _fsmGameplay = container.Resolve<FsmGameplay>();
-            CurrentSpeed = _gameplayStateProxy.GetCurrentSpeed();
+            CurrentSpeed = _gameplayStateProxy.GameSpeed;
             
         }
-        public int RequestGameSpeed()
+        public void RequestGameSpeed()
         {
-            return _gameplayStateProxy.SetNextSpeed();
+            _gameplayStateProxy.SetNextSpeed();
         }
 
         public void RequestToProgressAdd()
@@ -49,21 +49,6 @@ namespace Game.GamePlay.View.UI.PanelActions
             var cmd = _container.Resolve<ICommandProcessor>();
             var command = new CommandRewardKillMob(25, 1);
             cmd.Process(command);
-            //_gameplayStateProxy.Progress.Value += 50;
-
-            //_fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
-        }
-
-        public void RequestToSoftCurrencyAdd()
-        {
-            //_gameplayStateProxy.
-            
-        //    _gameplayStateProxy.SoftCurrency.Value += 50;
-        }
-
-        public void RequestToHardCurrencyAdd()
-        {
-            //_resourcesService.AddResource(ResourceType.HardCurrency, 50);
         }
     }
 }

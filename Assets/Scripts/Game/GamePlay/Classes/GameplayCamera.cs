@@ -1,4 +1,7 @@
-﻿using Game.GamePlay.Controllers;
+﻿using DI;
+using Game.Common;
+using Game.GamePlay.Controllers;
+using R3;
 using UnityEngine;
 
 namespace Game.GamePlay.Classes
@@ -25,11 +28,15 @@ namespace Game.GamePlay.Classes
         private Vector3 _targetAutoMoving;
         
         private readonly RectBorder _border;//, _cameraBorder;
+        private readonly Subject<Unit> _subjectCameraMoving;
         
-        public GameplayCamera(Camera _camera, Transform cameraSystem)
+        
+        public GameplayCamera(DIContainer container)
         {
-            Camera = _camera;
-            CameraSystem = cameraSystem;
+            _subjectCameraMoving = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
+            CameraSystem = GameObject.Find("CameraSystem").GetComponent<Transform>();
+            Camera = GameObject.Find("Main Camera").GetComponent<Camera>();
+
             int _centreX = 0; //Размеры игрового мира
             int _centreY = 0;
             int width = 8;
@@ -40,6 +47,7 @@ namespace Game.GamePlay.Classes
             float _newPosX = Mathf.Clamp(_centreX, _border.BottomX, _border.TopX);
             float _newPosY = Mathf.Clamp(_centreY, _border.BottomY, _border.TopY);
             CameraSystem.transform.position = new Vector3(_newPosX, CameraSystem.transform.position.y, _newPosY);
+            _subjectCameraMoving.OnNext(Unit.Default);
         }
         
         public void OnPointDown(Vector2 mousePosition)
@@ -49,23 +57,18 @@ namespace Game.GamePlay.Classes
             _tempMousePos = mousePosition;
             _isDragging = true;
             _isMoving = true;
-          //  Debug.Log("OnPointDown");
         }
 
         public void OnPointMove(Vector2 mousePosition)
         {
             if (_isDragging)
             {
-                //Debug.Log("_isDragging");
-
                 Vector2 point = GetWorldPoint(mousePosition);
                 float sqrDst = (_tempCenter - point).sqrMagnitude;
                 if (sqrDst > SensTouch)
                 {
-                    //targetDirection = mousePosition.normalized;
                     if (_tempMousePos != mousePosition)
                     {
-                      //  var _targetDirection = (_tempMousePos - mousePosition).normalized;
                         _targetDirection = RotateTarget((_tempMousePos - mousePosition).normalized);
                     }
                     _tempMousePos = mousePosition;
@@ -75,7 +78,6 @@ namespace Game.GamePlay.Classes
 
         private Vector2 RotateTarget(Vector2 vector)
         {
-            
             var angel = 135;
             var Sn = Mathf.Sin(angel * Mathf.PI / 180);
             var Cn = Mathf.Cos(angel * Mathf.PI / 180);
@@ -91,11 +93,6 @@ namespace Game.GamePlay.Classes
             Vector2 point = GetWorldPoint(mousePosition);
             float sqrDst = (_tempCenter - point).sqrMagnitude;
             if (sqrDst <= SensTouch) _isMoving = false;
-        }
-
-        public bool Is_Moving()
-        {
-            return _isDragging;
         }
         
         public void UpdateMoving()
@@ -118,12 +115,12 @@ namespace Game.GamePlay.Classes
             newPosition.z = Mathf.Clamp(newPosition.z, _border.BottomY, _border.TopY);
             
             CameraSystem.transform.position = Vector3.Lerp(CameraSystem.transform.position, newPosition, speed);
+            _subjectCameraMoving.OnNext(Unit.Default); //Камера сдвинулась, оповещаем
         }
         
         public Vector2 GetWorldPoint(Vector2 mousePosition)
         {
             var ray  = Camera.main.ScreenPointToRay(new Vector3(mousePosition.x, mousePosition.y,0));
-            
             Vector3 normal = Vector3.up;
             Vector3 position = Vector3.zero;
             Plane plane = new Plane(normal, position);
@@ -138,11 +135,10 @@ namespace Game.GamePlay.Classes
 
         public void AutoMoving()
         {
-//            Debug.Log("1");
-
             if (!_autoMoving) return;
-//            Debug.Log("2");
+         
             CameraSystem.transform.position = Vector3.SmoothDamp(CameraSystem.transform.position, _targetAutoMoving, ref _velocity, smoothTime, speed );
+            _subjectCameraMoving.OnNext(Unit.Default); //Камера сдвинулась, оповещаем
             if (_velocity.magnitude < 0.0005)
             {
                 _autoMoving = false;
