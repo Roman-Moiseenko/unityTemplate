@@ -17,6 +17,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         [SerializeField] private TMP_Text _textProgress;
         [SerializeField] private TMP_Text _textMoney;
         [SerializeField] private TMP_Text _textCrystal;
+        [SerializeField] private TMP_Text _textWave;
         
         private void Start()
         {
@@ -26,6 +27,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             });
             ViewModel.SoftCurrency.Subscribe(newValue => _textMoney.text = $"Money: {newValue}");
             ViewModel.HardCurrency.Subscribe(newValue => _textCrystal.text = $"Money: {newValue}");
+            ViewModel.WaveText.Subscribe(newValue => _textWave.text = newValue);
         }
 
         private void OnEnable()

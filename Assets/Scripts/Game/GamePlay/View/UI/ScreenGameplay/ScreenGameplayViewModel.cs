@@ -21,13 +21,13 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         //TODO Возможно удалить
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
         private readonly GameplayStateProxy _gameplayState;
-        
+        private WaveService _waveService;
         
         //TODO Данные для Binder, возможно заменить в дальнейшем прогрузкой анимации и др.
         public readonly ReactiveProperty<int> ProgressData = new();
         public readonly ReactiveProperty<int> SoftCurrency = new();
         public readonly ReactiveProperty<int> HardCurrency = new();
-        
+        public readonly ReactiveProperty<string> WaveText = new();
    
         public override string Id => "ScreenGameplay";
         public override string Path => "Gameplay/";
@@ -41,6 +41,12 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _uiManager = uiManager;
             _exitSceneRequest = exitSceneRequest;
             _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            _gameplayState.CurrentWave.Subscribe(n =>
+            {
+                WaveText.Value = n + "/" + _gameplayState.Waves.Count;
+            });
+            _waveService = container.Resolve<WaveService>();
+            //_waveService.
             //_gameplayState = container.Resolve<IGameStateProvider>().GameState;
             _gameplayState.Progress.Subscribe(newValue => ProgressData.Value = newValue);
             _gameplayState.SoftCurrency.Subscribe(newValue => SoftCurrency.Value = newValue);
