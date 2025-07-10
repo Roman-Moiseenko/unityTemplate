@@ -33,7 +33,7 @@ namespace Game.GamePlay.Commands.MapCommand
 
         public bool Handle(CommandCreateLevel command)
         {
-            if (_gameplayState.Entities.Any())
+            if (_gameplayState.Towers.Any())
             {
                 Debug.Log($"Map id={command.MapId} already exist");
                 return false;
@@ -135,12 +135,9 @@ namespace Game.GamePlay.Commands.MapCommand
                             IsFly = waveItem.Mob.IsFly,
                             RewardCurrency = waveItem.Mob.RewardCurrency,
                         };
-
-
                         initialWave.Mobs.Add(mob);
                     }
                 }
-
                 _gameplayState.Waves.Add(index, new WaveEntity(initialWave));
             }
 
@@ -173,7 +170,8 @@ namespace Game.GamePlay.Commands.MapCommand
                     Position = towerSettings.Position,
                     Level = 1,
                 };
-                _gameplayState.Entities.Add(EntitiesFactory.CreateEntity(initialTower));
+                //TODO Загружаем параметры 
+                _gameplayState.Towers.Add(new TowerEntity(initialTower));
             }
 
 

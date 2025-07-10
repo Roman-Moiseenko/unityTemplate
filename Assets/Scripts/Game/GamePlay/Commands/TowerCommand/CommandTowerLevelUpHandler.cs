@@ -25,7 +25,7 @@ namespace Game.GamePlay.Commands.TowerCommand
 
         private void ApplyLevelUpTower(string configIdTower)
         {
-            foreach (var entity in _gameplayState.Entities)
+            foreach (var entity in _gameplayState.Towers)
             {
                 if (entity is TowerEntity towerEntity && towerEntity.ConfigId == configIdTower)
                 {

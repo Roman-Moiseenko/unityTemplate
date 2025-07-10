@@ -8,6 +8,7 @@ using Game.State.Maps;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
+using Game.State.Maps.Towers;
 using Game.State.Maps.Waves;
 using Game.State.Root;
 using Newtonsoft.Json;
@@ -61,7 +62,7 @@ namespace Game.State
             //Заполняем карты по умолчанию, и другие бонусы
             _gameplayStateOrigin = new GameplayState
             {
-                Entities = new List<EntityData>(),
+                Towers = new List<TowerEntityData>(),
                 SoftCurrency = 0,
                 Progress = 0,
                 ProgressLevel = 0,

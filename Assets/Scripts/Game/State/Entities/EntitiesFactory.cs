@@ -17,9 +17,6 @@ namespace Game.State.Entities
                     return new BuildingEntity(entityData as BuildingEntityData);
                 case EntityType.Resource:
                     return new ResourcesEntity(entityData as ResourcesEntityData);
-                case EntityType.Tower:
-                    return new TowerEntity(entityData as TowerEntityData);
-
                 case EntityType.Base:
             //        return new BaseEntity(entityData as BaseEntityData);
                 default:

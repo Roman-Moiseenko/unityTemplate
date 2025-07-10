@@ -16,6 +16,7 @@ namespace Game.Settings.Gameplay.Entities.Tower
         [field: SerializeField] public string DescriptionLid { get; private set; }
         [field: SerializeField] public string PrefabPath { get; private set; }
         [field: SerializeField] public bool OnRoad { get; private set; }
+        [field: SerializeField] public bool MultiShot { get; private set; } //Массовый урон всем в области действия
          [field: SerializeField] public TowerTypeEnemy TypeEnemy { get; private set; }       
         //  [field: SerializeField] public string PrefabName { get; private set; }
         [field: SerializeField] public List<TowerLevelSettings> GameplayLevels { get; private set; }

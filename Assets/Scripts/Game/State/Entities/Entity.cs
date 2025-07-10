@@ -23,8 +23,6 @@ namespace Game.State.Entities
             Level.Subscribe(newLevel =>
             {
                 entityData.Level = newLevel;
-//                Debug.Log($"Объекта { entityData.ConfigId } изменился уровень на { newLevel }");
-                
             }); //При изменении позиции Position.Value меняем в данных
         }
     }

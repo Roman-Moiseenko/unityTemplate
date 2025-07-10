@@ -7,6 +7,7 @@
         public const string CAMERA_MOVING = nameof(CAMERA_MOVING);
 
         public const int TIME_WAVE_NEW = 50;
+        public const float MOB_BASE_SPEED = 0.5f;
         
         public const string MAIN_MENU_SHOP = nameof(MAIN_MENU_SHOP);
         public const string MAIN_MENU_INVENTORY = nameof(MAIN_MENU_INVENTORY);

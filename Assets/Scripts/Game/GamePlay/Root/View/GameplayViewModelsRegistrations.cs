@@ -31,7 +31,8 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<PlacementService>(),
                 c.Resolve<RoadsService>(),
                 c.Resolve<WaveService>(),
-                c.Resolve<GameplayCamera>()
+                c.Resolve<GameplayCamera>(),
+                c.Resolve<DamageService>()
             )).AsSingle();
             
         }

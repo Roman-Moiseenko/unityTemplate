@@ -17,7 +17,7 @@ namespace Game.GamePlay.Services
 {
     public class TowersService
     {
-        private readonly IObservableCollection<Entity> _entities; //кешируем
+        private readonly IObservableCollection<TowerEntity> _towerEntities; //кешируем
         private readonly List<TowerCardData> _baseTowerCards; //
         private readonly ICommandProcessor _cmd;
         private readonly PlacementService _placementService;
@@ -33,11 +33,11 @@ namespace Game.GamePlay.Services
 
 
         /**
-         * При загрузке создаем все view-модели из реактивного списка всех строений
+         * При загрузке создаем все view-модели из реактивного списка всех строений.
          * Подписываемся на событие добавления в массив Proxy сущностей
         */
         public TowersService(
-            IObservableCollection<Entity> entities,
+            IObservableCollection<TowerEntity> towerEntities,
             TowersSettings towersSettings,
             List<TowerCardData> baseTowerCards, //Базовые настройки колоды
             ICommandProcessor cmd,
@@ -45,12 +45,12 @@ namespace Game.GamePlay.Services
         )
         {
             //Debug.Log("Входные данные для башен " + JsonConvert.SerializeObject(baseTowerCards, Formatting.Indented));
-            _entities = entities;
+            _towerEntities = towerEntities;
             _baseTowerCards = baseTowerCards;
             _cmd = cmd;
             _placementService = placementService;
 
-            //Кешируем настройки зданий / обектов
+            //Кешируем настройки зданий / объектов
             
             foreach (var towerSettings in towersSettings.AllTowers)
             {
@@ -58,30 +58,20 @@ namespace Game.GamePlay.Services
                 Levels[towerSettings.ConfigId] = 1;
             }
 
-            foreach (var entity in entities)
+            foreach (var towerEntity in towerEntities)
             {
-                if (entity is TowerEntity towerEntity)
-                {
-                   // Debug.Log(towerEntity.ConfigId + " " + towerEntity.Level.CurrentValue);
-                    Levels[towerEntity.ConfigId] = towerEntity.Level.CurrentValue;
-                    CreateTowerViewModel(towerEntity);
-                }
+                Levels[towerEntity.ConfigId] = towerEntity.Level.CurrentValue;
+                CreateTowerViewModel(towerEntity);
             }
 
             //Подписка на добавление новых view-моделей текущего класса
-            entities.ObserveAdd().Subscribe(e =>
+            towerEntities.ObserveAdd().Subscribe(e =>
             {
-                if (e.Value is TowerEntity towerEntity)
-                {
-                    towerEntity.Level.Value = Levels[towerEntity.ConfigId]; //Устанавливаем уровень апгрейда
-                    CreateTowerViewModel(towerEntity); //Создаем View Model
-                }
+                    e.Value.Level.Value = Levels[e.Value.ConfigId]; //Устанавливаем уровень апгрейда
+                    CreateTowerViewModel(e.Value); //Создаем View Model
             });
             //Если у сущности изменился уровень, меняем его и во вью-модели
-            entities.ObserveRemove().Subscribe(e =>
-            {
-                if (e.Value is TowerEntity towerEntity) RemoveTowerViewModel(towerEntity);
-            });
+            towerEntities.ObserveRemove().Subscribe(e => RemoveTowerViewModel(e.Value));
 
             Levels.ObserveChanged().Subscribe(x =>
             {
@@ -89,34 +79,22 @@ namespace Game.GamePlay.Services
                 var newLevel = x.NewItem.Value;
                 var towerCardBaseSetting = baseTowerCards.FirstOrDefault(card => card.ConfigId == configId);
                 var levelSettings = _towerSettingsMap[configId].FirstOrDefault(l => l.Level == newLevel);
-
-                foreach (var settingsParameter in levelSettings.Parameters)
-                {
-                    //TODO находим в towerCardBaseSetting settingsParameter и меняем параметр в %%
-                }
                 
-                foreach (var entity in _entities)
+                foreach (var towerEntity in _towerEntities)
                 {
-                    if (entity is TowerEntity towerEntity && towerEntity.ConfigId == x.NewItem.Key)
+                    if (towerEntity.ConfigId != configId) continue;
+                    foreach (var settingsParameter in levelSettings.Parameters)
                     {
-                        //Debug.Log("Текущая башня = " + JsonConvert.SerializeObject(towerEntity, Formatting.Indented));
-
-                        RemoveTowerViewModel(towerEntity); //Удаляем все модели viewModel.ConfigId == x.NewItem.Key
-                        //Debug.Log("Пересоздаем башни = " + JsonConvert.SerializeObject(towerEntity, Formatting.Indented));
-                        CreateTowerViewModel(towerEntity); //Создаем модели Заново
+                        if (towerEntity.Parameters.TryGetValue(settingsParameter.ParameterType, out var parameter))
+                        {
+                            parameter.Value.Value *= 1 + settingsParameter.Value / 100;
+                        }
+                        //находим в towerCardBaseSetting settingsParameter и меняем параметр в %%
                     }
+                    RemoveTowerViewModel(towerEntity); //Удаляем все модели viewModel.ConfigId == x.NewItem.Key
+                    CreateTowerViewModel(towerEntity); //Создаем модели Заново
                 }
             });
-/*
-            _allTowers.ObserveAdd().Subscribe(e =>
-            {
-                Debug.Log("Добавлена башня в _allTowers = " + e.Value.ConfigId);
-            });
-            AllTowers.ObserveAdd().Subscribe(e =>
-            {
-                Debug.Log("Добавлена башня в AllTowers = " + e.Value.ConfigId);
-            });
-*/
         }
 
 
@@ -152,7 +130,7 @@ namespace Game.GamePlay.Services
             if (towerCardBaseSetting == null) throw new Exception("Не найден параметр в настройках");
             foreach (var keyValue in towerCardBaseSetting.Parameters)
             {
-                towerEntity.Parameters.TryAdd(keyValue.Key, new TowerParameter(keyValue.Value));
+                towerEntity.Parameters.Add(keyValue.Key, new TowerParameter(keyValue.Value));
             }
             var towerViewModel = new TowerViewModel(towerEntity, _towerSettingsMap[towerEntity.ConfigId], this); //3
             _allTowers.Add(towerViewModel); //4

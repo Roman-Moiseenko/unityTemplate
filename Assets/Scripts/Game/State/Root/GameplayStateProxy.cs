@@ -4,6 +4,7 @@ using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
+using Game.State.Maps.Towers;
 using Game.State.Maps.Waves;
 using Newtonsoft.Json;
 using ObservableCollections;
@@ -27,7 +28,7 @@ namespace Game.State.Root
 
         public int PreviousGameSpeed => Origin.PreviousGameSpeed;
         
-        public ObservableList<Entity> Entities { get; } = new();
+        public ObservableList<TowerEntity> Towers { get; } = new();
         public ObservableList<GroundEntity> Grounds { get; } = new();
 
         public ObservableList<RoadEntity> Way { get; } = new();
@@ -77,15 +78,15 @@ namespace Game.State.Root
             });
             
             
-            gameplayState.Entities.ForEach(
-                entityOriginal => Entities.Add(EntitiesFactory.CreateEntity(entityOriginal))
+            gameplayState.Towers.ForEach(
+                towerOriginal => Towers.Add(new TowerEntity(towerOriginal))
             );
-            Entities.ObserveAdd().Subscribe(e => gameplayState.Entities.Add(e.Value.Origin));
+            Towers.ObserveAdd().Subscribe(e => gameplayState.Towers.Add(e.Value.Origin));
 
-            Entities.ObserveRemove().Subscribe(e =>
+            Towers.ObserveRemove().Subscribe(e =>
             {
-                var removedMapState = gameplayState.Entities.FirstOrDefault(b => b.UniqueId == e.Value.UniqueId);
-                gameplayState.Entities.Remove(removedMapState);
+                var removedMapState = gameplayState.Towers.FirstOrDefault(b => b.UniqueId == e.Value.UniqueId);
+                gameplayState.Towers.Remove(removedMapState);
             });
             
             

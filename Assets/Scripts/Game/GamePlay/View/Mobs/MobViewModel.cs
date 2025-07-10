@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Game.Common;
 using Game.GamePlay.Services;
 using Game.State.Maps.Mobs;
 using ObservableCollections;
@@ -10,8 +11,6 @@ namespace Game.GamePlay.View.Mobs
 {
     public class MobViewModel
     {
-        private readonly float _baseSpeed = 0.5f;
-
         private MobEntity _mobEntity;
         private int _currentIndexListPoint = 0;
         private Vector2 _targetPosition;
@@ -24,7 +23,7 @@ namespace Game.GamePlay.View.Mobs
         public ReactiveProperty<Vector2> Position => _mobEntity.Position;
         public ReactiveProperty<Vector2Int> Direction => _mobEntity.Direction;
         public readonly ReactiveProperty<int> GameSpeed;
-        public ReactiveProperty<float> MobSpeed = new ReactiveProperty<float>(1.0f); //TODO Перенести в моб энтиити
+        public ReactiveProperty<float> MobSpeed = new(1.0f); //TODO Перенести в моб энтиити
         public Vector2 StartPosition;
         public Vector2Int StartDirection;
         public List<Vector2> RoadPoints = new();
@@ -86,7 +85,7 @@ namespace Game.GamePlay.View.Mobs
                     _targetPosition = GetTargetPosition();
                 }
                 
-                var speedMob = GameSpeed.CurrentValue * _baseSpeed * MobSpeed.CurrentValue;
+                var speedMob = GameSpeed.CurrentValue * AppConstants.MOB_BASE_SPEED * MobSpeed.CurrentValue;
                 Position.Value = Vector3.MoveTowards(Position.CurrentValue, _targetPosition,  Time.deltaTime * speedMob);
             }
             yield return null;

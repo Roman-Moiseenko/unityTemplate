@@ -200,11 +200,11 @@ namespace Game.GamePlay.Services
 
             for (var i = 0; i < timeWave; i++) //Ускоряем при новой скорости
             {
-                while (_fsmGameplay.IsGamePause.Value)
+                /*while (_fsmGameplay.IsGamePause.Value)
                 {
                     yield return null;
-                }
-                //yield return new WaitUntil(() => _fsmGameplay.IsGamePause.Value);
+                } */
+                yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value);
                 TimeOutNewWaveValue.Value = Convert.ToSingle(i) / timeWave;
                 yield return new WaitForSeconds(0.05f);
                 

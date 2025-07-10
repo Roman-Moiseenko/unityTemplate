@@ -34,6 +34,8 @@ namespace Game.GamePlay.Root.View
         private readonly WaveService _waveService;
 
         private readonly GameplayCamera _cameraService;
+
+        private readonly DamageService _damageService;
         // private readonly DIContainer _container;
 
         //   public readonly IObservableCollection<RoadViewModel> AllRoads;
@@ -61,7 +63,8 @@ namespace Game.GamePlay.Root.View
             PlacementService placementService,
             RoadsService roadsService,
             WaveService waveService,
-            GameplayCamera cameraService
+            GameplayCamera cameraService,
+            DamageService damageService
             //DIContainer container
         )
         {
@@ -70,6 +73,7 @@ namespace Game.GamePlay.Root.View
             _roadsService = roadsService;
             _waveService = waveService;
             _cameraService = cameraService;
+            _damageService = damageService;
             //_container = container;
 
             AllRoads = roadsService.AllRoads;
@@ -241,15 +245,17 @@ namespace Game.GamePlay.Root.View
             }
         }
         
-        public void StartNextWave()
+        public void StartGameplayServices()
         {
             _waveService.StartNextWave();
+            
         }
 
         public void Update()
         {
             _cameraService?.UpdateMoving(); //Движение камеры
             _cameraService?.AutoMoving();
+            _damageService.Update();
         }
         
         public void FinishMoving(Vector2 mousePosition)

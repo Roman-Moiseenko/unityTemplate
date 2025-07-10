@@ -29,7 +29,7 @@ namespace Game.GamePlay.Commands
                 Type = EntityType.Tower,
             };
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
-            _gameplayState.Entities.Add(newTower);//Добавляем в список объектов карты
+            _gameplayState.Towers.Add(newTower);//Добавляем в список объектов карты
             return true;
         }
     }

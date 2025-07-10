@@ -15,7 +15,7 @@ namespace Game.GamePlay.Commands.TowerCommand
         }
         public bool Handle(CommandMoveTower command)
         {
-            foreach (var entity in _gameplayState.Entities)
+            foreach (var entity in _gameplayState.Towers)
             {
                 if (entity  is TowerEntity towerEntity && towerEntity.UniqueId == command.UniqueId)
                 {

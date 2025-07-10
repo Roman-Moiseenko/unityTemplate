@@ -17,11 +17,11 @@ namespace Game.GamePlay.Commands.TowerCommand
         
         public bool Handle(CommandDeleteTower command)
         {
-            foreach (var entity in _gameplayState.Entities)
+            foreach (var entity in _gameplayState.Towers)
             {
                 if (entity  is TowerEntity towerEntity && towerEntity.UniqueId == command.UniqueId)
                 {
-                    _gameplayState.Entities.Remove(towerEntity);
+                    _gameplayState.Towers.Remove(towerEntity);
                     return true;
                 }
             }

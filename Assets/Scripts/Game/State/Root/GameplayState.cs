@@ -3,6 +3,7 @@ using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
+using Game.State.Maps.Towers;
 using Game.State.Maps.Waves;
 
 namespace Game.State.Root
@@ -29,7 +30,7 @@ namespace Game.State.Root
         public CastleEntityData CastleData { get; set; } 
         
         public int Id { get; set; }
-        public List<EntityData> Entities;  //Либо разделить на Tower и Ground 
+        public List<TowerEntityData> Towers;  //Либо разделить на Tower и Ground 
 
         public List<GroundEntityData> Grounds;
         

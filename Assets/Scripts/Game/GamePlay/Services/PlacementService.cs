@@ -45,7 +45,7 @@ namespace Game.GamePlay.Services
             result = false;
 
             //Проверяем башни
-            foreach (var entityData in _gameplayState.Entities)
+            foreach (var entityData in _gameplayState.Towers)
             {
                 //На другой башне
                 if (entityData is TowerEntity towerEntity && towerEntity.UniqueId != TowerId)
@@ -111,7 +111,7 @@ namespace Game.GamePlay.Services
             }
 
             //На башне
-            foreach (var groundEntity in _gameplayState.Entities)
+            foreach (var groundEntity in _gameplayState.Towers)
             {
                 foreach (var road in roads)
                 {

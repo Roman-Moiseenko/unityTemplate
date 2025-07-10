@@ -109,7 +109,7 @@ namespace Game.GamePlay.Root.View
             CreateGateWave(_viewModel.GateWaveViewModelSecond);
 
             //Запускаем следующую волну
-            _viewModel.StartNextWave();
+            _viewModel.StartGameplayServices();
         }
 
         private void OnDestroy()
@@ -287,6 +287,7 @@ namespace Game.GamePlay.Root.View
 
         private void Update()
         {
+            
             //TODO Добавить обработку Input.GetTouch(0)
             if (!EventSystem.current.IsPointerOverGameObject())
             {

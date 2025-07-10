@@ -95,7 +95,7 @@ namespace Game.GamePlay.Root
 
             //Сервис башен
             var towersService = new TowersService(
-                gameplayState.Entities,
+                gameplayState.Towers,
                 gameSettings.TowersSettings,
                 gameplayEnterParams.Towers,
                 cmd,
@@ -120,13 +120,16 @@ namespace Game.GamePlay.Root
 
             container.RegisterFactory(_ => new GameplayService(subjectExitParams, container))
                 .AsSingle(); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
-
-            var damageService = new DamageService(Fsm, gameplayState, waveService, towersService);
+            //Сервис создания выстрелов
+            var shotService = new ShotService(gameplayState);
+            container.RegisterInstance(shotService);
+            
+            var damageService = new DamageService(Fsm, gameplayState, gameSettings.TowersSettings, waveService, towersService, shotService);
             
             container.RegisterInstance(damageService);
             container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();
             //Загружаем уровень из настроек, если gameplayState пуст.
-            if (gameplayState.Entities.Any() != true)
+            if (gameplayState.Towers.Any() != true)
             {
                 var command = new CommandCreateLevel(gameplayEnterParams.MapId);
                 var success = cmd.Process(command);
