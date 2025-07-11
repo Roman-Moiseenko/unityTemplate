@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.GamePlay.Commands.TowerCommand;
 using Game.Settings;
 using Game.State.Entities;
 using Game.State.Maps;
@@ -24,11 +25,13 @@ namespace Game.GamePlay.Commands.MapCommand
     {
         private readonly GameSettings _gameSettings;
         private readonly GameplayStateProxy _gameplayState;
+        private readonly ICommandProcessor _cmd;
 
-        public CommandCreateLevelHandler(GameSettings gameSettings, GameplayStateProxy gameplayState)
+        public CommandCreateLevelHandler(GameSettings gameSettings, GameplayStateProxy gameplayState, ICommandProcessor cmd)
         {
             _gameSettings = gameSettings;
             _gameplayState = gameplayState;
+            _cmd = cmd;
         }
 
         public bool Handle(CommandCreateLevel command)
@@ -39,6 +42,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 return false;
             }
 
+            //TODO Заменить все создания объектов через Команды
             /* var isMapAlreadyExisted = _gameState.Maps.Any(m => m.Id == command.MapId);
              if (isMapAlreadyExisted) //Если карта была создана, то ошибка
              {
@@ -158,22 +162,12 @@ namespace Game.GamePlay.Commands.MapCommand
                 Level = 0,
             };
             _gameplayState.Castle.Value = new CastleEntity(castle);
-
-            foreach (var towerSettings in
-                     newMapInitialStateSettings.Towers) //Берем список зданий из настроек карты (конфиг)
+            
+            foreach (var towerSettings in newMapInitialStateSettings.Towers) //Берем список зданий из настроек карты (конфиг)
             {
-                var initialTower = new TowerEntityData // .. и создаем все здания
-                {
-                    UniqueId = _gameplayState.CreateEntityID(),
-                    ConfigId = towerSettings.ConfigId,
-                    Type = EntityType.Tower,
-                    Position = towerSettings.Position,
-                    Level = 1,
-                };
-                //TODO Загружаем параметры 
-                _gameplayState.Towers.Add(new TowerEntity(initialTower));
+                var commandTower = new CommandPlaceTower(towerSettings.ConfigId, towerSettings.Position);
+                _cmd.Process(commandTower);
             }
-
 
             _gameplayState.CurrentWave.Value = 0;
             return true;

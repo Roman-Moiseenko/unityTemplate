@@ -10,6 +10,7 @@ using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
+using Game.GamePlay.View.Shots;
 using Game.GamePlay.View.Towers;
 using Game.GamePlay.View.Waves;
 using Newtonsoft.Json;
@@ -34,6 +35,7 @@ namespace Game.GamePlay.Root.View
         private FrameBlockBinder _frameBlockBinder;
         private readonly Dictionary<int, RoadBinder> _createdRoadsMap = new();
         private readonly Dictionary<int, MobBinder> _createMobsMap = new();
+        private readonly Dictionary<int, ShotBinder> _createShotsMap = new();
         private readonly List<GateWaveBinder> _createGateMap = new();
         private CastleBinder _castleBinder;
         private readonly CompositeDisposable _disposables = new();
@@ -63,10 +65,18 @@ namespace Game.GamePlay.Root.View
             foreach (var towerViewModel in viewModel.AllTowers)
                 CreateTower(towerViewModel);
             _disposables.Add(
-                viewModel.AllTowers.ObserveAdd().Subscribe(e => { CreateTower(e.Value); })
+                viewModel.AllTowers.ObserveAdd().Subscribe(e =>
+                {
+                    Debug.Log("Башня добавилась в список " + e.Value.ConfigId + e.Value.TowerEntityId);
+                    CreateTower(e.Value);
+                })
             );
             _disposables.Remove(
-                viewModel.AllTowers.ObserveRemove().Subscribe(e => DestroyTower(e.Value))
+                viewModel.AllTowers.ObserveRemove().Subscribe(e =>
+                {
+                    Debug.Log("Башня удалилась из списка " + e.Value.ConfigId + e.Value.TowerEntityId);
+                    DestroyTower(e.Value);
+                })
             );
             //Мобы
             foreach (var mobViewModel in viewModel.AllMobs)
@@ -78,6 +88,16 @@ namespace Game.GamePlay.Root.View
                 viewModel.AllMobs.ObserveRemove().Subscribe(e => DestroyMob(e.Value))
             );
 
+            //Выстрелы
+            foreach (var shotViewModel in viewModel.AllShots)
+                CreateShot(shotViewModel);
+            _disposables.Add(
+                viewModel.AllShots.ObserveAdd().Subscribe(e => CreateShot(e.Value))
+                );
+            _disposables.Remove(
+                viewModel.AllShots.ObserveRemove().Subscribe(e => DestroyShot(e.Value))
+                );
+            
             //Замок
             CreateCastle(viewModel.CastleViewModel);
             //Дорога
@@ -122,6 +142,17 @@ namespace Game.GamePlay.Root.View
             _disposables.Dispose();
             _createGateMap.ForEach(item => Destroy(item.gameObject));
         }
+        
+        private void CreateShot(ShotViewModel shotViewModel)
+        {
+//            Debug.Log("Создаем 3д модель выстрела " + shotViewModel.ConfigId);
+           
+            var prefabPath = $"Prefabs/Gameplay/Shots/{shotViewModel.ConfigId}"; //Перенести в настройки уровня
+            var shotPrefab = Resources.Load<ShotBinder>(prefabPath);
+            var createdShot = Instantiate(shotPrefab, transform);
+            createdShot.Bind(shotViewModel);
+            _createShotsMap[shotViewModel.ShotEntityId] = createdShot;
+        }
 
         private void CreateGateWave(GateWaveViewModel viewModel)
         {
@@ -140,7 +171,6 @@ namespace Game.GamePlay.Root.View
             var mobPrefab = Resources.Load<MobBinder>(prefabPath);
             var createdMob = Instantiate(mobPrefab, transform);
             createdMob.Bind(mobViewModel);
-            //_castleBinder = createdCastle;
             _createMobsMap[mobViewModel.MobEntityId] = createdMob;
         }
 
@@ -242,7 +272,6 @@ namespace Game.GamePlay.Root.View
                     DestroyRoad(roadViewModel);
                 }
             }
-
             Destroy(_frameBlockBinder.gameObject);
             Destroy(_frameBlockBinder);
         }
@@ -258,6 +287,15 @@ namespace Game.GamePlay.Root.View
             _createGroundsMap[groundViewModel.GroundEntityId] = createdGround;
         }
 
+        private void DestroyShot(ShotViewModel shotViewModel)
+        {
+            if (_createShotsMap.TryGetValue(shotViewModel.ShotEntityId, out var shotBinder))
+            {
+                Destroy(shotBinder.gameObject);
+                _createShotsMap.Remove(shotViewModel.ShotEntityId);
+            }
+        }
+        
         private void DestroyTower(TowerViewModel towerViewModel)
         {
             if (_createTowersMap.TryGetValue(towerViewModel.TowerEntityId, out var towerBinder))

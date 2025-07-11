@@ -101,10 +101,10 @@ namespace Game.GamePlay.Services
                     IsMobsOnWay.Value = true;
                     _coroutines.StopCoroutine(TimerNewWave());
                 }
-
                 _coroutines.StartCoroutine(
                     MovingMobOnWay(newValue.Value)); //При добавление моба, запускаем его движение
             });
+            
             _allMobsOnWay.ObserveRemove().Subscribe(e =>
             {
                 if (_allMobsOnWay.Count != 0) return; //На дороге нет мобов
@@ -304,8 +304,18 @@ namespace Game.GamePlay.Services
          */
         private IEnumerator DamageToMob(MobViewModel mobViewModel)
         {
-            AllMobsMap[mobViewModel.MobEntityId].Health.Value -= 1000;
+            try
+            {
+                AllMobsMap[mobViewModel.MobEntityId].Health.Value -= 1000;
+                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                yield break;
+            }
             yield return null;
+            
         }
 
         public void StartForcedNewWave()

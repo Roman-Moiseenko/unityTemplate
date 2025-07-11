@@ -79,7 +79,8 @@ namespace Game.GamePlay.Services
                 var newLevel = x.NewItem.Value;
                 var towerCardBaseSetting = baseTowerCards.FirstOrDefault(card => card.ConfigId == configId);
                 var levelSettings = _towerSettingsMap[configId].FirstOrDefault(l => l.Level == newLevel);
-                
+                //Debug.Log(JsonConvert.SerializeObject(_towerEntities, Formatting.Indented));
+                //Debug.Log(_towerEntities.Count);
                 foreach (var towerEntity in _towerEntities)
                 {
                     if (towerEntity.ConfigId != configId) continue;
@@ -126,15 +127,24 @@ namespace Game.GamePlay.Services
          */
         private void CreateTowerViewModel(TowerEntity towerEntity)
         {
-            var towerCardBaseSetting = _baseTowerCards.FirstOrDefault(card => card.ConfigId == towerEntity.ConfigId);
-            if (towerCardBaseSetting == null) throw new Exception("Не найден параметр в настройках");
-            foreach (var keyValue in towerCardBaseSetting.Parameters)
+            try
             {
-                towerEntity.Parameters.Add(keyValue.Key, new TowerParameter(keyValue.Value));
+                var towerCardBaseSetting = _baseTowerCards.FirstOrDefault(card => card.ConfigId == towerEntity.ConfigId);
+                if (towerCardBaseSetting == null) throw new Exception("Не найден параметр в настройках");
+                foreach (var keyValue in towerCardBaseSetting.Parameters)
+                {
+                    towerEntity.Parameters.TryAdd(keyValue.Key, new TowerParameter(keyValue.Value));
+                }
+                var towerViewModel = new TowerViewModel(towerEntity, _towerSettingsMap[towerEntity.ConfigId], this); //3
+                _allTowers.Add(towerViewModel); //4
+                _towersMap[towerEntity.UniqueId] = towerViewModel;
             }
-            var towerViewModel = new TowerViewModel(towerEntity, _towerSettingsMap[towerEntity.ConfigId], this); //3
-            _allTowers.Add(towerViewModel); //4
-            _towersMap[towerEntity.UniqueId] = towerViewModel;
+            catch (Exception e)
+            {
+               Debug.Log(e.Message);
+                throw;
+            }
+
         }
 
         /**

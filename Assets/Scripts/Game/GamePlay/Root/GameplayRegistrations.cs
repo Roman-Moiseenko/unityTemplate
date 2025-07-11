@@ -52,10 +52,10 @@ namespace Game.GamePlay.Root
 
 
             cmd.RegisterHandler(new CommandCreateGroundHandler(gameplayState));
-            cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState));
+            cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState, gameSettings.TowersSettings));
             cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
             cmd.RegisterHandler(new CommandCreateLevelHandler(gameSettings,
-                gameplayState)); //Регистрируем команду создания уровня из конфигурации
+                gameplayState, cmd)); //Регистрируем команду создания уровня из конфигурации
             cmd.RegisterHandler(new CommandRewardKillMobHandler(gameplayState));
             cmd.RegisterHandler(new CommandDeleteTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
@@ -121,7 +121,7 @@ namespace Game.GamePlay.Root
             container.RegisterFactory(_ => new GameplayService(subjectExitParams, container))
                 .AsSingle(); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             //Сервис создания выстрелов
-            var shotService = new ShotService(gameplayState);
+            var shotService = new ShotService(gameplayState, Fsm);
             container.RegisterInstance(shotService);
             
             var damageService = new DamageService(Fsm, gameplayState, gameSettings.TowersSettings, waveService, towersService, shotService);

@@ -26,7 +26,6 @@ namespace Game.State.Maps.Towers
         /// 
         public double Damage { get; set; }
         public double Speed { get; set; }
-        
-
+        public bool IsMultiShot { get; set; }
     }
 }

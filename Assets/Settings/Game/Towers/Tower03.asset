@@ -20,9 +20,10 @@ MonoBehaviour:
     \u0446\u0435\u043B\u044F\u043C"
   <PrefabPath>k__BackingField: 
   <OnRoad>k__BackingField: 0
+  <MultiShot>k__BackingField: 1
   <TypeEnemy>k__BackingField: 0
   <GameplayLevels>k__BackingField:
-  - Level: 0
+  - Level: 1
     Parameters:
     - ParameterType: 3
       Value: 4

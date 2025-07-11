@@ -20,13 +20,20 @@ namespace Game.State.Maps.Mobs
         public ReactiveProperty<bool> IsDead = new(false);
         public float Attack => Origin.Attack;
 
+        public readonly ReactiveProperty<Vector3> PositionTarget = new();
+
         public int RewardCurrency => Origin.RewardCurrency;
         
         public MobEntity(MobEntityData mobEntityData)
         {
             Origin = mobEntityData;
             Position = new ReactiveProperty<Vector2>(new Vector2(0,0));
-            //Position.Subscribe(newValue => mobEntityData.Position = newValue);
+            Position.Subscribe(newValue =>
+            {
+                //TODO Менять высоту в зависимости от IsFly ??
+                var vector = new Vector3(newValue.x, 0.5f , newValue.y);
+                PositionTarget.Value = vector;
+            });
             
             Direction = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));
             //Direction.Subscribe(newValue => mobEntityData.Direction = newValue); 
@@ -45,6 +52,18 @@ namespace Game.State.Maps.Mobs
         public void SetStartPosition(Vector2 position, Vector2Int direction)
         {
             //Position.Value = position
+        }
+
+        public void SetDamage(float damage)
+        {
+            if (damage > Armor.Value)
+            {
+                Health.Value -= damage - Armor.Value;
+            }
+            else
+            {
+                Armor.Value -= damage;
+            }
         }
     }
 }
