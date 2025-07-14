@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Game.Common;
+using Game.GamePlay.Classes;
 using Game.GamePlay.Services;
 using Game.State.Maps.Mobs;
 using ObservableCollections;
@@ -27,21 +28,28 @@ namespace Game.GamePlay.View.Mobs
         public Vector2 StartPosition;
         public Vector2Int StartDirection;
         public List<Vector2> RoadPoints = new();
+        public GameplayCamera CameraService;
+
+        public ReactiveProperty<float> CurrentHealth;
+        public float MaxHealth;
         
-        public MobViewModel(MobEntity mobEntity, WaveService waveService)
+        public MobViewModel(MobEntity mobEntity, WaveService waveService, GameplayCamera cameraService)
         {
             _mobEntity = mobEntity;
             _waveService = waveService;
+            CameraService = cameraService;
             StartPosition = mobEntity.Position.CurrentValue;
             StartDirection = mobEntity.Direction.CurrentValue;
             GameSpeed = waveService.GameSpeed;
-         //   Debug.Log("Создаем View Model для " + ConfigId + " MobEntityId " + MobEntityId);
+            CurrentHealth = mobEntity.Health;
+            MaxHealth = mobEntity.Health.CurrentValue;
+            //   Debug.Log("Создаем View Model для " + ConfigId + " MobEntityId " + MobEntityId);
             //Position.Subscribe(p => Debug.Log("p = " + p));
             //Debug.Log("mobEntity.Origin.UniqueId = " + mobEntity.Origin.UniqueId);
-          /*  IsMoving.Subscribe(newValue =>
-            {
-                Debug.Log(" Моб = " + ConfigId + " движется = " + newValue + " в сторону " + Position.CurrentValue);
-            });*/
+            /*  IsMoving.Subscribe(newValue =>
+              {
+                  Debug.Log(" Моб = " + ConfigId + " движется = " + newValue + " в сторону " + Position.CurrentValue);
+              });*/
             //TODO Заполняем данными модель
         }
 

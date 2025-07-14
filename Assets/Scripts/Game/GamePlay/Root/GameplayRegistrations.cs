@@ -107,7 +107,7 @@ namespace Game.GamePlay.Root
             var frameService = new FrameService(gameplayState, placementService, towersService, roadsService);
             container.RegisterInstance(frameService);
             // container.RegisterFactory(_ => ).AsSingle();
-
+            container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();
             //сервис волн мобов
             var waveService = new WaveService(container, gameplayState);
             container.RegisterInstance(waveService);
@@ -121,13 +121,13 @@ namespace Game.GamePlay.Root
             container.RegisterFactory(_ => new GameplayService(subjectExitParams, container))
                 .AsSingle(); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             //Сервис создания выстрелов
-            var shotService = new ShotService(gameplayState, Fsm);
+            var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, Fsm);
             container.RegisterInstance(shotService);
             
             var damageService = new DamageService(Fsm, gameplayState, gameSettings.TowersSettings, waveService, towersService, shotService);
             
             container.RegisterInstance(damageService);
-            container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();
+
             //Загружаем уровень из настроек, если gameplayState пуст.
             if (gameplayState.Towers.Any() != true)
             {

@@ -67,14 +67,14 @@ namespace Game.GamePlay.Root.View
             _disposables.Add(
                 viewModel.AllTowers.ObserveAdd().Subscribe(e =>
                 {
-                    Debug.Log("Башня добавилась в список " + e.Value.ConfigId + e.Value.TowerEntityId);
+                   // Debug.Log("Башня добавилась в список " + e.Value.ConfigId + e.Value.TowerEntityId);
                     CreateTower(e.Value);
                 })
             );
             _disposables.Remove(
                 viewModel.AllTowers.ObserveRemove().Subscribe(e =>
                 {
-                    Debug.Log("Башня удалилась из списка " + e.Value.ConfigId + e.Value.TowerEntityId);
+                    //Debug.Log("Башня удалилась из списка " + e.Value.ConfigId + e.Value.TowerEntityId);
                     DestroyTower(e.Value);
                 })
             );

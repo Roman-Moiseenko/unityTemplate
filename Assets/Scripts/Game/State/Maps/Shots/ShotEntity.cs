@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using R3;
+using Unity.VisualScripting;
 
 namespace Game.State.Maps.Shots
 {
@@ -11,7 +12,8 @@ namespace Game.State.Maps.Shots
         public int MobEntityId => Origin.MobEntityId;
         public int UniqueId => Origin.UniqueId;
         public Vector3 StartPosition => Origin.StartPosition;
-        public int Speed => Origin.Speed;
+        public float Speed => Origin.Speed;
+        public bool Single => Origin.Single;
         
         public ReactiveProperty<Vector3> Position;
         public ReactiveProperty<Vector3> FinishPosition;

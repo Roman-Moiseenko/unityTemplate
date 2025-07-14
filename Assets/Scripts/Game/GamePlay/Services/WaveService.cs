@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DI;
 using Game.Common;
+using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Waves;
@@ -50,6 +51,7 @@ namespace Game.GamePlay.Services
 
         public GateWaveViewModel GateWaveViewModel;
         public GateWaveViewModel GateWaveViewModelSecond; //TODO Сделать, когда будет 2 пути
+        private GameplayCamera _cameraService;
 
         public Dictionary<int, WaveEntityData> Waves;
 
@@ -64,14 +66,7 @@ namespace Game.GamePlay.Services
             _fsmGameplay = container.Resolve<FsmGameplay>();
             _wayService = container.Resolve<WayService>();
             _roadsService = container.Resolve<RoadsService>();
-
-            /*gameplayState.GameSpeed.Subscribe(e =>
-            {
-                if (e != 0)
-                {
-                    GameSpeed.Value = e;
-                }
-            });*/
+            _cameraService = container.Resolve<GameplayCamera>();
             GameSpeed = gameplayState.GameSpeed;
             //Debug.Log(JsonConvert.SerializeObject(gameplayState.Origin.Waves, Formatting.Indented));
 
@@ -195,19 +190,20 @@ namespace Game.GamePlay.Services
         private IEnumerator TimerNewWave()
         {
             TimeOutNewWave.Value = false;
-            int timeWave = (GameSpeed.CurrentValue == 0) ? AppConstants.TIME_WAVE_NEW : AppConstants.TIME_WAVE_NEW / GameSpeed.CurrentValue;
+           // int timeWave = (GameSpeed.CurrentValue == 0) ? AppConstants.TIME_WAVE_NEW : AppConstants.TIME_WAVE_NEW / GameSpeed.CurrentValue;
             //Разбиваем цикл на доли, всего 5 секунд 
 
-            for (var i = 0; i < timeWave; i++) //Ускоряем при новой скорости
+            for (var i = 0; i < AppConstants.TIME_WAVE_NEW; i++) //Ускоряем при новой скорости
             {
-                /*while (_fsmGameplay.IsGamePause.Value)
+                while (_fsmGameplay.IsGamePause.Value)
                 {
                     yield return null;
-                } */
-                yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value);
-                TimeOutNewWaveValue.Value = Convert.ToSingle(i) / timeWave;
-                yield return new WaitForSeconds(0.05f);
+                } 
+               // yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value);
+                TimeOutNewWaveValue.Value = Convert.ToSingle(i) / AppConstants.TIME_WAVE_NEW;
                 
+                yield return new WaitForSeconds(0.04f / GameSpeed.CurrentValue);
+               // Debug.Log("WaitForSeconds = " + 0.04f / GameSpeed.CurrentValue);
             }
 
             TimeOutNewWave.Value = true;
@@ -280,7 +276,7 @@ namespace Game.GamePlay.Services
             mobEntity.Position.Value = new Vector3(position.x, position.y);
             mobEntity.Direction.Value = direction;
             mobEntity.IsWay = true;
-            var mobViewModel = new MobViewModel(mobEntity, this);
+            var mobViewModel = new MobViewModel(mobEntity, this, _cameraService);
             AllMobsMap.Add(mobEntity.UniqueId, mobEntity);
             _allMobsOnWay.Add(mobViewModel);
         }
@@ -307,7 +303,6 @@ namespace Game.GamePlay.Services
             try
             {
                 AllMobsMap[mobViewModel.MobEntityId].Health.Value -= 1000;
-                
             }
             catch (Exception e)
             {
@@ -321,7 +316,7 @@ namespace Game.GamePlay.Services
         public void StartForcedNewWave()
         {
             _coroutines.StopCoroutine(TimerNewWave());
-            TimeOutNewWave.Value = false;
+          //  TimeOutNewWave.Value = false;
             StartForced.Value = true;
         }
     }

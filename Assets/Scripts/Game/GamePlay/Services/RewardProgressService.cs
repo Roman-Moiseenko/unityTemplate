@@ -154,6 +154,7 @@ namespace Game.GamePlay.Services
             //TODO Исключить повторения
             var number = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999);
             
+            
             var text = "";
             switch (number % 9)
             {

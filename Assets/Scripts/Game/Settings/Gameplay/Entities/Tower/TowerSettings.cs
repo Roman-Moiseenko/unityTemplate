@@ -19,10 +19,13 @@ namespace Game.Settings.Gameplay.Entities.Tower
         [field: SerializeField] public bool MultiShot { get; private set; } //Массовый урон всем в области действия
          [field: SerializeField] public TowerTypeEnemy TypeEnemy { get; private set; }       
         //  [field: SerializeField] public string PrefabName { get; private set; }
+        [field: SerializeField] public ShotSettings Shot { get; private set; }
         [field: SerializeField] public List<TowerLevelSettings> GameplayLevels { get; private set; }
 
         [field: SerializeField] public List<TowerParameterSettings> BaseParameters { get; private set; }
         [field: SerializeField] public List<TowerEpicLevelCard> EpicLevels { get; private set; }
-        //TODO Базовые настройки
+        
+        
+        //Настройки выстрела
     }
 }

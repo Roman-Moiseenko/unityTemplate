@@ -18,6 +18,8 @@ namespace Game.GamePlay.View.Shots
                 transform.position = p;
             });
 
+            _viewModel.Rotation.Subscribe(r => transform.rotation = r);
+            //transform.rotation = 
         }
     }
 }

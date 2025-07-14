@@ -79,11 +79,14 @@ namespace Game.GamePlay.Services
                 var shot = e.Value;
                 if (_waveService.AllMobsMap.TryGetValue(shot.MobEntityId, out var mobEntity))
                 {
-                    //TODO По типу урона, если по области, то ищем остальных мобов в радиусе 0.5f
-                    //
-                    mobEntity.SetDamage(shot.Damage);
-                    //Debug.Log("Выстрел достиг моба " + mobEntity.ConfigId + " " + shot.ConfigId);
-                    //Отнимаем у Моба shot.MobEntityId урон от Башни shot.TowerEntityId
+                    if (!shot.Single)
+                    {
+                        //TODO урон по области, то ищем остальных мобов в радиусе 0.5f
+                    }
+                    else
+                    {
+                        mobEntity.SetDamage(shot.Damage);    
+                    }
                 }
                 else
                 {
@@ -139,7 +142,8 @@ namespace Game.GamePlay.Services
                
                 if (!towerEntity.IsMultiShot) break;
             }
-            yield return new WaitForSeconds(towerSpeed.Value.Value);//TODO Поделить на тек. скорость игры
+            
+            yield return new WaitForSeconds(towerSpeed.Value.Value / _gameplayState.GameSpeed.Value);//TODO Поделить на тек. скорость игры
             towerEntity.IsShot.Value = false;
         }
 

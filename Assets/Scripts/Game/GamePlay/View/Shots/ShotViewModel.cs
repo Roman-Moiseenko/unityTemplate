@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Game.Common;
 using Game.GamePlay.Services;
 using Game.State.Maps.Shots;
 using R3;
@@ -15,7 +16,8 @@ namespace Game.GamePlay.View.Shots
         public readonly Vector3 StartPosition;
         public ReactiveProperty<Vector3> Position;
         private readonly ReactiveProperty<bool> _shotMoving;
-
+        public ReactiveProperty<Vector3> Direction = new();
+        public ReactiveProperty<Quaternion> Rotation = new();
         public ShotViewModel(ShotEntity shotEntity, ShotService shotService)
         {
             _shotEntity = shotEntity;
@@ -24,19 +26,21 @@ namespace Game.GamePlay.View.Shots
             Position = new ReactiveProperty<Vector3>(StartPosition);
             Position.Subscribe(p => shotEntity.Position.Value = p);
             _shotMoving = new ReactiveProperty<bool>(true);
+        
             
         }
-
-
 
         public IEnumerator MovingModel()
         {
             while (_shotMoving.Value)
             {
-                var speedEntity = _shotService.GameSpeed.CurrentValue * _shotEntity.Speed * 10f;
-               // Debug.Log("SPEED = " + speedEntity);
+                var speedEntity = _shotService.GameSpeed.CurrentValue * _shotEntity.Speed * AppConstants.SHOT_BASE_SPEED;
                 //TODO Расчет координат полета от типа снаряда
                 Position.Value = Vector3.MoveTowards(Position.CurrentValue, _shotEntity.FinishPosition.CurrentValue,  Time.deltaTime * speedEntity);
+                var toDirection = _shotEntity.FinishPosition.Value - _shotEntity.StartPosition;
+                var fromDirection = new Vector3(0, 0, 1f);
+                Direction.Value = Vector3.RotateTowards(fromDirection, toDirection, 100, 0);
+                Rotation.Value = Quaternion.FromToRotation(fromDirection, toDirection);
                // Debug.Log("Позиция Выстрела " + ShotUniqueId + " " + Position.CurrentValue);
                 if (Position.CurrentValue == _shotEntity.FinishPosition.CurrentValue)
                 {

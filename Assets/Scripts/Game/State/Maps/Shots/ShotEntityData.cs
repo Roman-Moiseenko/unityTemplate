@@ -11,7 +11,8 @@ namespace Game.State.Maps.Shots
         public Vector3 StartPosition;
         public Vector3 FinishPosition;
         public Vector3 Position;
-        public int Speed;
+        public float Speed;
         public float Damage;
+        public bool Single;
     }
 }

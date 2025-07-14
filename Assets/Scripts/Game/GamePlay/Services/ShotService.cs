@@ -4,6 +4,7 @@ using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.View.Shots;
 using Game.GamePlay.View.Towers;
+using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
@@ -19,6 +20,7 @@ namespace Game.GamePlay.Services
     public class ShotService
     {
         private readonly GameplayStateProxy _gameplayState;
+        private readonly TowersSettings _towersSettings;
         private readonly FsmGameplay _fsmGameplay;
         private readonly Coroutines _coroutines;
         private int _uniqueShotId = 0;
@@ -26,15 +28,21 @@ namespace Game.GamePlay.Services
         public ObservableList<ShotEntity> Shots = new();
         public ObservableList<ShotViewModel> AllShots = new();
         private Dictionary<int, ShotViewModel> _shotsMap = new();
+        private readonly Dictionary<string, ShotSettings> _shotSettingsMap = new(); //Кешируем настройки выстрелов
         
         public readonly ReactiveProperty<int> GameSpeed = new(1);
         //TODO Нужны ли данные в конструктор? Возможно настройки базовые?
-        public ShotService(GameplayStateProxy gameplayState, FsmGameplay fsmGameplay)
+        public ShotService(GameplayStateProxy gameplayState, TowersSettings towersSettings, FsmGameplay fsmGameplay)
         {
             _gameplayState = gameplayState;
+            _towersSettings = towersSettings;
             _fsmGameplay = fsmGameplay;
             GameSpeed = gameplayState.GameSpeed;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
+            foreach (var towerSettings in towersSettings.AllTowers)
+            {
+                _shotSettingsMap.Add(towerSettings.ConfigId, towerSettings.Shot);
+            }
 
             AllShots.ObserveAdd().Subscribe(newValue =>
             {
@@ -51,6 +59,20 @@ namespace Game.GamePlay.Services
         {
             var startPosition =
                 new Vector3(towerEntity.Position.CurrentValue.x, 1f, towerEntity.Position.CurrentValue.y);
+            var damage = 0f;
+            //Расчет урона от башни
+            if (towerEntity.Parameters.TryGetValue(TowerParameterType.Damage, out var parameter))
+            {
+                damage = parameter.Value.Value;
+                //Single = true
+            }
+
+            if (towerEntity.Parameters.TryGetValue(TowerParameterType.DamageArea, out parameter))
+            {
+                damage = parameter.Value.Value;
+                //TODO Возможно перенести Single = false
+            }
+            
             var shotEntityData = new ShotEntityData
             {
                 TowerEntityId = towerEntity.UniqueId,
@@ -59,8 +81,10 @@ namespace Game.GamePlay.Services
                 StartPosition = startPosition,
                 Position = startPosition,
                 UniqueId = GetUniqueId(),
-                Speed = 1, //TODO сделать из настроек 
-                Damage = 8, //TODO Из  башни взять + добавить тип урона
+                Speed = _shotSettingsMap[towerEntity.ConfigId].Speed, 
+                Single = _shotSettingsMap[towerEntity.ConfigId].Single,
+                Damage = damage, 
+                
             };
 
             var shotEntity = new ShotEntity(shotEntityData, mobEntity.PositionTarget);

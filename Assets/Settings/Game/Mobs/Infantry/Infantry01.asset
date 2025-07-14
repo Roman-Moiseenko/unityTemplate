@@ -19,6 +19,7 @@ MonoBehaviour:
   <PrefabPath>k__BackingField: 
   <Speed>k__BackingField: 1
   <IsFly>k__BackingField: 0
-  <Health>k__BackingField: 10
+  <Health>k__BackingField: 50
   <Armor>k__BackingField: 0
   <Attack>k__BackingField: 5
+  <RewardCurrency>k__BackingField: 0

@@ -26,6 +26,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         public ReactiveProperty<bool> ShowGate;
         public ReactiveProperty<Vector3> PositionInfoBtn = new(Vector3.zero);
         public ReactiveProperty<float> FillAmountBtn = new(1f);
+        private GameplayCamera _cameraService;
         
         public PanelGateWaveViewModel(
             GameplayUIManager uiManager, 
@@ -42,18 +43,22 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             CurrentSpeed = _gameplayStateProxy.GetCurrentSpeed();
             ShowGate = _waveService.ShowGate;
             _waveService.TimeOutNewWaveValue.Subscribe(n => FillAmountBtn.Value = 1 - n);
-            var cameraService = container.Resolve<GameplayCamera>();
+            _cameraService = container.Resolve<GameplayCamera>();
             
             var positionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
-            positionCamera.Subscribe(n =>
-            {
-                //Изменилась позиция, вычисляем координаты
-                var position = _waveService.GateWaveViewModel.Position.CurrentValue;
-                var p = new Vector3(position.x, 0, position.y);
-                var v= cameraService.Camera.WorldToScreenPoint(p);
-                v.z = 0;
-                PositionInfoBtn.Value = v;
-            });
+            //Изменилась позиция ворот
+            _waveService.GateWaveViewModel.Position.Subscribe(_ => NewPositionButtonInfo());
+            positionCamera.Subscribe(n => NewPositionButtonInfo());
+            
+        }
+
+        private void NewPositionButtonInfo()
+        {
+            var position = _waveService.GateWaveViewModel.Position.CurrentValue;
+            var p = new Vector3(position.x, 0, position.y);
+            var v= _cameraService.Camera.WorldToScreenPoint(p);
+            v.z = 0;
+            PositionInfoBtn.Value = v;
         }
 
 
@@ -61,8 +66,6 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         public void StartForcedWave()
         {
             _waveService.StartForcedNewWave();
-            
-            //TODO Ускоряем таймер Сделать
         }
 
         public void ShowPopupInfo()
