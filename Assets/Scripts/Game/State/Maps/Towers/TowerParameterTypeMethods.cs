@@ -20,6 +20,7 @@
                 TowerParameterType.MiddleDamage => "Средний урон",
                 TowerParameterType.MaxDistance => "Максимальная дистанция",
                 TowerParameterType.MinDistance => "Минимальная дистанция",
+                TowerParameterType.SlowingDown => "Замедление",
                 _ => ""
             };
         }

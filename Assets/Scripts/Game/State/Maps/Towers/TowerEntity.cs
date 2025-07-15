@@ -14,14 +14,14 @@ namespace Game.State.Maps.Towers
 
         public readonly ReactiveProperty<int> Level;
         public EntityType Type => Origin.Type;
+        public bool IsOnRoad => Origin.IsOnRoad;
         public readonly ReactiveProperty<Vector2Int> Position;
         
         public readonly TowerTypeEnemy TypeEnemy;
         public readonly bool IsMultiShot;
         
-        public readonly ReactiveProperty<double> Damage;
-        public readonly ReactiveProperty<double> Speed;
         public ReactiveProperty<bool> IsShot = new(false);
+        
         
         public ObservableDictionary<TowerParameterType, TowerParameter> Parameters;
         
@@ -39,11 +39,6 @@ namespace Game.State.Maps.Towers
             
             TypeEnemy = towerEntityData.TypeEnemy;
             IsMultiShot = towerEntityData.IsMultiShot;
-            
-            Damage = new ReactiveProperty<double>(towerEntityData.Damage);
-            Damage.Subscribe(newValue => towerEntityData.Damage = newValue);
-            Speed = new ReactiveProperty<double>(towerEntityData.Speed);
-            Speed.Subscribe(newValue => towerEntityData.Speed = newValue);
 
             Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
             Parameters.ObserveAdd().Subscribe(e =>

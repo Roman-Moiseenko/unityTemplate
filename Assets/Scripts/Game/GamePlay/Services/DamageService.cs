@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using Scripts.Utils;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -108,12 +109,11 @@ namespace Game.GamePlay.Services
             foreach (var towerEntity in _gameplayState.Towers)
             {
                 //Debug.Log("towerEntity.IsShot.Value = " + towerEntity.IsShot.Value);
-                if (!towerEntity.IsShot.Value) //Если башня не стреляет, запускаем корутин
-                {
-                    //Debug.Log(Time.deltaTime);
-                    towerEntity.IsShot.Value = true;
-                    _coroutines.StartCoroutine(TowerFireShot(towerEntity));
-                }
+                if (towerEntity.IsShot.Value) continue; 
+                
+                //Если башня не стреляет, запускаем корутин
+                towerEntity.IsShot.Value = true;
+                _coroutines.StartCoroutine(TowerFireShot(towerEntity));
             }
 
             //  });
@@ -125,8 +125,9 @@ namespace Game.GamePlay.Services
             yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //На паузе не стреляем
             
             if (!towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed)) yield break;
+            var towerPosition = towerEntity.Position.CurrentValue;
+            var towerIsShooting = false;
             
-            //                Debug.Log("towerEntity.IsMultiShot = " + towerEntity.IsMultiShot);
             //Обходим список мобов
             foreach (var keyMobEntity in _waveService.AllMobsMap)
             {
@@ -134,16 +135,20 @@ namespace Game.GamePlay.Services
                 if (!towerEntity.IsTargetForAttack(mobEntity.IsFly)) continue; //Проверка на совпадение типа врага и башни
 
                 var mobPosition = mobEntity.Position.CurrentValue;
-                var towerPosition = towerEntity.Position.CurrentValue;
-                if (MobDistanceShot(mobPosition, towerPosition, towerEntity.Origin.Parameters))
-                {
-                    _shotService.CreateShot(towerEntity, mobEntity); //Создать выстрел
-                }
+                towerIsShooting = MobDistanceShot(mobPosition, towerPosition, towerEntity.Origin.Parameters);
+                if (!towerIsShooting) continue; //Выстрела нет, следующий моб
                
-                if (!towerEntity.IsMultiShot) break;
+                _shotService.CreateShot(towerEntity, mobEntity); //Создать выстрел
+                if (!towerEntity.IsMultiShot) break; //Для не мульти башни 1 выстрел 
             }
             
-            yield return new WaitForSeconds(towerSpeed.Value.Value / _gameplayState.GameSpeed.Value);//TODO Поделить на тек. скорость игры
+            if (!towerIsShooting) //За обход башня не выстрелила, таймер КД не запускаем
+            {
+                towerEntity.IsShot.Value = false;
+                yield break;
+            }
+            
+            yield return new WaitForSeconds(towerSpeed.Value.Value / _gameplayState.GameSpeed.Value);//Поделить на тек. скорость игры
             towerEntity.IsShot.Value = false;
         }
 
@@ -152,15 +157,19 @@ namespace Game.GamePlay.Services
             Dictionary<TowerParameterType, TowerParameterData> parameters)
         {
             var d = Vector2.Distance(mobPosition, towerPosition) - 0.5f; //Отнимаем радиус башни
-
-            if (parameters.TryGetValue(TowerParameterType.Distance, out var distance))
-                return d <= distance.Value;
-            
+            //У башни мин. и макс. дистанция
             if (parameters.TryGetValue(TowerParameterType.MinDistance, out var distanceMin) &&
                 parameters.TryGetValue(TowerParameterType.MaxDistance, out var distanceMax))
                 return distanceMin.Value <= d && d <= distanceMax.Value;
+            // у башни стандартная дистанция 
+            if (parameters.TryGetValue(TowerParameterType.Distance, out var distance))
+            {
+                return d <= distance.Value;
+            }
             
-            return false;
+            //Башня на дороге, нет дистанции
+            return d <= 0.5f;
+            
         }
     }
 }

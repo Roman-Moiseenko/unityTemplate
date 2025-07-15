@@ -35,6 +35,7 @@ namespace Game.GamePlay.Commands
                 Type = EntityType.Tower,
                 TypeEnemy = towerSettings.TypeEnemy,
                 IsMultiShot = towerSettings.MultiShot,
+                IsOnRoad = towerSettings.OnRoad,
             };
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
             _gameplayState.Towers.Add(newTower);//Добавляем в список объектов карты

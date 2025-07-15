@@ -104,7 +104,7 @@ namespace Game.GamePlay.Root
             
             container.RegisterInstance(towersService);
             
-            var frameService = new FrameService(gameplayState, placementService, towersService, roadsService);
+            var frameService = new FrameService(gameplayState, placementService, towersService, roadsService, gameSettings.TowersSettings);
             container.RegisterInstance(frameService);
             // container.RegisterFactory(_ => ).AsSingle();
             container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();

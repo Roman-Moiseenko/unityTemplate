@@ -25,30 +25,29 @@ namespace Game.GamePlay.Services
         }
 
 
-        public bool CheckPlacementTower(Vector2Int position, int TowerId)
+        public bool CheckPlacementTower(Vector2Int position, int towerId, bool onRoad)
         {
+            //var tower = _gameplayState.Origin.Towers.Find(t => t.UniqueId == towerId);
             var result = false;
 
-     //       Debug.Log("1");
             //На замке
             if (IsCastle(position)) return false; //Строить нельзя, принудительный выход
-         //   Debug.Log("2");
             //Сначала проверяем землю
             foreach (var groundData in _gameplayState.Grounds)
             {
                 //Проверяем на земле или нет
                 if (position == groundData.Position.CurrentValue) result = true;
             }
-         //   Debug.Log("3");
+
             if (result == false) return false; //Не нашли участок для строительства, выходим
 
             result = false;
 
             //Проверяем башни
-            foreach (var entityData in _gameplayState.Towers)
+            foreach (var towerEntity in _gameplayState.Towers)
             {
                 //На другой башне
-                if (entityData is TowerEntity towerEntity && towerEntity.UniqueId != TowerId)
+                if (towerEntity.UniqueId != towerId)
                 {
                     if (towerEntity.PositionNear(position)) result = true;
 
@@ -56,14 +55,23 @@ namespace Game.GamePlay.Services
                         return false; //Строить нельзя, принудительный выход
                 }
             }
-         //   Debug.Log("4");
-          //  Debug.Log(JsonConvert.SerializeObject(_gameplayState.Way, Formatting.Indented));
+
+            //  Debug.Log(JsonConvert.SerializeObject(_gameplayState.Way, Formatting.Indented));
             foreach (var roadEntity in _gameplayState.Way)
             {
-                if (position == roadEntity.Position.CurrentValue) return false; //На дороге
-                if (roadEntity.PositionNear(position)) result = true;
+                if (onRoad)
+                {
+                    if (position == roadEntity.Position.CurrentValue) result = true;
+                    if (roadEntity.PositionNear(position)) return false;
+                }
+                else
+                {
+                    if (position == roadEntity.Position.CurrentValue) return false; //На дороге
+                    if (roadEntity.PositionNear(position)) result = true;
+                }
             }
-          //  Debug.Log("5" + result);
+
+            //  Debug.Log("5" + result);
             return result;
         }
 
@@ -73,7 +81,8 @@ namespace Game.GamePlay.Services
             {
                 foreach (var nearPosition in roadEntity.GetNearPositions())
                 {
-                    if (CheckPlacementTower(nearPosition, -1)) return nearPosition;
+                    //TODO Получить тип башни 
+                    if (CheckPlacementTower(nearPosition, -1, false)) return nearPosition;
                 }
             }
 
@@ -163,13 +172,13 @@ namespace Game.GamePlay.Services
         private bool CheckForFirstPoint(List<RoadEntityData> way, List<RoadEntityData> roads)
         {
             if (way.Count == 0) return false;
-     /*       Debug.Log(JsonConvert.SerializeObject(roads, Formatting.Indented));
-            Debug.Log("0");
-            Debug.Log(_wayService.GetExitPoint(way));
-            Debug.Log(_wayService.GetFirstPoint(roads));
-            Debug.Log(_wayService.GetLastPoint(way));
-            Debug.Log(_wayService.GetEnterPoint(roads));
-            */
+            /*       Debug.Log(JsonConvert.SerializeObject(roads, Formatting.Indented));
+                   Debug.Log("0");
+                   Debug.Log(_wayService.GetExitPoint(way));
+                   Debug.Log(_wayService.GetFirstPoint(roads));
+                   Debug.Log(_wayService.GetLastPoint(way));
+                   Debug.Log(_wayService.GetEnterPoint(roads));
+                   */
             return _wayService.GetExitPoint(way) == _wayService.GetFirstPoint(roads)
                    && _wayService.GetLastPoint(way) == _wayService.GetEnterPoint(roads);
         }
@@ -177,12 +186,12 @@ namespace Game.GamePlay.Services
         private bool CheckForLastPoint(List<RoadEntityData> way, List<RoadEntityData> roads, bool _t = false)
         {
             if (way.Count == 0) return false;
-        /*    Debug.Log(JsonConvert.SerializeObject(roads, Formatting.Indented));
-            Debug.Log("1");
-            Debug.Log(_wayService.GetExitPoint(way));
-            Debug.Log(_wayService.GetLastPoint(roads));
-            Debug.Log(_wayService.GetLastPoint(way));
-            Debug.Log(_wayService.GetExitPoint(roads));*/
+            /*    Debug.Log(JsonConvert.SerializeObject(roads, Formatting.Indented));
+                Debug.Log("1");
+                Debug.Log(_wayService.GetExitPoint(way));
+                Debug.Log(_wayService.GetLastPoint(roads));
+                Debug.Log(_wayService.GetLastPoint(way));
+                Debug.Log(_wayService.GetExitPoint(roads));*/
             return _wayService.GetExitPoint(way) == _wayService.GetLastPoint(roads)
                    && _wayService.GetLastPoint(way) == _wayService.GetExitPoint(roads);
         }

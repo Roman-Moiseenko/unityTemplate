@@ -72,9 +72,9 @@ namespace Game.GamePlay.View.Frames
             return _type == FrameType.Ground;
         }
 
-        public int GetTowerId()
+        public TowerViewModel GetTower()
         {
-            return ((TowerViewModel)EntityViewModels[0]).TowerEntityId;
+            return (TowerViewModel)EntityViewModels[0];
         }
 
         public List<RoadViewModel> GetRoads()

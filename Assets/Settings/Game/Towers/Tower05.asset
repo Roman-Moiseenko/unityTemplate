@@ -10,108 +10,101 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc7296470140475f9390ad5151b068a3, type: 3}
-  m_Name: Tower03
+  m_Name: Tower05
   m_EditorClassIdentifier: 
-  <ConfigId>k__BackingField: Tower03
-  <TitleLid>k__BackingField: "\u0422\u0435\u0441\u043B\u0430"
-  <DescriptionLid>k__BackingField: "\u041C\u0430\u0441\u0441\u043E\u0432\u044B\u0439
-    \u0443\u0440\u043E\u043D \u043F\u043E \u043E\u0431\u043B\u0430\u0441\u0442\u0438,
-    \u043F\u043E \u043D\u0430\u0437\u043C\u0435\u043D\u044B\u043C \u0438 \u0432\u043E\u0437\u0434\u0443\u0448\u043D\u044B\u043C
-    \u0446\u0435\u043B\u044F\u043C"
+  <ConfigId>k__BackingField: Tower05
+  <TitleLid>k__BackingField: "\u0428\u0438\u043F\u044B"
+  <DescriptionLid>k__BackingField: "\u041F\u043E\u0441\u0442\u043E\u044F\u043D\u043D\u044B\u0439
+    \u0443\u0440\u043E\u043D \u043F\u043E \u043E\u0431\u043B\u0430\u0441\u0442\u0438
+    \u043F\u043E \u043D\u0430\u0437\u0435\u043C\u043D\u044B\u043C \u0446\u0435\u043B\u044F\u043C"
   <PrefabPath>k__BackingField: 
-  <OnRoad>k__BackingField: 0
+  <OnRoad>k__BackingField: 1
   <MultiShot>k__BackingField: 1
-  <TypeEnemy>k__BackingField: 0
+  <TypeEnemy>k__BackingField: 1
   <Shot>k__BackingField:
-    Speed: 0.1
+    Speed: 1000
     LineTrajectory: 1
     Single: 1
   <GameplayLevels>k__BackingField:
   - Level: 1
     Parameters:
-    - ParameterType: 3
-      Value: 4
+    - ParameterType: 0
+      Value: 5
   - Level: 2
     Parameters:
-    - ParameterType: 3
-      Value: 19.2
+    - ParameterType: 0
+      Value: 20
   - Level: 3
     Parameters:
-    - ParameterType: 8
-      Value: 2
-    - ParameterType: 4
-      Value: 25
+    - ParameterType: 10
+      Value: 3
   - Level: 4
     Parameters:
-    - ParameterType: 3
-      Value: 19.36
+    - ParameterType: 0
+      Value: 20
   - Level: 5
     Parameters:
-    - ParameterType: 8
-      Value: 2
-    - ParameterType: 4
-      Value: 20
+    - ParameterType: 10
+      Value: 3
   - Level: 6
     Parameters:
-    - ParameterType: 3
+    - ParameterType: 0
       Value: 20
   <BaseParameters>k__BackingField:
-  - ParameterType: 3
-    Value: 22.9
+  - ParameterType: 0
+    Value: 26.7
   - ParameterType: 7
-    Value: 0.57
-  - ParameterType: 8
-    Value: 2
-  - ParameterType: 4
-    Value: 1
+    Value: 0.33
+  - ParameterType: 10
+    Value: 3
   <EpicLevels>k__BackingField:
   - Level: 0
     UpgradeParameters: []
     LevelCardParameters:
-    - ParameterType: 3
-      Value: 1.14
+    - ParameterType: 0
+      Value: 4
   - Level: 1
     UpgradeParameters:
-    - ParameterType: 3
+    - ParameterType: 0
       Value: 3
     - ParameterType: 7
       Value: -2
     LevelCardParameters:
-    - ParameterType: 3
-      Value: 1.35
+    - ParameterType: 0
+      Value: 5.2
   - Level: 2
     UpgradeParameters:
-    - ParameterType: 3
+    - ParameterType: 0
       Value: 5
     - ParameterType: 7
       Value: -5
     LevelCardParameters:
-    - ParameterType: 3
-      Value: 1.64
+    - ParameterType: 0
+      Value: 6.73
   - Level: 3
     UpgradeParameters:
-    - ParameterType: 3
+    - ParameterType: 0
       Value: 7
     - ParameterType: 7
       Value: -7
     LevelCardParameters:
-    - ParameterType: 3
-      Value: 2.01
+    - ParameterType: 0
+      Value: 8.66
   - Level: 4
     UpgradeParameters:
-    - ParameterType: 3
-      Value: 13
+    - ParameterType: 0
+      Value: 20
     - ParameterType: 7
       Value: -3
     LevelCardParameters:
-    - ParameterType: 3
-      Value: 2.52
+    - ParameterType: 0
+      Value: 10.55
   - Level: 5
     UpgradeParameters:
-    - ParameterType: 3
-      Value: 25
+    - ParameterType: 0
+      Value: 21
     - ParameterType: 7
       Value: -5
     LevelCardParameters:
-    - ParameterType: 3
-      Value: 3.14
+    - ParameterType: 0
+      Value: 12.35

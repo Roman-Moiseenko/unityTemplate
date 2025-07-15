@@ -23,6 +23,7 @@ namespace Game.GamePlay.View.Towers
         private IMovingEntityViewModel _movingEntityViewModelImplementation;
 
         public ReactiveProperty<Vector2Int> Position { get; set; }
+        public bool IsOnRoad => _towerEntity.IsOnRoad;
 
         public TowerViewModel(
             TowerEntity towerEntity,

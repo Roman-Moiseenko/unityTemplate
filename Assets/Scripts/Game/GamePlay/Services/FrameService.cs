@@ -6,6 +6,7 @@ using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
+using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Root;
@@ -29,7 +30,7 @@ namespace Game.GamePlay.Services
         private FrameBlockViewModel _viewModel;
         private readonly ObservableList<FrameBlockViewModel> _viewModels = new();
         public IObservableCollection<FrameBlockViewModel> ViewModels => _viewModels;
-        
+        private Dictionary<string, bool> _towerOnRoadMap = new();
         
         //public 
     //    private Dictionary<int, Vector2Int> _rotations = new();
@@ -39,7 +40,8 @@ namespace Game.GamePlay.Services
             GameplayStateProxy gameplayState,
             PlacementService placementService,
             TowersService towerService,
-            RoadsService roadsService
+            RoadsService roadsService,
+            TowersSettings towersSettings
             )
         {
             _gameplayState = gameplayState;
@@ -50,6 +52,11 @@ namespace Game.GamePlay.Services
             matrixRoads.Add(1, new Vector2Int(0, 1));
             matrixRoads.Add(2, new Vector2Int(1, 1));
             matrixRoads.Add(3, new Vector2Int(1, 0));
+
+            foreach (var towerSettings in towersSettings.AllTowers)
+            {
+                _towerOnRoadMap.Add(towerSettings.ConfigId, towerSettings.OnRoad);
+            }
         }
 
         public void MoveFrame(Vector2Int position)
@@ -57,7 +64,7 @@ namespace Game.GamePlay.Services
             _viewModel.MoveFrame(position);
             
             if (_viewModel.IsTower())
-                _viewModel.Enable.Value = _placementService.CheckPlacementTower(position, _viewModel.GetTowerId());
+                _viewModel.Enable.Value = _placementService.CheckPlacementTower(position, _viewModel.GetTower().TowerEntityId, _viewModel.GetTower().IsOnRoad);
             if (_viewModel.IsRoad())
                 _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());
 
@@ -113,7 +120,8 @@ namespace Game.GamePlay.Services
                 UniqueId = towerEntityId,
                 Position = position,
                 Level = level,
-                ConfigId = configId
+                ConfigId = configId,
+                IsOnRoad = _towerOnRoadMap[configId],
             });
             
             var towerViewModel = new TowerViewModel(towerEntity, null, _towerService);
@@ -121,7 +129,7 @@ namespace Game.GamePlay.Services
             _viewModel = new FrameBlockViewModel(position);
             _viewModel.AddItem(towerViewModel);
             _viewModels.Add(_viewModel);
-            _viewModel.Enable.Value = _placementService.CheckPlacementTower(position, towerEntityId);
+            _viewModel.Enable.Value = _placementService.CheckPlacementTower(position, towerEntityId, towerEntity.IsOnRoad);
         }
 
         public void RemoveFrame()

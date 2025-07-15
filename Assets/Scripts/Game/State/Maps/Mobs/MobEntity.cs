@@ -19,6 +19,7 @@ namespace Game.State.Maps.Mobs
         public ReactiveProperty<float> Armor;
         public ReactiveProperty<bool> IsDead = new(false);
         public float Attack => Origin.Attack;
+        public float Delta;
 
         public readonly ReactiveProperty<Vector3> PositionTarget = new();
 
@@ -51,7 +52,9 @@ namespace Game.State.Maps.Mobs
 
         public void SetStartPosition(Vector2 position, Vector2Int direction)
         {
-            //Position.Value = position
+            Delta = Mathf.Abs(Random.insideUnitSphere.x) / 4;
+            Position.Value = new Vector2(position.x + direction.x * Delta , position.y + direction.y * Delta);
+            Direction.Value = direction;
         }
 
         public void SetDamage(float damage)

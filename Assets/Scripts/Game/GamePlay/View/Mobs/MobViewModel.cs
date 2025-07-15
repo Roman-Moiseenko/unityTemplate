@@ -4,6 +4,7 @@ using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Services;
 using Game.State.Maps.Mobs;
+using Game.State.Maps.Roads;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -22,17 +23,20 @@ namespace Game.GamePlay.View.Mobs
         public ReactiveProperty<bool> IsMoving = new(false);
 
         public ReactiveProperty<Vector2> Position => _mobEntity.Position;
-        public ReactiveProperty<Vector2Int> Direction => _mobEntity.Direction;
+        public ReactiveProperty<Vector2Int> Direction;
         public readonly ReactiveProperty<int> GameSpeed;
         public ReactiveProperty<float> MobSpeed = new(1.0f); //TODO Перенести в моб энтиити
         public Vector2 StartPosition;
         public Vector2Int StartDirection;
-        public List<Vector2> RoadPoints = new();
+        public List<RoadPoint> RoadPoints = new();
         public GameplayCamera CameraService;
 
         public ReactiveProperty<float> CurrentHealth;
         public float MaxHealth;
-        
+        public float Delta => _mobEntity.Delta;
+        public ReactiveProperty<bool> FinishCurrentAnimation = new(true);
+        public ReactiveProperty<bool> AnimationDelete = new(false);
+
         public MobViewModel(MobEntity mobEntity, WaveService waveService, GameplayCamera cameraService)
         {
             _mobEntity = mobEntity;
@@ -43,6 +47,9 @@ namespace Game.GamePlay.View.Mobs
             GameSpeed = waveService.GameSpeed;
             CurrentHealth = mobEntity.Health;
             MaxHealth = mobEntity.Health.CurrentValue;
+
+            Direction = new ReactiveProperty<Vector2Int>(mobEntity.Direction.CurrentValue); //Начальное направление
+
             //   Debug.Log("Создаем View Model для " + ConfigId + " MobEntityId " + MobEntityId);
             //Position.Subscribe(p => Debug.Log("p = " + p));
             //Debug.Log("mobEntity.Origin.UniqueId = " + mobEntity.Origin.UniqueId);
@@ -64,7 +71,7 @@ namespace Game.GamePlay.View.Mobs
             yield return null;
         }
 
-        public IEnumerator MovingModel(List<Vector2> roadPoints)
+        public IEnumerator MovingModel(List<RoadPoint> roadPoints)
         {
             RoadPoints = roadPoints;
             _targetPosition = GetTargetPosition();
@@ -82,8 +89,10 @@ namespace Game.GamePlay.View.Mobs
         {
             if (IsMoving.Value)
             {
-                if (_targetPosition == Position.CurrentValue)
+                if (_targetPosition == Position.CurrentValue) //Дошли то след.точки
                 {
+                    Direction.Value = RoadPoints[_currentIndexListPoint].Direction; //Направление поворота
+                    //Проверяем, поменялось ли направление
                     _currentIndexListPoint++;
                     if (_currentIndexListPoint == RoadPoints.Count)
                     {
@@ -94,16 +103,22 @@ namespace Game.GamePlay.View.Mobs
                 }
                 
                 var speedMob = GameSpeed.CurrentValue * AppConstants.MOB_BASE_SPEED * MobSpeed.CurrentValue;
-                Position.Value = Vector3.MoveTowards(Position.CurrentValue, _targetPosition,  Time.deltaTime * speedMob);
+                Position.Value = Vector2.MoveTowards(Position.CurrentValue, _targetPosition,  Time.deltaTime * speedMob);
             }
             yield return null;
         }
         
-        private Vector3 GetTargetPosition()
+        private Vector2 GetTargetPosition()
         {
-            var newValue = RoadPoints[_currentIndexListPoint];
-            _targetPosition = new Vector3(newValue.x, newValue.y);
+            var newValue = RoadPoints[_currentIndexListPoint].Point;
+            _targetPosition = new Vector2(newValue.x, newValue.y);
             return _targetPosition;
+        }
+
+        public void StartAnimationDelete()
+        {
+            FinishCurrentAnimation.Value = false;
+            AnimationDelete.Value = true;
         }
     }
 }

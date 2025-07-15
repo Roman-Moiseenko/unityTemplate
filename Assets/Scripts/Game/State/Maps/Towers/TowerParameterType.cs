@@ -12,6 +12,6 @@
         Speed,
         Critical,
         Health,
-        
+        SlowingDown,
     }
 }
