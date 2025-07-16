@@ -1,4 +1,5 @@
-﻿using Game.State.Entities;
+﻿using System.Collections.Generic;
+using Game.State.Entities;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
@@ -23,7 +24,7 @@ namespace Game.State.Maps.Towers
         public ReactiveProperty<bool> IsShot = new(false);
         
         
-        public ObservableDictionary<TowerParameterType, TowerParameter> Parameters;
+        public Dictionary<TowerParameterType, TowerParameterData> Parameters = new();
         
         public TowerEntity(TowerEntityData towerEntityData)
         {
@@ -40,14 +41,14 @@ namespace Game.State.Maps.Towers
             TypeEnemy = towerEntityData.TypeEnemy;
             IsMultiShot = towerEntityData.IsMultiShot;
 
-            Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
+  /*          Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
             Parameters.ObserveAdd().Subscribe(e =>
             {
                 var type = e.Value.Key;
                 var parameter = e.Value.Value.Origin;
                 towerEntityData.Parameters.Add(type, parameter);
             });
-
+*/
         }
 
         public bool PositionNear(Vector2Int position)

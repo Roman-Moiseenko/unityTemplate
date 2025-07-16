@@ -16,7 +16,7 @@ namespace Game.State.Maps.Towers
         //Список усилений, навешанных на башню
 
         public bool IsOnRoad;
-        public Dictionary<TowerParameterType, TowerParameterData> Parameters = new();
+       // public Dictionary<TowerParameterType, TowerParameterData> Parameters = new();
         
         public bool IsMultiShot { get; set; }
         

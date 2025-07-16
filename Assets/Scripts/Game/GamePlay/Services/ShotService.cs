@@ -59,17 +59,19 @@ namespace Game.GamePlay.Services
         {
             var startPosition =
                 new Vector3(towerEntity.Position.CurrentValue.x, 1f, towerEntity.Position.CurrentValue.y);
+            
+            //Debug.Log("Выстрел " + towerEntity.Position.CurrentValue + " => " + mobEntity.Position.CurrentValue);
             var damage = 0f;
             //Расчет урона от башни
             if (towerEntity.Parameters.TryGetValue(TowerParameterType.Damage, out var parameter))
             {
-                damage = parameter.Value.Value;
+                damage = parameter.Value;
                 //Single = true
             }
 
             if (towerEntity.Parameters.TryGetValue(TowerParameterType.DamageArea, out parameter))
             {
-                damage = parameter.Value.Value;
+                damage = parameter.Value;
                 //TODO Возможно перенести Single = false
             }
             
@@ -84,7 +86,7 @@ namespace Game.GamePlay.Services
                 Speed = _shotSettingsMap[towerEntity.ConfigId].Speed, 
                 Single = _shotSettingsMap[towerEntity.ConfigId].Single,
                 Damage = damage, 
-                
+                NotPrefab = _shotSettingsMap[towerEntity.ConfigId].NotPrefab,
             };
 
             var shotEntity = new ShotEntity(shotEntityData, mobEntity.PositionTarget);

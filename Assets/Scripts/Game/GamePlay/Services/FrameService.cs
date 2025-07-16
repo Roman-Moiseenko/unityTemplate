@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.GamePlay.View;
+using Game.GamePlay.View.AttackAreas;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Roads;
@@ -31,10 +32,12 @@ namespace Game.GamePlay.Services
         private readonly ObservableList<FrameBlockViewModel> _viewModels = new();
         public IObservableCollection<FrameBlockViewModel> ViewModels => _viewModels;
         private Dictionary<string, bool> _towerOnRoadMap = new();
+        private Dictionary<string, bool> _towerParametersMap = new();
         
         //public 
     //    private Dictionary<int, Vector2Int> _rotations = new();
         private Dictionary<int, Vector2Int> matrixRoads = new();
+        private AttackAreaViewModel _areaViewModel;
 
         public FrameService(
             GameplayStateProxy gameplayState,
@@ -56,15 +59,32 @@ namespace Game.GamePlay.Services
             foreach (var towerSettings in towersSettings.AllTowers)
             {
                 _towerOnRoadMap.Add(towerSettings.ConfigId, towerSettings.OnRoad);
+               // _towerParametersMap.Add(towerSettings.ConfigId, towerSettings.p);
             }
         }
 
         public void MoveFrame(Vector2Int position)
         {
             _viewModel.MoveFrame(position);
-            
+
             if (_viewModel.IsTower())
-                _viewModel.Enable.Value = _placementService.CheckPlacementTower(position, _viewModel.GetTower().TowerEntityId, _viewModel.GetTower().IsOnRoad);
+            {
+                _viewModel.Enable.Value = _placementService.CheckPlacementTower(position,
+                    _viewModel.GetTower().TowerEntityId, _viewModel.GetTower().IsOnRoad);
+                if (_areaViewModel != null)
+                {
+                    _areaViewModel.SetPosition(position);
+                    if (!_viewModel.Enable.Value)
+                    {
+                        _areaViewModel.Hide();
+                    }
+                    else
+                    {
+                        _areaViewModel.Restore();
+                    }
+                };
+            }
+
             if (_viewModel.IsRoad())
                 _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());
 
@@ -90,7 +110,6 @@ namespace Game.GamePlay.Services
                     }
                     _viewModel.Enable.Value = enableItems;
                 }
-                
             }
         }
 
@@ -112,7 +131,7 @@ namespace Game.GamePlay.Services
             }
         }
 
-        public void CreateFrameTower(Vector2Int position, int level, string configId)
+        public void CreateFrameTower(Vector2Int position, int level, string configId, AttackAreaViewModel areaViewModel)
         {
             var towerEntityId = _gameplayState.CreateEntityID();
             var towerEntity = new TowerEntity(new TowerEntityData
@@ -123,9 +142,13 @@ namespace Game.GamePlay.Services
                 ConfigId = configId,
                 IsOnRoad = _towerOnRoadMap[configId],
             });
-            
+            towerEntity.Parameters = _towerService.TowerParametersMap[configId];
+            Debug.Log(JsonConvert.SerializeObject(towerEntity.Parameters, Formatting.Indented));
             var towerViewModel = new TowerViewModel(towerEntity, null, _towerService);
-
+            _areaViewModel = areaViewModel;
+            _areaViewModel.SetStartPosition(towerEntity.Position.Value);
+            _areaViewModel.SetRadius(towerViewModel.GetRadius());
+            
             _viewModel = new FrameBlockViewModel(position);
             _viewModel.AddItem(towerViewModel);
             _viewModels.Add(_viewModel);
@@ -134,6 +157,11 @@ namespace Game.GamePlay.Services
 
         public void RemoveFrame()
         {
+            if (_areaViewModel != null)
+            {
+                _areaViewModel.Hide();
+                _areaViewModel = null;
+            }
             _viewModels.Remove(_viewModel);
             _viewModel?.Dispose();
         }

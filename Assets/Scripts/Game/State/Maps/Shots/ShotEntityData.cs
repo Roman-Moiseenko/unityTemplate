@@ -14,5 +14,6 @@ namespace Game.State.Maps.Shots
         public float Speed;
         public float Damage;
         public bool Single;
+        public bool NotPrefab;
     }
 }

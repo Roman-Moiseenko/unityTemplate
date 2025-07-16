@@ -18,7 +18,8 @@ namespace Game.State.Maps.Shots
         public ReactiveProperty<Vector3> Position;
         public ReactiveProperty<Vector3> FinishPosition;
         public float Damage => Origin.Damage;
-        
+        public bool NotPrefab => Origin.NotPrefab;
+
         public ShotEntity(ShotEntityData shotEntityData, ReactiveProperty<Vector3> position)
         {
             Origin = shotEntityData;

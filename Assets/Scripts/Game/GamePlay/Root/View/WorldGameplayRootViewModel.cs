@@ -5,6 +5,7 @@ using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Services;
+using Game.GamePlay.View.AttackAreas;
 using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
@@ -52,6 +53,7 @@ namespace Game.GamePlay.Root.View
         public CastleViewModel CastleViewModel { get; private set; }
         public GateWaveViewModel GateWaveViewModel { get; private set; }
         public GateWaveViewModel GateWaveViewModelSecond { get; private set; }
+        public AttackAreaViewModel AreaViewModel { get; }
         
         public ReactiveProperty<Vector2Int> CameraMove;
 
@@ -91,6 +93,9 @@ namespace Game.GamePlay.Root.View
             CastleViewModel = castleService.CastleViewModel;
             GateWaveViewModel = waveService.GateWaveViewModel;
             GateWaveViewModelSecond = waveService.GateWaveViewModelSecond;
+
+            AreaViewModel = new AttackAreaViewModel(new Vector2Int(0, 0));
+            
             
             CameraMove = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));
             CameraMove.Subscribe(p => _cameraService.MoveCamera(p));
@@ -107,7 +112,7 @@ namespace Game.GamePlay.Root.View
                     {
                         position = placementService.GetNewPositionTower();
                         var level = towersService.Levels[reward.ConfigId];
-                        frameService.CreateFrameTower(position, level, reward.ConfigId);
+                        frameService.CreateFrameTower(position, level, reward.ConfigId, AreaViewModel);
                     }
 
                     if (reward.RewardType == RewardType.Road)
@@ -208,17 +213,27 @@ namespace Game.GamePlay.Root.View
                     if (towerViewModel.IsPosition(position))
                     {
                         Debug.Log(" Это башня " + towerViewModel.ConfigId);
+                        
+                       // var start = new Vector3()
+                        //Debug.DrawLine(towerViewModel.Position.Value, );
+                        
+                        AreaViewModel.Position.Value = towerViewModel.Position.Value;
+                        AreaViewModel.SetRadius(towerViewModel.GetRadius());
+                        
                         return;
+                        //TODO Создаем модель площади
                     }
                 }
 
 
                 if (CastleViewModel.IsPosition(position))
                     Debug.Log(" Это крепость " + CastleViewModel.ConfigId);
-
+                AreaViewModel.Hide();
                 return;
             }
 
+            
+            //TODO Если модель площади есть, удаляем 
             if (_fsmGameplay.IsStateBuild())
             {
                 _fsmGameplay.Fsm.Position.Value =

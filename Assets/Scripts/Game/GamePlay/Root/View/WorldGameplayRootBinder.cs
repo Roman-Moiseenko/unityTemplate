@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Game.GamePlay.Classes;
+using Game.GamePlay.View.AttackAreas;
 using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
@@ -38,6 +39,7 @@ namespace Game.GamePlay.Root.View
         private readonly Dictionary<int, ShotBinder> _createShotsMap = new();
         private readonly List<GateWaveBinder> _createGateMap = new();
         private CastleBinder _castleBinder;
+        private AttackAreaBinder _attackAreaBinder;
         private readonly CompositeDisposable _disposables = new();
 
         private bool _clickCoroutines = false;
@@ -117,20 +119,16 @@ namespace Game.GamePlay.Root.View
             _disposables.Remove(
                 viewModel.FrameBlockViewModels.ObserveRemove().Subscribe(e => DestroyFrameBlock(e.Value))
             );
-
-
-            // _gameplayCamera = new GameplayCamera();
-            //    _viewModel.CameraMove.Subscribe(newValue =>
-            //  {
-            //     _gameplayCamera.MoveCamera(newValue);
-            //  });
+            
             //Создаем view-модель ворот из прехаба
             CreateGateWave(_viewModel.GateWaveViewModel);
             CreateGateWave(_viewModel.GateWaveViewModelSecond);
-
+            
+            CreateAttackArea(_viewModel.AreaViewModel);
             //Запускаем следующую волну
             _viewModel.StartGameplayServices();
         }
+        
 
         private void OnDestroy()
         {
@@ -139,14 +137,19 @@ namespace Game.GamePlay.Root.View
                 Destroy(_castleBinder.gameObject);
             }
 
+            if (_attackAreaBinder != null)
+            {
+                Destroy(_attackAreaBinder.gameObject);
+            }
+
             _disposables.Dispose();
             _createGateMap.ForEach(item => Destroy(item.gameObject));
         }
         
         private void CreateShot(ShotViewModel shotViewModel)
         {
-//            Debug.Log("Создаем 3д модель выстрела " + shotViewModel.ConfigId);
-           
+            if (shotViewModel.NotPrefab) return;
+            
             var prefabPath = $"Prefabs/Gameplay/Shots/{shotViewModel.ConfigId}"; //Перенести в настройки уровня
             var shotPrefab = Resources.Load<ShotBinder>(prefabPath);
             var createdShot = Instantiate(shotPrefab, transform);
@@ -163,10 +166,9 @@ namespace Game.GamePlay.Root.View
             createdGate.Bind(viewModel);
             _createGateMap.Add(createdGate);
         }
-
+        
         private void CreateMob(MobViewModel mobViewModel)
         {
-//            Debug.Log("Создаем 3д модель = " + mobViewModel.MobEntityId);
             var prefabPath = $"Prefabs/Gameplay/Mobs/{mobViewModel.ConfigId}"; //Перенести в настройки уровня
             var mobPrefab = Resources.Load<MobBinder>(prefabPath);
             var createdMob = Instantiate(mobPrefab, transform);
@@ -182,7 +184,16 @@ namespace Game.GamePlay.Root.View
             createdCastle.Bind(castleViewModel);
             _castleBinder = createdCastle;
         }
-
+        
+        private void CreateAttackArea(AttackAreaViewModel attackAreaViewModel)
+        {
+            var prefabPath = "Prefabs/Gameplay/AttackArea"; //Перенести в настройки уровня
+            var areaPrefab = Resources.Load<AttackAreaBinder>(prefabPath);
+            var createdArea = Instantiate(areaPrefab, transform);
+            createdArea.Bind(attackAreaViewModel);
+            _attackAreaBinder = createdArea;
+        }
+        
         private void CreateTower(TowerViewModel towerViewModel, Transform parentTransform = null)
         {
             var towerLevel = towerViewModel.Level;
@@ -198,7 +209,6 @@ namespace Game.GamePlay.Root.View
 
         private void CreateRoad(RoadViewModel roadViewModel, Transform parentTransform = null)
         {
-            //   Debug.Log("CreateRoad = " + roadViewModel.Position.CurrentValue.x + " " + roadViewModel.Position.CurrentValue.y);
             var roadConfig = roadViewModel.ConfigId;
             var direction = roadViewModel.IsTurn ? "Turn" : "Line";
             var prefabRoadLevelPath =

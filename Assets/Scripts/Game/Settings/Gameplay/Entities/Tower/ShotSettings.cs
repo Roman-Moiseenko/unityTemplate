@@ -9,5 +9,6 @@ namespace Game.Settings.Gameplay.Entities.Tower
         public float Speed = 1f;
         public bool LineTrajectory = true;
         public bool Single = true;
+        public bool NotPrefab = false;
     }
 }

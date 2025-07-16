@@ -18,6 +18,8 @@ namespace Game.GamePlay.View.Shots
         private readonly ReactiveProperty<bool> _shotMoving;
         public ReactiveProperty<Vector3> Direction = new();
         public ReactiveProperty<Quaternion> Rotation = new();
+        public bool NotPrefab => _shotEntity.NotPrefab;
+        
         public ShotViewModel(ShotEntity shotEntity, ShotService shotService)
         {
             _shotEntity = shotEntity;

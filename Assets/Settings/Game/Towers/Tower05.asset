@@ -25,6 +25,7 @@ MonoBehaviour:
     Speed: 1000
     LineTrajectory: 1
     Single: 1
+    NotPrefab: 1
   <GameplayLevels>k__BackingField:
   - Level: 1
     Parameters:

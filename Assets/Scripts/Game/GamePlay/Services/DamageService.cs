@@ -135,7 +135,7 @@ namespace Game.GamePlay.Services
                 if (!towerEntity.IsTargetForAttack(mobEntity.IsFly)) continue; //Проверка на совпадение типа врага и башни
 
                 var mobPosition = mobEntity.Position.CurrentValue;
-                towerIsShooting = MobDistanceShot(mobPosition, towerPosition, towerEntity.Origin.Parameters);
+                towerIsShooting = MobDistanceShot(mobPosition, towerPosition, towerEntity.Parameters);
                 if (!towerIsShooting) continue; //Выстрела нет, следующий моб
                
                 _shotService.CreateShot(towerEntity, mobEntity); //Создать выстрел
@@ -148,7 +148,7 @@ namespace Game.GamePlay.Services
                 yield break;
             }
             
-            yield return new WaitForSeconds(towerSpeed.Value.Value / _gameplayState.GameSpeed.Value);//Поделить на тек. скорость игры
+            yield return new WaitForSeconds(towerSpeed.Value / _gameplayState.GameSpeed.Value);//Поделить на тек. скорость игры
             towerEntity.IsShot.Value = false;
         }
 
@@ -166,9 +166,13 @@ namespace Game.GamePlay.Services
             {
                 return d <= distance.Value;
             }
+            var start = new Vector3(towerPosition.x, 0.1f, towerPosition.y);
+            var end = new Vector3(towerPosition.x + 0.5f, 0.1f, towerPosition.y);
+            //Debug.Log(start +" " + end);
+            Debug.DrawLine(start, end);
             
             //Башня на дороге, нет дистанции
-            return d <= 0.5f;
+            return Vector2.Distance(mobPosition, towerPosition) <= 0.5f;
             
         }
     }

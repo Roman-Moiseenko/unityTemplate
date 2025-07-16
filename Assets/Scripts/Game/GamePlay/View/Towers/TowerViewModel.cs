@@ -3,6 +3,7 @@ using Game.GamePlay.Services;
 using Game.GamePlay.View.Frames;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Maps.Towers;
+using Newtonsoft.Json;
 using R3;
 using UnityEngine;
 
@@ -72,6 +73,29 @@ namespace Game.GamePlay.View.Towers
         public Vector2Int GetPosition()
         {
             return Position.CurrentValue;
+        }
+
+        public Vector3 GetRadius()
+        {
+            var radius = new Vector3(0, 0, 0);
+            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var min))
+            {
+                radius.y = min.Value;
+            }
+            
+            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var max))
+            {
+                radius.x = max.Value;
+            }
+            
+            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.Distance, out var parameter))
+            {
+                radius.x = parameter.Value;
+            }
+            
+            //TODO Если к башне применен параметр Высота (+дистанции) то вычисляем radius.z = radius.x + %%
+
+            return radius;
         }
     }
 }
