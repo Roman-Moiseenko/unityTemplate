@@ -7,5 +7,6 @@ namespace Game.Settings.Gameplay.Enemies
     {
         public int Quantity;
         public MobSettings Mob;
+        public int Level = 1;
     }
 }

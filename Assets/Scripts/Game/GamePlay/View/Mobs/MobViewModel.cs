@@ -38,6 +38,7 @@ namespace Game.GamePlay.View.Mobs
         public ReactiveProperty<bool> FinishCurrentAnimation = new(true);
         public ReactiveProperty<bool> AnimationDelete = new(false);
         public IReadOnlyObservableDictionary<string, MobDebuff> Debuffs => _mobEntity.Debuffs;
+        public int Level => _mobEntity.Level;
 
         public MobViewModel(MobEntity mobEntity, WaveService waveService, GameplayCamera cameraService)
         {

@@ -13,6 +13,7 @@ namespace Game.GamePlay.View.Mobs
         MeshRenderer meshRenderer;
 		public MobViewModel _viewModel;
         private Vector3 _targetPosition;
+        private HealthBar _healthBarBinder;
 
         private Quaternion _targetDirection;
 
@@ -24,9 +25,15 @@ namespace Game.GamePlay.View.Mobs
             _viewModel = viewModel;
             _mobY = _viewModel.IsFly ? 0.9f : 0.1f;
             transform.position = new Vector3(viewModel.StartPosition.x, _mobY, viewModel.StartPosition.y);
-            
-            meshRenderer = _healthBar.GetComponent<MeshRenderer>();
-            matBlock = new MaterialPropertyBlock();
+
+            _healthBarBinder = _healthBar.GetComponent<HealthBar>();
+            _healthBarBinder.Bind(
+                _viewModel.CameraService.Camera, 
+                _viewModel.MaxHealth, 
+                _viewModel.CurrentHealth,
+                _viewModel.Level
+                );
+
             
             //поворачиваем модель
             transform.rotation = Quaternion.LookRotation(new Vector3(viewModel.Direction.CurrentValue.x, 0, viewModel.Direction.CurrentValue.y));
@@ -36,6 +43,7 @@ namespace Game.GamePlay.View.Mobs
             {
                 var direction = new Vector3(newValue.x, 0, newValue.y);
                 _targetDirection = Quaternion.LookRotation(direction);
+                
             });
             
             viewModel.Position.Subscribe(newValue =>
@@ -55,7 +63,8 @@ namespace Game.GamePlay.View.Mobs
 
         public void Update()
         {
-            if (_viewModel.CurrentHealth.CurrentValue < _viewModel.MaxHealth)
+            _healthBarBinder.OnUpdate();
+         /*   if (_viewModel.CurrentHealth.CurrentValue < _viewModel.MaxHealth)
             {
                 _healthBar.gameObject.SetActive(true);
                 AlignCamera();
@@ -65,9 +74,12 @@ namespace Game.GamePlay.View.Mobs
             {
                 _healthBar.gameObject.SetActive(false);
             }
-
+*/
             if (transform.rotation != _targetDirection)
+            {
                 transform.rotation = Quaternion.Slerp(transform.rotation, _targetDirection, Time.deltaTime * 10f);
+                _healthBarBinder.OnUpdate();
+            }
         }
 
         private Vector3 GetTargetPosition()

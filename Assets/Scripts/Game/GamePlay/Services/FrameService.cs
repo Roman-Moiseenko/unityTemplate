@@ -34,8 +34,6 @@ namespace Game.GamePlay.Services
         private Dictionary<string, bool> _towerOnRoadMap = new();
         private Dictionary<string, bool> _towerParametersMap = new();
         
-        //public 
-    //    private Dictionary<int, Vector2Int> _rotations = new();
         private Dictionary<int, Vector2Int> matrixRoads = new();
         private AttackAreaViewModel _areaViewModel;
 
@@ -59,7 +57,6 @@ namespace Game.GamePlay.Services
             foreach (var towerSettings in towersSettings.AllTowers)
             {
                 _towerOnRoadMap.Add(towerSettings.ConfigId, towerSettings.OnRoad);
-               // _towerParametersMap.Add(towerSettings.ConfigId, towerSettings.p);
             }
         }
 
@@ -143,7 +140,6 @@ namespace Game.GamePlay.Services
                 IsOnRoad = _towerOnRoadMap[configId],
             });
             towerEntity.Parameters = _towerService.TowerParametersMap[configId];
-            Debug.Log(JsonConvert.SerializeObject(towerEntity.Parameters, Formatting.Indented));
             var towerViewModel = new TowerViewModel(towerEntity, null, _towerService);
             _areaViewModel = areaViewModel;
             _areaViewModel.SetStartPosition(towerEntity.Position.Value);
@@ -333,8 +329,10 @@ namespace Game.GamePlay.Services
 
         public IEnumerable<Vector2Int> GetGrounds()
         {
-            return _viewModel.EntityViewModels.Select(item => item.GetPosition() + _viewModel.Position.CurrentValue).ToList();
-            //return _viewModel.EntityViewModels.Cast<GroundFrameViewModel>().ToList()
+            return _viewModel.
+                EntityViewModels.
+                Select(item => item.GetPosition() + _viewModel.Position.CurrentValue).
+                ToList();
         }
     }
 }

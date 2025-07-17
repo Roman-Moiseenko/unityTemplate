@@ -123,6 +123,8 @@ namespace Game.GamePlay.Commands.MapCommand
 
                 foreach (var waveItem in wave.WaveItems) //Настройки каждой волны - группы мобов
                 {
+                    //Коэфициент усиления от уровня
+                    var coef = Mathf.Pow(1.25f, waveItem.Level - 1);
                     //Добавляем кол-во данного типа мобов в список
                     for (int i = 0; i < waveItem.Quantity; i++)
                     {
@@ -131,13 +133,14 @@ namespace Game.GamePlay.Commands.MapCommand
                         {
                             ConfigId = waveItem.Mob.ConfigId,
                             UniqueId = _gameplayState.CreateEntityID(),
-                            Health = waveItem.Mob.Health,
+                            Health = waveItem.Mob.Health * coef,
                             Type = waveItem.Mob.Type,
-                            Armor = waveItem.Mob.Armor,
-                            Attack = waveItem.Mob.Attack,
+                            Armor = waveItem.Mob.Armor * coef,
+                            Attack = waveItem.Mob.Attack * coef,
                             Speed = waveItem.Mob.Speed,
                             IsFly = waveItem.Mob.IsFly,
                             RewardCurrency = waveItem.Mob.RewardCurrency,
+                            Level = waveItem.Level,
                         };
                         initialWave.Mobs.Add(mob);
                     }

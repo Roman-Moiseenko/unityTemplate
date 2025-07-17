@@ -40,15 +40,24 @@ namespace Game.State.Maps.Towers
             
             TypeEnemy = towerEntityData.TypeEnemy;
             IsMultiShot = towerEntityData.IsMultiShot;
-
-  /*          Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
-            Parameters.ObserveAdd().Subscribe(e =>
+            IsShot.Subscribe(s =>
             {
-                var type = e.Value.Key;
-                var parameter = e.Value.Value.Origin;
-                towerEntityData.Parameters.Add(type, parameter);
+                if (s)
+                {
+                   // Debug.Log("Выстрел " + ConfigId + " " + Time.time);
+                }
+
+                
             });
-*/
+
+            /*          Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
+                      Parameters.ObserveAdd().Subscribe(e =>
+                      {
+                          var type = e.Value.Key;
+                          var parameter = e.Value.Value.Origin;
+                          towerEntityData.Parameters.Add(type, parameter);
+                      });
+          */
         }
 
         public bool PositionNear(Vector2Int position)

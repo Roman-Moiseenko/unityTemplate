@@ -97,9 +97,7 @@ namespace Game.GamePlay.Services
                 {
                     throw new Exception($"Моб не найден {shot.MobEntityId}");
                 }
-                
             });
-            
         }
 
         public void Update()
@@ -109,12 +107,11 @@ namespace Game.GamePlay.Services
             //  {
 
             if (_fsmGameplay.IsGamePause.Value) return;
-
+            if (_waveService.AllMobsMap.Count == 0) return;
+            
             foreach (var towerEntity in _gameplayState.Towers)
             {
-                //Debug.Log("towerEntity.IsShot.Value = " + towerEntity.IsShot.Value);
                 if (towerEntity.IsShot.Value) continue; 
-                
                 //Если башня не стреляет, запускаем корутин
                 towerEntity.IsShot.Value = true;
                 _coroutines.StartCoroutine(TowerFireShot(towerEntity));
@@ -122,8 +119,7 @@ namespace Game.GamePlay.Services
 
             //  });
         }
-
-
+        
         public IEnumerator TowerFireShot(TowerEntity towerEntity)
         {
             yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //На паузе не стреляем
@@ -131,7 +127,6 @@ namespace Game.GamePlay.Services
             if (!towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed)) yield break;
             var towerPosition = towerEntity.Position.CurrentValue;
             var towerIsShooting = false;
-            
             //Обходим список мобов
             foreach (var keyMobEntity in _waveService.AllMobsMap)
             {
@@ -139,11 +134,12 @@ namespace Game.GamePlay.Services
                 if (!towerEntity.IsTargetForAttack(mobEntity.IsFly)) continue; //Проверка на совпадение типа врага и башни
 
                 var mobPosition = mobEntity.Position.CurrentValue;
-                towerIsShooting = MobDistanceShot(mobPosition, towerPosition, towerEntity.Parameters);
-                if (!towerIsShooting) continue; //Выстрела нет, следующий моб
-               
-                _shotService.CreateShot(towerEntity, mobEntity); //Создать выстрел
-                if (!towerEntity.IsMultiShot) break; //Для не мульти башни 1 выстрел 
+                if (MobDistanceShot(mobPosition, towerPosition, towerEntity.Parameters))
+                {
+                    towerIsShooting = true;
+                    _shotService.CreateShot(towerEntity, mobEntity); //Создать выстрел
+                    if (!towerEntity.IsMultiShot) break; //Для не мульти башни 1 выстрел
+                }
             }
             
             if (!towerIsShooting) //За обход башня не выстрелила, таймер КД не запускаем
@@ -151,9 +147,10 @@ namespace Game.GamePlay.Services
                 towerEntity.IsShot.Value = false;
                 yield break;
             }
-            
+
             yield return new WaitForSeconds(towerSpeed.Value / _gameplayState.GameSpeed.Value);//Поделить на тек. скорость игры
             towerEntity.IsShot.Value = false;
+
         }
 
 
