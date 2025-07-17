@@ -1,5 +1,9 @@
-﻿using R3;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+using ObservableCollections;
+using R3;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Game.State.Maps.Mobs
 {
@@ -13,13 +17,16 @@ namespace Game.State.Maps.Mobs
         public ReactiveProperty<Vector2Int> Direction; //Данные не сохраняются в MobEntityData
         public MobType Type => Origin.Type;
         public bool IsWay = true; //На главной дороге
-        public int Speed => Origin.Speed;
+        public float BaseSpeed => Origin.Speed;
         public bool IsFly => Origin.IsFly;
+        public int Level => Origin.Level;
         public ReactiveProperty<float> Health;
         public ReactiveProperty<float> Armor;
         public ReactiveProperty<bool> IsDead = new(false);
         public float Attack => Origin.Attack;
         public float Delta;
+
+        public ObservableDictionary<string, MobDebuff> Debuffs = new();
 
         public readonly ReactiveProperty<Vector3> PositionTarget = new();
 
@@ -59,14 +66,34 @@ namespace Game.State.Maps.Mobs
 
         public void SetDamage(float damage)
         {
-            if (damage > Armor.Value)
-            {
-                Health.Value -= damage - Armor.Value;
-            }
-            else
-            {
-                Armor.Value -= damage;
-            }
+            Health.Value -= damage - Armor.Value;
         }
+        
+        public void SetDebuff(string configId, MobDebuff debuff)
+        {
+            Debuffs.TryAdd(configId, debuff);
+        }
+
+        public void RemoveDebuff(string configId)
+        {
+            Debuffs.Remove(configId);
+        }
+
+        public float Speed()
+        {
+            var newSpeed = BaseSpeed;
+            foreach (var mobDebuff in Debuffs)
+            {
+                if (mobDebuff.Value.Type == MobDebuffType.Speed)
+                {
+                    newSpeed -= BaseSpeed * mobDebuff.Value.Value / 100;
+                }
+            }
+
+            if (newSpeed < 0) newSpeed = 0;
+//            Debug.Log("Скорость моба " + UniqueId + " = " + newSpeed);
+            return newSpeed;
+        }
+        
     }
 }

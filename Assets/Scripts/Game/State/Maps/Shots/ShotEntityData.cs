@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Game.State.Maps.Mobs;
+using UnityEngine;
 
 namespace Game.State.Maps.Shots
 {
@@ -15,5 +16,7 @@ namespace Game.State.Maps.Shots
         public float Damage;
         public bool Single;
         public bool NotPrefab;
+
+        public MobDebuff Debuff;
     }
 }

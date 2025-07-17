@@ -34,13 +34,13 @@ namespace Game.GamePlay.Services
         private readonly Coroutines _coroutines;
         private readonly RoadsService _roadsService;
 
-        public readonly ReactiveProperty<int> GameSpeed = new(1);
+        public readonly ReactiveProperty<int> GameSpeed;
 
         public ReactiveProperty<bool>
             StartForced = new(false); //Комбинация различных подписок для разрешения запуска новой волны
 
         public ReactiveProperty<bool> TimeOutNewWave = new(false); //Таймер ожидания волны закончился
-        public ReactiveProperty<float> TimeOutNewWaveValue = new(0f);  
+        public ReactiveProperty<float> TimeOutNewWaveValue = new(0f);
         public ReactiveProperty<bool> ShowGate = new(false); //Для подписки внешним ViewModel
 
 
@@ -52,9 +52,7 @@ namespace Game.GamePlay.Services
 
         public GateWaveViewModel GateWaveViewModel;
         public GateWaveViewModel GateWaveViewModelSecond; //TODO Сделать, когда будет 2 пути
-        private GameplayCamera _cameraService;
-
-        public Dictionary<int, WaveEntityData> Waves;
+        private readonly GameplayCamera _cameraService;
 
         public WaveService(
             DIContainer container,
@@ -97,13 +95,22 @@ namespace Game.GamePlay.Services
                     IsMobsOnWay.Value = true;
                     _coroutines.StopCoroutine(TimerNewWave());
                 }
-                //_allMobsOnWay.Sort();
+
+                var mobViewModel = newValue.Value;
                 _coroutines.StartCoroutine(
                     MovingMobOnWay(newValue.Value)); //При добавление моба, запускаем его движение
+
+                mobViewModel.Debuffs.ObserveAdd().Subscribe(d =>
+                    _coroutines.StartCoroutine(MobTimerDebuff(d.Value.Key, d.Value.Value, mobViewModel)));
+                
+                mobViewModel.Debuffs.ObserveRemove().Subscribe(d =>
+                    _coroutines.StopCoroutine(MobTimerDebuff(d.Value.Key, d.Value.Value, mobViewModel)));
             });
-            
+
             _allMobsOnWay.ObserveRemove().Subscribe(e =>
             {
+   
+                
                 if (_allMobsOnWay.Count != 0) return; //На дороге нет мобов
                 IsMobsOnWay.Value = false;
                 _coroutines.StartCoroutine(TimerNewWave());
@@ -121,67 +128,16 @@ namespace Game.GamePlay.Services
             _coroutines.StartCoroutine(TimerNewWave()); //Первоначальный запуска таймера
         }
 
-        private IEnumerator MovingMobOnWay(MobViewModel mobViewModel)
+        public void StartNextWave()
         {
-            //mobViewModel.SetStartPosition(GateWaveViewModel.Position.CurrentValue, GateWaveViewModel.Direction.CurrentValue);
-            var way = _gameplayState.Origin.Way;
-            List<RoadPoint> roads = new(); 
-            
-            //Формируем список точек движения моба
-            for (int i = way.Count - 1; i >= 0; i--)
-            {
-                //Определяем направление кроме начальной позиции
-                /*  if (i != way.Count - 1)
-                  {
-                      var direction = _wayService.GetDirection(way, i);
+            _gameplayState.CurrentWave.Value++;
+        }
 
-                      //Запускаем поворот
-                      yield return mobViewModel.RotateModel(direction);
-                  }*/
-                
-                Vector2 position = way[i].Position; //Определяем новые координаты моба
-                //Смещение от центра на delta
-                if (way[i].IsTurn)
-                {
-                    position.x += mobViewModel.Delta;
-                    position.y += mobViewModel.Delta;
-                }
-                else
-                {
-                    if (way[i].Rotate % 2 == 0)
-                    {
-                        position.y += mobViewModel.Delta;
-                    }
-                    else
-                    {
-                        position.x += mobViewModel.Delta;
-                    }
-                }
-                Vector2Int direction;
-                if (i == 0)
-                {
-                    //TODO проверяем позицию Замка
-                    position.x -= 0.25f;
-                    direction = Vector2Int.zero - way[i].Position; 
-                }
-                else
-                {
-                    direction = way[i - 1].Position - way[i].Position;
-                }
-                
-
-                //TODO если i = 0, то добавляем 0.25 по направлению
-                //TODO для IsFly при i = 1, а при i = 0 нет движения
-                roads.Add(new RoadPoint(position, direction)); //Список точек движения 
-                
-                //Запускаем движение
-            }
-
-            yield return mobViewModel.MovingModel(roads);
-            //TODO Моб дошел до замка
-            //TODO Запуск атаки моба
-            yield return DamageToMob(mobViewModel); //Наносим урон мобу --- заменить на урон Замку
-            yield break;
+        public void StartForcedNewWave()
+        {
+            _coroutines.StopCoroutine(TimerNewWave());
+            //  TimeOutNewWave.Value = false;
+            StartForced.Value = true;
         }
 
         private IEnumerator StartNewWave(int numberWave)
@@ -203,35 +159,90 @@ namespace Game.GamePlay.Services
 
         private IEnumerator GenerateMob(int numberWave)
         {
-            if (_gameplayState.Waves.TryGetValue(numberWave, out var waveEntity))
+            if (!_gameplayState.Waves.TryGetValue(numberWave, out var waveEntity)) yield break; //Волны закончились
+            foreach (var entityMob in waveEntity.Mobs)
             {
-                foreach (var entityMob in waveEntity.Mobs)
-                {
-                    yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //Пауза игры
-                    CreateMobViewModel(entityMob);
-                    yield return
-                        new WaitForSeconds(SpeedGenerateMobs / GameSpeed.CurrentValue); //Задержка создания нового моба
-                }
+                yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //Пауза игры
+                CreateMobViewModel(entityMob);
+                yield return
+                    new WaitForSeconds(SpeedGenerateMobs / GameSpeed.CurrentValue); //Задержка создания нового моба
             }
+        }
+
+        private IEnumerator MovingMobOnWay(MobViewModel mobViewModel)
+        {
+            while (_fsmGameplay.IsGamePause.Value)//Пауза
+            {
+                yield return null;
+            }
+            yield return mobViewModel.MovingModel(GenerateRoadPoints(mobViewModel));
+            //TODO Моб дошел до замка Запуск атаки моба
+            yield return DamageToMob(mobViewModel); //Наносим урон мобу --- заменить на урон Замку
+            yield break;
+        }
+
+        public IEnumerator MobTimerDebuff(string configId, MobDebuff debuff, MobViewModel mobViewModel)
+        {
+            while (_fsmGameplay.IsGamePause.Value)//Пауза
+            {
+                yield return null;
+            }
+            
+            yield return new WaitForSeconds(debuff.Time);
+            mobViewModel.RemoveDebuff(configId);
         }
 
         private IEnumerator TimerNewWave()
         {
             TimeOutNewWave.Value = false;
-
             for (var i = 0; i < AppConstants.TIME_WAVE_NEW; i++) //Ускоряем при новой скорости
             {
                 while (_fsmGameplay.IsGamePause.Value)
                 {
                     yield return null;
-                } 
+                }
+
                 // yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value);
                 TimeOutNewWaveValue.Value = Convert.ToSingle(i) / AppConstants.TIME_WAVE_NEW;
-                
+
                 yield return new WaitForSeconds(0.04f / GameSpeed.CurrentValue);
-               // Debug.Log("WaitForSeconds = " + 0.04f / GameSpeed.CurrentValue);
+                // Debug.Log("WaitForSeconds = " + 0.04f / GameSpeed.CurrentValue);
             }
+
             TimeOutNewWave.Value = true;
+        }
+
+        private IEnumerator RemoveMobViewModel(int mobId)
+        {
+            var mobViewModel = _allMobsOnWay.FirstOrDefault(e => e.MobEntityId == mobId);
+            if (mobViewModel == null) yield break;
+
+            mobViewModel.StartAnimationDelete(); //Запускаем процесс удаления модели
+            while (!mobViewModel.FinishCurrentAnimation.CurrentValue)
+            {
+                yield return null;
+            }
+
+            _allMobsOnWay.Remove(mobViewModel);
+            yield return null;
+        }
+
+        /**
+         * Временная функция убийства мобов
+         */
+        private IEnumerator DamageToMob(MobViewModel mobViewModel)
+        {
+            try
+            {
+                AllMobsMap[mobViewModel.MobEntityId].Health.Value -= 1000;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                yield break;
+            }
+
+            yield return null;
         }
 
         /**
@@ -257,7 +268,7 @@ namespace Game.GamePlay.Services
                 }
             };
         }
-        
+
         /**
          * Перемещаем главные ворота
          */
@@ -291,55 +302,68 @@ namespace Game.GamePlay.Services
             var position = GateWaveViewModel.Position.Value;
             var direction = -1 * GateWaveViewModel.Direction.Value;
             mobEntity.SetStartPosition(position, direction);
-            
+
             mobEntity.IsWay = true;
             var mobViewModel = new MobViewModel(mobEntity, this, _cameraService);
             AllMobsMap.Add(mobEntity.UniqueId, mobEntity);
             _allMobsOnWay.Add(mobViewModel);
         }
 
-        private IEnumerator RemoveMobViewModel(int mobId)
+        private List<RoadPoint> GenerateRoadPoints(MobViewModel mobViewModel)
         {
-            var mobViewModel = _allMobsOnWay.FirstOrDefault(e => e.MobEntityId == mobId);
-            if (mobViewModel == null) yield break;
-            
-            mobViewModel.StartAnimationDelete(); //Запускаем процесс удаления модели
-            while (!mobViewModel.FinishCurrentAnimation.CurrentValue)
-            {
-                yield return null;
-            }
-            _allMobsOnWay.Remove(mobViewModel);
-            yield return null;
-        }
+            var way = _gameplayState.Origin.Way;
+            List<RoadPoint> roads = new();
 
-        public void StartNextWave()
-        {
-            _gameplayState.CurrentWave.Value++;
-        }
-
-        /**
-         * Временная функция убийства мобов
-         */
-        private IEnumerator DamageToMob(MobViewModel mobViewModel)
-        {
-            try
+            //Формируем список точек движения моба
+            for (int i = way.Count - 1; i >= 0; i--)
             {
-                AllMobsMap[mobViewModel.MobEntityId].Health.Value -= 1000;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                yield break;
-            }
-            yield return null;
-            
-        }
+                //Определяем направление кроме начальной позиции
+                /*  if (i != way.Count - 1)
+                  {
+                      var direction = _wayService.GetDirection(way, i);
 
-        public void StartForcedNewWave()
-        {
-            _coroutines.StopCoroutine(TimerNewWave());
-          //  TimeOutNewWave.Value = false;
-            StartForced.Value = true;
+                      //Запускаем поворот
+                      yield return mobViewModel.RotateModel(direction);
+                  }*/
+
+                Vector2 position = way[i].Position; //Определяем новые координаты моба
+                //Смещение от центра на delta
+                if (way[i].IsTurn)
+                {
+                    position.x += mobViewModel.Delta;
+                    position.y += mobViewModel.Delta;
+                }
+                else
+                {
+                    if (way[i].Rotate % 2 == 0)
+                    {
+                        position.y += mobViewModel.Delta;
+                    }
+                    else
+                    {
+                        position.x += mobViewModel.Delta;
+                    }
+                }
+
+                Vector2Int direction;
+                if (i == 0)
+                {
+                    //TODO проверяем позицию Замка
+                    position.x -= 0.25f;
+                    direction = Vector2Int.zero - way[i].Position;
+                }
+                else
+                {
+                    direction = way[i - 1].Position - way[i].Position;
+                }
+
+
+                //TODO если i = 0, то добавляем 0.25 по направлению
+                //TODO для IsFly при i = 1, а при i = 0 нет движения
+                roads.Add(new RoadPoint(position, direction)); //Список точек движения 
+            }
+
+            return roads;
         }
     }
 }

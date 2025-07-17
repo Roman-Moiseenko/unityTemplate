@@ -7,6 +7,7 @@ using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
 using ObservableCollections;
 using R3;
+using Scripts.Utils;
 using UnityEngine;
 
 namespace Game.GamePlay.View.Mobs
@@ -25,17 +26,18 @@ namespace Game.GamePlay.View.Mobs
         public ReactiveProperty<Vector2> Position => _mobEntity.Position;
         public ReactiveProperty<Vector2Int> Direction;
         public readonly ReactiveProperty<int> GameSpeed;
-        public ReactiveProperty<float> MobSpeed = new(1.0f); //TODO Перенести в моб энтиити
+        
         public Vector2 StartPosition;
         public Vector2Int StartDirection;
         public List<RoadPoint> RoadPoints = new();
         public GameplayCamera CameraService;
-
+        
         public ReactiveProperty<float> CurrentHealth;
         public float MaxHealth;
         public float Delta => _mobEntity.Delta;
         public ReactiveProperty<bool> FinishCurrentAnimation = new(true);
         public ReactiveProperty<bool> AnimationDelete = new(false);
+        public IReadOnlyObservableDictionary<string, MobDebuff> Debuffs => _mobEntity.Debuffs;
 
         public MobViewModel(MobEntity mobEntity, WaveService waveService, GameplayCamera cameraService)
         {
@@ -49,20 +51,13 @@ namespace Game.GamePlay.View.Mobs
             MaxHealth = mobEntity.Health.CurrentValue;
 
             Direction = new ReactiveProperty<Vector2Int>(mobEntity.Direction.CurrentValue); //Начальное направление
-
-            //   Debug.Log("Создаем View Model для " + ConfigId + " MobEntityId " + MobEntityId);
-            //Position.Subscribe(p => Debug.Log("p = " + p));
-            //Debug.Log("mobEntity.Origin.UniqueId = " + mobEntity.Origin.UniqueId);
-            /*  IsMoving.Subscribe(newValue =>
-              {
-                  Debug.Log(" Моб = " + ConfigId + " движется = " + newValue + " в сторону " + Position.CurrentValue);
-              });*/
-            //TODO Заполняем данными модель
         }
 
-        public void SetStartPosition(Vector2 positionCurrentValue, Vector2Int directionCurrentValue)
+        public IEnumerator TimerDebuff(string configId, MobDebuff debuff)
         {
-            
+            //Пауза
+            yield return new WaitForSeconds(debuff.Time);
+            _mobEntity.RemoveDebuff(configId);
         }
 
         public IEnumerator RotateModel(Vector2Int direction)
@@ -82,7 +77,6 @@ namespace Game.GamePlay.View.Mobs
             }
             
             yield return new WaitUntil(() => !IsMoving.CurrentValue); // 
-            
         }
 
         private IEnumerator MovingEntity()
@@ -102,8 +96,11 @@ namespace Game.GamePlay.View.Mobs
                     _targetPosition = GetTargetPosition();
                 }
                 
-                var speedMob = GameSpeed.CurrentValue * AppConstants.MOB_BASE_SPEED * MobSpeed.CurrentValue;
-                Position.Value = Vector2.MoveTowards(Position.CurrentValue, _targetPosition,  Time.deltaTime * speedMob);
+                var speedMob = GameSpeed.CurrentValue * AppConstants.MOB_BASE_SPEED * _mobEntity.Speed();
+                Position.Value = Vector2.MoveTowards(
+                    Position.CurrentValue, 
+                    _targetPosition,  
+                    Time.deltaTime * speedMob);
             }
             yield return null;
         }
@@ -119,6 +116,11 @@ namespace Game.GamePlay.View.Mobs
         {
             FinishCurrentAnimation.Value = false;
             AnimationDelete.Value = true;
+        }
+
+        public void RemoveDebuff(string configId)
+        {
+            _mobEntity.RemoveDebuff(configId);
         }
     }
 }

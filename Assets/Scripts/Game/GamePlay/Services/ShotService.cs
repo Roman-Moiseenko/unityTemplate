@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using DI;
 using Game.GamePlay.Fsm;
@@ -60,7 +61,6 @@ namespace Game.GamePlay.Services
             var startPosition =
                 new Vector3(towerEntity.Position.CurrentValue.x, 1f, towerEntity.Position.CurrentValue.y);
             
-            //Debug.Log("Выстрел " + towerEntity.Position.CurrentValue + " => " + mobEntity.Position.CurrentValue);
             var damage = 0f;
             //Расчет урона от башни
             if (towerEntity.Parameters.TryGetValue(TowerParameterType.Damage, out var parameter))
@@ -69,10 +69,26 @@ namespace Game.GamePlay.Services
                 //Single = true
             }
 
+            MobDebuff debuff = null;
             if (towerEntity.Parameters.TryGetValue(TowerParameterType.DamageArea, out parameter))
             {
                 damage = parameter.Value;
                 //TODO Возможно перенести Single = false
+            }
+
+            //Добавляем дебафф к выстрелу
+            if (towerEntity.Parameters.TryGetValue(TowerParameterType.SlowingDown, out var slowParameter))
+            {
+                var speedTower = 1f;
+                if (towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var speedParameter))
+                    speedTower = speedParameter.Value; //Скорость выстрела == время действия дебафа
+                
+                debuff = new MobDebuff
+                {
+                    Value = slowParameter.Value,
+                    Type = MobDebuffType.Speed,
+                    Time = speedTower,
+                };
             }
             
             var shotEntityData = new ShotEntityData
@@ -87,6 +103,7 @@ namespace Game.GamePlay.Services
                 Single = _shotSettingsMap[towerEntity.ConfigId].Single,
                 Damage = damage, 
                 NotPrefab = _shotSettingsMap[towerEntity.ConfigId].NotPrefab,
+                Debuff = debuff,
             };
 
             var shotEntity = new ShotEntity(shotEntityData, mobEntity.PositionTarget);

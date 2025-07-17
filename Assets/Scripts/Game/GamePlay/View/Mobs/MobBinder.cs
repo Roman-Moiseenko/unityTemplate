@@ -15,13 +15,10 @@ namespace Game.GamePlay.View.Mobs
         private Vector3 _targetPosition;
 
         private Quaternion _targetDirection;
-        //TODO Скорость взять у моба + скорость игры из WaveService подписка
-        //private readonly float _baseSpeed = 0.5f;
+
         private float _mobY;
-        
-        
         private int _currentIndexListPoint = 0;
-    //    private bool _isMoving;
+
         public void Bind(MobViewModel viewModel)
         {
             _viewModel = viewModel;
@@ -31,7 +28,6 @@ namespace Game.GamePlay.View.Mobs
             meshRenderer = _healthBar.GetComponent<MeshRenderer>();
             matBlock = new MaterialPropertyBlock();
             
-//            Debug.Log("viewModel.Position.CurrentValue = " + viewModel.Position.CurrentValue);
             //поворачиваем модель
             transform.rotation = Quaternion.LookRotation(new Vector3(viewModel.Direction.CurrentValue.x, 0, viewModel.Direction.CurrentValue.y));
             
@@ -40,14 +36,6 @@ namespace Game.GamePlay.View.Mobs
             {
                 var direction = new Vector3(newValue.x, 0, newValue.y);
                 _targetDirection = Quaternion.LookRotation(direction);
-             //   var up = Vector3.Cross(transform.position, transform.position - direction);
-                
-              //  Debug.Log("Поворот => " + newValue + " " + viewModel.MobEntityId);
-                
-            });
-            
-            _viewModel.IsMoving.Subscribe(newValue =>
-            {
             });
             
             viewModel.Position.Subscribe(newValue =>
@@ -65,7 +53,6 @@ namespace Game.GamePlay.View.Mobs
             });
         }
 
-
         public void Update()
         {
             if (_viewModel.CurrentHealth.CurrentValue < _viewModel.MaxHealth)
@@ -80,10 +67,7 @@ namespace Game.GamePlay.View.Mobs
             }
 
             if (transform.rotation != _targetDirection)
-            {
                 transform.rotation = Quaternion.Slerp(transform.rotation, _targetDirection, Time.deltaTime * 10f);
-            }
-            
         }
 
         private Vector3 GetTargetPosition()

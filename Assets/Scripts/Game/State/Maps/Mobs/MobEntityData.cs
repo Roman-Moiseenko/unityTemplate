@@ -10,23 +10,25 @@ namespace Game.State.Maps.Mobs
        // public Vector3 Position;
         //public Vector2 Direction;
         public MobType Type;
+        public int Level;
         
         
-        public int Speed;
         public bool IsFly;
+        
+        public float Speed = 1f;
         public float Health;
         public float Armor;
         public float Attack;
 
         public int RewardCurrency;
-
+        
         //TODO Тип урона
 
-    /*    public MobEntityData(MobSettings settings)
-        {
-            ConfigId = settings.ConfigId;
-            
-        }
-*/
+        /*    public MobEntityData(MobSettings settings)
+            {
+                ConfigId = settings.ConfigId;
+
+            }
+    */
     }
 }

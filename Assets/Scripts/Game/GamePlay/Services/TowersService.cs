@@ -28,8 +28,9 @@ namespace Game.GamePlay.Services
         private readonly Dictionary<string, List<TowerLevelSettings>> _towerSettingsMap = new();
 
         //Кешируем параметры башен на карте
-        public readonly Dictionary<string, Dictionary<TowerParameterType, TowerParameterData>> TowerParametersMap =
-            new();
+        public readonly Dictionary<
+            string,
+            Dictionary<TowerParameterType, TowerParameterData>> TowerParametersMap = new();
 
         public IObservableCollection<TowerViewModel> AllTowers =>
             _allTowers; //Интерфейс менять нельзя, возвращаем через динамический массив
@@ -57,7 +58,6 @@ namespace Game.GamePlay.Services
 
             //Кешируем настройки зданий / объектов
 
-
             foreach (var towerSettings in towersSettings.AllTowers)
             {
                 _towerSettingsMap[towerSettings.ConfigId] = towerSettings.GameplayLevels;
@@ -73,7 +73,6 @@ namespace Game.GamePlay.Services
             foreach (var towerCardData in _baseTowerCards)
             {
                 var param = new Dictionary<TowerParameterType, TowerParameterData>(); //Базовые параметры из колоды
-
                 //Делаем копию параметров
                 foreach (var parameterData in towerCardData.Parameters)
                 {
@@ -82,7 +81,7 @@ namespace Game.GamePlay.Services
 
                 TowerParametersMap.Add(towerCardData.ConfigId, param);
 
-                for (int i = 1; i < Levels[towerCardData.ConfigId]; i++)
+                for (var i = 1; i <= Levels[towerCardData.ConfigId]; i++)
                 {
                     UpdateParams(towerCardData.ConfigId, i); //Увеличиваем параметры по геймплей уровню башни
                 }
@@ -90,11 +89,11 @@ namespace Game.GamePlay.Services
 
             foreach (var towerEntity in towerEntities)
             {
-                towerEntity.Parameters = TowerParametersMap[towerEntity.ConfigId];
+                towerEntity.Parameters =
+                    TowerParametersMap[towerEntity.ConfigId]; //Присваиваем по ссылке параметры башни
                 CreateTowerViewModel(towerEntity);
             }
 
-            //Подписка на добавление новых view-моделей текущего класса
             towerEntities.ObserveAdd().Subscribe(e =>
             {
                 var towerEntity = e.Value;
@@ -110,30 +109,11 @@ namespace Game.GamePlay.Services
             {
                 var configId = x.NewItem.Key;
                 var newLevel = x.NewItem.Value;
-                if (TowerParametersMap.TryGetValue(configId, out var datas))
-                {
-                    UpdateParams(configId, newLevel);
-                }
-
-                //   var towerCardBaseSetting = baseTowerCards.FirstOrDefault(card => card.ConfigId == configId);
-                //   var levelSettings = _towerSettingsMap[configId].FirstOrDefault(l => l.Level == newLevel);
+                UpdateParams(configId, newLevel);
 
                 foreach (var towerEntity in _towerEntities)
                 {
                     if (towerEntity.ConfigId != configId) continue;
-                    towerEntity.Parameters.Clear();
-                    //Добавляем параметры новые
-                    towerEntity.Parameters = TowerParametersMap[configId];
-                    Debug.Log(JsonConvert.SerializeObject(towerEntity.Parameters, Formatting.Indented));
-
-                    /*   foreach (var settingsParameter in levelSettings.Parameters)
-                       {
-                           if (towerEntity.Parameters.TryGetValue(settingsParameter.ParameterType, out var parameter))
-                           {
-                               parameter.Value *= 1 + settingsParameter.Value / 100;
-                           }
-                           //находим в towerCardBaseSetting settingsParameter и меняем параметр в %%
-                       }*/
                     RemoveTowerViewModel(towerEntity); //Удаляем все модели viewModel.ConfigId == x.NewItem.Key
                     CreateTowerViewModel(towerEntity); //Создаем модели Заново
                 }
@@ -185,25 +165,9 @@ namespace Game.GamePlay.Services
          */
         private void CreateTowerViewModel(TowerEntity towerEntity)
         {
-            try
-            {
-           //     var towerCardBaseSetting =
-               //     _baseTowerCards.FirstOrDefault(card => card.ConfigId == towerEntity.ConfigId);
-               // if (towerCardBaseSetting == null) throw new Exception("Не найден параметр в настройках");
-              /*  foreach (var keyValue in towerCardBaseSetting.Parameters)
-                {
-                    towerEntity.Parameters.TryAdd(keyValue.Key, new TowerParameter(keyValue.Value));
-                }
-*/
-                var towerViewModel = new TowerViewModel(towerEntity, _towerSettingsMap[towerEntity.ConfigId], this); //3
-                _allTowers.Add(towerViewModel); //4
-                _towersMap[towerEntity.UniqueId] = towerViewModel;
-            }
-            catch (Exception e)
-            {
-                Debug.Log(e.Message);
-                throw;
-            }
+            var towerViewModel = new TowerViewModel(towerEntity, _towerSettingsMap[towerEntity.ConfigId], this); //3
+            _allTowers.Add(towerViewModel); //4
+            _towersMap[towerEntity.UniqueId] = towerViewModel;
         }
 
         /**
@@ -254,12 +218,11 @@ namespace Game.GamePlay.Services
         }
 
         /**
-         * Список доступных башен для апгрейда, должна быть построена и иметь уровень <6
+         * Список доступных башен для апгрейда, должна быть построена и иметь уровень < 6
          */
         public Dictionary<string, int> GetAvailableUpgradeTowers()
         {
             var towers = new Dictionary<string, int>();
-
             foreach (var towerViewModel in _allTowers) //Все построенные башни
             {
                 if (Levels[towerViewModel.ConfigId] < 6)
@@ -267,7 +230,6 @@ namespace Game.GamePlay.Services
                     towers.TryAdd(towerViewModel.ConfigId, Levels[towerViewModel.ConfigId]); //Добавлять один раз
                 }
             }
-
             return towers;
         }
     }

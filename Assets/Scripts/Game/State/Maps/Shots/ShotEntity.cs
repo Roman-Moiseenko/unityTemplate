@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Game.State.Maps.Mobs;
+using UnityEngine;
 using R3;
 using Unity.VisualScripting;
 
@@ -19,6 +20,7 @@ namespace Game.State.Maps.Shots
         public ReactiveProperty<Vector3> FinishPosition;
         public float Damage => Origin.Damage;
         public bool NotPrefab => Origin.NotPrefab;
+        public MobDebuff Debuff => Origin.Debuff;
 
         public ShotEntity(ShotEntityData shotEntityData, ReactiveProperty<Vector3> position)
         {

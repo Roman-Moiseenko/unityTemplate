@@ -86,7 +86,11 @@ namespace Game.GamePlay.Services
                     }
                     else
                     {
-                        mobEntity.SetDamage(shot.Damage);    
+                        mobEntity.SetDamage(shot.Damage);
+                        if (shot.Debuff != null)
+                        {
+                            mobEntity.SetDebuff(shot.ConfigId, shot.Debuff);
+                        }
                     }
                 }
                 else
