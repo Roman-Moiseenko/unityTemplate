@@ -138,7 +138,6 @@ namespace Game.GamePlay.Root
                 rewardService.StartRewardCard(); //Устанавливаем начальный режим строительства
             }
             
-            
         }
     }
 }

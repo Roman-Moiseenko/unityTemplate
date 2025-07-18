@@ -45,6 +45,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             _waveService.TimeOutNewWaveValue.Subscribe(n => FillAmountBtn.Value = 1 - n);
             _cameraService = container.Resolve<GameplayCamera>();
             
+            
             var positionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
             //Изменилась позиция ворот
             _waveService.GateWaveViewModel.Position.Subscribe(_ => NewPositionButtonInfo());

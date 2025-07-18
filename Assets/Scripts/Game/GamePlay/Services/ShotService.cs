@@ -14,6 +14,7 @@ using ObservableCollections;
 using R3;
 using Scripts.Utils;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 namespace Game.GamePlay.Services
@@ -90,6 +91,17 @@ namespace Game.GamePlay.Services
                     Time = speedTower,
                 };
             }
+            //Critical damage
+            var damageType = DamageType.Normal;
+            if (towerEntity.Parameters.TryGetValue(TowerParameterType.Critical, out var criticalParameter))
+            {
+                var shans = Mathf.FloorToInt(100 / criticalParameter.Value);
+                if (Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % shans == 0)
+                {
+                    damageType = DamageType.Critical;
+                    damage *= 2.0f;
+                }
+            }
             
             var shotEntityData = new ShotEntityData
             {
@@ -104,6 +116,7 @@ namespace Game.GamePlay.Services
                 Damage = damage, 
                 NotPrefab = _shotSettingsMap[towerEntity.ConfigId].NotPrefab,
                 Debuff = debuff,
+                DamageType = damageType,
             };
 
             var shotEntity = new ShotEntity(shotEntityData, mobEntity.PositionTarget);

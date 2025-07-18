@@ -50,9 +50,12 @@ namespace Game.GamePlay.Services
             PlacementService placementService
         )
         {
+         //   Debug.Log(JsonConvert.SerializeObject(TowerParametersMap, Formatting.Indented));
             //Debug.Log("Входные данные для башен " + JsonConvert.SerializeObject(baseTowerCards, Formatting.Indented));
             _towerEntities = towerEntities;
             _baseTowerCards = baseTowerCards;
+         //   Debug.Log(JsonConvert.SerializeObject(_baseTowerCards, Formatting.Indented));
+
             _cmd = cmd;
             _placementService = placementService;
 
@@ -70,13 +73,13 @@ namespace Game.GamePlay.Services
                 Levels[towerEntity.ConfigId] = towerEntity.Level.CurrentValue;
             }
 
-            foreach (var towerCardData in _baseTowerCards)
+            foreach (var towerCardData in baseTowerCards)
             {
                 var param = new Dictionary<TowerParameterType, TowerParameterData>(); //Базовые параметры из колоды
                 //Делаем копию параметров
                 foreach (var parameterData in towerCardData.Parameters)
                 {
-                    param.Add(parameterData.Key, parameterData.Value);
+                    param.Add(parameterData.Key, parameterData.Value.GetCopy());
                 }
 
                 TowerParametersMap.Add(towerCardData.ConfigId, param);
@@ -118,6 +121,8 @@ namespace Game.GamePlay.Services
                     CreateTowerViewModel(towerEntity); //Создаем модели Заново
                 }
             });
+
+       //     Debug.Log(JsonConvert.SerializeObject(TowerParametersMap, Formatting.Indented));
         }
 
         private void UpdateParams(string configId, int level)

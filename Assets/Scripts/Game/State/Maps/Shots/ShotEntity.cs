@@ -21,6 +21,7 @@ namespace Game.State.Maps.Shots
         public float Damage => Origin.Damage;
         public bool NotPrefab => Origin.NotPrefab;
         public MobDebuff Debuff => Origin.Debuff;
+        public DamageType DamageType => Origin.DamageType;
 
         public ShotEntity(ShotEntityData shotEntityData, ReactiveProperty<Vector3> position)
         {

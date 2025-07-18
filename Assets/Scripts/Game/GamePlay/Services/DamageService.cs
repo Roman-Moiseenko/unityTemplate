@@ -6,6 +6,7 @@ using Game.GamePlay.Fsm.States;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using Newtonsoft.Json;
@@ -28,6 +29,7 @@ namespace Game.GamePlay.Services
         private readonly ShotService _shotService;
         private readonly Coroutines _coroutines;
         private readonly RewardProgressService _rewardProgressService;
+        public ObservableList<DamageEntity> AllDamages = new();
         // private 
 
         public DamageService(
@@ -46,6 +48,7 @@ namespace Game.GamePlay.Services
             _towersService = towersService;
             _shotService = shotService;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
+            
             // AllTowers = _gameplayState.;
 
             waveService.AllMobsMap.ObserveAdd().Subscribe(e =>
@@ -67,7 +70,6 @@ namespace Game.GamePlay.Services
                 );
             });
 
-
             fsmGameplay.Fsm.StateCurrent.Subscribe(e =>
             {
                 if (e.GetType() == typeof(FsmStateGamePlay))
@@ -87,6 +89,14 @@ namespace Game.GamePlay.Services
                     else
                     {
                         mobEntity.SetDamage(shot.Damage);
+                        var damage = new DamageEntity
+                        {
+                            Position = mobEntity.Position.CurrentValue,
+                            Damage = Mathf.FloorToInt(shot.Damage),
+                            Type = shot.DamageType,
+                        };
+                        
+                        AllDamages.Add(damage); //Добавить в список 
                         if (shot.Debuff != null)
                         {
                             mobEntity.SetDebuff(shot.ConfigId, shot.Debuff);

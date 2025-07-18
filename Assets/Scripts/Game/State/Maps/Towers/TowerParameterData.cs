@@ -18,5 +18,14 @@ namespace Game.State.Maps.Towers
             ParameterType = parameterSetting.ParameterType;
             Value = parameterSetting.Value;
         }
+
+        public TowerParameterData GetCopy()
+        {
+            return new TowerParameterData
+            {
+                Value = this.Value,
+                ParameterType = this.ParameterType
+            };
+        }
     }
 }

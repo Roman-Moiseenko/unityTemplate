@@ -18,5 +18,6 @@ namespace Game.State.Maps.Shots
         public bool NotPrefab;
 
         public MobDebuff Debuff;
+        public DamageType DamageType;
     }
 }

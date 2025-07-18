@@ -8,6 +8,7 @@ using Game.GamePlay.Services;
 using Game.GamePlay.View.AttackAreas;
 using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
+using Game.GamePlay.View.Damages;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Mobs;
@@ -54,6 +55,7 @@ namespace Game.GamePlay.Root.View
         public GateWaveViewModel GateWaveViewModel { get; private set; }
         public GateWaveViewModel GateWaveViewModelSecond { get; private set; }
         public AttackAreaViewModel AreaViewModel { get; }
+       // public DamagePopupViewModel DamagePopupViewModel { get; private set; }
         
         public ReactiveProperty<Vector2Int> CameraMove;
 
@@ -95,7 +97,8 @@ namespace Game.GamePlay.Root.View
             GateWaveViewModelSecond = waveService.GateWaveViewModelSecond;
 
             AreaViewModel = new AttackAreaViewModel(new Vector2Int(0, 0));
-            
+
+            //DamagePopupViewModel = new DamagePopupViewModel(damageService.AllDamages);
             
             CameraMove = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));
             CameraMove.Subscribe(p => _cameraService.MoveCamera(p));

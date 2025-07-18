@@ -32,10 +32,11 @@ namespace Game.GamePlay.View.UI
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
  
             //Создаем панели, необходимые для Геймплея           
+            rootUI.AddPanel(new PanelGateWaveViewModel(this, container));
             rootUI.AddPanel(new PanelBuildViewModel(container));
             rootUI.AddPanel(new PanelActionsViewModel(this, container));
             rootUI.AddPanel(new PanelConfirmationViewModel(this, container));
-            rootUI.AddPanel(new PanelGateWaveViewModel(this, container));
+            
             
             //_gameState = gameStateProvider.GameState;
             _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>();

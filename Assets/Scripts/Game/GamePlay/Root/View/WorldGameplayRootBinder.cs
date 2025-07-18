@@ -7,6 +7,7 @@ using Game.GamePlay.Classes;
 using Game.GamePlay.View.AttackAreas;
 using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
+using Game.GamePlay.View.Damages;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Mobs;
@@ -123,8 +124,8 @@ namespace Game.GamePlay.Root.View
             //Создаем view-модель ворот из прехаба
             CreateGateWave(_viewModel.GateWaveViewModel);
             CreateGateWave(_viewModel.GateWaveViewModelSecond);
-            
             CreateAttackArea(_viewModel.AreaViewModel);
+
             //Запускаем следующую волну
             _viewModel.StartGameplayServices();
         }
@@ -132,24 +133,18 @@ namespace Game.GamePlay.Root.View
 
         private void OnDestroy()
         {
-            if (_castleBinder != null)
-            {
-                Destroy(_castleBinder.gameObject);
-            }
-
-            if (_attackAreaBinder != null)
-            {
-                Destroy(_attackAreaBinder.gameObject);
-            }
-
+            if (_castleBinder != null) Destroy(_castleBinder.gameObject);
+            
+            if (_attackAreaBinder != null) Destroy(_attackAreaBinder.gameObject);
+            
             _disposables.Dispose();
             _createGateMap.ForEach(item => Destroy(item.gameObject));
         }
         
+        //CREATE 
         private void CreateShot(ShotViewModel shotViewModel)
         {
             if (shotViewModel.NotPrefab) return;
-            
             var prefabPath = $"Prefabs/Gameplay/Shots/{shotViewModel.ConfigId}"; //Перенести в настройки уровня
             var shotPrefab = Resources.Load<ShotBinder>(prefabPath);
             var createdShot = Instantiate(shotPrefab, transform);
@@ -220,14 +215,16 @@ namespace Game.GamePlay.Root.View
             _createdRoadsMap[roadViewModel.RoadEntityId] = createdRoad;
         }
 
-        private void DestroyRoad(RoadViewModel roadViewModel)
-        {
-            if (_createdRoadsMap.TryGetValue(roadViewModel.RoadEntityId, out var roadBinder))
-            {
-                Destroy(roadBinder.gameObject);
-                _createdRoadsMap.Remove(roadViewModel.RoadEntityId);
-            }
-        }
+        private void CreateGround(GroundViewModel groundViewModel)
+                {
+                    var groundType = groundViewModel.ConfigId;
+                    var odd = Math.Abs((groundViewModel.Position.CurrentValue.x + groundViewModel.Position.CurrentValue.y) % 2);
+                    var prefabGroundPath = $"Prefabs/Gameplay/Grounds/{groundType}"; //Перенести в настройки уровня
+                    var groundPrefab = Resources.Load<GroundBinder>(prefabGroundPath);
+                    var createdGround = Instantiate(groundPrefab, transform);
+                    createdGround.Bind(groundViewModel, odd);
+                    _createGroundsMap[groundViewModel.GroundEntityId] = createdGround;
+                }
 
         private void CreateFrameBlock(FrameBlockViewModel frameBlockViewModel)
         {
@@ -267,6 +264,17 @@ namespace Game.GamePlay.Root.View
             var createdGroundFrame = Instantiate(groundFramePrefab, parentTransform);
             createdGroundFrame.Bind(groundFrameViewModel);
         }
+        
+        //DESTROY
+        
+        private void DestroyRoad(RoadViewModel roadViewModel)
+        {
+            if (_createdRoadsMap.TryGetValue(roadViewModel.RoadEntityId, out var roadBinder))
+            {
+                Destroy(roadBinder.gameObject);
+                _createdRoadsMap.Remove(roadViewModel.RoadEntityId);
+            }
+        }
 
         private void DestroyFrameBlock(FrameBlockViewModel frameBlockViewModel)
         {
@@ -285,18 +293,7 @@ namespace Game.GamePlay.Root.View
             Destroy(_frameBlockBinder.gameObject);
             Destroy(_frameBlockBinder);
         }
-
-        private void CreateGround(GroundViewModel groundViewModel)
-        {
-            var groundType = groundViewModel.ConfigId;
-            var odd = Math.Abs((groundViewModel.Position.CurrentValue.x + groundViewModel.Position.CurrentValue.y) % 2);
-            var prefabGroundPath = $"Prefabs/Gameplay/Grounds/{groundType}"; //Перенести в настройки уровня
-            var groundPrefab = Resources.Load<GroundBinder>(prefabGroundPath);
-            var createdGround = Instantiate(groundPrefab, transform);
-            createdGround.Bind(groundViewModel, odd);
-            _createGroundsMap[groundViewModel.GroundEntityId] = createdGround;
-        }
-
+        
         private void DestroyShot(ShotViewModel shotViewModel)
         {
             if (_createShotsMap.TryGetValue(shotViewModel.ShotEntityId, out var shotBinder))
