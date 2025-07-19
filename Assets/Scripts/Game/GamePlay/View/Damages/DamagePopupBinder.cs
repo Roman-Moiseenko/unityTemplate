@@ -20,7 +20,11 @@ namespace Game.GamePlay.View.Damages
             transform.gameObject.SetActive(false);
             //_animator = _textPanel.GetComponent<Animator>();
             _camera = camera;
-            positionCamera.Subscribe(_ => transform.position = _camera.WorldToScreenPoint(_position));
+            positionCamera.Subscribe(_ =>
+            {
+                if (Free.Value) return; //Не обсчитываем для свободных блоков
+                transform.position = _camera.WorldToScreenPoint(_position);
+            });
         }
 
         public void StartPopup(Vector3 position, int damage, DamageType damageType)

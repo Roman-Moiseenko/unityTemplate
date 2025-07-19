@@ -18,16 +18,14 @@ namespace Game.GamePlay.View.Castle
         public ReadOnlyReactiveProperty<int> Level { get; }
         public readonly string ConfigId;
         
-        public ReadOnlyReactiveProperty<Vector2Int> Position { get; }
+        public Vector2Int Position { get; }
 
         public CastleViewModel(
             CastleEntity castleEntity,
             CastleService castleService
         )
         {
-            CastleEntityId = castleEntity.UniqueId;
             ConfigId = castleEntity.ConfigId;
-            Level = castleEntity.Level;
             _castleEntity = castleEntity;
             _castleService = castleService;
             
@@ -38,8 +36,8 @@ namespace Game.GamePlay.View.Castle
         public bool IsPosition(Vector2 position)
         {
             float delta = 0.5f; //Половина ширины клетки
-            int _x0 = Position.CurrentValue.x;
-            int _y0 = Position.CurrentValue.y;
+            int _x0 = Position.x;
+            int _y0 = Position.y;
          //   Debug.Log($" *** position.x {position.x} < {_x0 + delta} && > {_x0 - delta}");
          //   Debug.Log($" *** position.y {position.y} < {_y0 + delta} && > {_y0 - delta}");
             if ((position.x < _x0 + delta && position.x > _x0 - delta) && 

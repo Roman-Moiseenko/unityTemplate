@@ -20,5 +20,5 @@ MonoBehaviour:
   <Levels>k__BackingField: []
   FullHealth: 1000
   ReduceHealth: 10
-  Damage: 1
-  DistanceDamage: 2
+  Damage: 10
+  Speed: 0.33

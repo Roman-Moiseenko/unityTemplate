@@ -149,22 +149,19 @@ namespace Game.GamePlay.Commands.MapCommand
             }
 
             //Загружаем базовые параметры
-            //Создаем замок
+            //Создаем замок из нулевых параметров, 
             var castle = new CastleEntityData()
             {
                 ConfigId = "Castle",
                 Position = new Vector2Int(0, 0),
-                Type = EntityType.Building,
-                UniqueId = _gameplayState.CreateEntityID(),
                 //Базовые параметры
                 Damage = _gameSettings.CastleInitialSettings.Damage,
                 FullHealth = _gameSettings.CastleInitialSettings.FullHealth,
-                DistanceDamage = _gameSettings.CastleInitialSettings.DistanceDamage,
+                Speed = _gameSettings.CastleInitialSettings.Speed,
                 ReduceHealth = _gameSettings.CastleInitialSettings.ReduceHealth,
                 CurrenHealth = _gameSettings.CastleInitialSettings.FullHealth,
-                Level = 0,
             };
-            _gameplayState.Castle.Value = new CastleEntity(castle);
+            _gameplayState.Castle = new CastleEntity(castle);
             
             foreach (var towerSettings in newMapInitialStateSettings.Towers) //Берем список зданий из настроек карты (конфиг)
             {

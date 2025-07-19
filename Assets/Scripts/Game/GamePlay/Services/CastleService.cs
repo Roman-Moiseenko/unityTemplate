@@ -32,10 +32,10 @@ namespace Game.GamePlay.Services
          
         public CastleService(
             CastleEntity castleEntity,
-            ICommandProcessor cmd
+            WaveService waveService
             )
         {
-            _cmd = cmd;
+            
             CastleViewModel = new CastleViewModel(castleEntity, this);
             
         }

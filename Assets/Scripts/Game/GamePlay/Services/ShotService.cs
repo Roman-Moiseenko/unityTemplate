@@ -119,7 +119,37 @@ namespace Game.GamePlay.Services
                 DamageType = damageType,
             };
 
-            var shotEntity = new ShotEntity(shotEntityData, mobEntity.PositionTarget);
+            CreateShotEntity(shotEntityData, mobEntity.PositionTarget);
+
+        }
+
+        public void CreateShotCastle(MobEntity mobEntity, Vector2Int position, float damage)
+        { 
+            var startPosition = new Vector3(position.x, 0.5f, position.y);
+            //Critical damage
+            
+            var shotEntityData = new ShotEntityData
+            {
+                TowerEntityId = -1,
+                MobEntityId = mobEntity.UniqueId,
+                ConfigId = "Castle01",
+                StartPosition = startPosition,
+                Position = startPosition,
+                UniqueId = GetUniqueId(),
+                Speed = 1f, 
+                Single = true,
+                Damage = damage, 
+                NotPrefab = false,
+                Debuff = null,
+                DamageType = DamageType.Normal,
+            };
+
+            CreateShotEntity(shotEntityData, mobEntity.PositionTarget);
+        }
+
+        private void CreateShotEntity(ShotEntityData shotEntityData, ReactiveProperty<Vector3> position)
+        {
+            var shotEntity = new ShotEntity(shotEntityData, position);
             Shots.Add(shotEntity); //Удалить
             var shotViewModel = new ShotViewModel(shotEntity, this);
             _shotsMap.Add(shotEntity.UniqueId, shotViewModel);

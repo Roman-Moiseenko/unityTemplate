@@ -60,19 +60,15 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandDeleteTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceRoadHandler(gameplayState));
-            
+
             var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
             var groundConfigId = newMapSettings.InitialStateSettings.GroundDefault;
             var roadConfigId = newMapSettings.InitialStateSettings.RoadDefault;
 
-            container.RegisterFactory(_ => new CastleService(
-                gameplayState.Castle.Value,
-                cmd)
-            ).AsSingle();
 
             var wayService = new WayService(); //Сервис обсчета дороги
             container.RegisterInstance(wayService);
-            
+
             var placementService = new PlacementService(gameplayState, wayService);
             container.RegisterInstance(placementService);
 
@@ -84,7 +80,7 @@ namespace Game.GamePlay.Root
                 cmd);
             //Регистрируем сервис по Дорогам
             container.RegisterInstance(roadsService);
-            
+
             //Сервис по земле
             container.RegisterFactory(_ => new GroundsService(
                     gameplayState.Grounds,
@@ -101,19 +97,23 @@ namespace Game.GamePlay.Root
                 cmd,
                 placementService
             );
-            
+
             container.RegisterInstance(towersService);
-            
-            var frameService = new FrameService(gameplayState, placementService, towersService, roadsService, gameSettings.TowersSettings);
+
+            var frameService = new FrameService(gameplayState, placementService, towersService, roadsService,
+                gameSettings.TowersSettings);
             container.RegisterInstance(frameService);
             // container.RegisterFactory(_ => ).AsSingle();
             container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();
             //сервис волн мобов
             var waveService = new WaveService(container, gameplayState);
             container.RegisterInstance(waveService);
-            
+
+            container.RegisterFactory(_ => new CastleService(
+                gameplayState.Castle, waveService)).AsSingle();
+
             Fsm.Fsm.SetState<FsmStateGamePlay>();
-            
+
             //Сервис наград
             var rewardService = new RewardProgressService(container, gameSettings.TowersSettings);
             container.RegisterInstance(rewardService);
@@ -123,9 +123,10 @@ namespace Game.GamePlay.Root
             //Сервис создания выстрелов
             var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, Fsm);
             container.RegisterInstance(shotService);
-            
-            var damageService = new DamageService(Fsm, gameplayState, gameSettings.TowersSettings, waveService, towersService, shotService);
-            
+
+            var damageService = new DamageService(Fsm, gameplayState, gameSettings.TowersSettings, waveService,
+                towersService, shotService);
+
             container.RegisterInstance(damageService);
 
             //Загружаем уровень из настроек, если gameplayState пуст.
@@ -134,10 +135,9 @@ namespace Game.GamePlay.Root
                 var command = new CommandCreateLevel(gameplayEnterParams.MapId);
                 var success = cmd.Process(command);
                 if (!success) throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
-                
+
                 rewardService.StartRewardCard(); //Устанавливаем начальный режим строительства
             }
-            
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> MapId;
         public readonly ReactiveProperty<int> CurrentWave;
 
-        public readonly ReactiveProperty<CastleEntity> Castle;
+        public CastleEntity Castle;
 
         public int PreviousGameSpeed => Origin.PreviousGameSpeed;
         
@@ -39,7 +39,7 @@ namespace Game.State.Root
         public GameplayStateProxy(GameplayState origin)
         {
             Origin = origin;
-            Castle = new ReactiveProperty<CastleEntity>(new CastleEntity(origin.CastleData));
+            Castle = new CastleEntity(origin.CastleData);
             
             GameSpeed = new ReactiveProperty<int>(origin.GameSpeed);
             GameSpeed.Subscribe(newSpeed =>

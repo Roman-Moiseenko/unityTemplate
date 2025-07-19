@@ -9,6 +9,7 @@ namespace Game.Settings.Gameplay.Entities.Castle
         [field: SerializeField] public int FullHealth;
         [field: SerializeField] public int ReduceHealth;
         [field: SerializeField] public float Damage;
-        [field: SerializeField] public float DistanceDamage;
+        [field: SerializeField] public float Speed;
+        
     }
 }

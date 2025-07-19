@@ -6,6 +6,7 @@ using Game.GamePlay.Fsm.States;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.State.Maps.Castle;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
 using Game.State.Root;
@@ -30,6 +31,8 @@ namespace Game.GamePlay.Services
         private readonly Coroutines _coroutines;
         private readonly RewardProgressService _rewardProgressService;
         public ObservableList<DamageEntity> AllDamages = new();
+
+        //private CastleEntity _castleEntity;
         // private 
 
         public DamageService(
@@ -48,7 +51,7 @@ namespace Game.GamePlay.Services
             _towersService = towersService;
             _shotService = shotService;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
-            
+
             // AllTowers = _gameplayState.;
 
             waveService.AllMobsMap.ObserveAdd().Subscribe(e =>
@@ -95,7 +98,7 @@ namespace Game.GamePlay.Services
                             Damage = Mathf.FloorToInt(shot.Damage),
                             Type = shot.DamageType,
                         };
-                        
+
                         AllDamages.Add(damage); //Добавить в список 
                         if (shot.Debuff != null)
                         {
@@ -118,22 +121,63 @@ namespace Game.GamePlay.Services
 
             if (_fsmGameplay.IsGamePause.Value) return;
             if (_waveService.AllMobsMap.Count == 0) return;
-            
+
             foreach (var towerEntity in _gameplayState.Towers)
             {
-                if (towerEntity.IsShot.Value) continue; 
+                if (towerEntity.IsShot.Value) continue;
                 //Если башня не стреляет, запускаем корутин
                 towerEntity.IsShot.Value = true;
                 _coroutines.StartCoroutine(TowerFireShot(towerEntity));
             }
 
+            //TODO Стрельба крепости
+            if (!_gameplayState.Castle.IsShot.Value)
+            {
+                _gameplayState.Castle.IsShot.Value = true;
+                _coroutines.StartCoroutine(CastleFireShot());
+            }
+
             //  });
         }
-        
+
+        public IEnumerator CastleFireShot()
+        {
+            yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //На паузе не стреляем
+
+            var castleTowerOnePosition = new Vector2Int(0, -1);
+            var castleTowerTwoPosition = new Vector2Int(0, 1);
+            var castleIsShooting = false;
+            //Обходим список мобов
+            foreach (var keyMobEntity in _waveService.AllMobsMap)
+            {
+                var mobEntity = keyMobEntity.Value;
+
+                var mobPosition = mobEntity.Position.CurrentValue;
+                if (MobDistanceShotCastle(mobPosition))
+                {
+                    castleIsShooting = true;
+                    _shotService.CreateShotCastle(mobEntity, castleTowerOnePosition, _gameplayState.Castle.Damage);
+                    _shotService.CreateShotCastle(mobEntity, castleTowerTwoPosition, _gameplayState.Castle.Damage);
+                    break; //Для не мульти башни 1 выстрел
+                }
+            }
+
+            if (!castleIsShooting) //За обход башня не выстрелила, таймер КД не запускаем
+            {
+                _gameplayState.Castle.IsShot.Value = false;
+                yield break;
+            }
+
+            yield return
+                new WaitForSeconds(_gameplayState.Castle.Speed /
+                                   _gameplayState.GameSpeed.Value); //Поделить на тек. скорость игры
+            _gameplayState.Castle.IsShot.Value = false;
+        }
+
         public IEnumerator TowerFireShot(TowerEntity towerEntity)
         {
             yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //На паузе не стреляем
-            
+
             if (!towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed)) yield break;
             var towerPosition = towerEntity.Position.CurrentValue;
             var towerIsShooting = false;
@@ -141,7 +185,8 @@ namespace Game.GamePlay.Services
             foreach (var keyMobEntity in _waveService.AllMobsMap)
             {
                 var mobEntity = keyMobEntity.Value;
-                if (!towerEntity.IsTargetForAttack(mobEntity.IsFly)) continue; //Проверка на совпадение типа врага и башни
+                if (!towerEntity.IsTargetForAttack(mobEntity.IsFly))
+                    continue; //Проверка на совпадение типа врага и башни
 
                 var mobPosition = mobEntity.Position.CurrentValue;
                 if (MobDistanceShot(mobPosition, towerPosition, towerEntity.Parameters))
@@ -151,16 +196,16 @@ namespace Game.GamePlay.Services
                     if (!towerEntity.IsMultiShot) break; //Для не мульти башни 1 выстрел
                 }
             }
-            
+
             if (!towerIsShooting) //За обход башня не выстрелила, таймер КД не запускаем
             {
                 towerEntity.IsShot.Value = false;
                 yield break;
             }
 
-            yield return new WaitForSeconds(towerSpeed.Value / _gameplayState.GameSpeed.Value);//Поделить на тек. скорость игры
+            yield return
+                new WaitForSeconds(towerSpeed.Value / _gameplayState.GameSpeed.Value); //Поделить на тек. скорость игры
             towerEntity.IsShot.Value = false;
-
         }
 
 
@@ -177,14 +222,21 @@ namespace Game.GamePlay.Services
             {
                 return d <= distance.Value;
             }
+
             var start = new Vector3(towerPosition.x, 0.1f, towerPosition.y);
             var end = new Vector3(towerPosition.x + 0.5f, 0.1f, towerPosition.y);
-            //Debug.Log(start +" " + end);
             Debug.DrawLine(start, end);
-            
+
             //Башня на дороге, нет дистанции
             return Vector2.Distance(mobPosition, towerPosition) <= 0.5f;
-            
+        }
+
+        private bool MobDistanceShotCastle(Vector2 mobPosition)
+        {
+            //Первичная проверка 
+            if (mobPosition.x > 3) return false;
+            return mobPosition.y is <= 1.5f and >= -1.5f;
+            //TODO Сделать проверку на точку пути 
         }
     }
 }

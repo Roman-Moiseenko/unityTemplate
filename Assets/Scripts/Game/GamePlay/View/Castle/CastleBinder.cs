@@ -7,9 +7,9 @@ namespace Game.GamePlay.View.Castle
         public void Bind(CastleViewModel viewModel)
         {
             transform.position = new Vector3(
-                viewModel.Position.CurrentValue.x,
+                viewModel.Position.x,
                 0,
-                viewModel.Position.CurrentValue.y
+                viewModel.Position.y
             );
         }
     }

@@ -16,8 +16,7 @@ namespace Game.State.Maps
         public Map(MapData mapData)
         {
             Origin = mapData;
-            mapData.Entities.ForEach(
-                entityOriginal => Entities.Add(EntitiesFactory.CreateEntity(entityOriginal)));
+            //mapData.Entities.ForEach(entityOriginal => Entities.Add(EntitiesFactory.CreateEntity(entityOriginal)));
             Entities.ObserveAdd().Subscribe(e =>
             {
                 var addedEntity = e.Value;
