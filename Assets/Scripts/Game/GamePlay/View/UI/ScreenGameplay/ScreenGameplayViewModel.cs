@@ -38,6 +38,9 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         public readonly ReactiveProperty<string> WaveText = new();
         public ObservableList<DamageEntity> AllDamages = new();
         public ObservableList<float> RepairBuffer;
+
+        public ReactiveProperty<float> CastleHealth;
+        public float CastleFullHealth;
    
         public override string Id => "ScreenGameplay";
         public override string Path => "Gameplay/ScreenGameplay/";
@@ -53,6 +56,10 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
             _castleService = container.Resolve<CastleService>();
             _waveService = container.Resolve<WaveService>();
+
+            CastleHealth = _gameplayState.Castle.CurrenHealth;
+            CastleFullHealth = _gameplayState.Castle.FullHealth;
+            
             
             var damageService = container.Resolve<DamageService>();
             AllDamages = damageService.AllDamages;             
