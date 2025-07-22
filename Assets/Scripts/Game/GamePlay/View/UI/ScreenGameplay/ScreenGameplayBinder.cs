@@ -6,6 +6,7 @@ using ObservableCollections;
 using R3;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 
@@ -19,9 +20,10 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         [SerializeField] private TMP_Text _textCrystal;
         [SerializeField] private TMP_Text _textWave;
 
-        [SerializeField] private Canvas _damagePanel;
+        [SerializeField] private Canvas _panelPopupMessages;
         [SerializeField] private List<DamagePopupBinder> _damagePopups;
         [SerializeField] private ReducePopupBinder _reducePopupBinder;
+        [SerializeField] private CastleHealthBarBinder _castleHealthBar;
 
         private void Start()
         {
@@ -29,12 +31,13 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             {
                 AddDamagePopup();
             }
-            
+
             ViewModel.ProgressData.Subscribe(newValue => { _textProgress.text = $"Progress: {newValue}"; });
             ViewModel.SoftCurrency.Subscribe(newValue => _textMoney.text = $"Money: {newValue}");
             ViewModel.HardCurrency.Subscribe(newValue => _textCrystal.text = $"Money: {newValue}");
             ViewModel.WaveText.Subscribe(newValue => _textWave.text = newValue);
             _reducePopupBinder = createReducePopup();
+            _castleHealthBar = createCastleHealthBar();
             ViewModel.AllDamages.ObserveAdd().Subscribe(e =>
             {
                 var damageData = e.Value;
@@ -51,7 +54,10 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 _reducePopupBinder.StartPopup(position, e.Value);
                 ViewModel.RepairBuffer.Remove(e.Value);
             });
+
+            ViewModel.CastleHealth.Skip(1).Subscribe(h => _castleHealthBar.SetHealth(h));
         }
+
 
         private DamagePopupBinder FindFreePopup()
         {
@@ -59,6 +65,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             {
                 if (popupBinder.Free.Value) return popupBinder;
             }
+
             return AddDamagePopup(); //Расширяем пул всплывающих popup на 1
         }
 
@@ -92,9 +99,9 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         private DamagePopupBinder AddDamagePopup()
         {
-            var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/DamagePopup"; 
+            var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/DamagePopup";
             var damagePopupPrefab = Resources.Load<DamagePopupBinder>(prefabPath);
-            var createdDamagePopup = Instantiate(damagePopupPrefab, _damagePanel.transform);
+            var createdDamagePopup = Instantiate(damagePopupPrefab, _panelPopupMessages.transform);
             createdDamagePopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera);
             _damagePopups.Add(createdDamagePopup);
             return createdDamagePopup;
@@ -102,12 +109,23 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         private ReducePopupBinder createReducePopup()
         {
-            var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/ReduceHealthPopup"; 
+            var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/ReduceHealthPopup";
             var reducePopupPrefab = Resources.Load<ReducePopupBinder>(prefabPath);
-            var createdReducePopup = Instantiate(reducePopupPrefab, _damagePanel.transform);
+            var createdReducePopup = Instantiate(reducePopupPrefab, _panelPopupMessages.transform);
             createdReducePopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera);
-            
+
             return createdReducePopup;
+        }
+
+        private CastleHealthBarBinder createCastleHealthBar()
+        {
+            var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/CastleHealthBar";
+            var castleHealthPrefab = Resources.Load<CastleHealthBarBinder>(prefabPath);
+            var createdCastleHealth = Instantiate(castleHealthPrefab, _panelPopupMessages.transform);
+            createdCastleHealth.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera,
+                ViewModel.CastleFullHealth);
+
+            return createdCastleHealth;
         }
     }
 }

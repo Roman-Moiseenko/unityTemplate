@@ -406,7 +406,7 @@ GameObject:
   - component: {fileID: 1745966591840327860}
   - component: {fileID: 7695009300764210462}
   m_Layer: 5
-  m_Name: DamagePopupPanel
+  m_Name: PanelForPopupMessage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1035,8 +1035,10 @@ MonoBehaviour:
   _textMoney: {fileID: 2824672534153183309}
   _textCrystal: {fileID: 7659480692631168857}
   _textWave: {fileID: 4944632150036159104}
-  _damagePanel: {fileID: 9123889494672890334}
+  _panelPopupMessages: {fileID: 9123889494672890334}
   _damagePopups: []
+  _reducePopupBinder: {fileID: 0}
+  _castleHealthBar: {fileID: 0}
 --- !u!1 &6915475261433817287
 GameObject:
   m_ObjectHideFlags: 0
