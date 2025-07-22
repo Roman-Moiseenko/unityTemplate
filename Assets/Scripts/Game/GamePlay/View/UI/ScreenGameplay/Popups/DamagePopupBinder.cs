@@ -3,7 +3,7 @@ using R3;
 using TMPro;
 using UnityEngine;
 
-namespace Game.GamePlay.View.Damages
+namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
 {
     public class DamagePopupBinder : MonoBehaviour
     {
@@ -45,12 +45,6 @@ namespace Game.GamePlay.View.Damages
         /**
          * Функция привязана к _textPanel
          */
-        public void FinishAnimation()
-        {
-            transform.parent.transform.gameObject.SetActive(false);
-            transform.parent.transform.GetComponent<DamagePopupBinder>().Free.Value = true;
-            
-        }
         
     }
 }

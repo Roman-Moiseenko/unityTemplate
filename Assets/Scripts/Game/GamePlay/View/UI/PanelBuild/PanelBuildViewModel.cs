@@ -16,7 +16,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
     public class PanelBuildViewModel : WindowViewModel
     {
         public override string Id => "PanelBuild";
-        public override string Path => "Gameplay/";
+        public override string Path => "Gameplay/Panels/";
 
 
         //TODO В дальнейшем заменить картинками 

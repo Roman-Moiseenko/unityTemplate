@@ -142,19 +142,13 @@ namespace Game.GamePlay.Services
 
         private IEnumerator StartNewWave(int numberWave)
         {
-            //   Debug.Log("1 TimeOutNewWave.Value = " + TimeOutNewWave.Value);
             yield return new WaitUntil(() => StartForced.CurrentValue); //Ждем когда разрешиться запуск волны
-            //   Debug.Log("2 TimeOutNewWave.Value = " + TimeOutNewWave.Value);
             ShowGate.Value = true; //Показать ворота
-            //GateWaveViewModel.ShowGateModel();
             yield return _coroutines.StartCoroutine(GenerateMob(numberWave)); //Выводим мобов на дорогу
-            //  Debug.Log("3 TimeOutNewWave.Value = " + TimeOutNewWave.Value);
             yield return new WaitForSeconds(TimeEndWave); //Пауза между волнами
-//            Debug.Log("4 TimeOutNewWave.Value = " + TimeOutNewWave.Value);
             ShowGate.Value = false; //Убрать ворота и Показать инфо модель
             //GateWaveViewModel.ShowInfoModel(); 
             _gameplayState.CurrentWave.Value++;
-            //         Debug.Log("5 TimeOutNewWave.Value = " + TimeOutNewWave.Value);
         }
 
         private IEnumerator GenerateMob(int numberWave)
@@ -176,6 +170,8 @@ namespace Game.GamePlay.Services
                 yield return null;
             }
             yield return mobViewModel.MovingModel(GenerateRoadPoints(mobViewModel));
+            mobViewModel.State.Value = MobState.Attacking;
+            yield return MobAttackCastle(mobViewModel);
             //TODO Моб дошел до замка Запуск атаки моба
             yield return DamageToMob(mobViewModel); //Наносим урон мобу --- заменить на урон Замку
             yield break;
@@ -245,6 +241,21 @@ namespace Game.GamePlay.Services
             yield return null;
         }
 
+        private IEnumerator MobAttackCastle(MobViewModel mobViewModel)
+        {
+            
+            if (mobViewModel == null) yield break;
+            while (_fsmGameplay.IsGamePause.Value)
+            {
+                yield return null;
+            }
+            
+            _gameplayState.Castle.DamageReceived(mobViewModel.Attack);
+
+            yield return new WaitForSeconds(AppConstants.MOB_BASE_SPEED);
+        }
+        
+
         /**
          * Создаем модель ворот для главного пути и вычисляем координаты и направление поворота ворот
          */
@@ -255,7 +266,7 @@ namespace Game.GamePlay.Services
 
             Vector2 position = new Vector2((lastPoint.x + exitPoint.x) / 2f, (lastPoint.y + exitPoint.y) / 2f);
             var direction = exitPoint - lastPoint;
-            //new Vector2Int(exitPoint.x - lastPoint.x, exitPoint.y - lastPoint.y);
+            
             GateWaveViewModel = new GateWaveViewModel(this)
             {
                 Position =
@@ -290,7 +301,6 @@ namespace Game.GamePlay.Services
             var lastPoint = _wayService.GetLastPoint(_gameplayState.Origin.WaySecond);
             var exitPoint = _wayService.GetExitPoint(_gameplayState.Origin.WaySecond);
             Vector2 position = (exitPoint + lastPoint) / 2;
-            //new Vector2((lastPoint.x + exitPoint.x) / 2f, (lastPoint.y + exitPoint.y) / 2f);
             var direction = exitPoint - lastPoint;
             GateWaveViewModelSecond.Position.Value = position;
             GateWaveViewModelSecond.Direction.Value = direction;
@@ -317,15 +327,6 @@ namespace Game.GamePlay.Services
             //Формируем список точек движения моба
             for (int i = way.Count - 1; i >= 0; i--)
             {
-                //Определяем направление кроме начальной позиции
-                /*  if (i != way.Count - 1)
-                  {
-                      var direction = _wayService.GetDirection(way, i);
-
-                      //Запускаем поворот
-                      yield return mobViewModel.RotateModel(direction);
-                  }*/
-
                 Vector2 position = way[i].Position; //Определяем новые координаты моба
                 //Смещение от центра на delta
                 if (way[i].IsTurn)
@@ -348,16 +349,14 @@ namespace Game.GamePlay.Services
                 Vector2Int direction;
                 if (i == 0)
                 {
-                    //TODO проверяем позицию Замка
-                    position.x -= 0.25f;
+                    position.x -= 0.15f;
                     direction = Vector2Int.zero - way[i].Position;
                 }
                 else
                 {
                     direction = way[i - 1].Position - way[i].Position;
                 }
-
-
+                
                 //TODO если i = 0, то добавляем 0.25 по направлению
                 //TODO для IsFly при i = 1, а при i = 0 нет движения
                 roads.Add(new RoadPoint(position, direction)); //Список точек движения 

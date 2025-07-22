@@ -31,7 +31,7 @@ namespace Game.GamePlay.View.Mobs
         public Vector2Int StartDirection;
         public List<RoadPoint> RoadPoints = new();
         public GameplayCamera CameraService;
-        
+        public ReactiveProperty<MobState> State;
         public ReactiveProperty<float> CurrentHealth;
         public float MaxHealth;
         public float Delta => _mobEntity.Delta;
@@ -39,6 +39,8 @@ namespace Game.GamePlay.View.Mobs
         public ReactiveProperty<bool> AnimationDelete = new(false);
         public IReadOnlyObservableDictionary<string, MobDebuff> Debuffs => _mobEntity.Debuffs;
         public int Level => _mobEntity.Level;
+        public float Attack => _mobEntity.Attack;
+        //public float SpeedAttack => _mobEntity.SpeedAttack;
 
         public MobViewModel(MobEntity mobEntity, WaveService waveService, GameplayCamera cameraService)
         {
@@ -51,6 +53,7 @@ namespace Game.GamePlay.View.Mobs
             CurrentHealth = mobEntity.Health;
             MaxHealth = mobEntity.Health.CurrentValue;
 
+            State = mobEntity.State;
             Direction = new ReactiveProperty<Vector2Int>(mobEntity.Direction.CurrentValue); //Начальное направление
         }
 

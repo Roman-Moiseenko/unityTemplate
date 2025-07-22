@@ -25,6 +25,7 @@ namespace Game.State.Maps.Mobs
         public ReactiveProperty<bool> IsDead = new(false);
         public float Attack => Origin.Attack;
         public float Delta;
+        public ReactiveProperty<MobState> State;
 
         public ObservableDictionary<string, MobDebuff> Debuffs = new();
 
@@ -35,6 +36,8 @@ namespace Game.State.Maps.Mobs
         public MobEntity(MobEntityData mobEntityData)
         {
             Origin = mobEntityData;
+            State = new ReactiveProperty<MobState>(mobEntityData.State);
+            State.Subscribe(s => mobEntityData.State = s);
             Position = new ReactiveProperty<Vector2>(new Vector2(0,0));
             Position.Subscribe(newValue =>
             {

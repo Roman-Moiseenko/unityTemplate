@@ -7,7 +7,6 @@ using Game.GamePlay.Classes;
 using Game.GamePlay.View.AttackAreas;
 using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
-using Game.GamePlay.View.Damages;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Mobs;

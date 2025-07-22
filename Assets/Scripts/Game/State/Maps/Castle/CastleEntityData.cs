@@ -16,7 +16,7 @@ namespace Game.State.Maps.Castle
         public float Damage { get; set; }
        // public float DistanceDamage { get; set; } // TODO Фиксированное значение
         public float Speed { get; set; }
-        
+        public bool IsReduceHealth { get; set; }
         
     }
 }

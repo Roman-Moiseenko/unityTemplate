@@ -17,7 +17,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
     public class PanelConfirmationViewModel : WindowViewModel
     {
         public override string Id => "PanelConfirmation";
-        public override string Path => "Gameplay/";
+        public override string Path => "Gameplay/Panels/";
         
         
       //  public readonly int CurrentSpeed;

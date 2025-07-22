@@ -109,8 +109,8 @@ namespace Game.GamePlay.Root
             var waveService = new WaveService(container, gameplayState);
             container.RegisterInstance(waveService);
 
-            container.RegisterFactory(_ => new CastleService(
-                gameplayState.Castle, waveService)).AsSingle();
+            container.RegisterFactory(_ => new CastleService(container,
+                gameplayState.Castle, gameplayState)).AsSingle();
 
             Fsm.Fsm.SetState<FsmStateGamePlay>();
 

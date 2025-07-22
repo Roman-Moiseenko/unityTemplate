@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Game.GamePlay.View.Damages;
+using Game.GamePlay.View.UI.ScreenGameplay.Popups;
 using MVVM.UI;
 using ObservableCollections;
 using R3;
@@ -21,6 +21,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         [SerializeField] private Canvas _damagePanel;
         [SerializeField] private List<DamagePopupBinder> _damagePopups;
+        [SerializeField] private ReducePopupBinder _reducePopupBinder;
 
         private void Start()
         {
@@ -33,7 +34,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             ViewModel.SoftCurrency.Subscribe(newValue => _textMoney.text = $"Money: {newValue}");
             ViewModel.HardCurrency.Subscribe(newValue => _textCrystal.text = $"Money: {newValue}");
             ViewModel.WaveText.Subscribe(newValue => _textWave.text = newValue);
-            
+            _reducePopupBinder = createReducePopup();
             ViewModel.AllDamages.ObserveAdd().Subscribe(e =>
             {
                 var damageData = e.Value;
@@ -41,6 +42,14 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 var position = new Vector3(damageData.Position.x, 1f, damageData.Position.y);
                 popup.StartPopup(position, damageData.Damage, damageData.Type);
                 ViewModel.AllDamages.Remove(e.Value); // Сразу удаляем
+            });
+
+            ViewModel.RepairBuffer.ObserveAdd().Subscribe(e =>
+            {
+                //TODO Показываем восстановление
+                var position = new Vector3(0, 1f, 0);
+                _reducePopupBinder.StartPopup(position, e.Value);
+                ViewModel.RepairBuffer.Remove(e.Value);
             });
         }
 
@@ -83,13 +92,22 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         private DamagePopupBinder AddDamagePopup()
         {
-            var prefabPath = "Prefabs/UI/Gameplay/DamagePopup"; //Перенести в настройки уровня
+            var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/DamagePopup"; 
             var damagePopupPrefab = Resources.Load<DamagePopupBinder>(prefabPath);
             var createdDamagePopup = Instantiate(damagePopupPrefab, _damagePanel.transform);
             createdDamagePopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera);
             _damagePopups.Add(createdDamagePopup);
-
             return createdDamagePopup;
+        }
+
+        private ReducePopupBinder createReducePopup()
+        {
+            var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/ReduceHealthPopup"; 
+            var reducePopupPrefab = Resources.Load<ReducePopupBinder>(prefabPath);
+            var createdReducePopup = Instantiate(reducePopupPrefab, _damagePanel.transform);
+            createdReducePopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera);
+            
+            return createdReducePopup;
         }
     }
 }

@@ -21,7 +21,8 @@ namespace Game.State.Maps.Mobs
         public float Attack;
 
         public int RewardCurrency;
-        
+        public MobState State = MobState.Moving;
+
         //TODO Тип урона
 
         /*    public MobEntityData(MobSettings settings)

@@ -28,6 +28,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         //TODO Возможно удалить
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
         private readonly GameplayStateProxy _gameplayState;
+        private readonly CastleService _castleService;
         private WaveService _waveService;
         
         //TODO Данные для Binder, возможно заменить в дальнейшем прогрузкой анимации и др.
@@ -36,9 +37,10 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         public readonly ReactiveProperty<int> HardCurrency = new();
         public readonly ReactiveProperty<string> WaveText = new();
         public ObservableList<DamageEntity> AllDamages = new();
+        public ObservableList<float> RepairBuffer;
    
         public override string Id => "ScreenGameplay";
-        public override string Path => "Gameplay/";
+        public override string Path => "Gameplay/ScreenGameplay/";
      //   public readonly int CurrentSpeed;
         public ScreenGameplayViewModel(
             GameplayUIManager uiManager, 
@@ -48,18 +50,21 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             _uiManager = uiManager;
             _exitSceneRequest = exitSceneRequest;
-            _gameplayState = container.Resolve<IGameStateProvider>().GameplayState; 
-            CameraService = container.Resolve<GameplayCamera>();
+            _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            _castleService = container.Resolve<CastleService>();
+            _waveService = container.Resolve<WaveService>();
             
+            var damageService = container.Resolve<DamageService>();
+            AllDamages = damageService.AllDamages;             
+            CameraService = container.Resolve<GameplayCamera>();
+            RepairBuffer = _castleService.RepairBuffer;
             PositionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
             
             _gameplayState.CurrentWave.Subscribe(n =>
             {
                 WaveText.Value = n + "/" + _gameplayState.Waves.Count;
             });
-            _waveService = container.Resolve<WaveService>();
-            var damageService = container.Resolve<DamageService>();
-            AllDamages = damageService.AllDamages; 
+
             //_waveService.
             //_gameplayState = container.Resolve<IGameStateProvider>().GameState;
             _gameplayState.Progress.Subscribe(newValue => ProgressData.Value = newValue);

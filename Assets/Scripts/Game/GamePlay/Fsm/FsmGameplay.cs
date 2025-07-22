@@ -1,4 +1,5 @@
-﻿using DI;
+﻿using System.Collections;
+using DI;
 using Game.GamePlay.Fsm.States;
 using MVVM.FSM;
 using R3;
@@ -32,6 +33,14 @@ namespace Game.GamePlay.Fsm
             {
                 IsGamePause.Value = newState.GetType() != typeof(FsmStateGamePlay);
             });
+        }
+
+        public IEnumerator WaitPause()
+        {
+            while (IsGamePause.Value)//Пауза
+            {
+                yield return null;
+            }
         }
 
         public void UpdateState()

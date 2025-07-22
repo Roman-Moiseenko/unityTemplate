@@ -19,7 +19,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         private WaveService _waveService;
         private readonly Coroutines _coroutines;
         public override string Id => "PanelGateWave";
-        public override string Path => "Gameplay/";
+        public override string Path => "Gameplay/Panels/";
         public readonly int CurrentSpeed;
         private readonly GameplayStateProxy _gameplayStateProxy;
         public ReactiveProperty<bool> StartForced;

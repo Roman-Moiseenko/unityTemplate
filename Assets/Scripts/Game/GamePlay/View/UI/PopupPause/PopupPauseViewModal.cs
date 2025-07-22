@@ -16,7 +16,7 @@ namespace Game.GamePlay.View.UI.PopupPause
     public class PopupPauseViewModal : WindowViewModel
     {
         public override string Id => "PopupPause";
-        public override string Path => "Gameplay/";
+        public override string Path => "Gameplay/Popups/";
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
         private readonly DIContainer _container;
 

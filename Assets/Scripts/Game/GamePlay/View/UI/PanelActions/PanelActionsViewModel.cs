@@ -16,7 +16,7 @@ namespace Game.GamePlay.View.UI.PanelActions
     public class PanelActionsViewModel : WindowViewModel
     {
         public override string Id => "PanelActions";
-        public override string Path => "Gameplay/";
+        public override string Path => "Gameplay/Panels/";
         
         public readonly GameplayUIManager _uiManager;
         private readonly DIContainer _container;

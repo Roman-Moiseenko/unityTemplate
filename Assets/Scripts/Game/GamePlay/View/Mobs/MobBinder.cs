@@ -59,6 +59,11 @@ namespace Game.GamePlay.View.Mobs
                     _viewModel.FinishCurrentAnimation.Value = true;
                 }
             });
+
+            _viewModel.State.Subscribe(newState =>
+            {
+                //TODO Переключаем анимацию от состояния моба.
+            });
         }
 
         public void Update()

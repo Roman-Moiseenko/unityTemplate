@@ -9,6 +9,8 @@
         public const int TIME_WAVE_NEW = 60;
         public const float MOB_BASE_SPEED = 0.5f;
         public const float SHOT_BASE_SPEED = 10f;
+        public const float MOB_SPEED_ATTACK = 1f;
+        public const float SPEED_REDICE_CASTLE = 1f;
         
         public const string MAIN_MENU_SHOP = nameof(MAIN_MENU_SHOP);
         public const string MAIN_MENU_INVENTORY = nameof(MAIN_MENU_INVENTORY);

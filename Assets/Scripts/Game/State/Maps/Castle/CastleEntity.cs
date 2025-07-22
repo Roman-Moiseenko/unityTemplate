@@ -21,33 +21,34 @@ namespace Game.State.Maps.Castle
         public ReactiveProperty<bool> IsDead; //Для подписок
 
         public ReactiveProperty<bool> IsShot = new(false);
+
+        public ReactiveProperty<bool> IsReduceHealth;
         
         public CastleEntity(CastleEntityData castleData)
         {
             Origin = castleData;
+            IsDead = new ReactiveProperty<bool>(false);
             
-
             CurrenHealth = new ReactiveProperty<float>(castleData.CurrenHealth);
-            CurrenHealth.Subscribe(newValue =>
-            {
-                castleData.CurrenHealth = newValue;
-            });
+            CurrenHealth.Subscribe(newValue => castleData.CurrenHealth = newValue);
+
+            IsReduceHealth = new ReactiveProperty<bool>(castleData.IsReduceHealth);
+            IsReduceHealth.Subscribe(newValue => castleData.IsReduceHealth = newValue);
         }
 
         /**
-         * Идет восстановление
+         * Восстановление
          */
-        public void Repair(int speed = 1)
+        public void Repair()
         {
-            CurrenHealth.Value += speed * ReduceHealth;
+            CurrenHealth.Value += ReduceHealth;
             if (CurrenHealth.Value > 100) CurrenHealth.Value = 100;
-            
         }
 
         /**
          * Нанесен урон
          */
-        public void DamageReceived(int damage)
+        public void DamageReceived(float damage)
         {
             CurrenHealth.Value -= damage;
             if (CurrenHealth.Value == 0) IsDead.Value = true;

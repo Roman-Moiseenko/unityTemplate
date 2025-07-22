@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace Game.GamePlay.View.Damages
+namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
 {
-    public class TextPopupBinder : MonoBehaviour
+    public class DamagePopupAnimation : MonoBehaviour
     {
         public void FinishAnimation()
         {
