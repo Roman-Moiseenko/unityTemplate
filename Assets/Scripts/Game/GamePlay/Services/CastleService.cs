@@ -87,7 +87,7 @@ namespace Game.GamePlay.Services
             }
             else
             {
-                _castleEntity.IsReduceHealth.Value = true;
+                _castleEntity.IsReduceHealth.Value = false;
             }
         }
     }

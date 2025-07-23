@@ -42,7 +42,7 @@ namespace Game.State.Maps.Castle
         public void Repair()
         {
             CurrenHealth.Value += ReduceHealth;
-            if (CurrenHealth.Value > 100) CurrenHealth.Value = 100;
+            if (CurrenHealth.Value > Origin.FullHealth) CurrenHealth.Value = Origin.FullHealth;
         }
 
         /**

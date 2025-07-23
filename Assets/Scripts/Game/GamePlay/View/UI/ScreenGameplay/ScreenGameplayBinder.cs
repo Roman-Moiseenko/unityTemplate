@@ -27,17 +27,17 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         private void Start()
         {
-            for (int i = 0; i < 20; i++) //Пул всплывающих popup
+            for (var i = 0; i < 20; i++) //Пул всплывающих popup
             {
-                AddDamagePopup();
+                CreateDamagePopup();
             }
 
             ViewModel.ProgressData.Subscribe(newValue => { _textProgress.text = $"Progress: {newValue}"; });
             ViewModel.SoftCurrency.Subscribe(newValue => _textMoney.text = $"Money: {newValue}");
             ViewModel.HardCurrency.Subscribe(newValue => _textCrystal.text = $"Money: {newValue}");
             ViewModel.WaveText.Subscribe(newValue => _textWave.text = newValue);
-            _reducePopupBinder = createReducePopup();
-            _castleHealthBar = createCastleHealthBar();
+            _reducePopupBinder = CreateReducePopup();
+            _castleHealthBar = CreateCastleHealthBar();
             ViewModel.AllDamages.ObserveAdd().Subscribe(e =>
             {
                 var damageData = e.Value;
@@ -66,7 +66,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 if (popupBinder.Free.Value) return popupBinder;
             }
 
-            return AddDamagePopup(); //Расширяем пул всплывающих popup на 1
+            return CreateDamagePopup(); //Расширяем пул всплывающих popup на 1
         }
 
         private void OnEnable()
@@ -97,7 +97,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             ViewModel.RequestOpenPopupPause();
         }
 
-        private DamagePopupBinder AddDamagePopup()
+        private DamagePopupBinder CreateDamagePopup()
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/DamagePopup";
             var damagePopupPrefab = Resources.Load<DamagePopupBinder>(prefabPath);
@@ -107,7 +107,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             return createdDamagePopup;
         }
 
-        private ReducePopupBinder createReducePopup()
+        private ReducePopupBinder CreateReducePopup()
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/ReduceHealthPopup";
             var reducePopupPrefab = Resources.Load<ReducePopupBinder>(prefabPath);
@@ -117,7 +117,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             return createdReducePopup;
         }
 
-        private CastleHealthBarBinder createCastleHealthBar()
+        private CastleHealthBarBinder CreateCastleHealthBar()
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/CastleHealthBar";
             var castleHealthPrefab = Resources.Load<CastleHealthBarBinder>(prefabPath);
