@@ -21,5 +21,5 @@ MonoBehaviour:
   <IsFly>k__BackingField: 0
   <Health>k__BackingField: 250
   <Armor>k__BackingField: 0
-  <Attack>k__BackingField: 5
+  <Attack>k__BackingField: 10
   <RewardCurrency>k__BackingField: 0
