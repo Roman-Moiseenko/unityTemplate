@@ -165,24 +165,23 @@ namespace Game.GamePlay.Services
 
         private IEnumerator MovingMobOnWay(MobViewModel mobViewModel)
         {
-            while (_fsmGameplay.IsGamePause.Value)//Пауза
+            yield return _fsmGameplay.WaitPause();
+          /*  while (_fsmGameplay.IsGamePause.Value)//Пауза
             {
                 yield return null;
-            }
+            }*/
             yield return mobViewModel.MovingModel(GenerateRoadPoints(mobViewModel));
-            mobViewModel.State.Value = MobState.Attacking;
-            yield return MobAttackCastle(mobViewModel);
-            //TODO Моб дошел до замка Запуск атаки моба
-            yield return DamageToMob(mobViewModel); //Наносим урон мобу --- заменить на урон Замку
+            //mobViewModel.State.Value = MobState.Attacking;
+            yield return mobViewModel.AttackCastle();
+            
+            yield return MobAttackCastle(mobViewModel); //Моб дошел до замка Запуск атаки моба
+           // yield return DamageToMob(mobViewModel); //Наносим урон мобу --- заменить на урон Замку
             yield break;
         }
 
         public IEnumerator MobTimerDebuff(string configId, MobDebuff debuff, MobViewModel mobViewModel)
         {
-            while (_fsmGameplay.IsGamePause.Value)//Пауза
-            {
-                yield return null;
-            }
+            yield return _fsmGameplay.WaitPause();
             
             yield return new WaitForSeconds(debuff.Time);
             mobViewModel.RemoveDebuff(configId);
@@ -193,10 +192,11 @@ namespace Game.GamePlay.Services
             TimeOutNewWave.Value = false;
             for (var i = 0; i < AppConstants.TIME_WAVE_NEW; i++) //Ускоряем при новой скорости
             {
-                while (_fsmGameplay.IsGamePause.Value)
+                yield return _fsmGameplay.WaitPause();
+                /*while (_fsmGameplay.IsGamePause.Value)
                 {
                     yield return null;
-                }
+                }*/
 
                 // yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value);
                 TimeOutNewWaveValue.Value = Convert.ToSingle(i) / AppConstants.TIME_WAVE_NEW;
@@ -214,11 +214,11 @@ namespace Game.GamePlay.Services
             if (mobViewModel == null) yield break;
 
             mobViewModel.StartAnimationDelete(); //Запускаем процесс удаления модели
-            while (!mobViewModel.FinishCurrentAnimation.CurrentValue)
+            /*while (!mobViewModel.FinishCurrentAnimation.CurrentValue)
             {
                 yield return null;
-            }
-
+            }*/
+            yield return mobViewModel.WaitFinishAnimation(); //Ждем удаления модели
             _allMobsOnWay.Remove(mobViewModel);
             yield return null;
         }
@@ -245,14 +245,12 @@ namespace Game.GamePlay.Services
         {
             
             if (mobViewModel == null) yield break;
-            while (_fsmGameplay.IsGamePause.Value)
-            {
-                yield return null;
-            }
+            yield return _fsmGameplay.WaitPause();
             
             _gameplayState.Castle.DamageReceived(mobViewModel.Attack);
 
             yield return new WaitForSeconds(AppConstants.MOB_BASE_SPEED);
+         //   yield return MobAttackCastle(mobViewModel);
         }
         
 

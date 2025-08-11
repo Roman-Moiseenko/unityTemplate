@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.State.Maps.Mobs;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace Game.GamePlay.View.Mobs
         private Quaternion _targetDirection;
 
         private float _mobY;
-        private int _currentIndexListPoint = 0;
+        private int _currentIndexListPoint;
 
         public void Bind(MobViewModel viewModel)
         {
@@ -56,6 +57,7 @@ namespace Game.GamePlay.View.Mobs
                 if (v)
                 {
                     //TODO Анимация удаления объекта После окончания:
+                    Debug.Log("Моб " + viewModel.MobEntityId + " Уничтожается");
                     _viewModel.FinishCurrentAnimation.Value = true;
                 }
             });
@@ -63,6 +65,10 @@ namespace Game.GamePlay.View.Mobs
             _viewModel.State.Subscribe(newState =>
             {
                 //TODO Переключаем анимацию от состояния моба.
+                if (newState == MobState.Attacking)
+                {
+                    Debug.Log("Моб " + viewModel.MobEntityId + " Аттакует");
+                }
             });
         }
 
@@ -86,7 +92,7 @@ namespace Game.GamePlay.View.Mobs
                 _healthBarBinder.OnUpdate();
             }
         }
-
+/*
         private Vector3 GetTargetPosition()
         {
             var newValue = _viewModel.RoadPoints[_currentIndexListPoint].Point;
@@ -94,9 +100,7 @@ namespace Game.GamePlay.View.Mobs
             return _targetPosition;
         }
         
-        /**
-         * Поворачиваем полоску к камере
-         */
+
         private void AlignCamera() {
             if (_viewModel.CameraService.Camera != null) {
                 var camXform = _viewModel.CameraService.Camera.transform;
@@ -107,13 +111,13 @@ namespace Game.GamePlay.View.Mobs
             }
         }
         
-        /**
-         * Обновляем шрейдер
-         */
+
         private void UpdateParams() {
             meshRenderer.GetPropertyBlock(matBlock);
             matBlock.SetFloat("_Fill", _viewModel.CurrentHealth.CurrentValue / _viewModel.MaxHealth);
             meshRenderer.SetPropertyBlock(matBlock);
         }
+        
+        */
     }
 }

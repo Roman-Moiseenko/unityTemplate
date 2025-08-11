@@ -57,6 +57,16 @@ namespace Game.GamePlay.View.Mobs
             Direction = new ReactiveProperty<Vector2Int>(mobEntity.Direction.CurrentValue); //Начальное направление
         }
 
+        public IEnumerator WaitFinishAnimation()
+        {
+            Debug.Log(FinishCurrentAnimation.Value);
+            while (!FinishCurrentAnimation.Value)
+            {
+                yield return null;
+            }
+            Debug.Log(FinishCurrentAnimation.Value);
+        }
+        
         public IEnumerator TimerDebuff(string configId, MobDebuff debuff)
         {
             //Пауза
@@ -125,6 +135,13 @@ namespace Game.GamePlay.View.Mobs
         public void RemoveDebuff(string configId)
         {
             _mobEntity.RemoveDebuff(configId);
+        }
+
+        public IEnumerator AttackCastle()
+        {
+            State.Value = MobState.Attacking;
+            
+            
         }
     }
 }

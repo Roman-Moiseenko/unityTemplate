@@ -43,12 +43,18 @@ namespace Game.GamePlay.View.AttackAreas
             RadiusExpansion.Value = radius.z;
         }
 
+        /**
+         * Установить позицию без перемещения
+         */
         public void SetStartPosition(Vector2Int positionValue)
         {
             Moving = false;
             Position.Value = positionValue;
         }
 
+        /**
+         * Переместить в новую точку
+         */
         public void SetPosition(Vector2Int positionValue)
         {
             Moving = true;

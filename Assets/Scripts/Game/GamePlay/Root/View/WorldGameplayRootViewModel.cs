@@ -219,7 +219,7 @@ namespace Game.GamePlay.Root.View
                        // var start = new Vector3()
                         //Debug.DrawLine(towerViewModel.Position.Value, );
                         
-                        AreaViewModel.Position.Value = towerViewModel.Position.Value;
+                        AreaViewModel.SetStartPosition(towerViewModel.Position.Value);
                         AreaViewModel.SetRadius(towerViewModel.GetRadius());
                         
                         return;

@@ -174,7 +174,8 @@ namespace Game.GamePlay.Services
         public IEnumerator MovingShot(ShotViewModel shotViewModel)
         {
             //Debug.Log("MovingShot Start");
-            yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value);
+            yield return _fsmGameplay.WaitPause();
+            //yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value);
             //Debug.Log(shotViewModel.StartPosition + " => " + shotViewModel._shotEntity.FinishPosition.CurrentValue);
             yield return shotViewModel.MovingModel();
             RemoteShot(shotViewModel);
