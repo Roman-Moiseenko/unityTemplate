@@ -66,7 +66,7 @@ namespace Game.GamePlay.Services
                     {
                         if (v)
                         {
-                            gameplayState.Progress.Value += 5;
+                            gameplayState.ProgressUp();
                             waveService.AllMobsMap.Remove(e.Value.Key);
                         }
                     }
@@ -91,11 +91,11 @@ namespace Game.GamePlay.Services
                     }
                     else
                     {
-                        mobEntity.SetDamage(shot.Damage);
+                       // mobEntity.SetDamage(shot.Damage);
                         var damage = new DamageEntity
                         {
                             Position = mobEntity.Position.CurrentValue,
-                            Damage = Mathf.FloorToInt(shot.Damage),
+                            Damage = Mathf.FloorToInt(mobEntity.SetDamage(shot.Damage)),
                             Type = shot.DamageType,
                         };
 

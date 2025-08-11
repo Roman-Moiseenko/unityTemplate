@@ -57,7 +57,7 @@ namespace Game.GamePlay.View.Mobs
                 if (v)
                 {
                     //TODO Анимация удаления объекта После окончания:
-                    Debug.Log("Моб " + viewModel.MobEntityId + " Уничтожается");
+                   // Debug.Log("Моб " + viewModel.MobEntityId + " Уничтожается");
                     _viewModel.FinishCurrentAnimation.Value = true;
                 }
             });
@@ -67,7 +67,7 @@ namespace Game.GamePlay.View.Mobs
                 //TODO Переключаем анимацию от состояния моба.
                 if (newState == MobState.Attacking)
                 {
-                    Debug.Log("Моб " + viewModel.MobEntityId + " Аттакует");
+                 //   Debug.Log("Моб " + viewModel.MobEntityId + " Аттакует");
                 }
             });
         }

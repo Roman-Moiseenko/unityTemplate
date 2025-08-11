@@ -112,7 +112,7 @@ namespace Game.GamePlay.Root
             container.RegisterFactory(_ => new CastleService(container,
                 gameplayState.Castle, gameplayState)).AsSingle();
 
-            Fsm.Fsm.SetState<FsmStateGamePlay>();
+           // Fsm.Fsm.SetState<FsmStateGamePlay>();
 
             //Сервис наград
             var rewardService = new RewardProgressService(container, gameSettings.TowersSettings);
@@ -138,6 +138,8 @@ namespace Game.GamePlay.Root
 
                 rewardService.StartRewardCard(); //Устанавливаем начальный режим строительства
             }
+            //TODO Запуск таймера
+            waveService.Start();
         }
     }
 }

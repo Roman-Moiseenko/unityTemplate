@@ -6,6 +6,7 @@ using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
+using Game.GamePlay.Fsm.States;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Waves;
 using Game.State.Maps.Mobs;
@@ -109,8 +110,7 @@ namespace Game.GamePlay.Services
 
             _allMobsOnWay.ObserveRemove().Subscribe(e =>
             {
-   
-                
+                _coroutines.StopCoroutine(MovingMobOnWay(e.Value)); //Прерываем движение моба
                 if (_allMobsOnWay.Count != 0) return; //На дороге нет мобов
                 IsMobsOnWay.Value = false;
                 _coroutines.StartCoroutine(TimerNewWave());
@@ -125,9 +125,12 @@ namespace Game.GamePlay.Services
             //При добавлении дороги на путь, перемещаем модель ворот
             _roadsService.Way.ObserveAdd().Subscribe(e => MoveGateWaveViewModel());
             _roadsService.WaySecond.ObserveAdd().Subscribe(e => MoveGateWaveViewModelSecond());
-            _coroutines.StartCoroutine(TimerNewWave()); //Первоначальный запуска таймера
         }
 
+        public void Start()
+        {
+            _coroutines.StartCoroutine(TimerNewWave()); //Первоначальный запуска таймера
+        }
         public void StartNextWave()
         {
             _gameplayState.CurrentWave.Value++;
@@ -143,6 +146,7 @@ namespace Game.GamePlay.Services
         private IEnumerator StartNewWave(int numberWave)
         {
             yield return new WaitUntil(() => StartForced.CurrentValue); //Ждем когда разрешиться запуск волны
+            StartForced.Value = false; //Предотвращаем авто запуск след.волны
             ShowGate.Value = true; //Показать ворота
             yield return _coroutines.StartCoroutine(GenerateMob(numberWave)); //Выводим мобов на дорогу
             yield return new WaitForSeconds(TimeEndWave); //Пауза между волнами
@@ -156,7 +160,8 @@ namespace Game.GamePlay.Services
             if (!_gameplayState.Waves.TryGetValue(numberWave, out var waveEntity)) yield break; //Волны закончились
             foreach (var entityMob in waveEntity.Mobs)
             {
-                yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //Пауза игры
+                yield return _fsmGameplay.WaitPause();
+                //yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //Пауза игры
                 CreateMobViewModel(entityMob);
                 yield return
                     new WaitForSeconds(SpeedGenerateMobs / GameSpeed.CurrentValue); //Задержка создания нового моба
@@ -166,17 +171,9 @@ namespace Game.GamePlay.Services
         private IEnumerator MovingMobOnWay(MobViewModel mobViewModel)
         {
             yield return _fsmGameplay.WaitPause();
-          /*  while (_fsmGameplay.IsGamePause.Value)//Пауза
-            {
-                yield return null;
-            }*/
             yield return mobViewModel.MovingModel(GenerateRoadPoints(mobViewModel));
-            //mobViewModel.State.Value = MobState.Attacking;
-            yield return mobViewModel.AttackCastle();
             
-            yield return MobAttackCastle(mobViewModel); //Моб дошел до замка Запуск атаки моба
-           // yield return DamageToMob(mobViewModel); //Наносим урон мобу --- заменить на урон Замку
-            yield break;
+            yield return mobViewModel.AttackCastle(_gameplayState.Castle);
         }
 
         public IEnumerator MobTimerDebuff(string configId, MobDebuff debuff, MobViewModel mobViewModel)
@@ -192,13 +189,12 @@ namespace Game.GamePlay.Services
             TimeOutNewWave.Value = false;
             for (var i = 0; i < AppConstants.TIME_WAVE_NEW; i++) //Ускоряем при новой скорости
             {
+               // Debug.Log("_fsmGameplay.IsGamePause.Value = " + _fsmGameplay.IsGamePause.Value);
                 yield return _fsmGameplay.WaitPause();
-                /*while (_fsmGameplay.IsGamePause.Value)
+             /*   while (_fsmGameplay.IsGamePause.Value)
                 {
                     yield return null;
                 }*/
-
-                // yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value);
                 TimeOutNewWaveValue.Value = Convert.ToSingle(i) / AppConstants.TIME_WAVE_NEW;
 
                 yield return new WaitForSeconds(0.04f / GameSpeed.CurrentValue);
@@ -220,40 +216,10 @@ namespace Game.GamePlay.Services
             }*/
             yield return mobViewModel.WaitFinishAnimation(); //Ждем удаления модели
             _allMobsOnWay.Remove(mobViewModel);
-            yield return null;
-        }
-
-        /**
-         * Временная функция убийства мобов
-         */
-        private IEnumerator DamageToMob(MobViewModel mobViewModel)
-        {
-            try
-            {
-                AllMobsMap[mobViewModel.MobEntityId].Health.Value -= 1000;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                yield break;
-            }
-
-            yield return null;
-        }
-
-        private IEnumerator MobAttackCastle(MobViewModel mobViewModel)
-        {
             
-            if (mobViewModel == null) yield break;
-            yield return _fsmGameplay.WaitPause();
-            
-            _gameplayState.Castle.DamageReceived(mobViewModel.Attack);
-
-            yield return new WaitForSeconds(AppConstants.MOB_BASE_SPEED);
-         //   yield return MobAttackCastle(mobViewModel);
+           // yield return null;
         }
         
-
         /**
          * Создаем модель ворот для главного пути и вычисляем координаты и направление поворота ворот
          */
@@ -312,7 +278,7 @@ namespace Game.GamePlay.Services
             mobEntity.SetStartPosition(position, direction);
 
             mobEntity.IsWay = true;
-            var mobViewModel = new MobViewModel(mobEntity, this, _cameraService);
+            var mobViewModel = new MobViewModel(mobEntity, this, _cameraService, _fsmGameplay);
             AllMobsMap.Add(mobEntity.UniqueId, mobEntity);
             _allMobsOnWay.Add(mobViewModel);
         }

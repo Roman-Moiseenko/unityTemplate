@@ -197,5 +197,11 @@ namespace Game.State.Root
         {
             return Origin.CreateEntityID();
         }
+
+        public void ProgressUp()
+        {
+            //TODO Создать Логарифмический расчет награды
+            Progress.Value += 5;
+        }
     }
 }

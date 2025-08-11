@@ -67,9 +67,11 @@ namespace Game.State.Maps.Mobs
             Direction.Value = direction;
         }
 
-        public void SetDamage(float damage)
+        public float SetDamage(float damage)
         {
-            Health.Value -= damage - Armor.Value;
+            var damageReceived = damage - Armor.Value;
+            Health.Value -= damageReceived;
+            return damageReceived;
         }
         
         public void SetDebuff(string configId, MobDebuff debuff)

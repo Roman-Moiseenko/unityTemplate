@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Game.Common;
 using Game.GamePlay.Classes;
+using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
@@ -18,6 +19,7 @@ namespace Game.GamePlay.View.Mobs
         private int _currentIndexListPoint = 0;
         private Vector2 _targetPosition;
         private readonly WaveService _waveService;
+        private readonly FsmGameplay _fsmGameplay;
         public int MobEntityId => _mobEntity.UniqueId;
         public bool IsFly => _mobEntity.IsFly;
         public string ConfigId => _mobEntity.ConfigId;
@@ -42,10 +44,11 @@ namespace Game.GamePlay.View.Mobs
         public float Attack => _mobEntity.Attack;
         //public float SpeedAttack => _mobEntity.SpeedAttack;
 
-        public MobViewModel(MobEntity mobEntity, WaveService waveService, GameplayCamera cameraService)
+        public MobViewModel(MobEntity mobEntity, WaveService waveService, GameplayCamera cameraService, FsmGameplay fsmGameplay)
         {
             _mobEntity = mobEntity;
             _waveService = waveService;
+            _fsmGameplay = fsmGameplay;
             CameraService = cameraService;
             StartPosition = mobEntity.Position.CurrentValue;
             StartDirection = mobEntity.Direction.CurrentValue;
@@ -59,12 +62,10 @@ namespace Game.GamePlay.View.Mobs
 
         public IEnumerator WaitFinishAnimation()
         {
-            Debug.Log(FinishCurrentAnimation.Value);
             while (!FinishCurrentAnimation.Value)
             {
                 yield return null;
             }
-            Debug.Log(FinishCurrentAnimation.Value);
         }
         
         public IEnumerator TimerDebuff(string configId, MobDebuff debuff)
@@ -82,6 +83,8 @@ namespace Game.GamePlay.View.Mobs
 
         public IEnumerator MovingModel(List<RoadPoint> roadPoints)
         {
+            if (_mobEntity.IsDead.CurrentValue) yield break;
+            
             RoadPoints = roadPoints;
             _targetPosition = GetTargetPosition();
             IsMoving.Value = true; //Начать движение
@@ -90,7 +93,7 @@ namespace Game.GamePlay.View.Mobs
                 yield return MovingEntity();
             }
             
-            yield return new WaitUntil(() => !IsMoving.CurrentValue); // 
+           // yield return new WaitUntil(() => !IsMoving.CurrentValue); // 
         }
 
         private IEnumerator MovingEntity()
@@ -116,6 +119,7 @@ namespace Game.GamePlay.View.Mobs
                     _targetPosition,  
                     Time.deltaTime * speedMob);
             }
+            
             yield return null;
         }
         
@@ -137,11 +141,19 @@ namespace Game.GamePlay.View.Mobs
             _mobEntity.RemoveDebuff(configId);
         }
 
-        public IEnumerator AttackCastle()
+        public IEnumerator AttackCastle(IEntityHasHealth entity)
         {
             State.Value = MobState.Attacking;
             
-            
+            while (State.Value == MobState.Attacking)
+            {
+                yield return _fsmGameplay.WaitPause();
+                yield return new WaitForSeconds(AppConstants.MOB_BASE_SPEED);
+                if (_mobEntity.IsDead.CurrentValue) yield break;
+                entity.DamageReceived(Attack);
+               // yield return null;
+            }
         }
+        
     }
 }

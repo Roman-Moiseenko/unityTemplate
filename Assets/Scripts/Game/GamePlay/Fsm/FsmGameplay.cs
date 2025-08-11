@@ -80,5 +80,15 @@ namespace Game.GamePlay.Fsm
         {
             return IsStateBuildBegin() || IsStateBuild() || IsStateBuildEnd();
         }
+
+        public void SetPosition(Vector2Int position)
+        {
+            Fsm.Position.Value = position;
+        }
+
+        public Vector2Int GetPosition()
+        {
+            return Fsm.Position.CurrentValue;
+        }
     }
 }

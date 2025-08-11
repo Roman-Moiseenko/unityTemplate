@@ -127,7 +127,7 @@ namespace Game.GamePlay.Root.View
                         position = placementService.GetNewPositionGround();
                         frameService.CreateFrameGround(position);
                     }
-                    _fsmGameplay.Fsm.Position.Value = position; //Сохраняем позицию сущности в состоянии
+                    _fsmGameplay.SetPosition(position); //Сохраняем позицию сущности в состоянии
                     CameraMove.Value = position; //центрируем карту
                     
                 }
@@ -135,7 +135,7 @@ namespace Game.GamePlay.Root.View
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
                     var card = ((FsmStateBuildEnd)newState).GetRewardCard();
-                    var position = _fsmGameplay.Fsm.Position.CurrentValue; 
+                    var position = _fsmGameplay.GetPosition(); 
                     
                     switch (card.RewardType)
                     {
@@ -238,8 +238,11 @@ namespace Game.GamePlay.Root.View
             //TODO Если модель площади есть, удаляем 
             if (_fsmGameplay.IsStateBuild())
             {
-                _fsmGameplay.Fsm.Position.Value =
-                    new Vector2Int(Mathf.FloorToInt(position.x + 0.5f), Mathf.FloorToInt(position.y + 0.5f));
+                _fsmGameplay.SetPosition(new Vector2Int(
+                    Mathf.FloorToInt(position.x + 0.5f), 
+                    Mathf.FloorToInt(position.y + 0.5f)
+                    ));   
+                //_fsmGameplay.Fsm.Position.Value = new Vector2Int(Mathf.FloorToInt(position.x + 0.5f), Mathf.FloorToInt(position.y + 0.5f));
                 
                 var card = (RewardCardData)(_fsmGameplay.Fsm.StateCurrent.Value.Params);
                 card.Position.x = Mathf.FloorToInt(position.x + 0.5f);

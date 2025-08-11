@@ -1,10 +1,11 @@
-﻿using Game.State.Entities;
+﻿using Game.GamePlay;
+using Game.State.Entities;
 using R3;
 using UnityEngine;
 
 namespace Game.State.Maps.Castle
 {
-    public class CastleEntity
+    public class CastleEntity : IEntityHasHealth
     {
         public CastleEntityData Origin;
         public string ConfigId => Origin.ConfigId; //Идентификатор для поиска настроек сущности

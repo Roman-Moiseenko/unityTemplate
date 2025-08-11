@@ -317,6 +317,8 @@ namespace Game.GamePlay.Root.View
             {
                 Destroy(mobBinder.gameObject);
                 _createMobsMap.Remove(mobViewModel.MobEntityId);
+                mobViewModel = null;
+                // Destroy(mobViewModel);
             }
         }
 
