@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.GamePlay.View.UI.ScreenGameplay.Popups;
+using Game.GamePlay.View.UI.ScreenGameplay.Rewards;
 using MVVM.UI;
 using ObservableCollections;
 using R3;
@@ -15,25 +16,58 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
     public class ScreenGameplayBinder : WindowBinder<ScreenGameplayViewModel>
     {
         [SerializeField] private Button _btnPopupPause;
-        [SerializeField] private TMP_Text _textProgress;
+        //[SerializeField] private TMP_Text _textProgress;
         [SerializeField] private TMP_Text _textMoney;
         [SerializeField] private TMP_Text _textCrystal;
         [SerializeField] private TMP_Text _textWave;
 
         [SerializeField] private Canvas _panelPopupMessages;
-        [SerializeField] private List<DamagePopupBinder> _damagePopups;
+        [SerializeField] private Canvas _panelRewardPopup;
+        [SerializeField] private List<DamagePopupBinder> _damagePopups = new();
+        [SerializeField] private List<CurrencyPopupBinder> _currencyPopups = new();
+        [SerializeField] private List<CurrencyPopupBinder> _progressPopups = new();
+
+        [SerializeField] private Transform _targetCurrency;
+        [SerializeField] private Transform _targetProgress;
         [SerializeField] private ReducePopupBinder _reducePopupBinder;
         [SerializeField] private CastleHealthBarBinder _castleHealthBar;
+        [SerializeField] private Transform _progressContainer;
 
+        private TMP_Text _levelProgress;
+        private Slider _progress;
+        
         private void Start()
         {
-            for (var i = 0; i < 20; i++) //Пул всплывающих popup
+           // Debug.Log(" _targetCurrency = " + _targetCurrency.transform.position);
+            _levelProgress = _progressContainer.Find("Level").GetComponent<TMP_Text>();
+            _progress = _progressContainer.Find("Slider").GetComponent<Slider>();
+            //Пул всплывающих popup
+            for (var i = 0; i < 20; i++) 
             {
                 CreateDamagePopup();
             }
+            //Пул всплывающих монеток
+            for (int i = 0; i < 10; i++)
+            {
+                CreateCurrencyPopup();
+            }
+            //Пул всплывающих кристалов
+            for (int i = 0; i < 10; i++)
+            {
+                CreateProgressPopup();
+            }
+            ViewModel.ProgressData.Subscribe(newValue =>
+            {
+                var p = newValue / 100f;
+                _progress.value = p > 1 ? 1 : p;
+            });
+            ViewModel.ProgressLevel.Subscribe(newValue =>
+            {
+                _levelProgress.text = newValue.ToString();
+            });
 
-            ViewModel.ProgressData.Subscribe(newValue => { _textProgress.text = $"Progress: {newValue}"; });
-            ViewModel.SoftCurrency.Subscribe(newValue => _textMoney.text = $"Money: {newValue}");
+            //ViewModel.ProgressData.Subscribe(newValue => { _textProgress.text = $"Progress: {newValue}"; });
+            ViewModel.SoftCurrency.Subscribe(newValue => _textMoney.text = newValue.ToString());
             ViewModel.HardCurrency.Subscribe(newValue => _textCrystal.text = $"Money: {newValue}");
             ViewModel.WaveText.Subscribe(newValue => _textWave.text = newValue);
             _reducePopupBinder = CreateReducePopup();
@@ -49,14 +83,32 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
             ViewModel.RepairBuffer.ObserveAdd().Subscribe(e =>
             {
-                //TODO Показываем восстановление
+                //Показываем восстановление
                 var position = new Vector3(0, 1f, 0);
                 _reducePopupBinder.StartPopup(position, e.Value);
                 ViewModel.RepairBuffer.Remove(e.Value);
             });
 
             ViewModel.CastleHealth.Skip(1).Subscribe(h => _castleHealthBar.SetHealth(h));
+
+            ViewModel.AllRewards.ObserveAdd().Subscribe(r =>
+            {
+                //TODO Запуск награды
+                var currency = FindFreeCurrency();
+                var progress = FindFreeProgress();
+                var position = new Vector3(r.Value.Position.x, 1f, r.Value.Position.y);
+                currency.StartPopup(position);
+                progress.StartPopup(position);
+                currency.Free.Skip(1).Subscribe(v =>
+                {
+                    //При освобождении удаляем из списка
+                    if (v) ViewModel.AllRewards.Remove(r.Value);
+                });
+            });
+            
         }
+
+
 
 
         private DamagePopupBinder FindFreePopup()
@@ -69,6 +121,28 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             return CreateDamagePopup(); //Расширяем пул всплывающих popup на 1
         }
 
+        private CurrencyPopupBinder FindFreeCurrency()
+        {
+            foreach (var popupBinder in _currencyPopups)
+            {
+                if (popupBinder.Free.Value) return popupBinder;
+                
+            }
+
+            return CreateCurrencyPopup();
+        }
+
+        private CurrencyPopupBinder FindFreeProgress()
+        {
+            
+            foreach (var popupBinder in _progressPopups)
+            {
+                if (popupBinder.Free.Value) return popupBinder;
+                
+            }
+            return CreateProgressPopup();
+        }
+        
         private void OnEnable()
         {
             _btnPopupPause.onClick.AddListener(OnPopupPauseButtonClicked);
@@ -127,5 +201,26 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
             return createdCastleHealth;
         }
+        
+        private CurrencyPopupBinder CreateCurrencyPopup()
+        {
+            var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/RewardCurrency";
+            var currencyPopupPrefab = Resources.Load<CurrencyPopupBinder>(prefabPath);
+            var createdCurrencyPopup = Instantiate(currencyPopupPrefab, _panelRewardPopup.transform);
+            createdCurrencyPopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera, _targetCurrency.transform.position);
+            _currencyPopups.Add(createdCurrencyPopup);
+            return createdCurrencyPopup;
+        }
+        
+        private CurrencyPopupBinder CreateProgressPopup()
+        {
+            var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/RewardProgress";
+            var progressPopupPrefab = Resources.Load<CurrencyPopupBinder>(prefabPath);
+            var createdProgressPopup = Instantiate(progressPopupPrefab, _panelRewardPopup.transform);
+            createdProgressPopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera, _targetProgress.transform.position);
+            _progressPopups.Add(createdProgressPopup);
+            return createdProgressPopup;
+        }
+        
     }
 }

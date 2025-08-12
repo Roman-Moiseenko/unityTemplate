@@ -9,12 +9,15 @@ using Game.MainMenu.Services;
 using Game.Settings;
 using Game.State;
 using Game.State.GameResources;
+using Game.State.Maps.Rewards;
 using Game.State.Maps.Shots;
 using Game.State.Root;
 using MVVM.UI;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using Update = Unity.VisualScripting.Update;
 
 namespace Game.GamePlay.View.UI.ScreenGameplay
 {
@@ -33,15 +36,18 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         
         //TODO Данные для Binder, возможно заменить в дальнейшем прогрузкой анимации и др.
         public readonly ReactiveProperty<int> ProgressData = new();
+        public readonly ReactiveProperty<int> ProgressLevel = new();
         public readonly ReactiveProperty<int> SoftCurrency = new();
         public readonly ReactiveProperty<int> HardCurrency = new();
         public readonly ReactiveProperty<string> WaveText = new();
-        public ObservableList<DamageEntity> AllDamages = new();
+        public ObservableList<DamageEntity> AllDamages;
+        public ObservableList<RewardCurrencyEntity> AllRewards; 
         public ObservableList<float> RepairBuffer;
 
         public ReactiveProperty<float> CastleHealth;
         public float CastleFullHealth;
-   
+        private readonly RewardProgressService _rewardService;
+
         public override string Id => "ScreenGameplay";
         public override string Path => "Gameplay/ScreenGameplay/";
      //   public readonly int CurrentSpeed;
@@ -56,6 +62,9 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
             _castleService = container.Resolve<CastleService>();
             _waveService = container.Resolve<WaveService>();
+            _rewardService = container.Resolve<RewardProgressService>();
+
+            AllRewards = _rewardService.RewardMaps;
 
             CastleHealth = _gameplayState.Castle.CurrenHealth;
             CastleFullHealth = _gameplayState.Castle.FullHealth;
@@ -75,8 +84,15 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             //_waveService.
             //_gameplayState = container.Resolve<IGameStateProvider>().GameState;
             _gameplayState.Progress.Subscribe(newValue => ProgressData.Value = newValue);
+            _gameplayState.ProgressLevel.Subscribe(newValue => ProgressLevel.Value = newValue);
             _gameplayState.SoftCurrency.Subscribe(newValue => SoftCurrency.Value = newValue);
             
+        }
+
+        public void Update()
+        {
+            
+            Debug.Log("1");
         }
         
         public void RequestOpenPopupPause()

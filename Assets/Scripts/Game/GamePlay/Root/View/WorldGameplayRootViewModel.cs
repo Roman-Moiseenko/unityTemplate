@@ -218,10 +218,9 @@ namespace Game.GamePlay.Root.View
                         
                        // var start = new Vector3()
                         //Debug.DrawLine(towerViewModel.Position.Value, );
-                        
                         AreaViewModel.SetStartPosition(towerViewModel.Position.Value);
                         AreaViewModel.SetRadius(towerViewModel.GetRadius());
-                        
+                        _cameraService.MoveCamera(towerViewModel.Position.Value);
                         return;
                         //TODO Создаем модель площади
                     }

@@ -41,7 +41,8 @@ namespace Game.GamePlay.Services
             TowersSettings towersSettings,
             WaveService waveService,
             TowersService towersService,
-            ShotService shotService
+            ShotService shotService,
+            RewardProgressService rewardProgressService
         )
         {
             _fsmGameplay = fsmGameplay;
@@ -50,6 +51,7 @@ namespace Game.GamePlay.Services
             _waveService = waveService;
             _towersService = towersService;
             _shotService = shotService;
+            _rewardProgressService = rewardProgressService;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
 
             // AllTowers = _gameplayState.;
@@ -66,7 +68,8 @@ namespace Game.GamePlay.Services
                     {
                         if (v)
                         {
-                            gameplayState.ProgressUp();
+                            rewardProgressService.RewardKillMob(mobEntity.RewardCurrency, mobEntity.Position.CurrentValue);
+                            
                             waveService.AllMobsMap.Remove(e.Value.Key);
                         }
                     }

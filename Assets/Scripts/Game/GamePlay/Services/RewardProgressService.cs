@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using DI;
-using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
-using Game.Settings;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
 using Game.State.Gameplay;
+using Game.State.Maps.Rewards;
 using Game.State.Maps.Towers;
-using MVVM.CMD;
-using Newtonsoft.Json;
+using Game.State.Root;
+using ObservableCollections;
 using R3;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -24,14 +23,21 @@ namespace Game.GamePlay.Services
         private readonly TowersSettings _towersSettings;
         private readonly TowersService _towerService;
         private readonly GroundsService _groundService;
+        private FsmGameplay _fsmGameplay;
+
+        public ObservableList<RewardCurrencyEntity> RewardMaps = new();
+        private readonly GameplayStateProxy _gameplayState;
 
         public RewardProgressService(
+            GameplayStateProxy gameplayState,
             DIContainer container,
             TowersSettings towersSettings
             //TODO Добавить SkillsSettings, HeroesSettings
         )
         {
             _container = container;
+            _gameplayState = gameplayState;
+
             //Сервисы для наград
             _towerService = container.Resolve<TowersService>();
             _groundService = container.Resolve<GroundsService>();
@@ -40,18 +46,19 @@ namespace Game.GamePlay.Services
             _towersSettings = towersSettings;
 
 
-            var fsm = container.Resolve<FsmGameplay>();
+            _fsmGameplay = container.Resolve<FsmGameplay>();
 
             gameplayStateProxy.Progress.Subscribe(newValue =>
             {
                 if (newValue < 100) return;
+                if (!_fsmGameplay.IsStateGamePlay()) return;
                 
-                var rewards = GenerateReward(); //1. Создаем награды
-                fsm.Fsm.SetState<FsmStateBuildBegin>(rewards);
+                GenerateRewardAndStateBuild(); //1. Создаем награды
+                //_fsmGameplay.Fsm.SetState<FsmStateBuildBegin>(rewards);
             });
 
             //TODO Куда перенести
-            fsm.Fsm.StateCurrent.Subscribe(newState =>
+            _fsmGameplay.Fsm.StateCurrent.Subscribe(newState =>
             {
                 if (newState.GetType() == typeof(FsmStateBuild))
                 {
@@ -68,10 +75,37 @@ namespace Game.GamePlay.Services
                 {
                     if (gameplayStateProxy.Progress.Value >= 100) gameplayStateProxy.Progress.Value -= 100;
                     gameplayStateProxy.ProgressLevel.Value++;
+                    
                 }
+                
+                if (newState.GetType() == typeof(FsmStateGamePlay))
+                {
+                    //При завершении строительства, если еще остались очки прогресса
+                    if (gameplayStateProxy.Progress.Value >= 100) GenerateRewardAndStateBuild();
+                }
+            });
+            
+
+            //Монетки долетели и удалились
+            RewardMaps.ObserveRemove().Subscribe(r =>
+            {
+                _gameplayState.ProgressUp();
+                _gameplayState.SoftCurrency.Value += r.Value.Currency;
             });
         }
 
+        public void RewardKillMob(int currency, Vector2 position)
+        {
+            
+            RewardMaps.Add(new RewardCurrencyEntity
+            {
+                Position = position,
+                Currency = currency,
+                
+            });
+            //TODO Добавляем награду карточку 
+        }
+        
         public void StartRewardCard()
         {
             var fsm = _container.Resolve<FsmGameplay>();
@@ -83,9 +117,10 @@ namespace Game.GamePlay.Services
         }
 
         /**
-         * По типу награды, который вернулся от игрока запускаем метод сервиса, передав данные
+         * По типу награды, который вернулся от игрока запускаем метод сервиса, передав данные.
+         * Создаем награды и меняем состояние на начало строительства
          */
-        private RewardsProgress GenerateReward()
+        private void GenerateRewardAndStateBuild()
         {
             var rewards = new RewardsProgress();
             //Тип наград
@@ -124,8 +159,9 @@ namespace Game.GamePlay.Services
 
                 rewards.Cards.Add(i, card);
             }
-
-            return rewards;
+            
+            _fsmGameplay.Fsm.SetState<FsmStateBuildBegin>(rewards);
+         //   return rewards;
         }
 
         private RewardCardData GetRoad(RewardsProgress progress)

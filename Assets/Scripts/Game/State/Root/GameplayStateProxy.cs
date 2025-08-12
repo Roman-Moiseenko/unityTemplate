@@ -201,7 +201,9 @@ namespace Game.State.Root
         public void ProgressUp()
         {
             //TODO Создать Логарифмический расчет награды
-            Progress.Value += 5;
+            var delta = 50 / Mathf.Sqrt(2 * ProgressLevel.Value - 1);
+            Progress.Value += Mathf.FloorToInt(delta);
+            //Debug.Log("Progress delta = " + delta);
         }
     }
 }

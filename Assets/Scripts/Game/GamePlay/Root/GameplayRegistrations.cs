@@ -115,7 +115,7 @@ namespace Game.GamePlay.Root
            // Fsm.Fsm.SetState<FsmStateGamePlay>();
 
             //Сервис наград
-            var rewardService = new RewardProgressService(container, gameSettings.TowersSettings);
+            var rewardService = new RewardProgressService(gameplayState, container, gameSettings.TowersSettings);
             container.RegisterInstance(rewardService);
 
             container.RegisterFactory(_ => new GameplayService(subjectExitParams, container))
@@ -125,7 +125,7 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(shotService);
 
             var damageService = new DamageService(Fsm, gameplayState, gameSettings.TowersSettings, waveService,
-                towersService, shotService);
+                towersService, shotService, rewardService);
 
             container.RegisterInstance(damageService);
 

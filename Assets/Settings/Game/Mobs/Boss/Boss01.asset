@@ -22,4 +22,4 @@ MonoBehaviour:
   <Health>k__BackingField: 3000
   <Armor>k__BackingField: 10
   <Attack>k__BackingField: 100
-  <RewardCurrency>k__BackingField: 0
+  <RewardCurrency>k__BackingField: 200
