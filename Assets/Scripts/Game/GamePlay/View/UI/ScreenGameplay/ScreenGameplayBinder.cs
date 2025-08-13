@@ -33,6 +33,9 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         [SerializeField] private CastleHealthBarBinder _castleHealthBar;
         [SerializeField] private Transform _progressContainer;
 
+        [SerializeField] private Transform startWave;
+        [SerializeField] private Transform finishWave;
+        
         private TMP_Text _levelProgress;
         private Slider _progress;
         
@@ -61,14 +64,14 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 var p = newValue / 100f;
                 _progress.value = p > 1 ? 1 : p;
             });
-            ViewModel.ProgressLevel.Subscribe(newValue =>
+            ViewModel.ProgressLevel.Skip(1).Subscribe(newValue =>
             {
                 _levelProgress.text = newValue.ToString();
             });
 
             //ViewModel.ProgressData.Subscribe(newValue => { _textProgress.text = $"Progress: {newValue}"; });
             ViewModel.SoftCurrency.Subscribe(newValue => _textMoney.text = newValue.ToString());
-            ViewModel.HardCurrency.Subscribe(newValue => _textCrystal.text = $"Money: {newValue}");
+            ViewModel.HardCurrency.Subscribe(newValue => _textCrystal.text = newValue.ToString());
             ViewModel.WaveText.Subscribe(newValue => _textWave.text = newValue);
             _reducePopupBinder = CreateReducePopup();
             _castleHealthBar = CreateCastleHealthBar();
@@ -93,7 +96,6 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
             ViewModel.AllRewards.ObserveAdd().Subscribe(r =>
             {
-                //TODO Запуск награды
                 var currency = FindFreeCurrency();
                 var progress = FindFreeProgress();
                 var position = new Vector3(r.Value.Position.x, 1f, r.Value.Position.y);
@@ -106,11 +108,26 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 });
             });
             
+            //Показываем инфо начала и окончания волны
+
+            ViewModel.ShowStartWave.Subscribe(show =>
+            {
+                if (show)
+                {
+                    startWave.gameObject.SetActive(true);
+                    ViewModel.ShowStartWave.Value = false;
+                }
+            });
+            ViewModel.ShowFinishWave.Subscribe(show =>
+            {
+                if (show)
+                {
+                    finishWave.gameObject.SetActive(true);
+                    ViewModel.ShowFinishWave.Value = false;
+                }
+            });
         }
-
-
-
-
+        
         private DamagePopupBinder FindFreePopup()
         {
             foreach (var popupBinder in _damagePopups)
@@ -126,19 +143,15 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             foreach (var popupBinder in _currencyPopups)
             {
                 if (popupBinder.Free.Value) return popupBinder;
-                
             }
-
             return CreateCurrencyPopup();
         }
 
         private CurrencyPopupBinder FindFreeProgress()
         {
-            
             foreach (var popupBinder in _progressPopups)
             {
                 if (popupBinder.Free.Value) return popupBinder;
-                
             }
             return CreateProgressPopup();
         }

@@ -40,7 +40,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
                         transform.position.y + random.y * 100,
                         transform.position.z
                         );
-                    StartCoroutine(Moving(target));
+                    StartCoroutine(Ejection(target));
                 }
 
                 if (state == CurrencyState.Delay)
@@ -78,8 +78,26 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
         private IEnumerator Moving(Vector3 target)
         {
             float timeElapsed = 0;
-            float duration = 1.5f;
-
+            var duration = 0.7f;
+            var startPosition = transform.position;
+            var fading = false; 
+            
+            while (timeElapsed < duration)
+            {
+                if (timeElapsed > duration / 0.8) fading = true;
+                var delta = !fading ? Time.deltaTime : Time.deltaTime / 2;
+                transform.position = Vector3.Lerp(startPosition, target, timeElapsed / duration);
+                timeElapsed += delta;
+                yield return null;
+            }
+            transform.position = target;
+            CurrentState.Value = CurrencyState.Rest;
+        }
+        
+        private IEnumerator Ejection(Vector3 target)
+        {
+            float timeElapsed = 0;
+            float duration = 0.8f;
             
             while (timeElapsed < duration)
             {
@@ -88,8 +106,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
                 yield return null;
             }
             transform.position = target;
-            if (CurrentState.CurrentValue == CurrencyState.Ejection) CurrentState.Value = CurrencyState.Delay;
-            if (CurrentState.CurrentValue == CurrencyState.Moving) CurrentState.Value = CurrencyState.Rest;
+            CurrentState.Value = CurrencyState.Delay;
         }
     }
 }

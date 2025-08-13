@@ -48,9 +48,13 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         public float CastleFullHealth;
         private readonly RewardProgressService _rewardService;
 
+        public ReactiveProperty<bool> ShowStartWave = new(false);
+        public ReactiveProperty<bool> ShowFinishWave = new(false);
+
         public override string Id => "ScreenGameplay";
         public override string Path => "Gameplay/ScreenGameplay/";
-     //   public readonly int CurrentSpeed;
+     
+        
         public ScreenGameplayViewModel(
             GameplayUIManager uiManager, 
             Subject<GameplayExitParams> exitSceneRequest,
@@ -81,7 +85,25 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 WaveText.Value = n + "/" + _gameplayState.Waves.Count;
             });
 
-            //_waveService.
+
+            _waveService.FinishWave.Subscribe(v =>
+            {
+                if (v)
+                {
+                    ShowFinishWave.Value = true;
+                    _waveService.FinishWave.Value = false; //Сбрасываем флаг окончания волны
+                }
+            });
+            _waveService.StartWave.Subscribe(v =>
+            {
+                
+                if (v)
+                {
+                    ShowStartWave.Value = true;
+                    _waveService.StartWave.Value = false; //Сбрасываем флаг окончания волны
+                }
+            });
+            
             //_gameplayState = container.Resolve<IGameStateProvider>().GameState;
             _gameplayState.Progress.Subscribe(newValue => ProgressData.Value = newValue);
             _gameplayState.ProgressLevel.Subscribe(newValue => ProgressLevel.Value = newValue);
