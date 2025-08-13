@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.GamePlay.Commands.GroundCommands;
+using Game.GamePlay.Commands.RoadCommand;
 using Game.GamePlay.Commands.TowerCommand;
 using Game.Settings;
 using Game.State.Entities;
@@ -41,58 +43,67 @@ namespace Game.GamePlay.Commands.MapCommand
                 Debug.Log($"Map id={command.MapId} already exist");
                 return false;
             }
-
-            //TODO Заменить все создания объектов через Команды
-            /* var isMapAlreadyExisted = _gameState.Maps.Any(m => m.Id == command.MapId);
-             if (isMapAlreadyExisted) //Если карта была создана, то ошибка
-             {
-
-             } */
+            
             //Находим настройки карты по ее Id
             var newMapSettings = _gameSettings.MapsSettings.Maps.First(m => m.MapId == command.MapId);
-
             var newMapInitialStateSettings = newMapSettings.InitialStateSettings;
 
-            //TODO Генерируем карту земли
-            foreach (var ground in newMapInitialStateSettings.Grounds)
-            {
-                var initialGround = new GroundEntityData
-                {
-                    UniqueId = _gameplayState.CreateEntityID(),
-                    ConfigId = newMapInitialStateSettings.GroundDefault,
-                    Position = ground.Position,
-                    Enabled = ground.Enabled,
-                };
-                _gameplayState.Grounds.Add(new GroundEntity(initialGround));
-            }
+            var yDelta = newMapInitialStateSettings.smallMap ? 3 : 4;
 
+            
+            var xBegin = -1;
+            var xEnd = newMapInitialStateSettings.smallMap ? 5 : 6;
+            var yBegin = 1 - yDelta;
+            var yEnd = yDelta;
+            
+            var angel0 = new Vector2Int(xBegin, yBegin);
+            var angel1 = new Vector2Int(xBegin, yEnd);
+            var angel2 = new Vector2Int(xEnd, yBegin);
+            var angel3 = new Vector2Int(xEnd, yEnd);
+
+            var listExceptions = new List<Vector2Int>
+            {
+                angel0,
+                angel1,
+                angel2,
+                angel3,
+                angel0 + Vector2Int.up,
+                angel0 + Vector2Int.right,
+                angel1 + Vector2Int.down,
+                angel1 + Vector2Int.right,
+                angel2 + Vector2Int.up,
+                angel2 + Vector2Int.left,
+                angel3 + Vector2Int.down,
+                angel3 + Vector2Int.left
+            };
+            
+            for (var x = xBegin; x <= xEnd; x++)
+            {
+                for (var y = yBegin; y <= yEnd; y++)
+                {
+                    var position = new Vector2Int(x, y);
+                    if (listExceptions.Contains(position)) continue;
+                    
+                    var commandGround = new CommandCreateGround(newMapInitialStateSettings.groundDefault, position);
+                    _cmd.Process(commandGround);
+                }
+            }
+            
             //Рисуем дорогу
             foreach (var road in newMapInitialStateSettings.WayMain)
             {
-                var initialRoad = new RoadEntityData
-                {
-                    UniqueId = _gameplayState.CreateEntityID(),
-                    Position = road.Position,
-                    ConfigId = newMapInitialStateSettings.RoadDefault,
-                    Rotate = road.Rotate,
-                    IsTurn = road.IsTurn,
-                };
-                _gameplayState.Way.Add(
-                    new RoadEntity(initialRoad)); // Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
+                var commandRoad = new CommandPlaceRoad(
+                    newMapInitialStateSettings.roadDefault, 
+                    road.Position, road.IsTurn, road.Rotate, true);
+                _cmd.Process(commandRoad);
             }
 
             foreach (var road in newMapInitialStateSettings.WaySecond)
             {
-                var initialRoad = new RoadEntityData
-                {
-                    UniqueId = _gameplayState.CreateEntityID(),
-                    Position = road.Position,
-                    ConfigId = newMapInitialStateSettings.RoadDefault,
-                    Rotate = road.Rotate,
-                    IsTurn = road.IsTurn,
-                };
-                _gameplayState.WaySecond.Add(
-                    new RoadEntity(initialRoad)); // Entities.Add(EntitiesFactory.CreateEntity(initialRoad));
+                var commandRoad = new CommandPlaceRoad(
+                    newMapInitialStateSettings.roadDefault, 
+                    road.Position, road.IsTurn, road.Rotate, false);
+                _cmd.Process(commandRoad);
             }
 
             foreach (var road in newMapInitialStateSettings.WayDisabled)
@@ -101,7 +112,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 {
                     UniqueId = _gameplayState.CreateEntityID(),
                     Position = road.Position,
-                    ConfigId = newMapInitialStateSettings.RoadDefault,
+                    ConfigId = newMapInitialStateSettings.roadDefault,
                     Rotate = road.Rotate,
                     IsTurn = road.IsTurn,
                 };

@@ -26,8 +26,11 @@ namespace Game.Settings.Gameplay.Maps
 
         public List<WaveSettings> Waves;
         
-        public string GroundDefault;
-        public string RoadDefault = "Road";
+        public string groundDefault;
+        public bool smallMap = false;
+        public bool obstacle = false;
+        public int collapse = 0;
+        public string roadDefault = "Road";
         //Доп.настройки карты
     }
 }

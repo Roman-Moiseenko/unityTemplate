@@ -170,8 +170,11 @@ MonoBehaviour:
       - Quantity: 1
         Mob: {fileID: 11400000, guid: 97fd5f3ea0eea134aa2b6af974272479, type: 2}
         Level: 1
-    GroundDefault: Snow01
-    RoadDefault: Road
+    groundDefault: Grass01
+    smallMap: 0
+    obstacle: 0
+    collapse: 0
+    roadDefault: Road
   InfoStateSettings:
     PrefabName: 
     CountMobs: 15

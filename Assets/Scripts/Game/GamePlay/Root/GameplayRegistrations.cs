@@ -62,8 +62,8 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandPlaceRoadHandler(gameplayState));
 
             var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
-            var groundConfigId = newMapSettings.InitialStateSettings.GroundDefault;
-            var roadConfigId = newMapSettings.InitialStateSettings.RoadDefault;
+            var groundConfigId = newMapSettings.InitialStateSettings.groundDefault;
+            var roadConfigId = newMapSettings.InitialStateSettings.roadDefault;
 
 
             var wayService = new WayService(); //Сервис обсчета дороги
