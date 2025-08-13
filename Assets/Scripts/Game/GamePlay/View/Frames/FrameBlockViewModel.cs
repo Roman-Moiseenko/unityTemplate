@@ -45,11 +45,12 @@ namespace Game.GamePlay.View.Frames
         {
             return IsRoad();
         }
-        public void RotateFrame()
+
+        public void RotateFrame(int turn = 1)
         {
             if (IsRoad())
             {
-                Rotate.Value++;
+                Rotate.Value += turn;
             }
         }
 

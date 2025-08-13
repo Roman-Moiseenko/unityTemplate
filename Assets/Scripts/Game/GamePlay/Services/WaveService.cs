@@ -190,11 +190,11 @@ namespace Game.GamePlay.Services
             for (var i = 0; i < AppConstants.TIME_WAVE_NEW; i++) //Ускоряем при новой скорости
             {
                // Debug.Log("_fsmGameplay.IsGamePause.Value = " + _fsmGameplay.IsGamePause.Value);
-                yield return _fsmGameplay.WaitPause();
-             /*   while (_fsmGameplay.IsGamePause.Value)
+              //  yield return _fsmGameplay.WaitPause();
+                while (_fsmGameplay.IsGamePause.Value)
                 {
                     yield return null;
-                }*/
+                }
                 TimeOutNewWaveValue.Value = Convert.ToSingle(i) / AppConstants.TIME_WAVE_NEW;
 
                 yield return new WaitForSeconds(0.04f / GameSpeed.CurrentValue);

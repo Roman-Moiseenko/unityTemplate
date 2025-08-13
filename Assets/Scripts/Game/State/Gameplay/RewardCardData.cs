@@ -15,6 +15,7 @@ namespace Game.State.Gameplay
         public string Caption;
         public string Description;
         public string Name;
+        public bool OnRoad;
 
 
         public bool IsBuild()

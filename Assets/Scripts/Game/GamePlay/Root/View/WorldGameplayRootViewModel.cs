@@ -112,7 +112,7 @@ namespace Game.GamePlay.Root.View
                     Vector2Int position = new Vector2Int();
                     if (reward.RewardType == RewardType.Tower)
                     {
-                        position = placementService.GetNewPositionTower();
+                        position = placementService.GetNewPositionTower(reward.OnRoad);
                         var level = towersService.Levels[reward.ConfigId];
                         frameService.CreateFrameTower(position, level, reward.ConfigId, AreaViewModel);
                     }
@@ -120,7 +120,7 @@ namespace Game.GamePlay.Root.View
                     if (reward.RewardType == RewardType.Road)
                     {
                         position = placementService.GetNewPositionRoad();
-                        frameService.CreateFrameRoad(position, reward.ConfigId);
+                        frameService.CreateFrameRoad(position, reward.ConfigId, placementService.GetNewDirectionRoad());
                     }
                     if (reward.RewardType == RewardType.Ground)
                     {

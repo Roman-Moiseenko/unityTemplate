@@ -202,8 +202,7 @@ namespace Game.GamePlay.Services
         {
             foreach (var progressCard in progress.Cards)
             {
-                if (progressCard.Value.RewardType == RewardType.Ground)
-                    return null;
+                if (progressCard.Value.RewardType == RewardType.Ground) return null;
             }
             
             return new RewardCardData
@@ -241,7 +240,8 @@ namespace Game.GamePlay.Services
                         ConfigId = tower.Key,
                         RewardLevel = tower.Value, //текущий уровень, для звездочек
                         Name = towerSetting.name, //Название башни
-                        Description = "Башня " + towerSetting.name
+                        Description = "Башня " + towerSetting.name,
+                        OnRoad = towerSetting.OnRoad,
                     };
                 }
 

@@ -46,17 +46,14 @@ namespace Game.GamePlay.Services
             //Проверяем башни
             foreach (var towerEntity in _gameplayState.Towers)
             {
-                //На другой башне
-                if (towerEntity.UniqueId != towerId)
+                if (towerEntity.UniqueId != towerId) //На другой башне ?
                 {
                     if (towerEntity.PositionNear(position)) result = true;
-
-                    if (position == towerEntity.Position.CurrentValue)
-                        return false; //Строить нельзя, принудительный выход
+                    //Строить нельзя, принудительный выход
+                    if (position == towerEntity.Position.CurrentValue) return false; 
                 }
             }
 
-            //  Debug.Log(JsonConvert.SerializeObject(_gameplayState.Way, Formatting.Indented));
             foreach (var roadEntity in _gameplayState.Way)
             {
                 if (onRoad)
@@ -71,27 +68,42 @@ namespace Game.GamePlay.Services
                 }
             }
 
-            //  Debug.Log("5" + result);
             return result;
         }
 
-        public Vector2Int GetNewPositionTower()
+        public Vector2Int GetNewPositionTower(bool onRoad)
         {
-            foreach (var roadEntity in _gameplayState.Way)
+            if (!onRoad) //Проверяем свободные места возле дороги
             {
-                foreach (var nearPosition in roadEntity.GetNearPositions())
+                foreach (var roadEntity in _gameplayState.Way)
                 {
-                    //TODO Получить тип башни 
-                    if (CheckPlacementTower(nearPosition, -1, false)) return nearPosition;
+                    foreach (var nearPosition in roadEntity.GetNearPositions())
+                    {
+                        if (CheckPlacementTower(nearPosition, -1, false)) return nearPosition;
+                    }
                 }
             }
-
+            else //Проверяем свободные места на дороге, с обратного конца
+            {
+                for (var i = _gameplayState.Way.Count - 1; i >= 0; i--)
+                {
+                    var roadEntity = _gameplayState.Way[i];
+                    var position = roadEntity.Position.CurrentValue;
+                    if (CheckPlacementTower(position, -1, true)) return position;
+                }
+                
+            }
+            
             return _gameplayState.Way[0].Position.CurrentValue; //Вычисляем координаты для башни 
         }
 
         public Vector2Int GetNewPositionRoad()
         {
-            return new Vector2Int(Random.Range(-1, 5), Random.Range(-1, 3));
+            return _wayService.GetExitPoint(_gameplayState.Origin.Way); 
+        }
+        public Vector2Int GetNewDirectionRoad()
+        {
+            return _wayService.GetLastPoint(_gameplayState.Origin.Way); 
         }
 
         public bool CheckPlacementRoad(List<RoadEntityData> roads)
@@ -151,7 +163,7 @@ namespace Game.GamePlay.Services
 
         public Vector2Int GetNewPositionGround()
         {
-            return new Vector2Int(Random.Range(-1, 5), Random.Range(-1, 3));
+            return _wayService.GetExitPoint(_gameplayState.Origin.Way);
         }
 
         private bool IsCastle(Vector2Int position)

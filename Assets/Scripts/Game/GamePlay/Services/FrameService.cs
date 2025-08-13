@@ -183,50 +183,79 @@ namespace Game.GamePlay.Services
         /**
          * Создаем блок дороги в зависимости от конфигурации
          */
-        public void CreateFrameRoad(Vector2Int position, string configId)
+        public void CreateFrameRoad(Vector2Int position, string configId, Vector2Int direction)
         {
             _viewModel = new FrameBlockViewModel(position);
+
+            
+            var v_d = position - direction;
             switch (configId)
             {
                 case "0":
-                    _viewModel.AddItem(TemplateCreateRoad(true, 0));
+                    _viewModel.AddItem(TemplateCreateRoad(true, 2)); // _|  *
                     break;
-                
                 case "1":
-                    _viewModel.AddItem(TemplateCreateRoad(false, 0)); // |
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); // | * 
                     break;
                 //
                 case "2":
-                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); // |
-                    _viewModel.AddItem(TemplateCreateRoad(false, 1, 1)); // |
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); //             |  *?
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1, 1)); //   |
                     break;
                 case "3":
-                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); //          |
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); //          |   *?
                     _viewModel.AddItem(TemplateCreateRoad(true, 3, 1)); // |_
                     break;
                 case "4":
-                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); //           |
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); //           |  *?
                     _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); // _|
                     break;
                 case "5":
-                    _viewModel.AddItem(TemplateCreateRoad(true, 1)); //          -|
+                    _viewModel.AddItem(TemplateCreateRoad(true, 1)); //          -|  *?
                     _viewModel.AddItem(TemplateCreateRoad(true, 3, 1)); //  |_
+                    _viewModel.RotateFrame();
                     break;
                 case "6":
-                    _viewModel.AddItem(TemplateCreateRoad(true, 0)); //            |-
+                    _viewModel.AddItem(TemplateCreateRoad(true, 0)); //            |-  *?
                     _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); //  _|
+                    _viewModel.RotateFrame(3);
                     break;
                 case "7":
-                    _viewModel.AddItem(TemplateCreateRoad(true, 1)); //          -|
+                    _viewModel.AddItem(TemplateCreateRoad(true, 1)); //          -|  *?
                     _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); // _|
+                    _viewModel.RotateFrame();
                     break;
                 case "8":
-                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); // |
-                    _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); // _|
-                    _viewModel.AddItem(TemplateCreateRoad(false, 2, 2)); // --
+                    _viewModel.AddItem(TemplateCreateRoad(false, 1)); //                |   *
+                    _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); //      _|
+                    _viewModel.AddItem(TemplateCreateRoad(false,  2, 2)); // --
                     break;
             }
 
+      /*      Debug.Log("Vector2Int.left " + Vector2Int.left);
+            Debug.Log("Vector2Int.right " + Vector2Int.right);
+            Debug.Log("Vector2Int.up " + Vector2Int.up);
+            Debug.Log("Vector2Int.down " + Vector2Int.down);
+            */
+   
+            if (v_d == Vector2Int.left)
+            {
+                _viewModel.RotateFrame(3);
+            }
+
+            if (v_d == Vector2Int.right)
+            {
+                _viewModel.RotateFrame();
+
+            }
+            if (v_d == Vector2Int.down)
+            {
+               _viewModel.RotateFrame(2);
+            }
+            if (v_d == Vector2Int.up)
+            {
+                // _viewModel.RotateFrame(3);
+            }
             _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());
             _viewModels.Add(_viewModel);
             
