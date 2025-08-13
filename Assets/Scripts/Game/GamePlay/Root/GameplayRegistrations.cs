@@ -138,8 +138,8 @@ namespace Game.GamePlay.Root
 
                 rewardService.StartRewardCard(); //Устанавливаем начальный режим строительства
             }
-            //TODO Запуск таймера
-            waveService.Start();
+            
+            waveService.Start(); //Запуск таймера
         }
     }
 }

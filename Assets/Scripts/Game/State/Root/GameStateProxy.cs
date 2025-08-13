@@ -18,7 +18,7 @@ namespace Game.State.Root
      */
     public class GameStateProxy
     {
-        public readonly GameState _gameState; //TODO Для теста, сделать private
+        private readonly GameState _gameState; 
         public ReactiveProperty<int> CurrentMapId = new();
         public ReactiveProperty<int> GameSpeed;
                 public ObservableList<Resource> Resources { get; } = new();

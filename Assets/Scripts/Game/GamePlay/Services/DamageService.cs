@@ -132,14 +132,12 @@ namespace Game.GamePlay.Services
                 towerEntity.IsShot.Value = true;
                 _coroutines.StartCoroutine(TowerFireShot(towerEntity));
             }
-
-            //TODO Стрельба крепости
-            if (!_gameplayState.Castle.IsShot.Value)
+            
+            if (!_gameplayState.Castle.IsShot.Value) //Стрельба крепости
             {
                 _gameplayState.Castle.IsShot.Value = true;
                 _coroutines.StartCoroutine(CastleFireShot());
             }
-
             //  });
         }
 
