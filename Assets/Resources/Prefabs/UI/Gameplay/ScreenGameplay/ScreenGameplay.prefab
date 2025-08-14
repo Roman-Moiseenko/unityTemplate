@@ -1188,11 +1188,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3415193751454144146}
+  - {fileID: 6281230243537863862}
   - {fileID: 1090390190776203379}
   - {fileID: 4229269250394312124}
   - {fileID: 1511618407956012502}
   - {fileID: 3233710588641518113}
-  - {fileID: 6281230243537863862}
   m_Father: {fileID: 1035527939229729758}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -2029,7 +2029,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4896138392176417154
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2096,7 +2096,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &5179186513777352288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2587,7 +2587,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6537588477304958670
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2654,7 +2654,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2137913612833187747
 MonoBehaviour:
   m_ObjectHideFlags: 0

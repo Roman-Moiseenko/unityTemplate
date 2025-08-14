@@ -71,7 +71,7 @@ namespace Game.GamePlay.Services
             _roadsService = container.Resolve<RoadsService>();
             _cameraService = container.Resolve<GameplayCamera>();
             GameSpeed = gameplayState.GameSpeed;
-
+            
             //Комбинированная подписка, с одним результатом => Запустить процесс создания мобов на новой волне 
             Observable.Merge(
                 _fsmGameplay.IsGamePause,
@@ -90,7 +90,7 @@ namespace Game.GamePlay.Services
                 if (newValue <= gameplayState.Waves.Count && newValue != 0)
                     _coroutines.StartCoroutine(StartNewWave(newValue));
             });
-
+            
             _allMobsOnWay.ObserveAdd().Subscribe(newValue =>
             {
                 if (!IsMobsOnWay.CurrentValue) //На дороге есть мобы
@@ -126,6 +126,7 @@ namespace Game.GamePlay.Services
                 if (_allMobsOnWay.Count != 0) return; //На дороге нет мобов
                 IsMobsOnWay.Value = false;
                 _coroutines.StartCoroutine(TimerNewWave());
+                
             });
             AllMobsMap.ObserveRemove().Subscribe(e =>
             {

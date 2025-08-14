@@ -106,7 +106,8 @@ namespace Game.GamePlay.Services
                 }
                 else
                 {
-                    throw new Exception($"Моб не найден {shot.MobEntityId}");
+                    //Ситуация: моб уже уничтожен, а прилетел новый выстрел от другой башни.
+                  //  throw new Exception($"Моб не найден {shot.MobEntityId}");
                 }
             });
         }

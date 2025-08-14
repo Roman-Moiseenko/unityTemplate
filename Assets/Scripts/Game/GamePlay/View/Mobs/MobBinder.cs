@@ -20,9 +20,12 @@ namespace Game.GamePlay.View.Mobs
 
         private float _mobY;
         private int _currentIndexListPoint;
+        
+        IDisposable disposable;
 
         public void Bind(MobViewModel viewModel)
         {
+            var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
             _mobY = _viewModel.IsFly ? 0.9f : 0.1f;
             transform.position = new Vector3(viewModel.StartPosition.x, _mobY, viewModel.StartPosition.y);
@@ -40,59 +43,50 @@ namespace Game.GamePlay.View.Mobs
             transform.rotation = Quaternion.LookRotation(new Vector3(viewModel.Direction.CurrentValue.x, 0, viewModel.Direction.CurrentValue.y));
             
             //Вращаем в движении
-            _viewModel.Direction.Skip(1).Subscribe(newValue =>
+            viewModel.Direction.Skip(1).Subscribe(newValue =>
             {
                 var direction = new Vector3(newValue.x, 0, newValue.y);
                 _targetDirection = Quaternion.LookRotation(direction);
-                
-            });
+            }).AddTo(ref d);
             
             viewModel.Position.Subscribe(newValue =>
             {
                 transform.position = new Vector3(newValue.x, _mobY, newValue.y);
-            });
+            }).AddTo(ref d);
 
-            _viewModel.AnimationDelete.Subscribe(v =>
+            viewModel.AnimationDelete.Subscribe(v =>
             {
                 if (v)
                 {
                     //TODO Анимация удаления объекта После окончания:
                    // Debug.Log("Моб " + viewModel.MobEntityId + " Уничтожается");
-                    _viewModel.FinishCurrentAnimation.Value = true;
+                   viewModel.FinishCurrentAnimation.Value = true;
                 }
-            });
+            }).AddTo(ref d);
 
-            _viewModel.State.Subscribe(newState =>
+            viewModel.State.Subscribe(newState =>
             {
                 //TODO Переключаем анимацию от состояния моба.
                 if (newState == MobState.Attacking)
                 {
                  //   Debug.Log("Моб " + viewModel.MobEntityId + " Аттакует");
                 }
-            });
+            }).AddTo(ref d);
+            disposable = d.Build();
         }
 
         public void Update()
         {
             _healthBarBinder.OnUpdate();
-         /*   if (_viewModel.CurrentHealth.CurrentValue < _viewModel.MaxHealth)
-            {
-                _healthBar.gameObject.SetActive(true);
-                AlignCamera();
-                UpdateParams();
-            }
-            else
-            {
-                _healthBar.gameObject.SetActive(false);
-            }
-*/
-            if (transform.rotation != _targetDirection)
-            {
-                transform.rotation = Quaternion.Slerp(transform.rotation, _targetDirection, Time.deltaTime * 10f);
-                _healthBarBinder.OnUpdate();
-            }
         }
-/*
+
+        private void OnDestroy()
+        {
+           disposable.Dispose();
+        }
+        
+        
+        /*
         private Vector3 GetTargetPosition()
         {
             var newValue = _viewModel.RoadPoints[_currentIndexListPoint].Point;

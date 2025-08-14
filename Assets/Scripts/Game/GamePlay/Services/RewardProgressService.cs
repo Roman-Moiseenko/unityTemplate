@@ -261,7 +261,8 @@ namespace Game.GamePlay.Services
                 availableUpgradeTowers.Remove(rewardCardData.Value.ConfigId);
             }
 
-
+            if (availableUpgradeTowers.Count == 0) return null;
+            
             var index = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % availableUpgradeTowers.Count;
 
             var i = 0;

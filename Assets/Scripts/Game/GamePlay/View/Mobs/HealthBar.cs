@@ -22,11 +22,10 @@ namespace Game.GamePlay.View.Mobs
             _camera = camera;
             _maxHealth = maxHealth;
             _currentHealth = maxHealth;
-            //TODO для _level установка материала = level;
+            
             _meshRenderer = _health.GetComponent<MeshRenderer>(); //
             _matBlock = new MaterialPropertyBlock();
             currentHealth.Subscribe(h => _currentHealth = h);
-
             _level.GetComponent<Renderer>().material.mainTexture = _sprites[level - 1];
         }
 

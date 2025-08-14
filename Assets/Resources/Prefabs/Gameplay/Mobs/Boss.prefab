@@ -307,7 +307,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 132124965449092359, guid: 08efd37e779dd45478233c7e6cbedc5b, type: 3}
       propertyPath: m_Name
-      value: HealthBar (1)
+      value: HealthBar
       objectReference: {fileID: 0}
     - target: {fileID: 2475271079106516706, guid: 08efd37e779dd45478233c7e6cbedc5b, type: 3}
       propertyPath: m_LocalScale.x

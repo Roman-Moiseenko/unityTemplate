@@ -41,7 +41,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         
         private void Start()
         {
-           // Debug.Log(" _targetCurrency = " + _targetCurrency.transform.position);
+            startWave.gameObject.SetActive(false);
+            finishWave.gameObject.SetActive(false);
             _levelProgress = _progressContainer.Find("Level").GetComponent<TMP_Text>();
             _progress = _progressContainer.Find("Slider").GetComponent<Slider>();
             //Пул всплывающих popup
