@@ -32,9 +32,6 @@ namespace Game.GamePlay.Services
         private readonly RewardProgressService _rewardProgressService;
         public ObservableList<DamageEntity> AllDamages = new();
 
-        //private CastleEntity _castleEntity;
-        // private 
-
         public DamageService(
             FsmGameplay fsmGameplay,
             GameplayStateProxy gameplayState,
@@ -53,8 +50,6 @@ namespace Game.GamePlay.Services
             _shotService = shotService;
             _rewardProgressService = rewardProgressService;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
-
-            // AllTowers = _gameplayState.;
 
             waveService.AllMobsMap.ObserveAdd().Subscribe(e =>
             {

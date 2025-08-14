@@ -23,10 +23,11 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         public readonly int CurrentSpeed;
         private readonly GameplayStateProxy _gameplayStateProxy;
         public ReactiveProperty<bool> StartForced;
-        public ReactiveProperty<bool> ShowGate;
+        public ReactiveProperty<bool> ShowInfoWave;
         public ReactiveProperty<Vector3> PositionInfoBtn = new(Vector3.zero);
         public ReactiveProperty<float> FillAmountBtn = new(1f);
         private GameplayCamera _cameraService;
+        public ReactiveProperty<bool> IsSelected = new(false);
         
         public PanelGateWaveViewModel(
             GameplayUIManager uiManager, 
@@ -41,7 +42,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             
             StartForced = _waveService.StartForced;
             CurrentSpeed = _gameplayStateProxy.GetCurrentSpeed();
-            ShowGate = _waveService.ShowGate;
+            ShowInfoWave = _waveService.ShowInfoWave;
             _waveService.TimeOutNewWaveValue.Subscribe(n => FillAmountBtn.Value = 1 - n);
             _cameraService = container.Resolve<GameplayCamera>();
             

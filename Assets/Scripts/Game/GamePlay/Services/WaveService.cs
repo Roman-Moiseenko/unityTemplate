@@ -26,8 +26,7 @@ namespace Game.GamePlay.Services
     {
         private const float SpeedGenerateMobs = 0.5f; //Скорость генерации новых мобов
         private const float TimeEndWave = 1f; //Задержка между волнами
-        //private const int TimeNewWave = 50; //Кол-во задержек по 0.1сек перед новой волной
-
+        
         private readonly DIContainer _container;
         private readonly GameplayStateProxy _gameplayState;
         private readonly WayService _wayService;
@@ -42,14 +41,15 @@ namespace Game.GamePlay.Services
 
         public ReactiveProperty<bool> TimeOutNewWave = new(false); //Таймер ожидания волны закончился
         public ReactiveProperty<float> TimeOutNewWaveValue = new(0f);
-        public ReactiveProperty<bool> ShowGate = new(false); //Для подписки внешним ViewModel
+        public ReactiveProperty<bool> ShowGateWave = new(false); //Для подписки внешним ViewModel
+        public ReactiveProperty<bool> ShowInfoWave = new(true); //Для подписки внешним ViewModel
 
 
         //public ObservableList<MobEntity> CurrentWave = new(); //Список мобов на дороге
         public ReactiveProperty<bool> IsMobsOnWay = new(); //Мобы на дороге
         public ReactiveProperty<bool> FinishWave = new(false); //Волна закончилась
         public ReactiveProperty<bool> StartWave = new(false); //Волна началась
-        
+
         private readonly ObservableList<MobViewModel> _allMobsOnWay = new();
         public IObservableCollection<MobViewModel> AllMobsOnWay => _allMobsOnWay;
         public readonly ObservableDictionary<int, MobEntity> AllMobsMap = new();
@@ -71,7 +71,6 @@ namespace Game.GamePlay.Services
             _roadsService = container.Resolve<RoadsService>();
             _cameraService = container.Resolve<GameplayCamera>();
             GameSpeed = gameplayState.GameSpeed;
-            //Debug.Log(JsonConvert.SerializeObject(gameplayState.Origin.Waves, Formatting.Indented));
 
             //Комбинированная подписка, с одним результатом => Запустить процесс создания мобов на новой волне 
             Observable.Merge(
@@ -98,16 +97,21 @@ namespace Game.GamePlay.Services
                 {
                     IsMobsOnWay.Value = true;
                     _coroutines.StopCoroutine(TimerNewWave());
-                    
                 }
-               // FinishWave.Value = false;
+                
+                var trigger = _allMobsOnWay.Any(viewModel =>
+                    viewModel.NumberWave == newValue.Value.NumberWave &&
+                    viewModel.MobEntityId != newValue.Value.MobEntityId
+                );
+                if (!trigger) StartWave.Value = true; //Это первый моб из волны = > Показать надпись Волна идет
+                
                 var mobViewModel = newValue.Value;
                 _coroutines.StartCoroutine(
-                    MovingMobOnWay(newValue.Value)); //При добавление моба, запускаем его движение
+                    MovingMobOnWay(newValue.Value)); //При добавлении моба, запускаем его движение
 
                 mobViewModel.Debuffs.ObserveAdd().Subscribe(d =>
                     _coroutines.StartCoroutine(MobTimerDebuff(d.Value.Key, d.Value.Value, mobViewModel)));
-                
+
                 mobViewModel.Debuffs.ObserveRemove().Subscribe(d =>
                     _coroutines.StopCoroutine(MobTimerDebuff(d.Value.Key, d.Value.Value, mobViewModel)));
             });
@@ -115,19 +119,10 @@ namespace Game.GamePlay.Services
             _allMobsOnWay.ObserveRemove().Subscribe(e =>
             {
                 _coroutines.StopCoroutine(MovingMobOnWay(e.Value)); //Прерываем движение моба
-                var numberWave =  e.Value.NumberWave;
-                var trigger = false;
-                foreach (var mobViewModel in _allMobsOnWay)
-                {
-                    if (mobViewModel.NumberWave == numberWave) //Мобы из тек.волны еще на дороге
-                    {
-                        trigger = true;
-                        break;
-                    }
-                }
 
+                var trigger = _allMobsOnWay.Any(mobViewModel => mobViewModel.NumberWave == e.Value.NumberWave);
                 if (!trigger) FinishWave.Value = true; //Текущая волна моба закончилась
-                
+
                 if (_allMobsOnWay.Count != 0) return; //На дороге нет мобов
                 IsMobsOnWay.Value = false;
                 _coroutines.StartCoroutine(TimerNewWave());
@@ -140,14 +135,15 @@ namespace Game.GamePlay.Services
             //Создаем модель ворот
             CreateGateWaveViewModel();
             //При добавлении дороги на путь, перемещаем модель ворот
-            _roadsService.Way.ObserveAdd().Subscribe(e => MoveGateWaveViewModel());
-            _roadsService.WaySecond.ObserveAdd().Subscribe(e => MoveGateWaveViewModelSecond());
+            _roadsService.Way.ObserveAdd().Subscribe(_ => MoveGateWaveViewModel());
+            _roadsService.WaySecond.ObserveAdd().Subscribe(_ => MoveGateWaveViewModelSecond());
         }
 
         public void Start()
         {
             _coroutines.StartCoroutine(TimerNewWave()); //Первоначальный запуска таймера
         }
+
         public void StartNextWave()
         {
             _gameplayState.CurrentWave.Value++;
@@ -164,18 +160,25 @@ namespace Game.GamePlay.Services
         {
             yield return new WaitUntil(() => StartForced.CurrentValue); //Ждем когда разрешиться запуск волны
             StartForced.Value = false; //Предотвращаем авто запуск след.волны
-            ShowGate.Value = true; //Показать ворота
-            StartWave.Value = true; //Показать надпись Волна идет
+            
+            ShowInfoWave.Value = false; //Закрыть Инфо
+            yield return new WaitForSeconds(0.8f); //Пауза
+            ShowGateWave.Value = true; //Показать ворота
+
             yield return _coroutines.StartCoroutine(GenerateMob(numberWave)); //Выводим мобов на дорогу
             yield return new WaitForSeconds(TimeEndWave); //Пауза между волнами
-            ShowGate.Value = false; //Убрать ворота и Показать инфо модель
             
+            ShowGateWave.Value = false; //Закрыть ворота
+            yield return new WaitForSeconds(0.5f); //Пауза
+            ShowInfoWave.Value = true; //Показать Инфо
+
             _gameplayState.CurrentWave.Value++;
         }
 
         private IEnumerator GenerateMob(int numberWave)
         {
             if (!_gameplayState.Waves.TryGetValue(numberWave, out var waveEntity)) yield break; //Волны закончились
+
             foreach (var entityMob in waveEntity.Mobs)
             {
                 yield return _fsmGameplay.WaitPause();
@@ -190,14 +193,14 @@ namespace Game.GamePlay.Services
         {
             yield return _fsmGameplay.WaitPause();
             yield return mobViewModel.MovingModel(GenerateRoadPoints(mobViewModel));
-            
+
             yield return mobViewModel.AttackCastle(_gameplayState.Castle);
         }
 
         public IEnumerator MobTimerDebuff(string configId, MobDebuff debuff, MobViewModel mobViewModel)
         {
             yield return _fsmGameplay.WaitPause();
-            
+
             yield return new WaitForSeconds(debuff.Time);
             mobViewModel.RemoveDebuff(configId);
         }
@@ -211,6 +214,7 @@ namespace Game.GamePlay.Services
                 {
                     yield return null;
                 }
+
                 TimeOutNewWaveValue.Value = Convert.ToSingle(i) / AppConstants.TIME_WAVE_NEW;
 
                 yield return new WaitForSeconds(0.04f / GameSpeed.CurrentValue);
@@ -231,10 +235,10 @@ namespace Game.GamePlay.Services
             }*/
             yield return mobViewModel.WaitFinishAnimation(); //Ждем удаления модели
             _allMobsOnWay.Remove(mobViewModel);
-            
-           // yield return null;
+
+            // yield return null;
         }
-        
+
         /**
          * Создаем модель ворот для главного пути и вычисляем координаты и направление поворота ворот
          */
@@ -245,7 +249,7 @@ namespace Game.GamePlay.Services
 
             Vector2 position = new Vector2((lastPoint.x + exitPoint.x) / 2f, (lastPoint.y + exitPoint.y) / 2f);
             var direction = exitPoint - lastPoint;
-            
+
             GateWaveViewModel = new GateWaveViewModel(this)
             {
                 Position =
@@ -336,7 +340,7 @@ namespace Game.GamePlay.Services
                 {
                     direction = way[i - 1].Position - way[i].Position;
                 }
-                
+
                 //TODO если i = 0, то добавляем 0.25 по направлению
                 //TODO для IsFly при i = 1, а при i = 0 нет движения
                 roads.Add(new RoadPoint(position, direction)); //Список точек движения 

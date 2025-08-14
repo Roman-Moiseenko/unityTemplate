@@ -155,7 +155,7 @@ namespace Game.GamePlay.Services
                     roads.Any(road => road.Position == roadWay.Position.CurrentValue))) return false;
             var checkWay = CheckCombinationPointsRoad(_gameplayState.Origin.Way, roads);
             var checkWaySecond = CheckCombinationPointsRoad(_gameplayState.Origin.WaySecond, roads);
-            //if (checkWay && checkWaySecond) return false; //
+           
             result = checkWay ^ checkWaySecond; //Исключающее "или", Закольцовывание дороги
 
             return result;
@@ -184,13 +184,6 @@ namespace Game.GamePlay.Services
         private bool CheckForFirstPoint(List<RoadEntityData> way, List<RoadEntityData> roads)
         {
             if (way.Count == 0) return false;
-            /*       Debug.Log(JsonConvert.SerializeObject(roads, Formatting.Indented));
-                   Debug.Log("0");
-                   Debug.Log(_wayService.GetExitPoint(way));
-                   Debug.Log(_wayService.GetFirstPoint(roads));
-                   Debug.Log(_wayService.GetLastPoint(way));
-                   Debug.Log(_wayService.GetEnterPoint(roads));
-                   */
             return _wayService.GetExitPoint(way) == _wayService.GetFirstPoint(roads)
                    && _wayService.GetLastPoint(way) == _wayService.GetEnterPoint(roads);
         }
@@ -198,12 +191,6 @@ namespace Game.GamePlay.Services
         private bool CheckForLastPoint(List<RoadEntityData> way, List<RoadEntityData> roads, bool _t = false)
         {
             if (way.Count == 0) return false;
-            /*    Debug.Log(JsonConvert.SerializeObject(roads, Formatting.Indented));
-                Debug.Log("1");
-                Debug.Log(_wayService.GetExitPoint(way));
-                Debug.Log(_wayService.GetLastPoint(roads));
-                Debug.Log(_wayService.GetLastPoint(way));
-                Debug.Log(_wayService.GetExitPoint(roads));*/
             return _wayService.GetExitPoint(way) == _wayService.GetLastPoint(roads)
                    && _wayService.GetLastPoint(way) == _wayService.GetExitPoint(roads);
         }

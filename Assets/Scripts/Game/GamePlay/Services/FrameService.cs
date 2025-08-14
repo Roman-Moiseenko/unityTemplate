@@ -231,12 +231,6 @@ namespace Game.GamePlay.Services
                     _viewModel.AddItem(TemplateCreateRoad(false,  2, 2)); // --
                     break;
             }
-
-      /*      Debug.Log("Vector2Int.left " + Vector2Int.left);
-            Debug.Log("Vector2Int.right " + Vector2Int.right);
-            Debug.Log("Vector2Int.up " + Vector2Int.up);
-            Debug.Log("Vector2Int.down " + Vector2Int.down);
-            */
    
             if (v_d == Vector2Int.left)
             {
@@ -267,11 +261,8 @@ namespace Game.GamePlay.Services
          */
         private List<RoadEntityData> GetRoads()
         {
-
             List<RoadEntityData> result = new();
-            
             var roads = _viewModel.EntityViewModels.Cast<RoadViewModel>().ToList();
-            
             var i = 0;
             var rotateIndex = _viewModel.GetRotateValue();
             var realPosition = _viewModel.Position.CurrentValue - matrixRoads[rotateIndex];
@@ -351,9 +342,7 @@ namespace Game.GamePlay.Services
             _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, 2)));
             _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, -2)));
             
-            
             _viewModels.Add(_viewModel);
-            //_viewModel.Enable.Value = _placementService.CheckPlacementGround(position);
         }
 
         public IEnumerable<Vector2Int> GetGrounds()

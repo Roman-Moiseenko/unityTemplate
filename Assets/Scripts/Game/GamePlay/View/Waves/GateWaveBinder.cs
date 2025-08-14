@@ -7,27 +7,42 @@ namespace Game.GamePlay.View.Waves
     {
         private GateWaveViewModel _viewModel;
         [SerializeField] private Transform _gate;
+
+        private Animator _animator;
+
         public void Bind(GateWaveViewModel viewModel)
         {
+            _gate.gameObject.SetActive(false);
             _viewModel = viewModel;
-            
-            _viewModel.ShowGate.Subscribe(show =>
+            _animator = gameObject.GetComponent<Animator>();
+            _viewModel.ShowGateWave.Skip(1).Subscribe(show =>
             {
-                _gate.gameObject.SetActive(show);
+                if (show)
+                {
+                    _gate.gameObject.SetActive(true);
+                    _animator.Play("gate_wave_start");
+                }
+                else
+                {
+                    _animator.Play("gate_wave_finish");
+                }
             });
+            
             _viewModel.Position.Subscribe(newPosition =>
             {
                 transform.position =
                     new Vector3(_viewModel.Position.CurrentValue.x, 0, _viewModel.Position.CurrentValue.y);
-                //TODO Смена позиций, перемещаем и поворачиваем модель ПЛАВНО
-               // Debug.Log("_viewModel.Position " + _viewModel.Position.CurrentValue + " _viewModel.Direction " + _viewModel.Direction.CurrentValue);
             });
             _viewModel.Direction.Subscribe(newDirection =>
             {
-                _gate.gameObject.transform.localEulerAngles = new Vector3(0, 90f * newDirection.y + 180f * newDirection.x,0);
+                _gate.gameObject.transform.localEulerAngles =
+                    new Vector3(0, 90f * newDirection.y + 180f * newDirection.x, 0);
             });
+        }
 
-        }  
- 
+        public void EndFinishAnimation()
+        {
+            _gate.gameObject.SetActive(false);
+        }
     }
 }

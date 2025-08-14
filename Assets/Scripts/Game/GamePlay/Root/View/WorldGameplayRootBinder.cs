@@ -154,7 +154,7 @@ namespace Game.GamePlay.Root.View
         private void CreateGateWave(GateWaveViewModel viewModel)
         {
             if (viewModel == null) return;
-            var prefabPath = $"Prefabs/Gameplay/GateWave"; //Перенести в настройки уровня
+            var prefabPath = $"Prefabs/Gameplay/Gate/GateWave"; //Перенести в настройки уровня
             var gatePrefab = Resources.Load<GateWaveBinder>(prefabPath);
             var createdGate = Instantiate(gatePrefab, transform);
             createdGate.Bind(viewModel);

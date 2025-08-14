@@ -1,8 +1,6 @@
-﻿using System;
-using MVVM.UI;
+﻿using MVVM.UI;
 using R3;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 namespace Game.GamePlay.View.UI.PanelGateWave
@@ -12,16 +10,28 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         [SerializeField] private Button _btnInfo;
         [SerializeField] private Transform _infoBlock;
         private Image _btnImage;
+        private Animator _animator;
         
         private void Start()
         {
             _btnImage = _btnInfo.GetComponent<Image>();
             _btnImage.fillAmount = 1;
+            _animator = gameObject.GetComponent<Animator>();
             
-            ViewModel.ShowGate.Subscribe(h =>
+            ViewModel.ShowInfoWave.Subscribe(showInfo =>
             {
-                _infoBlock.gameObject.SetActive(!h);
+                if (showInfo)
+                {
+                    _infoBlock.gameObject.SetActive(true);  
+                    _animator.Play("info_wave_start");
+                }
+                else
+                {
+                    _animator.Play("info_wave_finish");
+                }
+                
                 _btnImage.fillAmount = 1;
+                ViewModel.IsSelected.Value = false;
             });
             ViewModel.PositionInfoBtn.Subscribe(p =>
             {
@@ -31,18 +41,11 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             {
                 _btnImage.fillAmount = n;
             });
-            //TODO Подписка надвижение камеры и смещение кнопки
         }
-
-        private void Update()
-        {
-            //_btnImage.fillAmount = 
-        }
-
+        
         private void OnEnable()
         {
             _btnInfo.onClick.AddListener(OnStartForced);
-            //_btnInfo.
         }
 
         private void OnDisable()
@@ -56,15 +59,29 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         }
         private void OnStartForced()
         {
-            ViewModel.StartForcedWave();
+            if (!ViewModel.IsSelected.CurrentValue)
+            {
+                ViewModel.IsSelected.Value = true;
+            } else
+            {
+                ViewModel.StartForcedWave();
+            }
         }
         
         public override void Show()
         {
+            
         }
         
         public override void Hide()
         {
+            
+        }
+
+        public void EndFinishAnimation()
+        {
+            _infoBlock.gameObject.SetActive(false);
+            //Пауза 0.5с
         }
     }
 }
