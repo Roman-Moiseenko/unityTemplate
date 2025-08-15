@@ -54,14 +54,11 @@ namespace Game.GamePlay.View.Mobs
                 transform.position = new Vector3(newValue.x, _mobY, newValue.y);
             }).AddTo(ref d);
 
-            viewModel.AnimationDelete.Subscribe(v =>
+            viewModel.AnimationDelete.Where(v => v == true).Subscribe(_ =>
             {
-                if (v)
-                {
-                    //TODO Анимация удаления объекта После окончания:
-                   // Debug.Log("Моб " + viewModel.MobEntityId + " Уничтожается");
-                   viewModel.FinishCurrentAnimation.Value = true;
-                }
+                //TODO Анимация удаления объекта После окончания:
+                viewModel.FinishCurrentAnimation.Value = true;
+                
             }).AddTo(ref d);
 
             viewModel.State.Subscribe(newState =>

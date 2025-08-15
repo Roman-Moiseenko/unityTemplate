@@ -7,6 +7,7 @@ using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Maps.Castle;
+using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
 using Game.State.Root;
@@ -14,7 +15,6 @@ using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using Scripts.Utils;
-using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -85,7 +85,33 @@ namespace Game.GamePlay.Services
                 {
                     if (!shot.Single)
                     {
+                        var position = mobEntity.Position.CurrentValue;
+                        var typeDamage = shot.DamageType == DamageType.Normal ? DamageType.MassDamage : shot.DamageType;
+                        var mobsUnderAttacks = new List<MobEntity>();
+                        //Ищем соучастников урона
+                        foreach (var entity in _waveService.AllMobsMap)
+                        {
+                          //  var mobEntityUnderAttack = entity.Value;
+                            if (Vector2.Distance(position, entity.Value.GetPosition()) <= 0.5f)
+                            {
+                                mobsUnderAttacks.Add(entity.Value);
+
+                            }
+                        }
+
+                        foreach (var mobUnderAttack in mobsUnderAttacks)
+                        {
+                            var damage = new DamageEntity
+                            {
+                                Position = mobUnderAttack.GetPosition(),
+                                Damage = Mathf.FloorToInt(mobUnderAttack.SetDamage(shot.Damage)),
+                                Type = typeDamage,
+                            };
+                            AllDamages.Add(damage);
+                        }
+                        
                         //TODO урон по области, то ищем остальных мобов в радиусе 0.5f
+                      
                     }
                     else
                     {

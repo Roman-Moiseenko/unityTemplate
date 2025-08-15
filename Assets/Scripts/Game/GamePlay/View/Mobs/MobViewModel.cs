@@ -79,7 +79,6 @@ namespace Game.GamePlay.View.Mobs
 
         public IEnumerator RotateModel(Vector2Int direction)
         {
-            
             yield return null;
         }
 
@@ -89,7 +88,7 @@ namespace Game.GamePlay.View.Mobs
             
             RoadPoints = roadPoints;
             _targetPosition = GetTargetPosition();
-            IsMoving.Value = true; //Начать движение
+            IsMoving.OnNext(true); //Начать движение
             while (IsMoving.Value)
             {
                 yield return MovingEntity();
@@ -109,7 +108,7 @@ namespace Game.GamePlay.View.Mobs
                     _currentIndexListPoint++;
                     if (_currentIndexListPoint == RoadPoints.Count)
                     {
-                        IsMoving.Value = false;
+                        IsMoving.OnNext(false);
                         yield break;
                     }
                     _targetPosition = GetTargetPosition();

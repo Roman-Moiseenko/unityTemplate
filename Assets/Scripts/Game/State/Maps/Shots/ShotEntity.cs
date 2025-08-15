@@ -1,7 +1,6 @@
 ﻿using Game.State.Maps.Mobs;
 using UnityEngine;
 using R3;
-using Unity.VisualScripting;
 
 namespace Game.State.Maps.Shots
 {
@@ -31,7 +30,6 @@ namespace Game.State.Maps.Shots
             
             FinishPosition = position; //Конечная позиция снаряда меняется при движении моба
             FinishPosition.Subscribe(newValue => shotEntityData.FinishPosition = newValue);
-            
         }
         
     }

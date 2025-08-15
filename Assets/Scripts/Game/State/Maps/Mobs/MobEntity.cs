@@ -96,9 +96,12 @@ namespace Game.State.Maps.Mobs
             }
 
             if (newSpeed < 0) newSpeed = 0;
-//            Debug.Log("Скорость моба " + UniqueId + " = " + newSpeed);
             return newSpeed;
         }
-        
+
+        public Vector2 GetPosition()
+        {
+            return Position.CurrentValue;
+        }
     }
 }

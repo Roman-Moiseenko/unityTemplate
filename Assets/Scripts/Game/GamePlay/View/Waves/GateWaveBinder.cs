@@ -15,9 +15,9 @@ namespace Game.GamePlay.View.Waves
             _gate.gameObject.SetActive(false);
             _viewModel = viewModel;
             _animator = gameObject.GetComponent<Animator>();
-            _viewModel.ShowGateWave.Skip(1).Subscribe(show =>
+            _viewModel.ShowGateWave.Skip(1).Subscribe(showGate =>
             {
-                if (show)
+                if (showGate)
                 {
                     _gate.gameObject.SetActive(true);
                     _animator.Play("gate_wave_start");

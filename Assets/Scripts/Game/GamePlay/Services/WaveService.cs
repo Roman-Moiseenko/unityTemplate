@@ -95,7 +95,7 @@ namespace Game.GamePlay.Services
             {
                 if (!IsMobsOnWay.CurrentValue) //На дороге есть мобы
                 {
-                    IsMobsOnWay.Value = true;
+                    IsMobsOnWay.OnNext(true);
                     _coroutines.StopCoroutine(TimerNewWave());
                 }
                 
@@ -103,7 +103,7 @@ namespace Game.GamePlay.Services
                     viewModel.NumberWave == newValue.Value.NumberWave &&
                     viewModel.MobEntityId != newValue.Value.MobEntityId
                 );
-                if (!trigger) StartWave.Value = true; //Это первый моб из волны = > Показать надпись Волна идет
+                if (!trigger) StartWave.OnNext(true); //Это первый моб из волны = > Показать надпись Волна идет
                 
                 var mobViewModel = newValue.Value;
                 _coroutines.StartCoroutine(
@@ -121,10 +121,10 @@ namespace Game.GamePlay.Services
                 _coroutines.StopCoroutine(MovingMobOnWay(e.Value)); //Прерываем движение моба
 
                 var trigger = _allMobsOnWay.Any(mobViewModel => mobViewModel.NumberWave == e.Value.NumberWave);
-                if (!trigger) FinishWave.Value = true; //Текущая волна моба закончилась
+                if (!trigger) FinishWave.OnNext(true); //Текущая волна моба закончилась
 
                 if (_allMobsOnWay.Count != 0) return; //На дороге нет мобов
-                IsMobsOnWay.Value = false;
+                IsMobsOnWay.OnNext(false);
                 _coroutines.StartCoroutine(TimerNewWave());
                 
             });
@@ -153,25 +153,24 @@ namespace Game.GamePlay.Services
         public void StartForcedNewWave()
         {
             _coroutines.StopCoroutine(TimerNewWave());
-            //  TimeOutNewWave.Value = false;
-            StartForced.Value = true;
+            StartForced.OnNext(true);
         }
 
         private IEnumerator StartNewWave(int numberWave)
         {
             yield return new WaitUntil(() => StartForced.CurrentValue); //Ждем когда разрешиться запуск волны
-            StartForced.Value = false; //Предотвращаем авто запуск след.волны
+            StartForced.OnNext(false); //Предотвращаем авто запуск след.волны
             
-            ShowInfoWave.Value = false; //Закрыть Инфо
+            ShowInfoWave.OnNext(false); //Закрыть Инфо
             yield return new WaitForSeconds(0.8f); //Пауза
-            ShowGateWave.Value = true; //Показать ворота
+            ShowGateWave.OnNext(true); //Показать ворота
 
             yield return _coroutines.StartCoroutine(GenerateMob(numberWave)); //Выводим мобов на дорогу
             yield return new WaitForSeconds(TimeEndWave); //Пауза между волнами
             
-            ShowGateWave.Value = false; //Закрыть ворота
+            ShowGateWave.OnNext(false); //Закрыть ворота
             yield return new WaitForSeconds(0.5f); //Пауза
-            ShowInfoWave.Value = true; //Показать Инфо
+            ShowInfoWave.OnNext(true); //Показать Инфо
 
             _gameplayState.CurrentWave.Value++;
         }
@@ -208,20 +207,18 @@ namespace Game.GamePlay.Services
 
         private IEnumerator TimerNewWave()
         {
-            TimeOutNewWave.Value = false;
+            TimeOutNewWave.OnNext(false);
             for (var i = 0; i < AppConstants.TIME_WAVE_NEW; i++) //Ускоряем при новой скорости
             {
                 while (_fsmGameplay.IsGamePause.Value)
                 {
                     yield return null;
                 }
-
                 TimeOutNewWaveValue.Value = Convert.ToSingle(i) / AppConstants.TIME_WAVE_NEW;
-
                 yield return new WaitForSeconds(0.04f / GameSpeed.CurrentValue);
             }
 
-            TimeOutNewWave.Value = true;
+            TimeOutNewWave.OnNext(true);
         }
 
         private IEnumerator RemoveMobViewModel(int mobId)

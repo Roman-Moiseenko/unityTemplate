@@ -14,8 +14,7 @@ namespace Game.GamePlay.Services
             var result = roads[roads.Count - 1].Position;
             return result;
         }
-
-
+        
         public Vector2Int GetExitPoint(List<RoadEntityData> roads)
         {
             if (roads.Count == 0) return Vector2Int.zero;

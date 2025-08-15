@@ -1,14 +1,9 @@
 ﻿using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
-using Game.GamePlay.Fsm;
-using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
-using Game.MainMenu.Services;
-using Game.Settings;
 using Game.State;
-using Game.State.GameResources;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Shots;
 using Game.State.Root;
@@ -16,8 +11,7 @@ using MVVM.UI;
 using ObservableCollections;
 using R3;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using Update = Unity.VisualScripting.Update;
+
 
 namespace Game.GamePlay.View.UI.ScreenGameplay
 {

@@ -30,17 +30,17 @@ namespace Game.GamePlay.View.AttackAreas
 
         public void Restore()
         {
-            RadiusArea.Value = _memoryRadius.x;
-            RadiusDisabled.Value = _memoryRadius.y;
-            RadiusExpansion.Value = _memoryRadius.y;
+            RadiusArea.OnNext(_memoryRadius.x);
+            RadiusDisabled.OnNext(_memoryRadius.y);
+            RadiusExpansion.OnNext(_memoryRadius.z);
         }
 
         public void SetRadius(Vector3 radius)
         {
             _memoryRadius = radius;
-            RadiusArea.Value = radius.x;
-            RadiusDisabled.Value = radius.y;
-            RadiusExpansion.Value = radius.z;
+            RadiusArea.OnNext(radius.x);
+            RadiusDisabled.OnNext(radius.y);
+            RadiusExpansion.OnNext(radius.z);
         }
 
         /**
