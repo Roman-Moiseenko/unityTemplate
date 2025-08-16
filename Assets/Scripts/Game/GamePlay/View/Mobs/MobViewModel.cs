@@ -142,7 +142,7 @@ namespace Game.GamePlay.View.Mobs
             _mobEntity.RemoveDebuff(configId);
         }
 
-        public IEnumerator AttackCastle(IEntityHasHealth entity)
+        public IEnumerator AttackEntity(IEntityHasHealth entity)
         {
             State.Value = MobState.Attacking;
             
@@ -152,6 +152,7 @@ namespace Game.GamePlay.View.Mobs
                 yield return new WaitForSeconds(AppConstants.MOB_BASE_SPEED);
                 if (_mobEntity.IsDead.CurrentValue) yield break;
                 entity.DamageReceived(Attack);
+                
                // yield return null;
             }
         }

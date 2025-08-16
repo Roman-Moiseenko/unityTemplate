@@ -66,7 +66,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
             CastleHealth = _gameplayState.Castle.CurrenHealth;
             CastleFullHealth = _gameplayState.Castle.FullHealth;
-            
+            //
             
             var damageService = container.Resolve<DamageService>();
             AllDamages = damageService.AllDamages;             
@@ -102,6 +102,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _gameplayState.Progress.Subscribe(newValue => ProgressData.Value = newValue);
             _gameplayState.ProgressLevel.Subscribe(newValue => ProgressLevel.Value = newValue);
             _gameplayState.SoftCurrency.Subscribe(newValue => SoftCurrency.Value = newValue);
+            _gameplayState.Castle.IsDead.Where(e => e)
+                .Subscribe(newValue => _uiManager.OpenPopupLose());
             
         }
 

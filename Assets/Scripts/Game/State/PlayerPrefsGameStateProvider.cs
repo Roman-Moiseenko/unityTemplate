@@ -50,10 +50,11 @@ namespace Game.State
                 //Загружаем
                 var json = PlayerPrefs.GetString(GAMEPLAY_STATE_KEY);
                 _gameplayStateOrigin = JsonConvert.DeserializeObject<GameplayState>(json);
-              //  Debug.Log(JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
+                Debug.Log(JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
                 GameplayState = new GameplayStateProxy(_gameplayStateOrigin);
              //   Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
             }
+            
             return Observable.Return(GameplayState);
         }
         private GameplayStateProxy CreateGameplayStateFromSettings()
@@ -76,8 +77,7 @@ namespace Game.State
                 //TODO Ресурсы игры
             };
             //_gameStateOrigin.GameplayStateData.GameSpeed = 1;
-            //     Debug.Log("_gameStateOrigin = " + JsonUtility.ToJson(_gameStateOrigin));
-
+             //    Debug.Log("_gameStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
             return new GameplayStateProxy(_gameplayStateOrigin);
         }
         public Observable<bool> SaveGameplayState()

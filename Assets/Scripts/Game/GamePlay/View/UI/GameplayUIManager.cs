@@ -8,6 +8,7 @@ using Game.GamePlay.View.UI.PanelBuild;
 using Game.GamePlay.View.UI.PanelConfirmation;
 using Game.GamePlay.View.UI.PanelGateWave;
 using Game.GamePlay.View.UI.PopupB;
+using Game.GamePlay.View.UI.PopupLose;
 using Game.GamePlay.View.UI.PopupPause;
 using Game.GamePlay.View.UI.ScreenGameplay;
 using Game.State;
@@ -120,7 +121,19 @@ namespace Game.GamePlay.View.UI
         {
             
         }
-        
-        
+
+
+        public PopupLoseViewModel OpenPopupLose()
+        {
+            var lose = new PopupLoseViewModel(this, _exitSceneRequest, Container);
+            var rootUI = Container.Resolve<UIGameplayRootViewModel>();
+            _fsmGameplay.Fsm.SetState<FsmStateGamePause>(); //Меняем состояние на Пауза
+            lose.CloseRequested.Subscribe(e =>
+            {
+                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
+            });
+            rootUI.OpenPopup(lose);
+            return lose;
+        }
     }
 }

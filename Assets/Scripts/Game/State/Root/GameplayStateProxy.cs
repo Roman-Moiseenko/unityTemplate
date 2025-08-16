@@ -205,5 +205,13 @@ namespace Game.State.Root
             Progress.Value += Mathf.FloorToInt(delta);
             //Debug.Log("Progress delta = " + delta);
         }
+
+        /**
+         * CurrentWave отслеживает текущую волну, если номер превысил кол-во волн, то волны закончились 
+         */
+        public bool IsFinishWaves()
+        {
+            return CurrentWave.CurrentValue > Waves.Count;
+        }
     }
 }

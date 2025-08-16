@@ -1,4 +1,6 @@
-﻿namespace Game.MainMenu.Root
+﻿using System.Collections.Generic;
+
+namespace Game.MainMenu.Root
 {
     public class MainMenuEnterParams
     {
@@ -9,6 +11,8 @@
         public bool CompletedLevel { get; set; } //Уровень выйгран
         
         public int GameSpeed { get; set; }
+        
+        public Dictionary<string, int> RewardCards = new (); //Список карт - наград
         
 
         public MainMenuEnterParams(string result)

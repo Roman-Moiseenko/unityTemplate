@@ -25,8 +25,8 @@ namespace Game.GamePlay.Services
         private ReactiveProperty<int> GameSpeed;
         private readonly FsmGameplay _fsmGameplay;
         
-        //      private readonly ObservableList<BuildingViewModel> _allBuildings = new();
-        //   private readonly Dictionary<int, BuildingViewModel> _buildingsMap = new();
+        //  private readonly ObservableList<BuildingViewModel> _allBuildings = new();
+        //  private readonly Dictionary<int, BuildingViewModel> _buildingsMap = new();
         //  private readonly Dictionary<string, BuildingSettings> _buildingSettingsMap = new();
         //  public IObservableCollection<BuildingViewModel> AllBuildings => _allBuildings; //Интерфейс менять нельзя, возвращаем через динамический массив
         public CastleViewModel CastleViewModel { get; }

@@ -35,7 +35,7 @@ namespace Game.GamePlay.Services
         private readonly RoadsService _roadsService;
 
         public readonly ReactiveProperty<int> GameSpeed;
-
+        
         public ReactiveProperty<bool>
             StartForced = new(false); //Комбинация различных подписок для разрешения запуска новой волны
 
@@ -71,7 +71,7 @@ namespace Game.GamePlay.Services
             _roadsService = container.Resolve<RoadsService>();
             _cameraService = container.Resolve<GameplayCamera>();
             GameSpeed = gameplayState.GameSpeed;
-            
+
             //Комбинированная подписка, с одним результатом => Запустить процесс создания мобов на новой волне 
             Observable.Merge(
                 _fsmGameplay.IsGamePause,
@@ -88,7 +88,9 @@ namespace Game.GamePlay.Services
             gameplayState.CurrentWave.Skip(1).Subscribe(newValue =>
             {
                 if (newValue <= gameplayState.Waves.Count && newValue != 0)
+                {
                     _coroutines.StartCoroutine(StartNewWave(newValue));
+                }
             });
             
             _allMobsOnWay.ObserveAdd().Subscribe(newValue =>
@@ -194,7 +196,7 @@ namespace Game.GamePlay.Services
             yield return _fsmGameplay.WaitPause();
             yield return mobViewModel.MovingModel(GenerateRoadPoints(mobViewModel));
 
-            yield return mobViewModel.AttackCastle(_gameplayState.Castle);
+            yield return mobViewModel.AttackEntity(_gameplayState.Castle);
         }
 
         public IEnumerator MobTimerDebuff(string configId, MobDebuff debuff, MobViewModel mobViewModel)

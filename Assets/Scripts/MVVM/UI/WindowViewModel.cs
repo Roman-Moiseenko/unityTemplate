@@ -14,7 +14,7 @@ namespace MVVM.UI
         /**
          * Отправляем запрос на закрыте, которе будет в менеджере (Binder)
          */
-        public void RequestClose()
+        public virtual void RequestClose()
         {
             _closeRequested.OnNext(this);
         }

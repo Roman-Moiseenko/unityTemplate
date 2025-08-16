@@ -172,7 +172,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 ReduceHealth = _gameSettings.CastleInitialSettings.ReduceHealth,
                 CurrenHealth = _gameSettings.CastleInitialSettings.FullHealth,
             };
-            _gameplayState.Castle = new CastleEntity(castle);
+            _gameplayState.Castle.CastleEntityInitialization(castle);
             
             foreach (var towerSettings in newMapInitialStateSettings.Towers) //Берем список зданий из настроек карты (конфиг)
             {

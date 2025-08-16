@@ -50,7 +50,9 @@ namespace Game.GamePlay.Services
             _shotService = shotService;
             _rewardProgressService = rewardProgressService;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
-
+            
+            //_gameplayState.Castle.CurrenHealth.Subscribe(h => Debug.Log("h = " + h));
+            
             waveService.AllMobsMap.ObserveAdd().Subscribe(e =>
             {
                 var mobEntity = e.Value.Value;

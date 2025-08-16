@@ -41,10 +41,10 @@ namespace Game.GamePlay.View.UI.PopupPause
 
         //Вызываем событие просмотр рекламы, после завершения событие восстановления
 
-        //Покупка восстановления ... отнимаем кристалы, событие восстановления
+        //Покупка восстановления ... отнимаем кристаллы, событие восстановления
         public void RequestGoToMainMenu()
         {
-            _container.Resolve<GameplayService>().Lose();
+            _container.Resolve<GameplayService>().Abort();
         }
 
         public void RequestExitSave()

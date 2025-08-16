@@ -37,6 +37,12 @@ namespace Game.State.Maps.Castle
             IsReduceHealth.Subscribe(newValue => castleData.IsReduceHealth = newValue);
         }
 
+        public void CastleEntityInitialization(CastleEntityData castleData)
+        {
+            Origin = castleData;
+            CurrenHealth.Value = castleData.FullHealth;
+        }
+
         /**
          * Восстановление
          */
@@ -51,8 +57,15 @@ namespace Game.State.Maps.Castle
          */
         public void DamageReceived(float damage)
         {
-            CurrenHealth.Value -= damage;
-            if (CurrenHealth.Value == 0) IsDead.Value = true;
+            if (CurrenHealth.CurrentValue <= damage)
+            {
+                CurrenHealth.Value = 0;
+                IsDead.Value = true;
+            }
+            else
+            {
+                CurrenHealth.Value -= damage;
+            }
         } 
     }
 }
