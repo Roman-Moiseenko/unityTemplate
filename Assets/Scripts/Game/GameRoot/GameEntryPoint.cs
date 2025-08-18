@@ -66,7 +66,7 @@ namespace Scripts.Game.GameRoot
             
             _rootContainer.RegisterFactory(c => new SomeCommonService()).AsSingle(); //Сервис ... создастся при первом вызове
             
-
+            _rootContainer.RegisterFactory(c => new AdService(_rootContainer)).AsSingle();
             
             //Положить в контейнер настройки игры ....
             //Сервисы аналитики, платежки, 

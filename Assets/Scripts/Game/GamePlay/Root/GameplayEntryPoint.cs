@@ -27,6 +27,11 @@ namespace Game.GamePlay.Root
             //Регистрируем событие движение камеры
             var positionGameplayCamera = new Subject<Unit>();
             gameplayContainer.RegisterInstance(AppConstants.CAMERA_MOVING, positionGameplayCamera);
+            
+            //Регистрируем событие клика по объектам игрового мира
+            var entityClick = new Subject<Unit>();
+            gameplayContainer.RegisterInstance(AppConstants.CLICK_WORLD_ENTITY, entityClick);
+            
 //            Debug.Log("enterParams " + JsonConvert.SerializeObject(enterParams, Formatting.Indented));
             GameplayRegistrations.Register(gameplayContainer, enterParams); //Регистрируем все сервисы сцены
             

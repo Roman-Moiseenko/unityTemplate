@@ -10,12 +10,15 @@ namespace MVVM.UI
         [SerializeField] private Transform _panelsContainer; //контейнер попап-ов
 
         private readonly Dictionary<WindowViewModel, IWindowBinder>
-            _openedPanelBinders = new(); //кеш открытых binder-ов для попап
+            _openedPanelBinders = new(); //кеш открытых binder-ов для панелей
         private readonly Dictionary<WindowViewModel, IWindowBinder>
             _openedPopupBinders = new(); //кеш открытых binder-ов для попап
 
         private IWindowBinder _openedScreenBinder; //кеш для байндера открытого окна 
 
+        /**
+         * Добавляем панели при загрузке, они всегда в памяти и только показываются или скрываются
+         */
         public void AddPanel(WindowViewModel viewModel)
         {
            // Debug.Log("Этап 3. Создание панели " + viewModel.GetType());
@@ -39,6 +42,9 @@ namespace MVVM.UI
             binder.Hide();
         }
         
+        /**
+         * Открытие окна попап - всегда создание из префаба, по закрытию - выгрузка из памяти
+         */
         public void OpenPopup(WindowViewModel viewModel)
         {
             var prefabPath = GetPrefabPath(viewModel); //Получаем путь к префабу из view-модели

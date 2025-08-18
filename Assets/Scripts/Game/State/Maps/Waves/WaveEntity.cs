@@ -25,5 +25,24 @@ namespace Game.State.Maps.Waves
             Mobs.ObserveRemove().Subscribe(e => waveEntityData.Mobs.Remove(e.Value.Origin));
 
         }
+
+        public Dictionary<MobType, int> GetListForInfo()
+        {
+            var d = new Dictionary<MobType, int>();
+            foreach (var mobEntity in Mobs)
+            {
+                if (d.TryGetValue(mobEntity.Type, out var value))
+                {
+                    d[mobEntity.Type]++;
+                }
+                else
+                {
+                    d.Add(mobEntity.Type, 1);
+                }
+                
+            }
+
+            return d;
+        }
     }
 }

@@ -18,7 +18,8 @@ namespace Game.GamePlay.View.UI.PopupLose
         private readonly DIContainer _container;
 
         private readonly GameplayStateProxy _gameplayState;
-        
+        private readonly GameplayService _gameplayService;
+
         public PopupLoseViewModel(
             GameplayUIManager uiManager, 
             Subject<GameplayExitParams> exitSceneRequest,
@@ -26,6 +27,7 @@ namespace Game.GamePlay.View.UI.PopupLose
         {
             _exitSceneRequest = exitSceneRequest;
             _container = container;
+            _gameplayService = _container.Resolve<GameplayService>();
 
             _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
         }
@@ -33,19 +35,19 @@ namespace Game.GamePlay.View.UI.PopupLose
         public override void RequestClose()
         {
             base.RequestClose();
-            _container.Resolve<GameplayService>().Lose();
+            _gameplayService.Lose();
         }
 
         public void RequestSpendCristal()
         {
             base.RequestClose();
-            throw new System.NotImplementedException();
+            _gameplayService.RepairCristal();
         }
 
         public void RequestPlayAd()
         {
             base.RequestClose();
-            throw new System.NotImplementedException();
+            _gameplayService.RepairAd();
         }
     }
 }

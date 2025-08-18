@@ -40,6 +40,8 @@ namespace Game.GamePlay.Root.View
         private readonly DamageService _damageService;
 
         private readonly ShotService _shotService;
+
+        private readonly Subject<Unit> _entityClick;
         // private readonly DIContainer _container;
 
         //   public readonly IObservableCollection<RoadViewModel> AllRoads;
@@ -72,7 +74,8 @@ namespace Game.GamePlay.Root.View
             WaveService waveService,
             GameplayCamera cameraService,
             DamageService damageService,
-            ShotService shotService
+            ShotService shotService,
+            Subject<Unit> entityClick
             //DIContainer container
         )
         {
@@ -83,6 +86,8 @@ namespace Game.GamePlay.Root.View
             _cameraService = cameraService;
             _damageService = damageService;
             _shotService = shotService;
+            _entityClick = entityClick;
+            
             //_container = container;
 
             AllRoads = roadsService.AllRoads;
@@ -207,6 +212,8 @@ namespace Game.GamePlay.Root.View
         public void ClickEntity(Vector2 mousePosition)
         {
             var position = _cameraService.GetWorldPoint(mousePosition);
+            _entityClick.OnNext(Unit.Default);
+            
             if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
             {
                 //TODO проверяем, чтоб показать Info()

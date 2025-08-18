@@ -1,10 +1,12 @@
 ﻿using DI;
+using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
 using Game.GamePlay.View.Waves;
 using Game.MainMenu.Services;
+using R3;
 
 namespace Game.GamePlay.Root.View
 {
@@ -33,7 +35,8 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<WaveService>(),
                 c.Resolve<GameplayCamera>(),
                 c.Resolve<DamageService>(),
-                c.Resolve<ShotService>()
+                c.Resolve<ShotService>(),
+                c.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY)
             )).AsSingle();
             
         }

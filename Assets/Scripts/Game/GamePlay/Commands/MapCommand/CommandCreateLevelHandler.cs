@@ -152,6 +152,7 @@ namespace Game.GamePlay.Commands.MapCommand
                             IsFly = waveItem.Mob.IsFly,
                             RewardCurrency = waveItem.Mob.RewardCurrency,
                             Level = waveItem.Level,
+                            
                         };
                         initialWave.Mobs.Add(mob);
                     }

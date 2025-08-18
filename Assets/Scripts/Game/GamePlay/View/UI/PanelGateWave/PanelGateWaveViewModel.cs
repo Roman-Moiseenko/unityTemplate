@@ -4,8 +4,10 @@ using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Services;
 using Game.State;
+using Game.State.Maps.Mobs;
 using Game.State.Root;
 using MVVM.UI;
+using ObservableCollections;
 using R3;
 using Scripts.Utils;
 using UnityEngine;
@@ -19,7 +21,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         private WaveService _waveService;
         private readonly Coroutines _coroutines;
         public override string Id => "PanelGateWave";
-        public override string Path => "Gameplay/Panels/";
+        public override string Path => "Gameplay/Panels/GateWaveInfo/";
         public readonly int CurrentSpeed;
         private readonly GameplayStateProxy _gameplayStateProxy;
         public ReactiveProperty<bool> StartForced;
@@ -28,6 +30,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         public ReactiveProperty<float> FillAmountBtn = new(1f);
         private GameplayCamera _cameraService;
         public ReactiveProperty<bool> IsSelected = new(false);
+        public ObservableDictionary<MobType, int> DefenceCountMobs = new();
         
         public PanelGateWaveViewModel(
             GameplayUIManager uiManager, 
@@ -39,6 +42,23 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             _waveService = container.Resolve<WaveService>();
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
+            var entityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
+
+            entityClick.Subscribe(_ =>
+            {
+                IsSelected.OnNext(false);
+            });
+
+            _gameplayStateProxy.CurrentWave.Subscribe(number =>
+            {
+                DefenceCountMobs.Clear();
+                var list = _gameplayStateProxy.Waves[number].GetListForInfo();
+                foreach (var itemList in list)
+                {
+                    DefenceCountMobs.Add(itemList.Key, itemList.Value);
+                }
+            });
+            
             
             StartForced = _waveService.StartForced;
             CurrentSpeed = _gameplayStateProxy.GetCurrentSpeed();

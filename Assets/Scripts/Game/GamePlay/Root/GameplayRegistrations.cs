@@ -118,7 +118,12 @@ namespace Game.GamePlay.Root
             var rewardService = new RewardProgressService(gameplayState, container, gameSettings.TowersSettings);
             container.RegisterInstance(rewardService);
 
-            var gameplayService = new GameplayService(subjectExitParams, waveService, gameplayState);
+            var gameplayService = new GameplayService(
+                subjectExitParams, 
+                waveService, gameplayState,
+                container.Resolve<AdService>(),
+                Fsm
+                );
             container.RegisterInstance(gameplayService); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             //Сервис создания выстрелов
             var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, Fsm);

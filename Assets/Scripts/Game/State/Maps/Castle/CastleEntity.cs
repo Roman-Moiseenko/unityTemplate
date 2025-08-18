@@ -66,6 +66,12 @@ namespace Game.State.Maps.Castle
             {
                 CurrenHealth.Value -= damage;
             }
-        } 
+        }
+
+        public void Resurrection()
+        {
+            CurrenHealth.Value = FullHealth;
+            IsDead.Value = false;
+        }
     }
 }

@@ -50,9 +50,5 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
         {
             _disposable.Dispose();
         }
-        /**
-         * Функция привязана к _textPanel
-         */
-        
     }
 }
