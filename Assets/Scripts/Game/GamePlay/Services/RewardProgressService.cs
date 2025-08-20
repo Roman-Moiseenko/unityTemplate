@@ -53,10 +53,11 @@ namespace Game.GamePlay.Services
                 if (newValue < 100) return;
                 if (!_fsmGameplay.IsStateGamePlay()) return;
                 
-                GenerateRewardAndStateBuild(); //1. Создаем награды
-                //_fsmGameplay.Fsm.SetState<FsmStateBuildBegin>(rewards);
+             //   var rewards = GenerateRewardProgress(); //1. Создаем награды
+                _fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
             });
 
+            
             //TODO Куда перенести
             _fsmGameplay.Fsm.StateCurrent.Subscribe(newState =>
             {
@@ -81,7 +82,11 @@ namespace Game.GamePlay.Services
                 if (newState.GetType() == typeof(FsmStateGamePlay))
                 {
                     //При завершении строительства, если еще остались очки прогресса
-                    if (gameplayStateProxy.Progress.Value >= 100) GenerateRewardAndStateBuild();
+                    if (gameplayStateProxy.Progress.Value >= 100)
+                    {
+                       // var rewards = GenerateRewardProgress();
+                        _fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
+                    }
                 }
             });
             
@@ -116,11 +121,19 @@ namespace Game.GamePlay.Services
             fsm.Fsm.SetState<FsmStateBuildBegin>(rewards);
         }
 
+        public RewardsProgress StartRewardProgress()
+        {
+            var rewards = new RewardsProgress();
+            rewards.Cards.Add(1, GetTower(rewards));
+            rewards.Cards.Add(2, GetTower(rewards));
+            rewards.Cards.Add(3, GetTower(rewards));
+            return rewards;
+        }
         /**
          * По типу награды, который вернулся от игрока запускаем метод сервиса, передав данные.
          * Создаем награды и меняем состояние на начало строительства
          */
-        private void GenerateRewardAndStateBuild()
+        public RewardsProgress GenerateRewardProgress()
         {
             var rewards = new RewardsProgress();
             //Тип наград
@@ -133,7 +146,6 @@ namespace Game.GamePlay.Services
             // 7. Перемещение башни
             // 8. Обмен местами
             // 9. Платформа для башни
-
             
             List<Func<RewardsProgress, RewardCardData>> getReward = new()
             {
@@ -160,8 +172,7 @@ namespace Game.GamePlay.Services
                 rewards.Cards.Add(i, card);
             }
             
-            _fsmGameplay.Fsm.SetState<FsmStateBuildBegin>(rewards);
-         //   return rewards;
+            return rewards;
         }
 
         private RewardCardData GetRoad(RewardsProgress progress)

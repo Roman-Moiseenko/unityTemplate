@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Scripts.Game.GameRoot.Services
+namespace Game.GameRoot.Services
 {
     /**
      * Главные сервисы проекта:

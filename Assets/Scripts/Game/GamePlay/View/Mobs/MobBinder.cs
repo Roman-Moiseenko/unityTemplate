@@ -27,7 +27,7 @@ namespace Game.GamePlay.View.Mobs
         {
             var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
-            _mobY = _viewModel.IsFly ? 0.9f : 0.1f;
+            _mobY = _viewModel.IsFly ? 0.9f : 0.0f;
             transform.position = new Vector3(viewModel.StartPosition.x, _mobY, viewModel.StartPosition.y);
 
             _healthBarBinder = _healthBar.GetComponent<HealthBar>();
@@ -110,5 +110,6 @@ namespace Game.GamePlay.View.Mobs
         }
         
         */
+  
     }
 }

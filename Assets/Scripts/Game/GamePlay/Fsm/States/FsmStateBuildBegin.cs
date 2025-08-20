@@ -13,7 +13,6 @@ namespace Game.GamePlay.Fsm.States
     {
         private int _previousGameSpeed;
         private GameplayStateProxy _gameplayStateProxy;
-      //  public override RewardsProgress Params { get; set; }
 
         public FsmStateBuildBegin(FsmProxy fsm, DIContainer container) : base(fsm, container) { }
 
@@ -31,10 +30,5 @@ namespace Game.GamePlay.Fsm.States
         }
 
         public override void Update() { }
-
-        public RewardsProgress GetRewards()
-        {
-            return (RewardsProgress)Params;
-        }
     }
 }

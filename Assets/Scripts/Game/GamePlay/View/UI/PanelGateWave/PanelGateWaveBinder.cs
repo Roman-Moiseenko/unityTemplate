@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.State.Maps.Mobs;
+using Game.State.Maps.Towers;
 using MVVM.UI;
 using ObservableCollections;
 using R3;
@@ -10,149 +12,265 @@ namespace Game.GamePlay.View.UI.PanelGateWave
 {
     public class PanelGateWaveBinder : PanelBinder<PanelGateWaveViewModel>
     {
-        [SerializeField] private Button _btnInfo;
         [SerializeField] private Transform _infoBlock;
-        [SerializeField] private Transform _infoPanel;
-        [SerializeField] private Transform enemies;
-
+        [SerializeField] private Transform _infoTower;
+        [SerializeField] private List<MobDefenceImage> _mobDefenceImages;
+        [SerializeField] private List<ParameterTypeImage> _parameterImages;
+        
+        //Компоненты блока о Волне
+        private Button _btnInfo;
+        private Transform _infoPanel;
+        private Transform _enemies;
+        //Компоненты блока о Башне
+        private Transform _baseParameters;
+        private Transform _upgradeParameters;
+        
         private List<EnemyInfoBinder> _enemyInfoBinders = new();
-        
-        
-       // [SerializeField] private Button _btnCloseInfo;
+        private List<BaseParameterBinder> _baseParameterBinders = new();
+        private List<UpgradeParameterBinder> _upgradeParameterBinders = new();
         
         private Image _btnImage;
         private Animator _animator;
+        private IDisposable _disposableImplementation;
         
-        private void Start()
+        private void Awake()
         {
+            //Инициализация
+            //Аниматор панели
+            _animator = gameObject.GetComponent<Animator>();
+            //Кнопка Волны - показ инфо, форсированный запуск
+            _btnInfo = _infoBlock.Find("ButtonBlock/ButtonWave").GetComponent<Button>();
+            //Инфо панель о волне
+            _infoPanel = _infoBlock.Find("InfoWave").GetComponent<Transform>();
+            //Контейнер для списка инфо о мобах
+            _enemies = _infoBlock.Find("InfoWave/Enemies").GetComponent<Transform>();
+            //Индикатор таймера
             _btnImage = _btnInfo.GetComponent<Image>();
             _btnImage.fillAmount = 1;
-            _animator = gameObject.GetComponent<Animator>();
-            ViewModel.IsSelected.OnNext(false);
-            ViewModel.ShowInfoWave.Subscribe(showButton =>
+            //Контейнер для списка инфо о базовых параметрах
+            _baseParameters = _infoTower.Find("BaseParameters").GetComponent<Transform>();
+            //Контейнер для списка инфо о апгрейднутых параметрах
+            _upgradeParameters = _infoTower.Find("UpgrateParameters").GetComponent<Transform>();
+            //Базовое отключение
+            _infoTower.gameObject.SetActive(false);
+            
+            //_mobDefenceImages.Add(MobDefence.Advanced, Resources.Load<Texture2D>("MyTexture"));
+        }
+        protected override void OnBind(PanelGateWaveViewModel viewModel)
+        {
+            var d = Disposable.CreateBuilder();
+            //Блок инфо о волне
+            ViewModel.ShowInfoWave.OnNext(false);
+            ViewModel.ShowButtonWave.Subscribe(showButton =>
             {
                 if (showButton)
                 {
-                    _infoBlock.gameObject.SetActive(true);  
+                    _infoBlock.gameObject.SetActive(true);
                     _animator.Play("info_wave_start");
                 }
                 else
                 {
                     _animator.Play("info_wave_finish");
                 }
-                
-                
-                ViewModel.IsSelected.OnNext(false);
-            });
-            ViewModel.PositionInfoBtn.Subscribe(p =>
-            {
-                _infoBlock.transform.position = p;
-            });
-            ViewModel.FillAmountBtn.Subscribe(n =>
-            {
-                _btnImage.fillAmount = n;
-            });
 
-            ViewModel.IsSelected.Subscribe(showInfo =>
+                ViewModel.ShowInfoWave.OnNext(false);
+            }).AddTo(ref d);
+            ViewModel.PositionInfoBtn.Subscribe(p => _infoBlock.transform.position = p).AddTo(ref d);
+            ViewModel.FillAmountBtn.Subscribe(n => _btnImage.fillAmount = n).AddTo(ref d);
+
+            ViewModel.ShowInfoWave.Subscribe(showInfo =>
             {
                 if (showInfo)
                 {
-                    _infoPanel.gameObject.SetActive(true);  
+                    _infoPanel.gameObject.SetActive(true);
                     //_animator.Play("info_panel_start");
                 }
                 else
                 {
-                    _infoPanel.gameObject.SetActive(false);  
+                    _infoPanel.gameObject.SetActive(false);
                     //_animator.Play("info_panel_finish");
                 }
-            });
-            InfoPanelClear();
+            }).AddTo(ref d);
+            InfoWavePanelClear();
             foreach (var defenceCountMob in ViewModel.DefenceCountMobs)
             {
-                InfoPanelAddEntity(defenceCountMob);
+                InfoWavePanelAddEntity(defenceCountMob);
             }
-            ViewModel.DefenceCountMobs.ObserveAdd().Subscribe(e => InfoPanelAddEntity(e.Value));
 
-            ViewModel.DefenceCountMobs.ObserveClear().Subscribe(_ => InfoPanelClear());
+            ViewModel.DefenceCountMobs.ObserveAdd().Subscribe(e => InfoWavePanelAddEntity(e.Value)).AddTo(ref d);
+            ViewModel.DefenceCountMobs.ObserveClear().Subscribe(_ => InfoWavePanelClear()).AddTo(ref d);
+
+            //Блок инфо о башне
+            ViewModel.ShowInfoTower.Subscribe(showTower =>
+            {
+                if (showTower)
+                {
+                    //TODO Заполняем данне о башне
+                    //MobDefence
+                    //Эпичность
+                    //Название
+                    //Уровень в Геймплее
+                    
+                    _infoTower.gameObject.SetActive(true);
+                    //_animator.Play("info_tower_start");
+                }
+                else
+                {
+                    _infoTower.gameObject.SetActive(false);
+                    //  _animator.Play("info_tower_finish");
+                }
+            }).AddTo(ref d);
+
+            ViewModel.PositionInfoTower.Subscribe(p => _infoTower.transform.position = p).AddTo(ref d);
+            ViewModel.BaseParameters.ObserveAdd().Subscribe(e => InfoTowerBaseParametersAddEntity(e.Value)).AddTo(ref d);
+            ViewModel.BaseParameters.ObserveClear().Subscribe(_ => InfoTowerBaseParametersClear()).AddTo(ref d);
+            ViewModel.UpgradeParameters.ObserveAdd().Subscribe(e => InfoTowerUpgradeParametersAddEntity(e.Value)).AddTo(ref d);
+            ViewModel.UpgradeParameters.ObserveClear().Subscribe(_ => InfoTowerUpgradeParametersClear()).AddTo(ref d);
+
+            _disposableImplementation = d.Build();
         }
 
-        private void InfoPanelAddEntity(KeyValuePair<MobType, int> objValue)
+        private void InfoWavePanelAddEntity(KeyValuePair<MobType, int> objValue)
         {
             var count = _enemyInfoBinders.Count;
             var prefabPath = $"Prefabs/UI/Gameplay/Panels/GateWaveInfo/EnemyInfo"; //Перенести в настройки уровня
             var enemyPrefab = Resources.Load<EnemyInfoBinder>(prefabPath);
-            var createdInfoString = Instantiate(enemyPrefab, enemies);
+            var createdInfoString = Instantiate(enemyPrefab, _enemies);
+
+            Sprite image = null;
+            foreach (var defenceImage in _mobDefenceImages)
+            {
+                //Debug.Log(defenceImage.MobDefence + " == " + objValue.Key.GetDefence());
+                if (defenceImage.mobDefence != objValue.Key.GetDefence()) continue;
+                image = defenceImage.image;
+                break;
+
+            }
+            if (image == null) throw new Exception("Не найдено изображение для " + objValue.Key.GetDefence());
             createdInfoString.Bind(
-                objValue.Key.GetDefence(), 
-                objValue.Key.GetString(), 
-                objValue.Value, 
+                image,
+                objValue.Key.GetString(),
+                objValue.Value,
                 count
-                );
+            );
             _enemyInfoBinders.Add(createdInfoString);
-            enemies.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 270 + 155 * count);
+            _enemies.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 270 + 155 * count);
         }
 
-        private void InfoPanelClear()
+        private void InfoWavePanelClear()
         {
             foreach (var infoBinder in _enemyInfoBinders)
             {
                 Destroy(infoBinder.gameObject);
             }
-            _enemyInfoBinders.Clear();
-            enemies.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 270);
-        }
-        
 
-        
+            _enemyInfoBinders.Clear();
+            _enemies.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 270);
+        }
+
+        private void InfoTowerBaseParametersAddEntity(KeyValuePair<TowerParameterType, float> objValue)
+        {
+            var count = _baseParameterBinders.Count;
+            var prefabPath = $"Prefabs/UI/Gameplay/Panels/GateWaveInfo/BaseParameter"; //Перенести в настройки уровня
+            var paramPrefab = Resources.Load<BaseParameterBinder>(prefabPath);
+            var createdBinder = Instantiate(paramPrefab, _baseParameters);
+            
+            Sprite image = null;
+            foreach (var parameterImage in _parameterImages)
+            {
+                if (parameterImage.typeParameter != objValue.Key) continue;
+                image = parameterImage.image;
+                break;
+
+            }
+            //if (image == null) throw new Exception("Не найдено изображение для " + objValue.Key);
+            createdBinder.Bind(image, objValue.Key.GetString(), objValue.Value, count);
+            _baseParameterBinders.Add(createdBinder);
+            _baseParameters.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 320 + 105 * count);
+        }
+
+        private void InfoTowerBaseParametersClear()
+        {
+            foreach (var infoBinder in _baseParameterBinders)
+            {
+                Destroy(infoBinder.gameObject);
+            }
+            _baseParameterBinders.Clear();
+            
+            //_enemies.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 270);
+        }
+
+        private void InfoTowerUpgradeParametersAddEntity(KeyValuePair<TowerParameterType, float> objValue)
+        {
+            //TODO Загружаем из префаба
+        }
+
+        private void InfoTowerUpgradeParametersClear()
+        {
+            foreach (var infoBinder in _upgradeParameterBinders)
+            {
+                Destroy(infoBinder.gameObject);
+            }
+            _upgradeParameterBinders.Clear();
+        }
+
+
         private void OnEnable()
         {
-            _btnInfo.onClick.AddListener(OnStartForced);
-         //   _btnCloseInfo.onClick.AddListener(OnCloseInfo);
+            _btnInfo.onClick.AddListener(OnStartForced); 
         }
 
         private void OnDisable()
         {
             _btnInfo.onClick.RemoveListener(OnStartForced);
-       //     _btnCloseInfo.onClick.RemoveListener(OnCloseInfo);
         }
-        
+
         private void OnShowInfo()
         {
             ViewModel.ShowPopupInfo();
         }
+
         private void OnStartForced()
         {
-            if (!ViewModel.IsSelected.CurrentValue)
+            if (!ViewModel.ShowInfoWave.CurrentValue)
             {
-                ViewModel.IsSelected.OnNext(true);
-            } else
+                ViewModel.ShowInfoWave.OnNext(true);
+            }
+            else
             {
                 ViewModel.StartForcedWave();
             }
         }
-        
+
         public override void Show()
         {
-            
         }
-        
+
         public override void Hide()
         {
-            
         }
 
         public void FinishButtonAnimation()
         {
             _infoBlock.gameObject.SetActive(false);
             _btnImage.fillAmount = 1;
-            
+
             //Пауза 0.5с
-            
         }
 
         public void FinishInfoAnimation()
         {
             _infoPanel.gameObject.SetActive(false);
+        }
+
+        public void FinishTowerAnimation()
+        {
+            _infoTower.gameObject.SetActive(false);
+        }
+
+        public void OnDestroy()
+        {
+            _disposableImplementation.Dispose();
         }
     }
 }

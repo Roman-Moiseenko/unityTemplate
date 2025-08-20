@@ -1,4 +1,5 @@
-﻿using R3;
+﻿using System;
+using R3;
 using UnityEngine;
 
 namespace Game.GamePlay.View.Frames
@@ -18,26 +19,27 @@ namespace Game.GamePlay.View.Frames
         private const int speed = 20;
         private const float smoothTime = 0.2f;
         private Vector3 _velocity;
-        
+        private IDisposable _disposable;
+
         
         public void Bind(FrameBlockViewModel viewModel)
         {
+            var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
             Observable.Merge(viewModel.Enable, viewModel.IsSelected).Subscribe(v =>
             {
                 SetMaterial();
-            });
+            }).AddTo(ref d);
             viewModel.Position.Subscribe(newPosition =>
             {
                 _targetPosition = new Vector3(newPosition.x, 0, newPosition.y);
                 _isMoving = true;
-            });
+            }).AddTo(ref d);
 
 
-            viewModel.Rotate.Subscribe(newValue =>
-            {
-                transform.localEulerAngles = new Vector3(0, 90f * newValue,0);
-            });
+            viewModel.Rotate
+                .Subscribe(newValue => transform.localEulerAngles = new Vector3(0, 90f * newValue,0))
+                .AddTo(ref d);
             
             transform.position = new Vector3(
                 viewModel.Position.CurrentValue.x,
@@ -79,6 +81,10 @@ namespace Game.GamePlay.View.Frames
             {
                 frame.GetComponent<MeshRenderer>().material = forbidden; 
             }
+        }
+        private void OnDestroy()
+        {
+            _disposable.Dispose();
         }
     }
 }

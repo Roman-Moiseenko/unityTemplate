@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using R3;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -12,17 +13,18 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
         public Animator animator;
         public ReactiveProperty<CurrencyState> CurrentState;
         private Vector3 _target;
+        private IDisposable _disposable;
 
         
         public void Bind(Camera camera, Subject<Unit> positionCamera, Vector3 targetFinish)
         {
+            var d = Disposable.CreateBuilder();
             Free = new ReactiveProperty<bool>(true);
             CurrentState = new ReactiveProperty<CurrencyState>(CurrencyState.Rest);
             transform.gameObject.SetActive(false);
             _camera = camera;
             animator = gameObject.GetComponent<Animator>();
             animator.enabled = false;
-           // _isMoving = false;
 
             CurrentState.Skip(1).Subscribe(state =>
             {
@@ -57,9 +59,9 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
                     transform.gameObject.SetActive(false);
                     Free.Value = true;
                 }
-            });
+            }).AddTo(ref d);
+            _disposable = d.Build();
         }
-        
         
         public void StartPopup(Vector3 position)
         {
@@ -107,6 +109,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
             }
             transform.position = target;
             CurrentState.Value = CurrencyState.Delay;
+        }
+        
+        private void OnDestroy()
+        {
+            _disposable.Dispose();
         }
     }
 }

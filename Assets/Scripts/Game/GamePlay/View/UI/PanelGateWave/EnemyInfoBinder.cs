@@ -2,7 +2,7 @@
 using Game.State.Maps.Mobs;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 namespace Game.GamePlay.View.UI.PanelGateWave
 {
@@ -10,29 +10,12 @@ namespace Game.GamePlay.View.UI.PanelGateWave
     {
         [SerializeField] private TMP_Text nameField;
         [SerializeField] private TMP_Text countField;
-        [SerializeField] private Transform fast;
-        [SerializeField] private Transform elemental;
-        [SerializeField] private Transform advanced;
-        [SerializeField] private Transform support;
+        [SerializeField] private Transform image;
         
-        
-        public void Bind(MobDefence defenceEnemy, string nameEnemy, int countEnemy, int number)
+        public void Bind(Sprite sprite, string nameEnemy, int countEnemy, int number)
         {
-            fast.gameObject.SetActive(false);
-            elemental.gameObject.SetActive(false);
-            advanced.gameObject.SetActive(false);
-            support.gameObject.SetActive(false);
+            image.GetComponentInChildren<Image>().sprite = sprite;
 
-            switch (defenceEnemy)
-            {
-                case MobDefence.Fast: fast.gameObject.SetActive(true); break;
-                case MobDefence.Elemental: elemental.gameObject.SetActive(true); break;
-                case MobDefence.Advanced: advanced.gameObject.SetActive(true); break;
-                case MobDefence.Support: support.gameObject.SetActive(true); break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(defenceEnemy), defenceEnemy, null);
-            }
-            //transform.Find("Image").GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>($"Images/Mobs/Defence/{defenceEnemy}");
             nameField.text = nameEnemy;
             countField.text = $"x{countEnemy}";
 
@@ -41,7 +24,6 @@ namespace Game.GamePlay.View.UI.PanelGateWave
                 transform.localPosition.z
             );
         }
-        
         
     }
 }

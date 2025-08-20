@@ -29,6 +29,8 @@ namespace Game.State.Root
         public Dictionary<int, DeckCardData> DeckCards { get; set; } = new(2); //Колоды карт
         public int BattleDeck { get; set; } = 1; //Номер боевой колоды
 
+        public int HardCurrency { get; set; }
+        
       //  public bool ResumeGame { get; set; } //Привыходе false, при входе true 
         //public GameplayState GameplayState = new(); //Cостояния gameplay игры -- удалить
 

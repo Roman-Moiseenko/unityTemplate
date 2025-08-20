@@ -60,7 +60,7 @@ namespace Game.GamePlay.Commands.Inventory
             
 //            Debug.Log("5555 " + JsonConvert.SerializeObject(initialDeck, Formatting.Indented));
             _gameState.DeckCards.Add(1, new DeckCard(initialDeck));
-            
+            _gameState.HardCurrency.Value = 5000;
             return true;
         }
     }

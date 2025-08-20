@@ -29,6 +29,7 @@ namespace Game.GamePlay.View.Shots
         private void OnDestroy()
         {
             disposable.Dispose();
+            //_viewModel.Dispose();
         }
     }
 }

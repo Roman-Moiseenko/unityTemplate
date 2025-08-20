@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Services;
+using Game.GamePlay.View.Towers;
 using Game.State;
 using Game.State.Maps.Mobs;
+using Game.State.Maps.Towers;
 using Game.State.Root;
 using MVVM.UI;
 using ObservableCollections;
@@ -25,29 +28,69 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         public readonly int CurrentSpeed;
         private readonly GameplayStateProxy _gameplayStateProxy;
         public ReactiveProperty<bool> StartForced;
-        public ReactiveProperty<bool> ShowInfoWave;
+        
+        //Состояния отображения окон
+        public ReactiveProperty<bool> ShowButtonWave;
+        public ReactiveProperty<bool> ShowInfoWave = new(false);
+        public ReactiveProperty<bool> ShowInfoTower = new(false);
+        
         public ReactiveProperty<Vector3> PositionInfoBtn = new(Vector3.zero);
+        public ReactiveProperty<Vector3> PositionInfoTower = new(Vector3.zero);
         public ReactiveProperty<float> FillAmountBtn = new(1f);
         private GameplayCamera _cameraService;
-        public ReactiveProperty<bool> IsSelected = new(false);
+        
+        //Словари префабов для отображения в Binder
         public ObservableDictionary<MobType, int> DefenceCountMobs = new();
+        public ObservableDictionary<TowerParameterType, float> BaseParameters = new(); 
+        public ObservableDictionary<TowerParameterType, float> UpgradeParameters = new();
+            
+        private Vector2Int _towerPrevious = Vector2Int.zero;
+        public TowerViewModel TowerViewModel;
+        private IDisposable _disposable;
         
         public PanelGateWaveViewModel(
             GameplayUIManager uiManager, 
             DIContainer container
             )
         {
+            var d = Disposable.CreateBuilder();
             _uiManager = uiManager;
             _container = container;
             _waveService = container.Resolve<WaveService>();
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             var entityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
+            var towerClick = container.Resolve<Subject<TowerViewModel>>();
 
             entityClick.Subscribe(_ =>
             {
-                IsSelected.OnNext(false);
-            });
+                ShowInfoWave.OnNext(false);
+                ShowInfoTower.OnNext(false);
+            }).AddTo(ref d);
+
+            towerClick.Subscribe(towerViewModel =>
+            {
+                if (_towerPrevious == towerViewModel.Position.CurrentValue)
+                {
+                    ShowInfoTower.OnNext(false);
+                    _towerPrevious = Vector2Int.zero;
+                }
+                else
+                {
+                    TowerViewModel = towerViewModel;
+                    _towerPrevious = towerViewModel.GetPosition();
+                    BaseParameters.Clear();
+                    UpgradeParameters.Clear();
+                    
+                    foreach (var parameterData in towerViewModel.Parameters)
+                    {
+                        BaseParameters.Add(parameterData.Key, parameterData.Value.Value);
+                    }
+                    //TODO Наполнение UpgradeParameters - ??? по Level и настройкам вычисляем %% Upgrade
+                    NewPositionTowerInfo();
+                    ShowInfoTower.OnNext(true);
+                }
+            }).AddTo(ref d);
 
             _gameplayStateProxy.CurrentWave.Subscribe(number =>
             {
@@ -57,21 +100,28 @@ namespace Game.GamePlay.View.UI.PanelGateWave
                 {
                     DefenceCountMobs.Add(itemList.Key, itemList.Value);
                 }
-            });
+            }).AddTo(ref d);
             
-            
+            //TODO Переделать в машину состояния
             StartForced = _waveService.StartForced;
+            ShowButtonWave = _waveService.ShowInfoWave;
+            
             CurrentSpeed = _gameplayStateProxy.GetCurrentSpeed();
-            ShowInfoWave = _waveService.ShowInfoWave;
-            _waveService.TimeOutNewWaveValue.Subscribe(n => FillAmountBtn.Value = 1 - n);
+            _waveService.TimeOutNewWaveValue.Subscribe(n => FillAmountBtn.Value = 1 - n).AddTo(ref d);
             _cameraService = container.Resolve<GameplayCamera>();
             
             
             var positionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
             //Изменилась позиция ворот
-            _waveService.GateWaveViewModel.Position.Subscribe(_ => NewPositionButtonInfo());
-            positionCamera.Subscribe(n => NewPositionButtonInfo());
+            _waveService.GateWaveViewModel.Position.Subscribe(_ => NewPositionButtonInfo()).AddTo(ref d);
+            //Изменилась позиция камеры
+            positionCamera.Subscribe(n =>
+            {
+                NewPositionButtonInfo();
+                if (ShowInfoTower.CurrentValue) NewPositionTowerInfo();
+            }).AddTo(ref d);
             
+            _disposable = d.Build();
         }
 
         private void NewPositionButtonInfo()
@@ -83,6 +133,14 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             PositionInfoBtn.Value = v;
         }
 
+        private void NewPositionTowerInfo()
+        {
+            var p = new Vector3(_towerPrevious.x, 0, _towerPrevious.y);
+            var v= _cameraService.Camera.WorldToScreenPoint(p);
+            v.z = 0;
+            v.y += 100;
+            PositionInfoTower.Value = v;
+        }
 
 
         public void StartForcedWave()
@@ -93,6 +151,11 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         public void ShowPopupInfo()
         {
             //TODO Открываем popup окно с информацией о волне, передать данные из WaveService
+        }
+        
+        public override void Dispose()
+        {
+            _disposable.Dispose();
         }
     }
 }

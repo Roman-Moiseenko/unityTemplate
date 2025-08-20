@@ -1,5 +1,5 @@
 ﻿using System;
-using Scripts.Game.GameRoot.Services;
+using Game.GameRoot.Services;
 using UnityEngine;
 
 namespace Game.MainMenu.Services

@@ -18,5 +18,7 @@ namespace MVVM.UI
             base.Hide();
             isShow = false;
         }
+
+    
     }
 }

@@ -1,4 +1,5 @@
-﻿using MVVM.UI;
+﻿using System;
+using MVVM.UI;
 using R3;
 using TMPro;
 using UnityEngine;
@@ -11,16 +12,18 @@ namespace Game.GamePlay.View.UI.PanelActions
     {
         [SerializeField] private Button _btnGameSpeed;
         [SerializeField] private Button _btnProgressAdd;
- 
-        private void Start()
+        private IDisposable _disposable;
+
+        protected override void OnBind(PanelActionsViewModel viewModel)
         {
-        ViewModel.CurrentSpeed.Subscribe(x =>
-        {
-            _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{x}x";
-        });
+            var d = Disposable.CreateBuilder();
+            viewModel.CurrentSpeed
+                .Subscribe(x => { _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{x}x"; })
+                .AddTo(ref d);
+            _disposable = d.Build();
             //_btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.CurrentSpeed}x";
         }
-        
+
         private void OnEnable()
         {
             _btnGameSpeed.onClick.AddListener(OnChangeGameSpeed);
@@ -37,23 +40,29 @@ namespace Game.GamePlay.View.UI.PanelActions
         {
             ViewModel.RequestGameSpeed();
         }
+
         private void OnProgressAdd()
         {
             ViewModel.RequestToProgressAdd();
         }
-        
+
         public override void Show()
         {
             if (isShow) return;
             panel.pivot = new Vector2(1f, 0.5f);
             base.Show();
         }
-        
+
         public override void Hide()
         {
             if (!isShow) return;
             base.Hide();
             panel.pivot = new Vector2(0f, 0.5f);
+        }
+
+        private void OnDestroy()
+        {
+            _disposable.Dispose();
         }
     }
 }

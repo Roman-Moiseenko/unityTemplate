@@ -21,7 +21,8 @@ namespace Game.State.Root
         private readonly GameState _gameState; 
         public ReactiveProperty<int> CurrentMapId = new();
         public ReactiveProperty<int> GameSpeed;
-                public ObservableList<Resource> Resources { get; } = new();
+        public ReactiveProperty<int> HardCurrency; 
+        public ObservableList<Resource> Resources { get; } = new();
      //   public ObservableList<Map> Maps { get; } = new();
         public ObservableList<InventoryItem> InventoryItems { get; } = new();
 
@@ -43,6 +44,10 @@ namespace Game.State.Root
                 gameState.GameSpeed = newValue;
                 Debug.Log($"Сохраняем скорость игры в GameState = {newValue}");
             });
+
+            HardCurrency = new ReactiveProperty<int>(gameState.HardCurrency);
+            HardCurrency.Subscribe(newValue => gameState.HardCurrency = newValue);
+            
             
        //     InitMaps(gameState);
             InitResource(gameState);
@@ -112,6 +117,15 @@ namespace Game.State.Root
         public int CreateInventoryID()
         {
             return _gameState.CreateInventoryID();
+        }
+
+        public bool PaidHardCurrency(int value)
+        {
+            //TODO Возможно вызвать событие @Нехватка денег@
+            if (HardCurrency.CurrentValue < value) return false;
+            HardCurrency.Value -= value;
+            //TODO Сохранить данные!!!!!
+            return true;
         }
     }
 }

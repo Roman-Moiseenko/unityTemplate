@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using DI;
-using R3;
 using Scripts.Game.GameRoot.Entity;
 using Scripts.Utils;
 using UnityEngine;
 
-namespace Scripts.Game.GameRoot.Services
+namespace Game.GameRoot.Services
 {
     public class AdService
     {

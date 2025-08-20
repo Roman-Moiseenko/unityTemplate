@@ -88,11 +88,7 @@ namespace Game.State
         }
         public Observable<bool> ResetGameplayState()
         {
-            //Debug.Log("ResetGameplayState" );
-
             PlayerPrefs.DeleteKey(GAMEPLAY_STATE_KEY);
-          //  GameplayState = CreateGameplayStateFromSettings();
-          //  SaveGameplayState();
             return Observable.Return(true);
         }
 
@@ -124,7 +120,6 @@ namespace Game.State
         {
             //Заполняем карты по умолчанию, и другие бонусы
             //  var inventory = new List<InventoryData>(); //TODO Загрузить из настроек
-
             _gameStateOrigin = new GameState
             {
                 Resources = new List<ResourceData>()
@@ -134,14 +129,18 @@ namespace Game.State
                 },
                 GameSpeed = 1
             };
-            //     Debug.Log("_gameStateOrigin = " + JsonUtility.ToJson(_gameStateOrigin));
-
             return new GameStateProxy(_gameStateOrigin);
         }
         public Observable<bool> SaveGameState()
         {
-            var json = JsonConvert.SerializeObject(_gameStateOrigin, Formatting.Indented);
-            PlayerPrefs.SetString(GAME_STATE_KEY, json);
+            var gameplayJson = JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented);
+            PlayerPrefs.SetString(GAMEPLAY_STATE_KEY, gameplayJson);
+            
+            
+            var gameJson = JsonConvert.SerializeObject(_gameStateOrigin, Formatting.Indented);
+            PlayerPrefs.SetString(GAME_STATE_KEY, gameJson);
+            
+            
             return Observable.Return(true);
         }
         public Observable<bool> ResetGameState()

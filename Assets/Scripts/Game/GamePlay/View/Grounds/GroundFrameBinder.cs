@@ -1,4 +1,5 @@
-﻿using R3;
+﻿using System;
+using R3;
 using UnityEngine;
 
 namespace Game.GamePlay.View.Grounds
@@ -7,12 +8,14 @@ namespace Game.GamePlay.View.Grounds
     {
         [SerializeField] private Material allowed;
         [SerializeField] private Material forbidden;
-        private GroundFrameViewModel _viewModel;
+        
         [SerializeField] private GameObject frame;
+        private IDisposable _disposable;
+
+        
         public void Bind(GroundFrameViewModel viewModel)
         {
-            _viewModel = viewModel;
-
+            var d = Disposable.CreateBuilder();
             transform.localPosition = new Vector3(
                 viewModel.GetPosition().x,
                 0,
@@ -28,9 +31,13 @@ namespace Game.GamePlay.View.Grounds
                 {
                     frame.GetComponent<MeshRenderer>().material = forbidden;
                 }
-            });
+            }).AddTo(ref d);
+            _disposable = d.Build();
         }
         
-        
+        private void OnDestroy()
+        {
+            _disposable.Dispose();
+        }
     }
 }

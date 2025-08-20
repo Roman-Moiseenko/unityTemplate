@@ -23,6 +23,7 @@ namespace Game.State.Root
 
         public int SoftCurrency { get; set; } //При входе 0
         public int HardCurrency { get; set; } //Дублирование?
+        public int UpdateCards { get; set; }
         
         //Список наград
         //Список Волн

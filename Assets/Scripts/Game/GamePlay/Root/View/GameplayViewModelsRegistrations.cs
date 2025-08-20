@@ -36,7 +36,7 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<GameplayCamera>(),
                 c.Resolve<DamageService>(),
                 c.Resolve<ShotService>(),
-                c.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY)
+                container
             )).AsSingle();
             
         }

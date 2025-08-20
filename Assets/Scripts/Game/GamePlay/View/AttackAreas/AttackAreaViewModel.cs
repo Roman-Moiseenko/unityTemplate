@@ -1,10 +1,12 @@
-﻿using R3;
+﻿using System;
+using Game.GamePlay.View.Towers;
+using R3;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Game.GamePlay.View.AttackAreas
 {
-    public class AttackAreaViewModel
+    public class AttackAreaViewModel : IDisposable
     {
 
         public ReactiveProperty<float> RadiusArea;
@@ -13,12 +15,29 @@ namespace Game.GamePlay.View.AttackAreas
         public ReactiveProperty<Vector2Int> Position;
         private Vector3 _memoryRadius;
         public bool Moving;
-        public AttackAreaViewModel(Vector2Int position, float radiusArea = 0, float radiusDisabled = 0, float radiusExpansion = 0)
+        private IDisposable _disposable;
+        private Vector2Int _towerPrevious = Vector2Int.zero;
+        
+        public AttackAreaViewModel(Subject<TowerViewModel> towerClickSubject)
         {
-            Position = new ReactiveProperty<Vector2Int>(position);
-            RadiusArea = new ReactiveProperty<float>(radiusArea);
-            RadiusDisabled = new ReactiveProperty<float>(radiusDisabled);
-            RadiusExpansion = new ReactiveProperty<float>(radiusExpansion);
+            var d = Disposable.CreateBuilder();
+            Position = new ReactiveProperty<Vector2Int>(Vector2Int.zero);
+            RadiusArea = new ReactiveProperty<float>(0);
+            RadiusDisabled = new ReactiveProperty<float>(0);
+            RadiusExpansion = new ReactiveProperty<float>(0);
+            _disposable = towerClickSubject.Subscribe(towerViewModel =>
+            {
+                if (_towerPrevious == towerViewModel.Position.CurrentValue)
+                {
+                    Hide();
+                    _towerPrevious = Vector2Int.zero;
+                } else
+                {
+                    _towerPrevious = towerViewModel.Position.CurrentValue;
+                    SetStartPosition(towerViewModel.Position.Value);
+                    SetRadius(towerViewModel.GetRadius());
+                }
+            });
         }
 
         public void Hide()
@@ -59,6 +78,11 @@ namespace Game.GamePlay.View.AttackAreas
         {
             Moving = true;
             Position.Value = positionValue;
+        }
+
+        public void Dispose()
+        {
+            _disposable.Dispose();
         }
     }
 }

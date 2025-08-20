@@ -16,6 +16,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
     public class ScreenGameplayBinder : WindowBinder<ScreenGameplayViewModel>
     {
         [SerializeField] private Button _btnPopupPause;
+
         //[SerializeField] private TMP_Text _textProgress;
         [SerializeField] private TMP_Text _textMoney;
         [SerializeField] private TMP_Text _textCrystal;
@@ -35,45 +36,54 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         [SerializeField] private Transform startWave;
         [SerializeField] private Transform finishWave;
-        
+
         private TMP_Text _levelProgress;
         private Slider _progress;
-        
-        private void Start()
+        private IDisposable _disposable;
+
+        private void Awake()
         {
-            startWave.gameObject.SetActive(false);
-            finishWave.gameObject.SetActive(false);
             _levelProgress = _progressContainer.Find("Level").GetComponent<TMP_Text>();
             _progress = _progressContainer.Find("Slider").GetComponent<Slider>();
+        }
+
+        protected override void OnBind(ScreenGameplayViewModel viewModel)
+        {
+            var d = Disposable.CreateBuilder();
+
+            startWave.gameObject.SetActive(false);
+            finishWave.gameObject.SetActive(false);
+
             //Пул всплывающих popup
-            for (var i = 0; i < 20; i++) 
+            for (var i = 0; i < 20; i++)
             {
                 CreateDamagePopup();
             }
+
             //Пул всплывающих монеток
             for (int i = 0; i < 10; i++)
             {
                 CreateCurrencyPopup();
             }
+
             //Пул всплывающих кристалов
             for (int i = 0; i < 10; i++)
             {
                 CreateProgressPopup();
             }
+
             ViewModel.ProgressData.Subscribe(newValue =>
             {
                 var p = newValue / 100f;
                 _progress.value = p > 1 ? 1 : p;
-            });
-            ViewModel.ProgressLevel.Skip(1).Subscribe(newValue =>
-            {
-                _levelProgress.text = newValue.ToString();
-            });
+            }).AddTo(ref d);
+            ViewModel.ProgressLevel.Skip(1).Subscribe(newValue => { _levelProgress.text = newValue.ToString(); })
+                .AddTo(ref d);
 
             //ViewModel.ProgressData.Subscribe(newValue => { _textProgress.text = $"Progress: {newValue}"; });
-            ViewModel.SoftCurrency.Subscribe(newValue => _textMoney.text = newValue.ToString());
-            ViewModel.HardCurrency.Subscribe(newValue => _textCrystal.text = newValue.ToString());
-            ViewModel.WaveText.Subscribe(newValue => _textWave.text = newValue);
+            ViewModel.SoftCurrency.Subscribe(newValue => _textMoney.text = newValue.ToString()).AddTo(ref d);
+            ViewModel.HardCurrency.Subscribe(newValue => _textCrystal.text = newValue.ToString()).AddTo(ref d);
+            ViewModel.WaveText.Subscribe(newValue => _textWave.text = newValue).AddTo(ref d);
             _reducePopupBinder = CreateReducePopup();
             _castleHealthBar = CreateCastleHealthBar();
             ViewModel.AllDamages.ObserveAdd().Subscribe(e =>
@@ -83,7 +93,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 var position = new Vector3(damageData.Position.x, 1f, damageData.Position.y);
                 popup.StartPopup(position, damageData.Damage, damageData.Type);
                 ViewModel.AllDamages.Remove(e.Value); // Сразу удаляем
-            });
+            }).AddTo(ref d);
 
             ViewModel.RepairBuffer.ObserveAdd().Subscribe(e =>
             {
@@ -91,9 +101,9 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 var position = new Vector3(0, 1f, 0);
                 _reducePopupBinder.StartPopup(position, e.Value);
                 ViewModel.RepairBuffer.Remove(e.Value);
-            });
+            }).AddTo(ref d);
 
-            ViewModel.CastleHealth.Skip(1).Subscribe(h => _castleHealthBar.SetHealth(h));
+            ViewModel.CastleHealth.Skip(1).Subscribe(h => _castleHealthBar.SetHealth(h)).AddTo(ref d);
 
             ViewModel.AllRewards.ObserveAdd().Subscribe(r =>
             {
@@ -107,28 +117,23 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                     //При освобождении удаляем из списка
                     if (v) ViewModel.AllRewards.Remove(r.Value);
                 });
-            });
-            
+            }).AddTo(ref d);
+
             //Показываем инфо начала и окончания волны
 
-            ViewModel.ShowStartWave.Subscribe(show =>
+            ViewModel.ShowStartWave.Where(show => show).Subscribe(_ =>
             {
-                if (show)
-                {
-                    startWave.gameObject.SetActive(true);
-                    ViewModel.ShowStartWave.Value = false;
-                }
-            });
-            ViewModel.ShowFinishWave.Subscribe(show =>
+                startWave.gameObject.SetActive(true);
+                ViewModel.ShowStartWave.Value = false;
+            }).AddTo(ref d);
+            ViewModel.ShowFinishWave.Where(show => show).Subscribe(_ =>
             {
-                if (show)
-                {
-                    finishWave.gameObject.SetActive(true);
-                    ViewModel.ShowFinishWave.Value = false;
-                }
-            });
+                finishWave.gameObject.SetActive(true);
+                ViewModel.ShowFinishWave.Value = false;
+            }).AddTo(ref d);
+            _disposable = d.Build();
         }
-        
+
         private DamagePopupBinder FindFreePopup()
         {
             foreach (var popupBinder in _damagePopups)
@@ -145,6 +150,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             {
                 if (popupBinder.Free.Value) return popupBinder;
             }
+
             return CreateCurrencyPopup();
         }
 
@@ -154,9 +160,10 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             {
                 if (popupBinder.Free.Value) return popupBinder;
             }
+
             return CreateProgressPopup();
         }
-        
+
         private void OnEnable()
         {
             _btnPopupPause.onClick.AddListener(OnPopupPauseButtonClicked);
@@ -169,6 +176,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         private void OnDestroy()
         {
+            _disposable.Dispose();
             foreach (var binder in _damagePopups)
             {
                 Destroy(binder.gameObject);
@@ -215,26 +223,27 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
             return createdCastleHealth;
         }
-        
+
         private CurrencyPopupBinder CreateCurrencyPopup()
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/RewardCurrency";
             var currencyPopupPrefab = Resources.Load<CurrencyPopupBinder>(prefabPath);
             var createdCurrencyPopup = Instantiate(currencyPopupPrefab, _panelRewardPopup.transform);
-            createdCurrencyPopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera, _targetCurrency.transform.position);
+            createdCurrencyPopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera,
+                _targetCurrency.transform.position);
             _currencyPopups.Add(createdCurrencyPopup);
             return createdCurrencyPopup;
         }
-        
+
         private CurrencyPopupBinder CreateProgressPopup()
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/RewardProgress";
             var progressPopupPrefab = Resources.Load<CurrencyPopupBinder>(prefabPath);
             var createdProgressPopup = Instantiate(progressPopupPrefab, _panelRewardPopup.transform);
-            createdProgressPopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera, _targetProgress.transform.position);
+            createdProgressPopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera,
+                _targetProgress.transform.position);
             _progressPopups.Add(createdProgressPopup);
             return createdProgressPopup;
         }
-        
     }
 }

@@ -5,6 +5,7 @@ using Game.GamePlay.Root.View;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
 using Game.GamePlay.View.Waves;
+using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.State;
 using Newtonsoft.Json;
@@ -27,10 +28,9 @@ namespace Game.GamePlay.Root
             //Регистрируем событие движение камеры
             var positionGameplayCamera = new Subject<Unit>();
             gameplayContainer.RegisterInstance(AppConstants.CAMERA_MOVING, positionGameplayCamera);
-            
-            //Регистрируем событие клика по объектам игрового мира
-            var entityClick = new Subject<Unit>();
-            gameplayContainer.RegisterInstance(AppConstants.CLICK_WORLD_ENTITY, entityClick);
+
+            var hardCurrencyService = new HardCurrencyService();
+            gameplayContainer.RegisterInstance(hardCurrencyService);
             
 //            Debug.Log("enterParams " + JsonConvert.SerializeObject(enterParams, Formatting.Indented));
             GameplayRegistrations.Register(gameplayContainer, enterParams); //Регистрируем все сервисы сцены

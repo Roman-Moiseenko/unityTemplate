@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using R3;
 using TMPro;
 using UnityEngine;
@@ -12,10 +13,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
         [SerializeField] private Slider _healthProgress;
         private Camera _camera;
         private float _castleFullHealth;
-        
+        private IDisposable _disposable;
 
         public void Bind(Camera camera, Subject<Unit> positionCamera, float castleFullHealth)
         {
+            var d = Disposable.CreateBuilder();
             transform.gameObject.SetActive(true);
             _castleFullHealth = castleFullHealth;
             _camera = camera;
@@ -23,14 +25,20 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
             positionCamera.Subscribe(_ =>
             {
                 transform.position = _camera.WorldToScreenPoint(position);
-            });
+            }).AddTo(ref d);
             SetHealth(castleFullHealth);
+            _disposable = d.Build();
         }
 
         public void SetHealth(float health)
         {
             _healthText.text = health.ToString(CultureInfo.CurrentCulture);
             _healthProgress.value = health / _castleFullHealth;
+        }
+
+        private void OnDestroy()
+        {
+            _disposable.Dispose();
         }
     }
 }

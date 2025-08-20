@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using DI;
+using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
@@ -28,20 +29,14 @@ namespace Game.GamePlay.Root.View
     public class WorldGameplayRootViewModel
     {
         private readonly FsmGameplay _fsmGameplay;
-
         private readonly FrameService _frameService;
-
         private readonly RoadsService _roadsService;
-
         private readonly WaveService _waveService;
-
         private readonly GameplayCamera _cameraService;
-
         private readonly DamageService _damageService;
-
         private readonly ShotService _shotService;
-
         private readonly Subject<Unit> _entityClick;
+        private readonly Subject<TowerViewModel> _towerClick;
         // private readonly DIContainer _container;
 
         //   public readonly IObservableCollection<RoadViewModel> AllRoads;
@@ -75,8 +70,7 @@ namespace Game.GamePlay.Root.View
             GameplayCamera cameraService,
             DamageService damageService,
             ShotService shotService,
-            Subject<Unit> entityClick
-            //DIContainer container
+            DIContainer container
         )
         {
             _fsmGameplay = fsmGameplay;
@@ -86,7 +80,11 @@ namespace Game.GamePlay.Root.View
             _cameraService = cameraService;
             _damageService = damageService;
             _shotService = shotService;
-            _entityClick = entityClick;
+            //Регистрируем события 
+            _entityClick = new Subject<Unit>(); //клик по объектам игрового мира, не UI 
+            container.RegisterInstance(AppConstants.CLICK_WORLD_ENTITY, _entityClick);
+            _towerClick = new Subject<TowerViewModel>();
+            container.RegisterInstance(_towerClick);
             
             //_container = container;
 
@@ -100,7 +98,7 @@ namespace Game.GamePlay.Root.View
             GateWaveViewModel = waveService.GateWaveViewModel;
             GateWaveViewModelSecond = waveService.GateWaveViewModelSecond;
 
-            AreaViewModel = new AttackAreaViewModel(new Vector2Int(0, 0));
+            AreaViewModel = new AttackAreaViewModel(_towerClick);
 
             //DamagePopupViewModel = new DamagePopupViewModel(damageService.AllDamages);
             
@@ -213,23 +211,21 @@ namespace Game.GamePlay.Root.View
         {
             var position = _cameraService.GetWorldPoint(mousePosition);
             _entityClick.OnNext(Unit.Default);
-            
             if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
             {
-                //TODO проверяем, чтоб показать Info()
                 foreach (var towerViewModel in AllTowers)
                 {
                     if (towerViewModel.IsPosition(position))
                     {
-                        Debug.Log(" Это башня " + towerViewModel.ConfigId);
-                        
+                        _towerClick.OnNext(towerViewModel);
+                        _cameraService.MoveCamera(towerViewModel.Position.Value);
+                        //Debug.Log(" Это башня " + towerViewModel.ConfigId);
                        // var start = new Vector3()
                         //Debug.DrawLine(towerViewModel.Position.Value, );
-                        AreaViewModel.SetStartPosition(towerViewModel.Position.Value);
-                        AreaViewModel.SetRadius(towerViewModel.GetRadius());
-                        _cameraService.MoveCamera(towerViewModel.Position.Value);
+                        //AreaViewModel.SetStartPosition(towerViewModel.Position.Value);
+                        //AreaViewModel.SetRadius(towerViewModel.GetRadius());
+                        
                         return;
-                        //TODO Создаем модель площади
                     }
                 }
 
@@ -239,9 +235,7 @@ namespace Game.GamePlay.Root.View
                 AreaViewModel.Hide();
                 return;
             }
-
             
-            //TODO Если модель площади есть, удаляем 
             if (_fsmGameplay.IsStateBuild())
             {
                 _fsmGameplay.SetPosition(new Vector2Int(

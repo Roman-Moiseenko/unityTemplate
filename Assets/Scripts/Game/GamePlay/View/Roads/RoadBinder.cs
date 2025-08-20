@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using R3;
 using UnityEngine;
 
@@ -13,29 +14,29 @@ namespace Game.GamePlay.View.Roads
         private const int speed = 20;
         private const float smoothTime = 0.2f;
         private Vector3 _velocity;
-        
+        private IDisposable _disposable;
+
         public void Bind(RoadViewModel viewModel)
         {
+            var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
-
-
             viewModel.Rotate.Subscribe(newValue =>
             {
                 transform.localEulerAngles = new Vector3(0, 90f * newValue,0);
-//                Debug.Log("localEulerAngles = " + newValue + " " + viewModel.IsTurn);
-            });
+            }).AddTo(ref d);
             
             viewModel.Position.Subscribe(newPosition =>
             {
                 _targetPosition = new Vector3(newPosition.x, 0, newPosition.y);
                 _isMoving = true;
-            });
+            }).AddTo(ref d);
             transform.localPosition = new Vector3(
                 viewModel.Position.CurrentValue.x,
                 0,
                 viewModel.Position.CurrentValue.y
             );
-            
+            _disposable = d.Build();
+
         }
         
         private void Update()
@@ -50,6 +51,11 @@ namespace Game.GamePlay.View.Roads
                 }
             
             }
+        }
+        
+        private void OnDestroy()
+        {
+            _disposable.Dispose();
         }
         
     }

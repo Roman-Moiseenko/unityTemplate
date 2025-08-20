@@ -4,13 +4,13 @@ using Game.State;
 
 namespace MVVM.CMD
 {
-    public class CommandProcessorMainMenu : ICommandProcessor
+    public class CommandProcessor : ICommandProcessor
     {
         private readonly IGameStateProvider _gameStateProvider;
         private readonly Dictionary<Type, object> _handlesMap = new();
 
         //Командный процессор получает ссылку на репозиторий, для сохранения данных в процесссе обработки команд
-        public CommandProcessorMainMenu(IGameStateProvider gameStateProvider)
+        public CommandProcessor(IGameStateProvider gameStateProvider)
         {
             _gameStateProvider = gameStateProvider; //для сохранения игры
         }

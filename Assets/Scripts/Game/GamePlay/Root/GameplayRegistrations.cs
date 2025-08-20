@@ -12,6 +12,7 @@ using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Services;
+using Game.GameRoot.Services;
 using Game.MainMenu.Services;
 using Game.Settings;
 using Game.State;
@@ -19,7 +20,6 @@ using MVVM.CMD;
 using MVVM.FSM;
 using Newtonsoft.Json;
 using R3;
-using Scripts.Game.GameRoot.Services;
 using UnityEngine;
 
 namespace Game.GamePlay.Root
@@ -44,8 +44,9 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
 
             //    var cmd = container.Resolve<ICommandProcessor>(); //Создаем обработчик команд
-            var cmd = new CommandProcessorGameplay(gameStateProvider); //Создаем обработчик команд
-            container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
+            var cmd = container.Resolve<ICommandProcessor>();
+            //var cmd = new CommandProcessorGameplay(gameStateProvider); //Создаем обработчик команд
+            //container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
 
             gameplayState.GameSpeed.Value =
                 gameplayEnterParams.GameSpeed; //Получаем скорость игры из настроек GameState
@@ -122,7 +123,8 @@ namespace Game.GamePlay.Root
                 subjectExitParams, 
                 waveService, gameplayState,
                 container.Resolve<AdService>(),
-                Fsm
+                Fsm,
+                container.Resolve<ResourceService>()
                 );
             container.RegisterInstance(gameplayService); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             //Сервис создания выстрелов
@@ -140,8 +142,8 @@ namespace Game.GamePlay.Root
                 var command = new CommandCreateLevel(gameplayEnterParams.MapId);
                 var success = cmd.Process(command);
                 if (!success) throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
-
-                rewardService.StartRewardCard(); //Устанавливаем начальный режим строительства
+                Fsm.Fsm.SetState<FsmStateBuildBegin>(); //Устанавливаем начальный режим строительства
+                //rewardService.StartRewardCard(); 
             }
             
             waveService.Start(); //Запуск таймера

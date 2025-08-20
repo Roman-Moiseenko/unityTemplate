@@ -28,7 +28,6 @@ namespace Game.GamePlay.View.Shots
             Position = new ReactiveProperty<Vector3>(StartPosition);
             Position.Subscribe(p => shotEntity.Position.Value = p);
             _shotMoving = new ReactiveProperty<bool>(true);
-        
             
         }
 

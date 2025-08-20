@@ -1,4 +1,5 @@
-﻿using Game.GamePlay.View.UI.PanelActions;
+﻿using System;
+using Game.GamePlay.View.UI.PanelActions;
 using MVVM.UI;
 using R3;
 using TMPro;
@@ -12,15 +13,15 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
         [SerializeField] private Button _btnConfirmation;
         [SerializeField] private Button _btnCancel;
         [SerializeField] private Button _btnRotate;
-
+        private IDisposable _disposable;
 
         protected override void OnBind(PanelConfirmationViewModel viewModel)
         {
-            //TODO Проверяем, нужен ли поворот и показываем/прячем кнопку
+            var d = Disposable.CreateBuilder();
             ViewModel.IsEnable.Subscribe(newValue =>
             {
                 _btnConfirmation.interactable = newValue;
-            });
+            }).AddTo(ref d);
             ViewModel.IsRotate.Subscribe(newValue =>
             {
                 _btnRotate.gameObject.SetActive(newValue);
@@ -34,7 +35,8 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
                     vector3.y = 0;
                 }
                 _btnCancel.transform.localPosition = vector3;
-            });
+            }).AddTo(ref d);
+            _disposable = d.Build();
         }
         
         private void OnEnable()
@@ -78,6 +80,11 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             if (!isShow) return;
             base.Hide();
             panel.pivot = new Vector2(0f, 0.5f);
+        }
+        
+        private void OnDestroy()
+        {
+            _disposable.Dispose();
         }
     }
 }

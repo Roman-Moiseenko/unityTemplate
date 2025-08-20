@@ -1,12 +1,14 @@
 using System.Collections;
 using DI;
 using Game.GamePlay.Root;
+using Game.GameRoot.Commands.HardCurrency;
+using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.Settings;
 using Game.State;
+using MVVM.CMD;
 using Newtonsoft.Json;
 using R3;
-using Scripts.Game.GameRoot.Services;
 using Scripts.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -56,18 +58,28 @@ namespace Scripts.Game.GameRoot
             _rootContainer.RegisterInstance<ISettingsProvider>(settingsProvider);
             
 
+
             var gameStateProvider = new PlayerPrefsGameStateProvider(); //Заменить конструктор на другой - из облака
             gameStateProvider.LoadSettingsState(); //Загрузили настройки игры
             //Применяем настройки к окружению - звук, вибрация и т.п.
             
-            gameStateProvider.LoadGameState(); //Загружаем данные игрока
+            gameStateProvider.LoadGameState(); //Загружаем данные игрока.
             
+            var cmd = new CommandProcessor(gameStateProvider); //Создаем обработчик команд
+            _rootContainer.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
+            
+
+            
+
+            //Регистрируем общие команды для всей игры.
+            //Потратить валюту.
+           // Debug.Log(JsonConvert.SerializeObject());
+            cmd.RegisterHandler(new CommandSpendHardCurrencyHandler(gameStateProvider.GameState));            
             _rootContainer.RegisterInstance<IGameStateProvider>(gameStateProvider);
-            
             _rootContainer.RegisterFactory(c => new SomeCommonService()).AsSingle(); //Сервис ... создастся при первом вызове
-            
-            _rootContainer.RegisterFactory(c => new AdService(_rootContainer)).AsSingle();
-            
+            _rootContainer.RegisterFactory(c => new AdService(_rootContainer)).AsSingle(); //Сервис рекламы
+            _rootContainer.RegisterFactory(c => new ResourceService(_rootContainer)).AsSingle(); //Сервис ресурсов
+
             //Положить в контейнер настройки игры ....
             //Сервисы аналитики, платежки, 
         }

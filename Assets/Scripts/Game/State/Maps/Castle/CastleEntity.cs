@@ -24,6 +24,7 @@ namespace Game.State.Maps.Castle
         public ReactiveProperty<bool> IsShot = new(false);
 
         public ReactiveProperty<bool> IsReduceHealth;
+        public ReactiveProperty<int> CountResurrection;
         
         public CastleEntity(CastleEntityData castleData)
         {
@@ -35,6 +36,9 @@ namespace Game.State.Maps.Castle
 
             IsReduceHealth = new ReactiveProperty<bool>(castleData.IsReduceHealth);
             IsReduceHealth.Subscribe(newValue => castleData.IsReduceHealth = newValue);
+            
+            CountResurrection = new ReactiveProperty<int>(castleData.CountResurrection);
+            CountResurrection.Subscribe(newValue => castleData.CountResurrection = newValue);
         }
 
         public void CastleEntityInitialization(CastleEntityData castleData)
@@ -68,10 +72,13 @@ namespace Game.State.Maps.Castle
             }
         }
 
-        public void Resurrection()
+        public bool Resurrection()
         {
+            if (CountResurrection.CurrentValue == 2) return false;
             CurrenHealth.Value = FullHealth;
             IsDead.Value = false;
+            CountResurrection.Value++;
+            return true;
         }
     }
 }

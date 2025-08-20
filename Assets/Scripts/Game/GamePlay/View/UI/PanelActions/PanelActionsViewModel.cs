@@ -1,11 +1,7 @@
-﻿using DI;
+﻿using System;
+using DI;
 using Game.GamePlay.Commands.RewardCommand;
-using Game.GamePlay.Fsm;
-using Game.GamePlay.Fsm.States;
-using Game.GamePlay.Services;
-using Game.MainMenu.Services;
 using Game.State;
-using Game.State.GameResources;
 using Game.State.Root;
 using MVVM.CMD;
 using MVVM.UI;
@@ -24,20 +20,21 @@ namespace Game.GamePlay.View.UI.PanelActions
         public readonly ReactiveProperty<int> CurrentSpeed;
         private readonly GameplayStateProxy _gameplayStateProxy;
         
-        //Для теста
-        private readonly FsmGameplay _fsmGameplay;
+        private IDisposable _disposable;
+        
         public PanelActionsViewModel(
             GameplayUIManager uiManager, 
             DIContainer container
         )
         {
+            var d = Disposable.CreateBuilder();
             _uiManager = uiManager;
             _container = container;
 
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
-            _fsmGameplay = container.Resolve<FsmGameplay>();
+  
             CurrentSpeed = _gameplayStateProxy.GameSpeed;
-            
+            _disposable = d.Build();
         }
         public void RequestGameSpeed()
         {
@@ -49,6 +46,11 @@ namespace Game.GamePlay.View.UI.PanelActions
             var cmd = _container.Resolve<ICommandProcessor>();
             var command = new CommandRewardKillMob(25, 1);
             cmd.Process(command);
+        }
+        
+        public override void Dispose()
+        {
+            _disposable.Dispose();
         }
     }
 }

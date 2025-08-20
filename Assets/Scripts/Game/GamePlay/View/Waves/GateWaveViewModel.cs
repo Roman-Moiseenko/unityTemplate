@@ -20,12 +20,6 @@ namespace Game.GamePlay.View.Waves
             
             _waveService = waveService;
             ShowGateWave = _waveService.ShowGateWave;
-            _waveService.StartForced.Subscribe(newValue =>
-            {
-                //TODO если true => ворота иначе инфо поле
-            });
-            //_waveService
-
         }
     }
 }

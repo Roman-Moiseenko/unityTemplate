@@ -12,6 +12,7 @@ namespace Game.GamePlay.View.Towers
     public class TowerViewModel : IMovingEntityViewModel
     {
         private readonly TowerEntity _towerEntity;
+        public Dictionary<TowerParameterType, TowerParameterData> Parameters => _towerEntity.Parameters;
         private readonly List<TowerLevelSettings> _towerLevelSettings;
         private readonly TowersService _towerService;
         

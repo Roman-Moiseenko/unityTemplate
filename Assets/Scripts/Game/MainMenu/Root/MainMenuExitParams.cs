@@ -1,4 +1,5 @@
-﻿using Scripts.Game.GameRoot;
+﻿using Game.GameRoot;
+using Scripts.Game.GameRoot;
 
 namespace Game.MainMenu.Root
 {

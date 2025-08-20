@@ -1,14 +1,15 @@
 ﻿using System;
 using DI;
+using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Root;
+using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.State;
 using Game.State.Root;
 using R3;
 using Scripts.Game.GameRoot.Entity;
-using Scripts.Game.GameRoot.Services;
 using UnityEngine;
 
 namespace Game.GamePlay.Services
@@ -24,7 +25,8 @@ namespace Game.GamePlay.Services
         private readonly AdService _adService;
         private WaveService _waveService;
         private FsmGameplay _fsmGameplay;
-        
+        private readonly ResourceService _resourceService;
+
         
         private IDisposable _disposable;
         // public ReactiveProperty<float> CastleHealth;
@@ -34,7 +36,9 @@ namespace Game.GamePlay.Services
             WaveService waveService,
             GameplayStateProxy gameplayState,
             AdService adService,
-            FsmGameplay fsmGameplay)
+            FsmGameplay fsmGameplay,
+            ResourceService resourceService
+            )
         {
             var d = Disposable.CreateBuilder();
             _exitSceneRequest = exitSceneRequest;
@@ -42,6 +46,8 @@ namespace Game.GamePlay.Services
             _adService = adService;
             _fsmGameplay = fsmGameplay;
             _waveService = waveService;
+            _resourceService = resourceService;
+
             waveService.IsMobsOnWay.Where(flag => flag == false).Subscribe(_ =>
                 {
                     //Мобы на дороге закончились, проверяем закончились ли волны. 
@@ -121,7 +127,7 @@ namespace Game.GamePlay.Services
         public void RepairCristal()
         {
             //TODO Тратим кристалы, если нет PopupError
-            Repair();
+            if (_resourceService.SpendHardCurrency(AppConstants.COST_REPAIR_CASTLE)) Repair();
             
         }
 

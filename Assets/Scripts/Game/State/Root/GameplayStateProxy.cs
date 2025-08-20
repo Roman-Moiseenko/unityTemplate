@@ -23,6 +23,7 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> SoftCurrency;
         public readonly ReactiveProperty<int> MapId;
         public readonly ReactiveProperty<int> CurrentWave;
+        public readonly ReactiveProperty<int> UpdateCards;
 
         public CastleEntity Castle;
 
@@ -58,7 +59,9 @@ namespace Game.State.Root
 
             CurrentWave = new ReactiveProperty<int>(origin.CurrentWave);
             CurrentWave.Subscribe(newValue => origin.CurrentWave = newValue);
-            
+
+            UpdateCards = new ReactiveProperty<int>(origin.UpdateCards);
+            UpdateCards.Subscribe(newValue => origin.UpdateCards = newValue);
 
          //   Debug.Log("gameplayState = " + JsonConvert.SerializeObject(gameplayState, Formatting.Indented));
             InitMaps(origin);
