@@ -22,7 +22,7 @@ namespace Game.State.Root
         public int ProgressLevel { get; set; } //Влияет на коэффициент роста Progress в обратно-пропорциональном порядке 
 
         public int SoftCurrency { get; set; } //При входе 0
-        public int HardCurrency { get; set; } //Дублирование?
+        //public int HardCurrency { get; set; } //Дублирование?
         public int UpdateCards { get; set; }
         
         //Список наград

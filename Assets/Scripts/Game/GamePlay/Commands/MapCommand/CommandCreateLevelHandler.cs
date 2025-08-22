@@ -182,6 +182,7 @@ namespace Game.GamePlay.Commands.MapCommand
             }
 
             _gameplayState.CurrentWave.Value = 0;
+            _gameplayState.MapId.Value = command.MapId;
             return true;
         }
     }

@@ -210,7 +210,7 @@ namespace Game.GamePlay.Services
         private IEnumerator TimerNewWave()
         {
             TimeOutNewWave.OnNext(false);
-            for (var i = 0; i < AppConstants.TIME_WAVE_NEW; i++) //Ускоряем при новой скорости
+            for (var i = 0; i <= AppConstants.TIME_WAVE_NEW; i++) //Ускоряем при новой скорости
             {
                 while (_fsmGameplay.IsGamePause.Value)
                 {

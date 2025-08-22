@@ -1,5 +1,12 @@
-﻿using MVVM.UI;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Game.MainMenu.View.MainScreen.BotomMenu;
+using MVVM.UI;
+using R3;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Game.MainMenu.View.MainScreen
@@ -7,59 +14,104 @@ namespace Game.MainMenu.View.MainScreen
     public class MainScreenBinder : WindowBinder<MainScreenViewModel>
     {
         //Кнопки боттом-меню
-        [SerializeField] private Button _btnShop;
-        [SerializeField] private Button _btnInventory;
-        [SerializeField] private Button _btnPlay;
-        [SerializeField] private Button _btnClan;
-        [SerializeField] private Button _btnResearch;
-        
-        //Кнопки топ-меню
+        [SerializeField] private List<Button> bottomButtons;
+        private readonly Dictionary<string, ButtonBinder> _buttonBinders = new();
 
-        [SerializeField] private Button _btnAccount;
-        
+        //Кнопки топ-меню
+        [SerializeField] private Button btnAccount;
+
+        private const int HeightBottomMenu = 200;
+
+        private IDisposable _disposable;
+        private void Awake()
+        {
+            var d = Disposable.CreateBuilder();
+            Debug.Log(bottomButtons.Count);
+            foreach (var button in bottomButtons)
+            {
+                Debug.Log(button.name);
+                var buttonBinder = button.GetComponent<ButtonBinder>();
+                buttonBinder.Bind();
+                _buttonBinders.Add(button.name, buttonBinder);
+            }
+
+            transform.Find("BottomMenu").GetComponent<RectTransform>().sizeDelta = new Vector2(0, HeightBottomMenu);
+            
+            _disposable = d.Build();
+        }
+
+        protected override void OnBind(MainScreenViewModel viewModel)
+        {
+
+        }
+
+        private void ClickUpdateButton(string nameButton)
+        {
+            var baseWidth = Mathf.FloorToInt(Screen.width / 5.5f);
+            var i = 0;
+            var delta = 0;
+            var sizeDelta = new Vector2(0, HeightBottomMenu);
+            var position = new Vector3(0, HeightBottomMenu / 2, 0);
+            foreach (var btnBinder in _buttonBinders.Select(buttonKey => buttonKey.Value))
+            {
+                if (!btnBinder.HasName(nameButton))
+                {
+                    sizeDelta.x = baseWidth;
+                    position.x = i * baseWidth + delta * 2;
+                    btnBinder.UnClick();
+                }
+                else
+                {
+                    delta = baseWidth / 4;
+                    sizeDelta.x = baseWidth * 1.5f;
+                    position.x = i * baseWidth;
+                    btnBinder.Click();
+                }
+                
+                btnBinder.Resize(sizeDelta, position);
+                i++;
+            }
+        }
+
         private void OnEnable()
         {
-            _btnShop.onClick.AddListener(OnShopButtonClicked);
-            _btnInventory.onClick.AddListener(OnInventoryButtonClicked);
-            _btnPlay.onClick.AddListener(OnPlayButtonClicked);
-            _btnClan.onClick.AddListener(OnClanButtonClicked);
-            _btnResearch.onClick.AddListener(OnResearchButtonClicked);
-        }
-
-        private void OnDisable()
-        {
-            _btnShop.onClick.RemoveListener(OnShopButtonClicked);
-            _btnInventory.onClick.RemoveListener(OnInventoryButtonClicked);
-            _btnPlay.onClick.RemoveListener(OnPlayButtonClicked);
-            _btnClan.onClick.RemoveListener(OnClanButtonClicked);
-            _btnResearch.onClick.RemoveListener(OnResearchButtonClicked);
+            ClickUpdateButton("Play");
         }
         
-        private void OnResearchButtonClicked()
+        public void OnResearch()
         {
+            ClickUpdateButton("Research");
             ViewModel.OpenResearch();
         }
 
-        private void OnClanButtonClicked()
+        public void OnClan()
         {
+            ClickUpdateButton("Clan");
             ViewModel.OpenClan();
         }
 
-        private void OnPlayButtonClicked()
+        public void OnPlay()
         {
+            ClickUpdateButton("Play");
             ViewModel.OpenPlay();
         }
 
-        private void OnInventoryButtonClicked()
+        public void OnInventory()
         {
+            ClickUpdateButton("Inventory");
             ViewModel.OpenInventory();
         }
 
-        private void OnShopButtonClicked()
+        public void OnShop()
         {
+            ClickUpdateButton("Shop");
             ViewModel.OpenShop();
         }
 
 
+        private void OnDestroy()
+        {
+            _disposable.Dispose();
+        }
     }
 }

@@ -38,6 +38,8 @@ namespace Game.MainMenu.Root
                 //TODO Добавляем награды
                 var resourcesService = mainMenuContainer.Resolve<ResourcesService>();
                 resourcesService.AddResource(ResourceType.SoftCurrency, enterParams.SoftCurrency);
+                
+                
                 /*              var inventoryService = mainMenuContainer.Resolve<InventoryService>();
                               enterParams.Inventory.ForEach(item =>
                               {

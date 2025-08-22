@@ -63,6 +63,9 @@ namespace Game.State.Root
             UpdateCards = new ReactiveProperty<int>(origin.UpdateCards);
             UpdateCards.Subscribe(newValue => origin.UpdateCards = newValue);
 
+            MapId = new ReactiveProperty<int>(origin.MapId);
+            MapId.Subscribe(newValue => origin.MapId = newValue);
+            
          //   Debug.Log("gameplayState = " + JsonConvert.SerializeObject(gameplayState, Formatting.Indented));
             InitMaps(origin);
         }

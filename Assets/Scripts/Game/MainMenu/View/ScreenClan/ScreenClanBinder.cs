@@ -8,7 +8,13 @@ namespace Game.MainMenu.View.ScreenClan
     public class ScreenClanBinder : WindowBinder<ScreenClanViewModel>
     {
         //   [SerializeField] private Button _btnGoToPlay;
-        
+
+        protected override void OnBind(ScreenClanViewModel viewModel)
+        {
+            base.OnBind(viewModel);
+           // Debug.Log("ScreenClanBinder");
+        }
+
         
         private void OnEnable()
         {

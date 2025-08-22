@@ -296,8 +296,11 @@ namespace Game.GamePlay.Root.View
         {
             if (_createShotsMap.TryGetValue(shotViewModel.ShotEntityId, out var shotBinder))
             {
-                Destroy(shotBinder.gameObject);
-                _createShotsMap.Remove(shotViewModel.ShotEntityId);
+                if (shotBinder != null)
+                {
+                    Destroy(shotBinder.gameObject);
+                    _createShotsMap.Remove(shotViewModel.ShotEntityId);    
+                }
             }
         }
         

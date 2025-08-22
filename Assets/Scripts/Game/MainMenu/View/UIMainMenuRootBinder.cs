@@ -7,6 +7,9 @@ namespace Game.MainMenu.View
 {
     public class UIMainMenuRootBinder : UIRootBinder
     {
-
+        protected override void OnBind(UIRootViewModel viewModel)
+        {
+            
+        }
     }
 }

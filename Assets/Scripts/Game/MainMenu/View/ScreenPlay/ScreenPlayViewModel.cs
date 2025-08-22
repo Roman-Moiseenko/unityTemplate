@@ -32,6 +32,12 @@ namespace Game.MainMenu.View.ScreenPlay
             _exitParamsService = exitParamsService;
             _container = container;
         }
+
+        
+        //TODO Получаем список карт по уровню, доступные и номер последней. Остальные  для просмотра
+        //TODO При выборе, сохраняем его уровень - MapId
+        //TODO в RequestBeginGame его передаем или берем из стека
+        
         public void RequestBeginGame()
         {
             //TODO Получить из GameState текущую карту
@@ -40,8 +46,7 @@ namespace Game.MainMenu.View.ScreenPlay
             //TODO Если осталась сессия, то сброс ее ... Перенести в сервис
             _container.Resolve<IGameStateProvider>().ResetGameplayState();
             _exitSceneRequest.OnNext(mainMenuExitParams);
-        }
-        
+        }        
         /**
          * Временная ф-ция, перейдет в попап подтверждения возврата к игре
          */

@@ -11,7 +11,8 @@ namespace Game.MainMenu.Root
         public bool CompletedLevel { get; set; } //Уровень выйгран
         
         public int GameSpeed { get; set; }
-        
+        public int MapId { get; set; }
+
         public Dictionary<string, int> RewardCards = new (); //Список карт - наград
         
 

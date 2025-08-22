@@ -156,7 +156,7 @@ namespace Scripts.Game.GameRoot
             yield return LoadScene(Scenes.BOOT);
             yield return LoadScene(Scenes.MAINMENU);
             
-            yield return new WaitForSeconds(1);
+         //   yield return new WaitForSeconds(1);
             
             //Контейнер
             var sceneEntryPoint = Object.FindFirstObjectByType<MainMenuEntryPoint>();

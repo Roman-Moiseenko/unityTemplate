@@ -70,6 +70,7 @@ namespace Game.GamePlay.Services
             //Передаем награду и некоторые настройки, для загрузки в меню
             menuParams.GameSpeed = _gameplayState.PreviousGameSpeed;
             menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
+            menuParams.MapId = _gameplayState.MapId.CurrentValue;
             //menuParams.RewardCards = _gameplayState.RewardCards;
             menuParams.CompletedLevel = true;
             var exitParams = new GameplayExitParams(menuParams);
@@ -82,6 +83,7 @@ namespace Game.GamePlay.Services
             //Передаем награду и некоторые настройки, для загрузки в меню
             menuParams.GameSpeed = _gameplayState.PreviousGameSpeed;
             menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
+            menuParams.MapId = _gameplayState.MapId.CurrentValue;
             //menuParams.RewardCards = _gameplayState.RewardCards;
             menuParams.LastWave = _gameplayState.CurrentWave.CurrentValue - 1; //Текущая волна -1
             menuParams.CompletedLevel = false; //Не завершен

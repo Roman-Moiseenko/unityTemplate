@@ -46,6 +46,7 @@ namespace Game.GamePlay.View.Frames
                 0,
                 viewModel.Position.CurrentValue.y
             );
+            _disposable = d.Build();
         }
         
         private void Update()
