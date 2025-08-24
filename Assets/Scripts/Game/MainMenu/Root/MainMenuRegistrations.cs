@@ -4,7 +4,10 @@ using DI;
 using Game.Common;
 using Game.GamePlay.Commands;
 using Game.GamePlay.Commands.Inventory;
+using Game.MainMenu.Commands.InventoryCommands;
 using Game.MainMenu.Commands.ResourceCommands;
+using Game.MainMenu.Commands.SoftCurrency;
+using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.Services;
 using Game.Settings;
 using Game.State;
@@ -43,9 +46,14 @@ namespace Game.MainMenu.Root
             cmd.RegisterHandler(
                 new CommandCreateInventoryHandler(gameState, gameSettings)); //Создание базового инвентаря
             //Сервисы работы с карточками, кланом (присоединиться, запрос и др.) и другое
+            cmd.RegisterHandler(new CommandInventoryItemAddHandler(gameState));
+            cmd.RegisterHandler(new CommandInventoryItemSpendHandler(gameState));
+            
+            cmd.RegisterHandler(new CommandSoftCurrencySpendHandler(gameState));
+            cmd.RegisterHandler(new CommandTowerCardLevelUpHandler(gameState));
 
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
-            container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
+            //container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
 
           //  Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.TowerCardBag.Items, Formatting.Indented));
             //Для нового игрока загружаем базовый инвентарь

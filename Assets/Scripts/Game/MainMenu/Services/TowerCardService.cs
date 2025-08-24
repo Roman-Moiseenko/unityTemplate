@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.MainMenu.Commands.InventoryCommands;
+using Game.MainMenu.Commands.SoftCurrency;
+using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory;
@@ -16,6 +19,7 @@ namespace Game.MainMenu.Services
     public class TowerCardService
     {
         private readonly IObservableCollection<InventoryItem> _items; //кешируем
+        private readonly InventoryRoot _inventoryRoot;
         private readonly ICommandProcessor _cmd;
 
         private readonly ObservableList<TowerCardViewModel> _allTowerCards = new();
@@ -31,6 +35,7 @@ namespace Game.MainMenu.Services
             ICommandProcessor cmd
         )
         {
+            _inventoryRoot = inventoryRoot;
             _items = inventoryRoot.Items;
             _cmd = cmd;
 
@@ -64,6 +69,47 @@ namespace Game.MainMenu.Services
             {
                 if (e.Value is TowerCard towerCard) RemoveTowerCardViewModel(towerCard);
             });
+        }
+        
+        //ПУБЛИЧНЫЕ МЕТОДЫ ИЗМЕНЕНИЯ TowerCardEntity
+
+        public void LevelUpTowerCard(int uniqueId)
+        {
+            //TODO Протестить 
+            var towerCard = _inventoryRoot.Get<TowerCard>(uniqueId);
+            var commandCard = new CommandTowerCardLevelUp(uniqueId);
+            var currency = GetCostCurrencyLevelUpTowerCard(uniqueId);
+            var plan = GetCostPlanLevelUpTowerCard(uniqueId);
+
+            var item = _inventoryRoot.GetByConfigAndType<TowerPlan>(InventoryType.TowerPlan, towerCard.ConfigId);
+            var commandPlan = new CommandInventoryItemSpend(item.UniqueId, plan);
+
+            var commandCurrency = new CommandSoftCurrencySpend(currency);
+            _cmd.Process(commandPlan);
+            _cmd.Process(commandCard);
+            _cmd.Process(commandCurrency);
+        }
+
+        public int GetCostPlanLevelUpTowerCard(int uniqueId)
+        {
+            var towerCardEntity = _inventoryRoot.Get<TowerCard>(uniqueId);
+            var levelCost = (towerCardEntity.Level.CurrentValue / 5 + 1); 
+            return levelCost * 2;
+        }
+        
+        public int GetCostCurrencyLevelUpTowerCard(int uniqueId)
+        {
+            var towerCardEntity = _inventoryRoot.Get<TowerCard>(uniqueId);
+            var levelCost = (towerCardEntity.Level.CurrentValue / 5 + 1); 
+            return levelCost * 1000;
+        }
+        
+        
+        public bool IsLevelUpTowerCard(int uniqueId)
+        {
+            //TODO Найти инвентарь и проверить стомость и передать в команду
+            
+            return true;
         }
 
 

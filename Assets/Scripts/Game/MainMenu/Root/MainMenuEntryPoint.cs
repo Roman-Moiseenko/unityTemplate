@@ -10,6 +10,7 @@ using Game.MainMenu.View.MainScreen;
 using Game.State;
 using Game.State.GameResources;
 using Game.State.Inventory;
+using Game.State.Inventory.TowerCards;
 using Newtonsoft.Json;
 using R3;
 using Scripts.Game.GameRoot;
@@ -27,17 +28,25 @@ namespace Game.MainMenu.Root
             MainMenuRegistrations.Register(mainMenuContainer, enterParams); //Регистрируем все сервисы сцены меню
             var mainMenuViewModelsContainer = new DIContainer(mainMenuContainer); //Создаем контейнер для view-моделей
             MainMenuViewModelsRegistrations.Register(mainMenuViewModelsContainer);
-            
 
+
+            var gameState = mainMenuContainer.Resolve<IGameStateProvider>().GameState;
             //  mainMenuViewModelsContainer.Resolve<UIMainMenuRootViewModel>();
              
-            if (enterParams != null) 
+            if (enterParams != null)
             {
+                //TODO Добавляем награды Возможно переделать под сервисы
+                //Добавляем золото
+                gameState.SoftCurrency.Value += enterParams.SoftCurrency;
+                enterParams.Items.ForEach(item => gameState.Inventory.AddItem(item));
+                
                 //Сохраняем входные данные в GameState если вышли из Игры
                 
-                //TODO Добавляем награды
-                var resourcesService = mainMenuContainer.Resolve<ResourcesService>();
-                resourcesService.AddResource(ResourceType.SoftCurrency, enterParams.SoftCurrency);
+                
+              //  var resourcesService = mainMenuContainer.Resolve<ResourcesService>();
+                
+                
+               // resourcesService.AddResource(ResourceType.SoftCurrency, enterParams.SoftCurrency);
                 
                 
                 /*              var inventoryService = mainMenuContainer.Resolve<InventoryService>();

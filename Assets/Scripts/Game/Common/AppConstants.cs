@@ -23,5 +23,9 @@
         public const string MAIN_MENU_RESEARCH = nameof(MAIN_MENU_RESEARCH);
 
         public const string MAIN_MENU_SCREEN = nameof(MAIN_MENU_SCREEN);
+
+
+        public const string IMAGE_MANAGER = "[IMAGEMANAGER]";
+        public const string COROUTINES = "[COROUTINES]";
     }
 }

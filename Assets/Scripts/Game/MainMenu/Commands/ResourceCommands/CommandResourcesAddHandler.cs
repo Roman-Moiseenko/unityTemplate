@@ -18,7 +18,7 @@ namespace Game.MainMenu.Commands.ResourceCommands
 
         public bool Handle(CommandResourcesAdd command)
         {
-            if (command.Amount < 0) throw new Exception("Amount < 0");
+        /*    if (command.Amount < 0) throw new Exception("Amount < 0");
             
             var requiredResourceType = command.ResourceType;
             var requiredResource = _gameState.Resources.FirstOrDefault(resource => resource.ResourceType == requiredResourceType);
@@ -27,7 +27,7 @@ namespace Game.MainMenu.Commands.ResourceCommands
                 requiredResource = CreateNewResource(requiredResourceType);
             }
 
-            requiredResource.Amount.Value += command.Amount;
+            requiredResource.Amount.Value += command.Amount;*/
             return true;
         }
 
@@ -39,7 +39,7 @@ namespace Game.MainMenu.Commands.ResourceCommands
                 Amount = 0
             };
             var newResource = new Resource(newResourceData);
-            _gameState.Resources.Add(newResource);
+      //      _gameState.Resources.Add(newResource);
             return newResource;
         }
     }

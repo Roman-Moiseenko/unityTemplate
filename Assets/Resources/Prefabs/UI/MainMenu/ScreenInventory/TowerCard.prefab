@@ -313,6 +313,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6819e93805d747858aee5002c914de88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  epicImage: {fileID: 8019134948435516742}
+  towerImage: {fileID: 3289130269993271693}
+  levelText: {fileID: 1481866141124524644}
 --- !u!1 &6925442941394285871
 GameObject:
   m_ObjectHideFlags: 0

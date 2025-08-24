@@ -31,7 +31,7 @@ namespace Game.MainMenu.Services
             {
                 var towerUniqueId = keyValue.Value;
                 //TODO Сделать копию towerCard и ее передавать
-                var towerCard = gameState.InventoryItems.FirstOrDefault(item => item.UniqueId == towerUniqueId);
+                var towerCard = gameState.Inventory.Items.FirstOrDefault(item => item.UniqueId == towerUniqueId);
                 if (towerCard == null) throw new Exception($"Отсутствует в инвентаре башня с id = {towerUniqueId}");
                 gameplayEnterParams.Towers.Add((TowerCardData)towerCard?.Origin);
             }

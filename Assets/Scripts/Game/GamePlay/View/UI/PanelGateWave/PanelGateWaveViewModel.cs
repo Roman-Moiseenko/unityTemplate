@@ -95,7 +95,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             _gameplayStateProxy.CurrentWave.Subscribe(number =>
             {
                 DefenceCountMobs.Clear();
-                var list = _gameplayStateProxy.Waves[number].GetListForInfo();
+                var list = _gameplayStateProxy.Waves[number]!.GetListForInfo();
                 foreach (var itemList in list)
                 {
                     DefenceCountMobs.Add(itemList.Key, itemList.Value);

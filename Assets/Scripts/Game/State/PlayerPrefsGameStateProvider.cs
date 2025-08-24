@@ -122,11 +122,11 @@ namespace Game.State
             //  var inventory = new List<InventoryData>(); //TODO Загрузить из настроек
             _gameStateOrigin = new GameState
             {
-                Resources = new List<ResourceData>()
+            /*    Resources = new List<ResourceData>()
                 {
                     new() { Amount = 0, ResourceType = ResourceType.SoftCurrency },
                     new() { Amount = 0, ResourceType = ResourceType.HardCurrency },
-                },
+                },*/
                 GameSpeed = 1
             };
             return new GameStateProxy(_gameStateOrigin);

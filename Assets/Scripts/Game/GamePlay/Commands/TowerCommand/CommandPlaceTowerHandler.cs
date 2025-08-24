@@ -1,14 +1,10 @@
-﻿using System.Linq;
-using Game.GamePlay.Commands.TowerCommand;
-using Game.Settings.Gameplay.Entities.Tower;
+﻿using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Entities;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using MVVM.CMD;
-using Newtonsoft.Json;
-using UnityEngine;
 
-namespace Game.GamePlay.Commands
+namespace Game.GamePlay.Commands.TowerCommand
 {
     public class CommandPlaceTowerHandler : ICommandHandler<CommandPlaceTower>
     {

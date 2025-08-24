@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3731079272530422159
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3777194720600603018}
+  - component: {fileID: 578867132265005001}
+  m_Layer: 0
+  m_Name: ImageManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3777194720600603018
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3731079272530422159}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.07475, y: 0, z: -3.6219}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &578867132265005001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3731079272530422159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf02e6ccb6154f4ab7deca8d41b82333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  epicLevels:
+  - TypeEpic: 0
+    Sprite: {fileID: 21300000, guid: 2baf229df94b50f4c9d52749db11edb0, type: 3}
+  - TypeEpic: 1
+    Sprite: {fileID: 21300000, guid: 58b6aa01cd461dd478d4bb8b3947a6ac, type: 3}
+  - TypeEpic: 2
+    Sprite: {fileID: 21300000, guid: 915caa8b66ea12144b3510c23bde5a62, type: 3}
+  - TypeEpic: 3
+    Sprite: {fileID: 21300000, guid: 3ace2b293fa896940affecf900dc39cb, type: 3}
+  - TypeEpic: 4
+    Sprite: {fileID: 21300000, guid: 3ef42e304d9180347a4c01b641753df9, type: 3}
+  - TypeEpic: 5
+    Sprite: {fileID: 21300000, guid: fd7c9b94c4967ab438988269138b6a61, type: 3}
+  towerPlan: []
+  towerCard:
+  - ConfigId: Tower01
+    ByLevels:
+    - Level: 1
+      Sprite: {fileID: 21300000, guid: 4e542c160c1c07c47af487be2c07ec73, type: 3}
+  - ConfigId: Tower02
+    ByLevels:
+    - Level: 1
+      Sprite: {fileID: 21300000, guid: c45a9afcb9a5a8e41ac0c398616089b4, type: 3}
+  - ConfigId: Tower03
+    ByLevels:
+    - Level: 1
+      Sprite: {fileID: 21300000, guid: 6b83cf190fe095148a9382322bfc23de, type: 3}
+  - ConfigId: Tower04
+    ByLevels:
+    - Level: 1
+      Sprite: {fileID: 21300000, guid: 324c8e3917ab66747be9cbdb075fa979, type: 3}
+  - ConfigId: Tower05
+    ByLevels:
+    - Level: 1
+      Sprite: {fileID: 21300000, guid: 583173a11a8301840953f8641d3b86da, type: 3}

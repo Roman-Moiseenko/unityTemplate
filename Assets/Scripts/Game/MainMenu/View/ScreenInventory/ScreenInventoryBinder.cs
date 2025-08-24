@@ -17,7 +17,7 @@ namespace Game.MainMenu.View.ScreenInventory
         [SerializeField] private Transform containerTowerCard;
 
         [SerializeField] private Button buttonTest;
-        
+
         private readonly Dictionary<int, TowerCardBinder> _createdTowerCardMap = new();
 
         protected override void OnBind(ScreenInventoryViewModel viewModel)
@@ -29,10 +29,7 @@ namespace Game.MainMenu.View.ScreenInventory
                 CreateTowerCard(towerCardViewModel);
             }
 
-            viewModel.TowerCards.ObserveAdd().Subscribe(e =>
-            {
-                CreateTowerCard(e.Value);
-            }).AddTo(ref d);
+            viewModel.TowerCards.ObserveAdd().Subscribe(e => { CreateTowerCard(e.Value); }).AddTo(ref d);
             viewModel.TowerCards.ObserveRemove().Subscribe(e =>
             {
                 DestroyTowerCard(e.Value);
@@ -44,17 +41,17 @@ namespace Game.MainMenu.View.ScreenInventory
         private void CreateTowerCard(TowerCardViewModel viewModel)
         {
             var count = _createdTowerCardMap.Count;
-           // Debug.Log(count);
+            // Debug.Log(count);
             var col = count / 5;
             var row = count % 5;
-            
-            
+
+
             //TODO Создаем из Префаба карту
-          //  var towerLevel = towerViewModel.Level;
-           // var towerType = towerViewModel.ConfigId;
-           viewModel.Position = new Vector2Int(row * 210 + 10 , - col * 310 - 10);
+            //  var towerLevel = towerViewModel.Level;
+            // var towerType = towerViewModel.ConfigId;
+            viewModel.Position = new Vector2Int(row * 210 + 10, -col * 310 - 10);
             var prefabTowerCardPath =
-                $"Prefabs/UI/MainMenu/ScreenInventory/TowerCard"; 
+                $"Prefabs/UI/MainMenu/ScreenInventory/TowerCard";
             var towerPrefab = Resources.Load<TowerCardBinder>(prefabTowerCardPath);
             var createdTower = Instantiate(towerPrefab, containerTowerCard);
             createdTower.Bind(viewModel);
@@ -70,7 +67,7 @@ namespace Game.MainMenu.View.ScreenInventory
             }
         }
 
-    private void OnEnable()
+        private void OnEnable()
         {
             buttonTest.onClick.AddListener(OnGoToPlayButtonClicked);
         }
@@ -84,7 +81,7 @@ namespace Game.MainMenu.View.ScreenInventory
         {
             ViewModel.Test();
         }
-        
+
         private void OnDestroy()
         {
             _disposable.Dispose();

@@ -22,9 +22,10 @@ namespace Game.State.Root
         public ReactiveProperty<int> CurrentMapId = new();
         public ReactiveProperty<int> GameSpeed;
         public ReactiveProperty<int> HardCurrency; 
-        public ObservableList<Resource> Resources { get; } = new();
+        public ReactiveProperty<int> SoftCurrency; 
+      //  public ObservableList<Resource> Resources { get; } = new();
      //   public ObservableList<Map> Maps { get; } = new();
-        public ObservableList<InventoryItem> InventoryItems { get; } = new();
+       // public ObservableList<InventoryItem> InventoryItems { get; } = new();
 
         public InventoryRoot Inventory { get; set; }
 
@@ -46,6 +47,10 @@ namespace Game.State.Root
                 Debug.Log($"Сохраняем скорость игры в GameState = {newValue}");
             });
 
+            
+            SoftCurrency = new ReactiveProperty<int>(gameState.SoftCurrency);
+            SoftCurrency.Subscribe(newValue => gameState.SoftCurrency = newValue);
+            
             HardCurrency = new ReactiveProperty<int>(gameState.HardCurrency);
             HardCurrency.Subscribe(newValue => gameState.HardCurrency = newValue);
             
@@ -63,7 +68,7 @@ namespace Game.State.Root
         private void InitResource(GameState gameState)
         {
            // Debug.Log(" ** " + JsonUtility.ToJson(gameState.Resources));
-            gameState.Resources.ForEach(originResource => Resources.Add(new Resource(originResource)));
+         /*   gameState.Resources.ForEach(originResource => Resources.Add(new Resource(originResource)));
             Resources.ObserveAdd().Subscribe(e => gameState.Resources.Add(e.Value.Origin));
 
             Resources.ObserveRemove().Subscribe(e =>
@@ -71,7 +76,7 @@ namespace Game.State.Root
                 var removedResourceData =
                     gameState.Resources.FirstOrDefault(b => b.ResourceType == e.Value.ResourceType);
                 gameState.Resources.Remove(removedResourceData);
-            });
+            });*/
         }
 
         private void InitInventory(GameState gameState)

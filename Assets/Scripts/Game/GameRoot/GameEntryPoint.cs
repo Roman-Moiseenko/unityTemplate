@@ -1,7 +1,9 @@
 using System.Collections;
 using DI;
+using Game.Common;
 using Game.GamePlay.Root;
 using Game.GameRoot.Commands.HardCurrency;
+using Game.GameRoot.ImageManager;
 using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.Settings;
@@ -22,6 +24,7 @@ namespace Scripts.Game.GameRoot
         private UIRootView _uiRoot;
         private readonly DIContainer _rootContainer = new();
         private DIContainer _cachedSceneContainer;
+        private ImageManagerBinder _imageManager;
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void AutostartGame()
@@ -43,6 +46,7 @@ namespace Scripts.Game.GameRoot
 
         private GameEntryPoint()
         {
+            //Возможность запуска корутины из не монобехевиара
             _coroutines = new GameObject("[COROUTINES]").AddComponent<Coroutines>();
             Object.DontDestroyOnLoad(_coroutines.gameObject);
           //  _coroutines.StartCoroutine(LoadFirstBoot());
@@ -52,12 +56,16 @@ namespace Scripts.Game.GameRoot
             _uiRoot = Object.Instantiate(prefabUIRoot);
             Object.DontDestroyOnLoad(_uiRoot.gameObject);
             _rootContainer.RegisterInstance(_uiRoot); //Регистрируем в корневом контейнере
+            //Находим менеджер изображений
+            var prefabImageManager = Resources.Load<ImageManagerBinder>("ImageManager");
+            _imageManager = Object.Instantiate(prefabImageManager);
+            _imageManager.gameObject.name = AppConstants.IMAGE_MANAGER;
+            Object.DontDestroyOnLoad(_imageManager.gameObject);
             
             //Настройки приложения
             var settingsProvider = new SettingsProvider();
             _rootContainer.RegisterInstance<ISettingsProvider>(settingsProvider);
             
-
 
             var gameStateProvider = new PlayerPrefsGameStateProvider(); //Заменить конструктор на другой - из облака
             gameStateProvider.LoadSettingsState(); //Загрузили настройки игры

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.State.Inventory;
 
 namespace Game.MainMenu.Root
 {
@@ -13,6 +14,7 @@ namespace Game.MainMenu.Root
         public int GameSpeed { get; set; }
         public int MapId { get; set; }
 
+        public List<InventoryItemData> Items = new (); 
         public Dictionary<string, int> RewardCards = new (); //Список карт - наград
         
 

@@ -1,26 +1,40 @@
 ﻿using System;
+using Game.Common;
+using Game.GameRoot.ImageManager;
 using R3;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.MainMenu.View.ScreenInventory.TowerCards
 {
     public class TowerCardBinder : MonoBehaviour
     {
-
         private TowerCardViewModel _viewModel;
         private IDisposable _disposable;
-        
+
+        [SerializeField] private Image epicImage;
+        [SerializeField] private Image towerImage;
+        [SerializeField] private TMP_Text levelText;
 
         //TODO Отслеживать и перемещать модель в Binder 
         public ReactiveProperty<bool> IsInDeck = new(false);
+
         public void Bind(TowerCardViewModel viewModel)
         {
-            var t = transform.GetComponent<RectTransform>(); //.position = new Vector3(10, 20, 0);
-            
-        //    Debug.Log(" " + t.localPosition + " " + t.sizeDelta + " " + t.anchoredPosition3D + " " + t.anchoredPosition);
             var d = Disposable.CreateBuilder();
-          //  _viewModel = viewModel;
-            t.anchoredPosition = viewModel.Position;
+            var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
+            
+            towerImage.sprite = imageManager.GetTowerCard(viewModel.ConfigId, 1);;
+
+            viewModel.EpicLevel
+                .Subscribe(newValue => epicImage.sprite = imageManager.GetEpicLevel(newValue))
+                .AddTo(ref d);
+            viewModel.Level
+                .Subscribe(newValue => { levelText.text = $"Ур. {newValue}"; })
+                .AddTo(ref d);
+
+            transform.GetComponent<RectTransform>().anchoredPosition = viewModel.Position;
             _disposable = d.Build();
         }
 

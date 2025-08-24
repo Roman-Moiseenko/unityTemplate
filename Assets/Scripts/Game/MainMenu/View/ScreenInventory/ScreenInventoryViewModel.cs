@@ -37,6 +37,7 @@ namespace Game.MainMenu.View.ScreenInventory
             GameState = container.Resolve<IGameStateProvider>().GameState;
             _towerCardService = container.Resolve<TowerCardService>();
             TowerCards = _towerCardService.AllTowerCards;
+            
 
 /*
             foreach (var inventoryItem in GameState.InventoryItems)

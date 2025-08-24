@@ -17,7 +17,7 @@ namespace Game.MainMenu.Commands.ResourceCommands
 
         public bool Handle(CommandResourcesSpend command)
         {
-            if (command.Amount < 0) throw new Exception("Amount < 0");
+          /*  if (command.Amount < 0) throw new Exception("Amount < 0");
 
             var requiredResourceType = command.ResourceType;
             var requiredResource =
@@ -30,7 +30,7 @@ namespace Game.MainMenu.Commands.ResourceCommands
 
             if (requiredResource.Amount.Value < command.Amount) return false;
             requiredResource.Amount.Value -= command.Amount;
-
+*/
             return true;
         }
     }

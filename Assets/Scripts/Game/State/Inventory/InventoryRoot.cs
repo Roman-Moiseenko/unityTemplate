@@ -1,4 +1,5 @@
-﻿using Game.State.Inventory.Deck;
+﻿using System.Linq;
+using Game.State.Inventory.Deck;
 using ObservableCollections;
 using R3;
 
@@ -10,20 +11,22 @@ namespace Game.State.Inventory
         public InventoryRootData Origin;
         public ObservableDictionary<int, DeckCard> DeckCards { get; set; } //Колоды карт
         public ReactiveProperty<int> BattleDeck;
-        public ObservableList<InventoryItem> Items = new();
-        
+        public IObservableCollection<InventoryItem> Items => _items;
+
+        private readonly ObservableList<InventoryItem> _items = new();
+
         public InventoryRoot(InventoryRootData rootData)
         {
             Origin = rootData;
 
             foreach (var itemData in rootData.Items)
             {
-                Items.Add(InventoryFactory.CreateInventory(itemData));
+                _items.Add(InventoryFactory.CreateInventory(itemData));
             }
 
-            Items.ObserveAdd().Subscribe(e => { Origin.Items.Add(e.Value.Origin); });
-            Items.ObserveRemove().Subscribe(e => { Origin.Items.Remove(e.Value.Origin); });
-            
+            _items.ObserveAdd().Subscribe(e => { Origin.Items.Add(e.Value.Origin); });
+            _items.ObserveRemove().Subscribe(e => { Origin.Items.Remove(e.Value.Origin); });
+
             BattleDeck = new ReactiveProperty<int>(rootData.BattleDeck);
             BattleDeck.Subscribe(newValue => rootData.BattleDeck = newValue);
             DeckCards = new ObservableDictionary<int, DeckCard>();
@@ -41,7 +44,7 @@ namespace Game.State.Inventory
         {
             if (item.Accumulation)
             {
-                foreach (var inventoryItem in Items)
+                foreach (var inventoryItem in _items)
                 {
                     if (inventoryItem.TypeItem == item.TypeItem && inventoryItem.ConfigId == item.ConfigId)
                     {
@@ -52,12 +55,25 @@ namespace Game.State.Inventory
             }
 
             var entity = InventoryFactory.CreateInventory(item);
-            Items.Add(entity);
+            _items.Add(entity);
         }
 
         public DeckCard GetCurrentDeckCard()
         {
             return DeckCards[BattleDeck.CurrentValue];
+        }
+
+        public T Get<T>(int uniqueId) where T : InventoryItem
+        {
+            var item = _items.FirstOrDefault(item => item.UniqueId == uniqueId);
+            return item?.As<T>();
+        }
+
+        public T GetByConfigAndType<T>(InventoryType type, string configId) where T : InventoryItem
+        {
+            var item = _items.FirstOrDefault(i => i.ConfigId == configId 
+                                                  && i.TypeItem == InventoryType.TowerPlan);
+            return item?.As<T>();
         }
     }
 }
