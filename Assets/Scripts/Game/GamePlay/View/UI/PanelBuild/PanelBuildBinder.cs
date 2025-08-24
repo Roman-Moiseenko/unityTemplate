@@ -21,12 +21,17 @@ namespace Game.GamePlay.View.UI.PanelBuild
         private Dictionary<int, Button> Buttons = new();
         private Transform _freeCaption;
         private Transform _paidCaption;
+        private TMP_Text _paidText;
 
         private IDisposable _disposable;
         private void Awake()
         {
             _freeCaption = _btnUpdate.transform.Find("Free");
             _paidCaption = _btnUpdate.transform.Find("Paid");
+            _paidText = _paidCaption
+                .transform.Find("ImageBlock")
+                .transform.Find("costText")
+                .gameObject.GetComponent<TMP_Text>();
         }
 
         protected override void OnBind(PanelBuildViewModel viewModel)
@@ -50,8 +55,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 {
                     _freeCaption.gameObject.SetActive(false);
                     _paidCaption.gameObject.SetActive(true);
-                    _paidCaption.transform.Find("costText").gameObject.GetComponent<TMP_Text>().text = 
-                        (value * AppConstants.COST_UPDATE_BUILD).ToString();
+                    _paidText.text = (value * AppConstants.COST_UPDATE_BUILD).ToString();
                 }
             }).AddTo(ref d);
             

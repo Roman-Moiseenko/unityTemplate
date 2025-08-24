@@ -26,13 +26,14 @@ namespace Game.State.Root
      //   public ObservableList<Map> Maps { get; } = new();
         public ObservableList<InventoryItem> InventoryItems { get; } = new();
 
+        public InventoryRoot Inventory { get; set; }
 
     //    public ObservableList<TowerCard> TowerCards { get; set; }
        //// public ObservableDictionary<string, TowerPlanData> TowerPlans { get; set; } = new();
         
-        public ObservableDictionary<int, DeckCard> DeckCards { get; set; } //Колоды карт
+      //  public ObservableDictionary<int, DeckCard> DeckCards { get; set; } //Колоды карт
 
-        public ReactiveProperty<int> BattleDeck;
+   //     public ReactiveProperty<int> BattleDeck;
 
         public GameStateProxy(GameState gameState)
         {
@@ -51,6 +52,8 @@ namespace Game.State.Root
             
        //     InitMaps(gameState);
             InitResource(gameState);
+
+            Inventory = new InventoryRoot(gameState.Inventory);
             
             InitInventory(gameState);
             
@@ -73,6 +76,9 @@ namespace Game.State.Root
 
         private void InitInventory(GameState gameState)
         {
+       //     Inventory = new InventoryRoot(gameState.Inventory);
+            
+    /*        
             BattleDeck = new ReactiveProperty<int>(gameState.BattleDeck);
             BattleDeck.Subscribe(newValue => gameState.BattleDeck = newValue);
             DeckCards = new ObservableDictionary<int, DeckCard>();
@@ -90,6 +96,7 @@ namespace Game.State.Root
             {
                 //TODO ?
             });
+            */
 /*
             TowerCards = new ObservableList<TowerCard>();
             foreach (var towerCardData in gameState.TowerCards)
@@ -103,6 +110,7 @@ namespace Game.State.Root
                 gameState.TowerCards.Remove(removedTowerCard);
             });
             */
+/*
             gameState.InventoryItems.ForEach(originInventory => InventoryItems.Add(InventoryFactory.CreateInventory(originInventory)));
             InventoryItems.ObserveAdd().Subscribe(e => gameState.InventoryItems.Add(e.Value.Origin));
             
@@ -111,7 +119,7 @@ namespace Game.State.Root
                 var removedInventoryData =
                     gameState.InventoryItems.FirstOrDefault(b => b.UniqueId == e.Value.UniqueId);
                 gameState.InventoryItems.Remove(removedInventoryData);
-            });
+            });*/
         }
         
         public int CreateInventoryID()

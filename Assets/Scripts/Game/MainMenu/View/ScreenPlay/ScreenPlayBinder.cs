@@ -32,5 +32,6 @@ namespace Game.MainMenu.View.ScreenPlay
         {
             ViewModel.RequestResumeGame();
         }
+        
     }
 }

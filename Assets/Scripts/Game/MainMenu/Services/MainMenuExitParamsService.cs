@@ -24,7 +24,7 @@ namespace Game.MainMenu.Services
         {
             var gameplayEnterParams = new GameplayEnterParams(currentIdMap);
             var gameState = _container.Resolve<IGameStateProvider>().GameState;
-            var deckCard = gameState.DeckCards[gameState.BattleDeck.CurrentValue];
+            var deckCard = gameState.Inventory.GetCurrentDeckCard();
             
             //Переносим башни
             foreach (var keyValue in deckCard.TowerCardIds)

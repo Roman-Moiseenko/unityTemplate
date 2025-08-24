@@ -9,6 +9,7 @@ using Game.MainMenu.Services;
 using Game.Settings;
 using Game.State;
 using MVVM.CMD;
+using Newtonsoft.Json;
 using R3;
 using UnityEngine;
 
@@ -46,8 +47,9 @@ namespace Game.MainMenu.Root
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
             container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
 
+          //  Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.TowerCardBag.Items, Formatting.Indented));
             //Для нового игрока загружаем базовый инвентарь
-            if (gameState.InventoryItems.Any() != true)
+            if (gameState.Inventory.Items.Any() != true)
             {
                 Debug.Log("Загружаем Инвентарь из Настроек");
                 var command = new CommandCreateInventory();
@@ -56,17 +58,18 @@ namespace Game.MainMenu.Root
                 {
                     throw new Exception($"Инвентарь не создался");
                 }
+            //    Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.Origin.TowerCardBag.Items, Formatting.Indented));
             }
             //TODO Загружаем настройки и другое с сервера. Либо перенести в GameRoot 
 
-
+            
             //var commandLoad = new CommandLoadSettings();
             //cmd.Process(commandLoad);
 
             //Сервисы карточек
 
             var towerCardService = new TowerCardService(
-                gameState.InventoryItems,
+                gameState.Inventory,
                 gameSettings.TowersSettings,
                 cmd
             );

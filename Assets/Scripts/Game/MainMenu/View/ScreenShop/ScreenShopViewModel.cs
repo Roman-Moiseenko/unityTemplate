@@ -1,4 +1,5 @@
-﻿using MVVM.UI;
+﻿using DI;
+using MVVM.UI;
 using R3;
 
 namespace Game.MainMenu.View.ScreenShop
@@ -10,7 +11,7 @@ namespace Game.MainMenu.View.ScreenShop
         public override string Id => "ScreenShop";
         public override string Path => "MainMenu/";
         
-        public ScreenShopViewModel(MainMenuUIManager uiManager)
+        public ScreenShopViewModel(MainMenuUIManager uiManager, DIContainer container)
         {
             _uiManager = uiManager;
      //       _exitSceneRequest = exitSceneRequest;

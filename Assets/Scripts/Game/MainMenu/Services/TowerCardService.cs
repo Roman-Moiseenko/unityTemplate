@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Game.GamePlay.View.Towers;
-using Game.MainMenu.View.InventoryItems.TowerCads;
+using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
@@ -27,12 +26,12 @@ namespace Game.MainMenu.Services
             _allTowerCards; //Интерфейс менять нельзя, возвращаем через динамический массив
 
         public TowerCardService(
-            IObservableCollection<InventoryItem> items,
+            InventoryRoot inventoryRoot,
             TowersSettings towersSettings,
             ICommandProcessor cmd
         )
         {
-            _items = items;
+            _items = inventoryRoot.Items;
             _cmd = cmd;
 
             //Кешируем настройки зданий / обектов
@@ -41,7 +40,7 @@ namespace Game.MainMenu.Services
                 _towerSettingsMap[towerSettings.ConfigId] = towerSettings;
             }
 
-            foreach (var item in items)
+            foreach (var item in _items)
             {
                 if (item is TowerCard towerCard)
                 {
@@ -49,11 +48,9 @@ namespace Game.MainMenu.Services
                     towerCard.Level.Subscribe(e => UpdateParameterTowerCard(towerCard));
                     CreateTowerCardViewModel(towerCard);
                 }
-
-                ;
             }
 
-            items.ObserveAdd().Subscribe(e =>
+            _items.ObserveAdd().Subscribe(e =>
             {
                 if (e.Value is TowerCard towerCard)
                 {
@@ -63,9 +60,9 @@ namespace Game.MainMenu.Services
                 }
             });
             //Если у сущности изменился уровень, меняем его и во вью-модели
-            items.ObserveRemove().Subscribe(e =>
+            _items.ObserveRemove().Subscribe(e =>
             {
-                if (e.Value is TowerCard towerEntity) RemoveTowerCardViewModel(towerEntity);
+                if (e.Value is TowerCard towerCard) RemoveTowerCardViewModel(towerCard);
             });
         }
 
@@ -73,6 +70,8 @@ namespace Game.MainMenu.Services
         private void CreateTowerCardViewModel(TowerCard towerCard)
         {
             var towerCardViewModel = new TowerCardViewModel(towerCard, _towerSettingsMap[towerCard.ConfigId], this); //3
+
+            //TODO Проверить находится ли карта в колоде
             _allTowerCards.Add(towerCardViewModel); //4
             _towerCardsMap[towerCard.UniqueId] = towerCardViewModel;
         }
@@ -98,7 +97,6 @@ namespace Game.MainMenu.Services
             var level = towerCard.Level.Value;
             var settings = _towerSettingsMap[towerCard.ConfigId];
             
-            
             foreach (var keyValue in towerCard.Parameters)
             {
                 if (towerCard.Parameters.TryGetValue(keyValue.Key, out var towerParameter))
@@ -112,26 +110,26 @@ namespace Game.MainMenu.Services
                     {
                         //Получаем настройки для уровня typeEpic
                         var epicSettings = settings.EpicLevels.FirstOrDefault(e => e.Level == typeEpic);
-                        
-                        var epicUpgrade = epicSettings?.UpgradeParameters.FirstOrDefault(e => e.ParameterType == keyValue.Key);
+
+                        var epicUpgrade =
+                            epicSettings?.UpgradeParameters.FirstOrDefault(e => e.ParameterType == keyValue.Key);
                         if (epicUpgrade != null)
                         {
                             //Debug.Log("epicUpgrade.Value  =  " + epicUpgrade.Value);
-                            towerParameter.Value.Value = towerParameter.Value.CurrentValue * (1 + epicUpgrade.Value / 100);
+                            towerParameter.Value.Value =
+                                towerParameter.Value.CurrentValue * (1 + epicUpgrade.Value / 100);
                         }
-                        
+
                         if (typeEpic == epic) break; //Совпал уровень эпичности, следующие не грузим
                     }
-                    
+
                     //Рассчитываем для уровня Level
-                    var levelUpgrade = settings.
-                        EpicLevels.FirstOrDefault(e => e.Level == epic)?.
-                        LevelCardParameters.FirstOrDefault(e => e.ParameterType == keyValue.Key);
+                    var levelUpgrade = settings.EpicLevels.FirstOrDefault(e => e.Level == epic)?.LevelCardParameters
+                        .FirstOrDefault(e => e.ParameterType == keyValue.Key);
                     if (levelUpgrade != null)
                     {
                         towerParameter.Value.Value += levelUpgrade.Value * (level - 1);
                     }
-
                 }
             }
 

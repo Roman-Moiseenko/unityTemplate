@@ -26,17 +26,13 @@ namespace Game.MainMenu.View.MainScreen
         private void Awake()
         {
             var d = Disposable.CreateBuilder();
-            Debug.Log(bottomButtons.Count);
             foreach (var button in bottomButtons)
             {
-                Debug.Log(button.name);
                 var buttonBinder = button.GetComponent<ButtonBinder>();
                 buttonBinder.Bind();
                 _buttonBinders.Add(button.name, buttonBinder);
             }
-
             transform.Find("BottomMenu").GetComponent<RectTransform>().sizeDelta = new Vector2(0, HeightBottomMenu);
-            
             _disposable = d.Build();
         }
 

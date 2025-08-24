@@ -1,23 +1,58 @@
-﻿using MVVM.UI;
+﻿using System.Collections.Generic;
+using DI;
+using Game.MainMenu.Services;
+using Game.MainMenu.View.ScreenInventory.TowerCards;
+using Game.State;
+using Game.State.Inventory;
+using Game.State.Inventory.TowerCards;
+using Game.State.Maps.Towers;
+using Game.State.Root;
+using MVVM.UI;
+using ObservableCollections;
 using R3;
+using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenInventory
 {
     public class ScreenInventoryViewModel : WindowViewModel
     {
         private readonly MainMenuUIManager _uiManager;
-       // private readonly Subject<Unit> _exitSceneRequest;
+
+        private readonly DIContainer _container;
+
+        // private readonly Subject<Unit> _exitSceneRequest;
         public override string Id => "ScreenInventory";
-        public override string Path => "MainMenu/";
-        
-        public ScreenInventoryViewModel(MainMenuUIManager uiManager)
+        public override string Path => "MainMenu/ScreenInventory/";
+        //public readonly ObservableList<TowerCardViewModel> TowerCards;
+
+        public GameStateProxy GameState;
+
+        public IObservableCollection<TowerCardViewModel> TowerCards;
+        private readonly TowerCardService _towerCardService;
+
+        public ScreenInventoryViewModel(MainMenuUIManager uiManager, DIContainer container)
         {
             _uiManager = uiManager;
-       //     _exitSceneRequest = exitSceneRequest;
+            _container = container;
+            GameState = container.Resolve<IGameStateProvider>().GameState;
+            _towerCardService = container.Resolve<TowerCardService>();
+            TowerCards = _towerCardService.AllTowerCards;
+
+/*
+            foreach (var inventoryItem in GameState.InventoryItems)
+            {
+                if (inventoryItem is TowerCard towerCardEntity)
+                {
+                    var towerCardViewModel = new TowerCardViewModel(towerCardEntity);
+                    TowerCards.Add(towerCardViewModel);
+                }
+            }
+            */
+            //     _exitSceneRequest = exitSceneRequest;
         }
-        public void RequestGoToPlay()
+        public void Test()
         {
-       //     _exitSceneRequest.OnNext(Unit.Default);
+;
         }
     }
 }

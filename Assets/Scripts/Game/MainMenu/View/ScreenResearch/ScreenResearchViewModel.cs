@@ -1,4 +1,5 @@
-﻿using MVVM.UI;
+﻿using DI;
+using MVVM.UI;
 using R3;
 
 namespace Game.MainMenu.View.ScreenResearch
@@ -10,7 +11,7 @@ namespace Game.MainMenu.View.ScreenResearch
         public override string Id => "ScreenResearch";
         public override string Path => "MainMenu/";
         
-        public ScreenResearchViewModel(MainMenuUIManager uiManager)
+        public ScreenResearchViewModel(MainMenuUIManager uiManager, DIContainer container)
         {
             _uiManager = uiManager;
    //         _exitSceneRequest = exitSceneRequest;

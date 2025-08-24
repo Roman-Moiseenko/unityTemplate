@@ -40,7 +40,7 @@ namespace Game.MainMenu.View
         
         public ScreenShopViewModel OpenScreenShop()
         {
-            var viewModel = new ScreenShopViewModel(this);
+            var viewModel = new ScreenShopViewModel(this, _container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
@@ -48,7 +48,7 @@ namespace Game.MainMenu.View
 
         public ScreenInventoryViewModel OpenScreenInventory()
         {
-            var viewModel = new ScreenInventoryViewModel(this);
+            var viewModel = new ScreenInventoryViewModel(this, _container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
@@ -56,7 +56,7 @@ namespace Game.MainMenu.View
         
         public ScreenClanViewModel OpenScreenClan()
         {
-            var viewModel = new ScreenClanViewModel(this);
+            var viewModel = new ScreenClanViewModel(this, _container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
@@ -70,7 +70,7 @@ namespace Game.MainMenu.View
         }
         public ScreenResearchViewModel OpenScreenResearch()
         {
-            var viewModel = new ScreenResearchViewModel(this);
+            var viewModel = new ScreenResearchViewModel(this, _container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;

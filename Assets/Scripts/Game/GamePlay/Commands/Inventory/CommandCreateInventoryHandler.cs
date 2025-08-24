@@ -38,7 +38,7 @@ namespace Game.GamePlay.Commands.Inventory
                 var initialTowerCard = new TowerCardData
                 {
                     UniqueId = _gameState.CreateInventoryID(),
-                    TypeItem = InventoryType.TowerCard,
+                  //  TypeItem = InventoryType.TowerCard,
                     ConfigId = towerCard.ConfigId,
                     EpicLevel = towerCard.epicCardLevel,
                     Level = towerCard.Level,
@@ -52,14 +52,15 @@ namespace Game.GamePlay.Commands.Inventory
                 {
                     initialTowerCard.Parameters.Add(baseParameter.ParameterType, new TowerParameterData(baseParameter));
                 }
-                _gameState.InventoryItems.Add(InventoryFactory.CreateInventory(initialTowerCard));
+                _gameState.Inventory.AddItem(initialTowerCard);
+                
                 initialDeck.TowerCardIds.Add(index, initialTowerCard.UniqueId); //Добавляем начальные башни в колоду
             }
             //TODO Начальные навыки из настроек
             //TODO Начальный герой из настроек
             
 //            Debug.Log("5555 " + JsonConvert.SerializeObject(initialDeck, Formatting.Indented));
-            _gameState.DeckCards.Add(1, new DeckCard(initialDeck));
+            _gameState.Inventory.DeckCards.Add(1, new DeckCard(initialDeck));
             _gameState.HardCurrency.Value = 5000;
             return true;
         }

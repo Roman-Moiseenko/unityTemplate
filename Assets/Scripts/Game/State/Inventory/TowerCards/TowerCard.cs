@@ -8,7 +8,6 @@ namespace Game.State.Inventory.TowerCards
 {
     public class TowerCard : InventoryItem
     {
-        //public TowerType TowerType { get; }
         public ReactiveProperty<TypeEpicCard> EpicLevel;
         public readonly ReactiveProperty<int> Level;
         
@@ -16,6 +15,7 @@ namespace Game.State.Inventory.TowerCards
 
         public TowerCard(TowerCardData data) : base(data)
         {
+            
             EpicLevel = new ReactiveProperty<TypeEpicCard>(data.EpicLevel);
             EpicLevel.Subscribe(newValue => data.EpicLevel = newValue);
             
