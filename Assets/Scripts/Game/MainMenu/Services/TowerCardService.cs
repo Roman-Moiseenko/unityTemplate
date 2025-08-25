@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DI;
 using Game.MainMenu.Commands.InventoryCommands;
 using Game.MainMenu.Commands.SoftCurrency;
 using Game.MainMenu.Commands.TowerCommands;
+using Game.MainMenu.View;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory;
@@ -21,6 +23,7 @@ namespace Game.MainMenu.Services
         private readonly IObservableCollection<InventoryItem> _items; //кешируем
         private readonly InventoryRoot _inventoryRoot;
         private readonly ICommandProcessor _cmd;
+        private readonly DIContainer _container;
 
         private readonly ObservableList<TowerCardViewModel> _allTowerCards = new();
         private readonly Dictionary<int, TowerCardViewModel> _towerCardsMap = new();
@@ -32,12 +35,14 @@ namespace Game.MainMenu.Services
         public TowerCardService(
             InventoryRoot inventoryRoot,
             TowersSettings towersSettings,
-            ICommandProcessor cmd
+            ICommandProcessor cmd,
+            DIContainer container
         )
         {
             _inventoryRoot = inventoryRoot;
             _items = inventoryRoot.Items;
             _cmd = cmd;
+            _container = container;
 
             //Кешируем настройки зданий / обектов
             foreach (var towerSettings in towersSettings.AllTowers)
@@ -76,10 +81,12 @@ namespace Game.MainMenu.Services
         public void LevelUpTowerCard(int uniqueId)
         {
             //TODO Протестить 
+            
+            var towerCardEntity = _inventoryRoot.Get<TowerCard>(uniqueId);
             var towerCard = _inventoryRoot.Get<TowerCard>(uniqueId);
             var commandCard = new CommandTowerCardLevelUp(uniqueId);
-            var currency = GetCostCurrencyLevelUpTowerCard(uniqueId);
-            var plan = GetCostPlanLevelUpTowerCard(uniqueId);
+            var currency = towerCardEntity.GetCostCurrencyLevelUpTowerCard();
+            var plan = towerCardEntity.GetCostPlanLevelUpTowerCard();
 
             var item = _inventoryRoot.GetByConfigAndType<TowerPlan>(InventoryType.TowerPlan, towerCard.ConfigId);
             var commandPlan = new CommandInventoryItemSpend(item.UniqueId, plan);
@@ -115,7 +122,12 @@ namespace Game.MainMenu.Services
 
         private void CreateTowerCardViewModel(TowerCard towerCard)
         {
-            var towerCardViewModel = new TowerCardViewModel(towerCard, _towerSettingsMap[towerCard.ConfigId], this); //3
+            var towerCardViewModel = new TowerCardViewModel(
+                towerCard, 
+                _towerSettingsMap[towerCard.ConfigId], 
+                this,
+                _container
+                ); //3
 
             //TODO Проверить находится ли карта в колоде
             _allTowerCards.Add(towerCardViewModel); //4

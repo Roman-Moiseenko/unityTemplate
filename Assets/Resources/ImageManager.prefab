@@ -79,3 +79,22 @@ MonoBehaviour:
     ByLevels:
     - Level: 1
       Sprite: {fileID: 21300000, guid: 583173a11a8301840953f8641d3b86da, type: 3}
+  parameters:
+  - TypeParameter: 0
+    Sprite: {fileID: 21300000, guid: a4d96f3dec5d91e40977d7600de5f355, type: 3}
+  - TypeParameter: 1
+    Sprite: {fileID: 21300000, guid: cd2223ae45efa1e46aa8d338824e62d9, type: 3}
+  - TypeParameter: 2
+    Sprite: {fileID: 21300000, guid: b3a4f4e8703c94d40ae435a8193040bc, type: 3}
+  - TypeParameter: 3
+    Sprite: {fileID: 21300000, guid: 29840bd14c9978a4dbfc26a35743df1e, type: 3}
+  - TypeParameter: 4
+    Sprite: {fileID: 21300000, guid: 38f36d58b023a6b41845400b3dc0417c, type: 3}
+  - TypeParameter: 5
+    Sprite: {fileID: 21300000, guid: e1bbe2c6eb60a4d45b85e81839acbf61, type: 3}
+  - TypeParameter: 6
+    Sprite: {fileID: 21300000, guid: b47c902cb60e7d246a8d8b4dc28d9266, type: 3}
+  - TypeParameter: 7
+    Sprite: {fileID: 21300000, guid: eca52a5c6a61e5b4b8861ef6b16b1744, type: 3}
+  - TypeParameter: 8
+    Sprite: {fileID: 21300000, guid: 096ba8dd29f47254faa172f672b14ad7, type: 3}

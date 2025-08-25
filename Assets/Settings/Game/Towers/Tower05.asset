@@ -28,16 +28,14 @@ MonoBehaviour:
     NotPrefab: 1
   <GameplayLevels>k__BackingField:
   - Level: 1
-    Parameters:
-    - ParameterType: 0
-      Value: 5
+    Parameters: []
   - Level: 2
     Parameters:
     - ParameterType: 0
       Value: 20
   - Level: 3
     Parameters:
-    - ParameterType: 10
+    - ParameterType: 8
       Value: 3
   - Level: 4
     Parameters:
@@ -45,7 +43,7 @@ MonoBehaviour:
       Value: 20
   - Level: 5
     Parameters:
-    - ParameterType: 10
+    - ParameterType: 8
       Value: 3
   - Level: 6
     Parameters:
@@ -54,9 +52,9 @@ MonoBehaviour:
   <BaseParameters>k__BackingField:
   - ParameterType: 0
     Value: 26.7
-  - ParameterType: 7
+  - ParameterType: 5
     Value: 0.33
-  - ParameterType: 10
+  - ParameterType: 8
     Value: 3
   <EpicLevels>k__BackingField:
   - Level: 0
@@ -68,7 +66,7 @@ MonoBehaviour:
     UpgradeParameters:
     - ParameterType: 0
       Value: 3
-    - ParameterType: 7
+    - ParameterType: 5
       Value: -2
     LevelCardParameters:
     - ParameterType: 0
@@ -77,7 +75,7 @@ MonoBehaviour:
     UpgradeParameters:
     - ParameterType: 0
       Value: 5
-    - ParameterType: 7
+    - ParameterType: 5
       Value: -5
     LevelCardParameters:
     - ParameterType: 0
@@ -86,7 +84,7 @@ MonoBehaviour:
     UpgradeParameters:
     - ParameterType: 0
       Value: 7
-    - ParameterType: 7
+    - ParameterType: 5
       Value: -7
     LevelCardParameters:
     - ParameterType: 0
@@ -95,7 +93,7 @@ MonoBehaviour:
     UpgradeParameters:
     - ParameterType: 0
       Value: 20
-    - ParameterType: 7
+    - ParameterType: 5
       Value: -3
     LevelCardParameters:
     - ParameterType: 0
@@ -104,7 +102,7 @@ MonoBehaviour:
     UpgradeParameters:
     - ParameterType: 0
       Value: 21
-    - ParameterType: 7
+    - ParameterType: 5
       Value: -5
     LevelCardParameters:
     - ParameterType: 0

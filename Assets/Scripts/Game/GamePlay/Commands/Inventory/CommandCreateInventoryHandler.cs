@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Settings;
 using Game.State.Inventory;
@@ -31,10 +32,17 @@ namespace Game.GamePlay.Commands.Inventory
             var towers = _gameSettings.TowersSettings.AllTowers;
             Debug.Log("Загрузка инвентаря из настроек " + JsonConvert.SerializeObject(towers, Formatting.Indented));
             var initialDeck = new DeckCardData(); //Создаем начальную колоду
+             
+                            
             var index = 0;
             foreach (var towerCard in towerCards) //Начальные башни из настроек
             {
+                var towerConfig = towers.FirstOrDefault(t => t.ConfigId == towerCard.ConfigId);
+                if (towerConfig == null) throw new Exception($"towerConfig = {towerCard.ConfigId}  Not Find");
+                
                 index++;
+                //TODO Команда
+                 
                 var initialTowerCard = new TowerCardData
                 {
                     UniqueId = _gameState.CreateInventoryID(),
@@ -42,16 +50,15 @@ namespace Game.GamePlay.Commands.Inventory
                     ConfigId = towerCard.ConfigId,
                     EpicLevel = towerCard.epicCardLevel,
                     Level = towerCard.Level,
-                    Amount = towerCard.Amount,
+                    Amount = 1, //towerCard.Amount,
                     Parameters = new Dictionary<TowerParameterType, TowerParameterData>(),
                 };
-                
-                //Debug.Log(index + " " + towerCard.ConfigId);
-                var towerConfig = towers.FirstOrDefault(t => t.ConfigId == towerCard.ConfigId);
+               
                 foreach (var baseParameter in towerConfig.BaseParameters)
                 {
                     initialTowerCard.Parameters.Add(baseParameter.ParameterType, new TowerParameterData(baseParameter));
                 }
+                
                 _gameState.Inventory.AddItem(initialTowerCard);
                 
                 initialDeck.TowerCardIds.Add(index, initialTowerCard.UniqueId); //Добавляем начальные башни в колоду

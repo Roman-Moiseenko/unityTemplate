@@ -25,20 +25,19 @@ MonoBehaviour:
     Speed: 0.5
     LineTrajectory: 1
     Single: 1
+    NotPrefab: 0
   <GameplayLevels>k__BackingField:
   - Level: 1
-    Parameters:
-    - ParameterType: 0
-      Value: 34
+    Parameters: []
   - Level: 2
     Parameters:
     - ParameterType: 0
       Value: 15
   - Level: 3
     Parameters:
-    - ParameterType: 8
+    - ParameterType: 6
       Value: 2
-    - ParameterType: 4
+    - ParameterType: 2
       Value: 30
   - Level: 4
     Parameters:
@@ -46,10 +45,10 @@ MonoBehaviour:
       Value: 15.5
   - Level: 5
     Parameters:
-    - ParameterType: 8
+    - ParameterType: 6
       Value: 4
-    - ParameterType: 4
-      Value: 15
+    - ParameterType: 2
+      Value: 40
   - Level: 6
     Parameters:
     - ParameterType: 0
@@ -57,11 +56,11 @@ MonoBehaviour:
   <BaseParameters>k__BackingField:
   - ParameterType: 0
     Value: 156.3
-  - ParameterType: 7
+  - ParameterType: 5
     Value: 1.25
-  - ParameterType: 8
+  - ParameterType: 6
     Value: 10
-  - ParameterType: 4
+  - ParameterType: 2
     Value: 1
   <EpicLevels>k__BackingField:
   - Level: 0
@@ -73,7 +72,7 @@ MonoBehaviour:
     UpgradeParameters:
     - ParameterType: 0
       Value: 3
-    - ParameterType: 7
+    - ParameterType: 5
       Value: -2
     LevelCardParameters:
     - ParameterType: 0
@@ -82,7 +81,7 @@ MonoBehaviour:
     UpgradeParameters:
     - ParameterType: 0
       Value: 5
-    - ParameterType: 7
+    - ParameterType: 5
       Value: -5
     LevelCardParameters:
     - ParameterType: 0
@@ -91,7 +90,7 @@ MonoBehaviour:
     UpgradeParameters:
     - ParameterType: 0
       Value: 7
-    - ParameterType: 7
+    - ParameterType: 5
       Value: -7
     LevelCardParameters:
     - ParameterType: 0
@@ -100,7 +99,7 @@ MonoBehaviour:
     UpgradeParameters:
     - ParameterType: 0
       Value: 15
-    - ParameterType: 7
+    - ParameterType: 5
       Value: -3
     LevelCardParameters:
     - ParameterType: 0
@@ -109,7 +108,7 @@ MonoBehaviour:
     UpgradeParameters:
     - ParameterType: 0
       Value: 25
-    - ParameterType: 7
+    - ParameterType: 5
       Value: -3
     LevelCardParameters:
     - ParameterType: 0

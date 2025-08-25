@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using DI;
 using Game.MainMenu.Services;
+using Game.MainMenu.View.ScreenInventory.PopupTowerCard;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.State;
 using Game.State.Inventory;
@@ -37,7 +38,7 @@ namespace Game.MainMenu.View.ScreenInventory
             GameState = container.Resolve<IGameStateProvider>().GameState;
             _towerCardService = container.Resolve<TowerCardService>();
             TowerCards = _towerCardService.AllTowerCards;
-            
+
 
 /*
             foreach (var inventoryItem in GameState.InventoryItems)
@@ -51,7 +52,13 @@ namespace Game.MainMenu.View.ScreenInventory
             */
             //     _exitSceneRequest = exitSceneRequest;
         }
-        public void Test()
+/*
+        public void RequestOpenPopupTowerCard(TowerCardViewModel viewModel)
+        {
+            _uiManager.OpenPopupTowerCard(viewModel);
+        }
+*/
+    public void Test()
         {
 ;
         }

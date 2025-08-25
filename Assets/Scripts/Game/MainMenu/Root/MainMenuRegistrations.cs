@@ -9,6 +9,8 @@ using Game.MainMenu.Commands.ResourceCommands;
 using Game.MainMenu.Commands.SoftCurrency;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.Services;
+using Game.MainMenu.View;
+using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.Settings;
 using Game.State;
 using MVVM.CMD;
@@ -31,6 +33,7 @@ namespace Game.MainMenu.Root
             var gameSettings = settingsProvider.GameSettings;
 
             var subjectExitParams = new Subject<MainMenuExitParams>();
+            container.RegisterFactory(_ => new Subject<TowerCardViewModel>()).AsSingle();
 
             //    container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG,
             // new Subject<Unit>()); //Событие, требующее смены сцены
@@ -79,7 +82,8 @@ namespace Game.MainMenu.Root
             var towerCardService = new TowerCardService(
                 gameState.Inventory,
                 gameSettings.TowersSettings,
-                cmd
+                cmd,
+                container
             );
             container.RegisterInstance(towerCardService);
         }

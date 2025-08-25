@@ -11,8 +11,10 @@ namespace Game.State.Inventory.TowerCards
         public override bool Accumulation => false;
         public TypeEpicCard EpicLevel;
         public int Level;
-        public Dictionary<TowerParameterType, TowerParameterData> Parameters;
-
+        public Dictionary<TowerParameterType, TowerParameterData> Parameters; 
+        public Dictionary<TowerParameterType, TowerParameterData> BaseParameters = new();
+        public Dictionary<TowerParameterType, TowerParameterData> UpdateParameters = new();
+        
         public TowerCardData()
         {
             TypeItem = InventoryType.TowerCard;

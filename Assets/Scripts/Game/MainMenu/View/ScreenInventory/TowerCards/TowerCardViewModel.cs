@@ -1,4 +1,5 @@
-﻿using Game.MainMenu.Services;
+﻿using DI;
+using Game.MainMenu.Services;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
@@ -12,11 +13,14 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
         
         private readonly TowerCard _towerCardEntity;
         public TowerCard TowerCard => _towerCardEntity;
-        private readonly TowerSettings _towerSettings;
+        public readonly TowerSettings TowerSettings;
         public Vector2Int Position = Vector2Int.zero;
         public string ConfigId => _towerCardEntity.ConfigId;
 
         private readonly TowerCardService _service;
+        private readonly DIContainer _container;
+
+        private readonly MainMenuUIManager _uiManager;
         //  private TowerCard _towerCardEntity;
 
         public ReadOnlyReactiveProperty<TypeEpicCard> EpicLevel => _towerCardEntity.EpicLevel;
@@ -27,18 +31,27 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
         public TowerCardViewModel(
             TowerCard towerCardEntity, 
             TowerSettings towerSettings, 
-            TowerCardService service
+            TowerCardService service,
+            DIContainer container
             )
         {
             _towerCardEntity = towerCardEntity;
-            _towerSettings = towerSettings;
+            TowerSettings = towerSettings;
             _service = service;
+            _container = container;
+            // _uiManager = container.Resolve<MainMenuUIManager>();
         }
 
 
         public Vector3 GetPosition()
         {
             return new Vector3(Position.x, Position.y, 0);
+        }
+
+        public void RequestOpenPopupTowerCard()
+        {
+            _container.Resolve<Subject<TowerCardViewModel>>().OnNext(this);
+         //   _uiManager.OpenPopupTowerCard(this);
         }
     }
 }

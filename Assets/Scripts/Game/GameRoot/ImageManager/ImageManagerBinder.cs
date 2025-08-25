@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Game.State.Inventory;
+using Game.State.Maps.Towers;
 using UnityEngine;
 
 namespace Game.GameRoot.ImageManager
@@ -10,6 +11,7 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByEpicType> epicLevels;
         [SerializeField] private List<ImageItemByConfig> towerPlan;
         [SerializeField] private List<ImageItemByConfigLevel> towerCard;
+        [SerializeField] private List<ImageItemByParameter> parameters;
 
 
 
@@ -23,7 +25,11 @@ namespace Game.GameRoot.ImageManager
             var items = towerCard.FirstOrDefault(t => t.ConfigId == configId)!.ByLevels;
             return items.FirstOrDefault(t => t.Level == level)!.Sprite;
         }
-        
+
+        public Sprite GetParameter(TowerParameterType type)
+        {
+            return parameters.FirstOrDefault(t => t.TypeParameter == type)!.Sprite;
+        }
         
     }
 }

@@ -16,6 +16,7 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
         [SerializeField] private Image epicImage;
         [SerializeField] private Image towerImage;
         [SerializeField] private TMP_Text levelText;
+        [SerializeField] private Button buttonPopup;
 
         //TODO Отслеживать и перемещать модель в Binder 
         public ReactiveProperty<bool> IsInDeck = new(false);
@@ -25,8 +26,9 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
             var d = Disposable.CreateBuilder();
             var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
             
-            towerImage.sprite = imageManager.GetTowerCard(viewModel.ConfigId, 1);;
-
+            towerImage.sprite = imageManager.GetTowerCard(viewModel.ConfigId, 1);
+            _viewModel = viewModel;
+            
             viewModel.EpicLevel
                 .Subscribe(newValue => epicImage.sprite = imageManager.GetEpicLevel(newValue))
                 .AddTo(ref d);
@@ -36,6 +38,21 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
 
             transform.GetComponent<RectTransform>().anchoredPosition = viewModel.Position;
             _disposable = d.Build();
+        }
+
+        private void OnEnable()
+        {
+            buttonPopup.onClick.AddListener(OnOpenPopup);
+        }
+
+        private void OnDisable()
+        {
+            buttonPopup.onClick.RemoveListener(OnOpenPopup);
+        }
+
+        public void OnOpenPopup()
+        {
+            _viewModel.RequestOpenPopupTowerCard();
         }
 
         private void OnDestroy()

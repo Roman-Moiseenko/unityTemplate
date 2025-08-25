@@ -1,4 +1,5 @@
-﻿using Game.State.Maps.Towers;
+﻿using System;
+using Game.State.Maps.Towers;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
@@ -13,12 +14,13 @@ namespace Game.State.Inventory.TowerCards
         
         public ObservableDictionary<TowerParameterType, TowerParameter> Parameters;
 
+        public ObservableDictionary<TowerParameterType, TowerParameter> BaseParameters;
+        
         public TowerCard(TowerCardData data) : base(data)
         {
             
             EpicLevel = new ReactiveProperty<TypeEpicCard>(data.EpicLevel);
             EpicLevel.Subscribe(newValue => data.EpicLevel = newValue);
-            
             
             Level = new ReactiveProperty<int>(data.Level);
             Level.Subscribe(newAmount => data.Level = newAmount);
@@ -39,5 +41,23 @@ namespace Game.State.Inventory.TowerCards
 
             //     TowerType = data.TowerType;
         }
+
+
+        public int MaxLevel()
+        {
+            return Convert.ToInt32(EpicLevel.CurrentValue + 1) * 10;
+        }
+        
+        public int GetCostPlanLevelUpTowerCard()
+        {
+            var levelCost = (Level.CurrentValue / 5 + 1); 
+            return levelCost * 2;
+        }
+        
+        public int GetCostCurrencyLevelUpTowerCard()
+        {
+            var levelCost = (Level.CurrentValue / 5 + 1); 
+            return levelCost * 1000;
+        } 
     }
 }

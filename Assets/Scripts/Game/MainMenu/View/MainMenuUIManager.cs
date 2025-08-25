@@ -4,6 +4,8 @@ using Game.MainMenu.Root;
 using Game.MainMenu.Services;
 using Game.MainMenu.View.MainScreen;
 using Game.MainMenu.View.ScreenInventory;
+using Game.MainMenu.View.ScreenInventory.PopupTowerCard;
+using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenPlay;
 using Game.MainMenu.View.ScreenResearch;
 using Game.MainMenu.View.ScreenShop;
@@ -15,7 +17,7 @@ namespace Game.MainMenu.View
 {
     public class MainMenuUIManager : UIManager
     {
-        private readonly DIContainer _container;
+       // private readonly DIContainer _container;
 
         //   private readonly Subject<Unit> _exitSceneRequestDefault;
         private readonly Subject<MainMenuExitParams> _exitSceneRequest;
@@ -23,7 +25,7 @@ namespace Game.MainMenu.View
 
         public MainMenuUIManager(DIContainer container) : base(container)
         {
-            _container = container;
+          //  _container = container;
             //       _exitSceneRequestDefault = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
             _exitSceneRequest = container.Resolve<Subject<MainMenuExitParams>>();
             _exitParamsService = container.Resolve<MainMenuExitParamsService>();
@@ -40,7 +42,7 @@ namespace Game.MainMenu.View
         
         public ScreenShopViewModel OpenScreenShop()
         {
-            var viewModel = new ScreenShopViewModel(this, _container);
+            var viewModel = new ScreenShopViewModel(this, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
@@ -48,7 +50,8 @@ namespace Game.MainMenu.View
 
         public ScreenInventoryViewModel OpenScreenInventory()
         {
-            var viewModel = new ScreenInventoryViewModel(this, _container);
+            //TODO Вытаскиваем 
+            var viewModel = new ScreenInventoryViewModel(this, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
@@ -56,26 +59,40 @@ namespace Game.MainMenu.View
         
         public ScreenClanViewModel OpenScreenClan()
         {
-            var viewModel = new ScreenClanViewModel(this, _container);
+            var viewModel = new ScreenClanViewModel(this, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
         }
         public ScreenPlayViewModel OpenScreenPlay()
         {
-            var viewModel = new ScreenPlayViewModel(this, _exitSceneRequest, _exitParamsService, _container);
+            var viewModel = new ScreenPlayViewModel(this, _exitSceneRequest, _exitParamsService, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
         }
         public ScreenResearchViewModel OpenScreenResearch()
         {
-            var viewModel = new ScreenResearchViewModel(this, _container);
+            var viewModel = new ScreenResearchViewModel(this, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
         }
 
+        
+        public PopupTowerCardViewModel OpenPopupTowerCard(TowerCardViewModel viewModel)
+        {
+            var b = new PopupTowerCardViewModel(viewModel);
+            var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
+            b.CloseRequested.Subscribe(e =>
+            {
+                //_fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
+            });
+            rootUI.OpenPopup(b);
+            return b;
+        }
+        
+        
 
         public void OpenPopupResumeGame()
         {
