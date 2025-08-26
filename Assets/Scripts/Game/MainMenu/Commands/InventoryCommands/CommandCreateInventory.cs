@@ -1,6 +1,6 @@
 ﻿using MVVM.CMD;
 
-namespace Game.GamePlay.Commands.Inventory
+namespace Game.MainMenu.Commands.InventoryCommands
 {
     public class CommandCreateInventory : ICommand
     {

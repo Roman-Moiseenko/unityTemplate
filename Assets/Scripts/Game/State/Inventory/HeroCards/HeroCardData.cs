@@ -6,5 +6,6 @@
         public int Level;
         //TODO Добавить параметры героя public Dictionary<HeroParameterType, HeroParameterData> Parameters;
         public override bool Accumulation => true;
+        public override InventoryType TypeItem => InventoryType.HeroCard;
     }
 }

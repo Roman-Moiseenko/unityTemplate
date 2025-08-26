@@ -1,6 +1,12 @@
-﻿using Game.MainMenu.View.ScreenInventory.TowerCards;
+﻿using DI;
+using Game.MainMenu.Services;
+using Game.MainMenu.View.ScreenInventory.TowerCards;
+using Game.State;
 using Game.State.Inventory;
+using Game.State.Inventory.TowerPlans;
+using Game.State.Root;
 using MVVM.UI;
+using R3;
 
 namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
 {
@@ -10,12 +16,34 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
         public override string Id => "PopupTowerCard";
         public override string Path => "MainMenu/ScreenInventory/Popups/";
 
-        public PopupTowerCardViewModel(TowerCardViewModel viewModel)
+        private InventoryRoot _inventory;
+        private TowerCardPlanService _service;
+        public ReadOnlyReactiveProperty<int> SoftCurrency;
+        public ReadOnlyReactiveProperty<int> AmountPlans;
+        public ReactiveProperty<int> CostPlan = new();
+        public ReactiveProperty<int> CostCurrency = new();
+        
+        public PopupTowerCardViewModel(TowerCardViewModel viewModel, DIContainer container)
         {
             CardViewModel = viewModel;
+            _inventory = container.Resolve<IGameStateProvider>().GameState.Inventory;
+            _service = container.Resolve<TowerCardPlanService>();
+            SoftCurrency = container.Resolve<IGameStateProvider>().GameState.SoftCurrency;
             
+            var plan = _inventory.GetByConfigAndType<TowerPlan>(InventoryType.TowerPlan, viewModel.ConfigId);
+            AmountPlans = plan == null ? new ReactiveProperty<int>(0) : plan.Amount;
+            
+            viewModel.Level.Subscribe(newLevel =>
+            {
+                CostPlan.OnNext(viewModel.TowerCard.GetCostPlanLevelUpTowerCard());
+                CostCurrency.OnNext(viewModel.TowerCard.GetCostCurrencyLevelUpTowerCard());
+            });
 
-            //Заполняем данными из viewModel 
+        }
+
+        public void LevelUpCard()
+        {
+            _service.LevelUpTowerCard(CardViewModel.IdTowerCard);
         }
     }
 }

@@ -6,5 +6,6 @@
         TowerPlan,
         SkillCard,
         SkillPlan,
+        HeroCard
     }
 }

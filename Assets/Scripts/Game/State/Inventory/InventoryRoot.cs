@@ -75,5 +75,16 @@ namespace Game.State.Inventory
                                                   && i.TypeItem == InventoryType.TowerPlan);
             return item?.As<T>();
         }
+
+        public void RemoveItem(InventoryItem item)
+        {
+            _items.Remove(item);
+        }
+
+        public void RemoveItem(int uniqueId)
+        {
+            var item = _items.FirstOrDefault(item => item.UniqueId == uniqueId);
+            RemoveItem(item);
+        }
     }
 }

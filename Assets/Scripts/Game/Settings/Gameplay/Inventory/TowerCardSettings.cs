@@ -9,8 +9,7 @@ namespace Game.Settings.Gameplay.Inventory
     public class TowerCardSettings : ScriptableObject
     {
         [field: SerializeField] public string ConfigId;
-        [FormerlySerializedAs("EpicLevel")] [field: SerializeField] public TypeEpicCard epicCardLevel;
+        [field: SerializeField] public TypeEpicCard epicCardLevel;
         [field: SerializeField] public int Level;
-        [field: SerializeField] public int Amount;
     }
 }

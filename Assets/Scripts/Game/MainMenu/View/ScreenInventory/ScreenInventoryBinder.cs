@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
+using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using MVVM.UI;
 using Newtonsoft.Json;
 using ObservableCollections;
@@ -15,10 +16,12 @@ namespace Game.MainMenu.View.ScreenInventory
         //    [SerializeField] private Button _btnGoToPlay;
         private IDisposable _disposable;
         [SerializeField] private Transform containerTowerCard;
+        [SerializeField] private Transform containerTowerPlan;
 
         [SerializeField] private Button buttonTest;
 
         private readonly Dictionary<int, TowerCardBinder> _createdTowerCardMap = new();
+        private readonly Dictionary<int, TowerPlanBinder> _createdTowerPlanMap = new();
 
         protected override void OnBind(ScreenInventoryViewModel viewModel)
         {
@@ -33,23 +36,36 @@ namespace Game.MainMenu.View.ScreenInventory
             viewModel.TowerCards.ObserveRemove().Subscribe(e =>
             {
                 DestroyTowerCard(e.Value);
-                //TODO Перестройка расположения меню
             }).AddTo(ref d);
+            
+            foreach (var towerPlanViewModel in viewModel.TowerPlans)
+            {
+                CreateTowerPlan(towerPlanViewModel);
+            }
+
+            viewModel.TowerPlans.ObserveAdd().Subscribe(e => { CreateTowerPlan(e.Value); }).AddTo(ref d);
+            viewModel.TowerPlans.ObserveRemove().Subscribe(e =>
+            {
+                DestroyTowerPlan(e.Value);
+            }).AddTo(ref d);
+            
+            
             _disposable = d.Build();
         }
 
+        private void CreateTowerPlan(TowerPlanViewModel viewModel)
+        {
+            var prefabTowerPlanPath =
+                $"Prefabs/UI/MainMenu/ScreenInventory/TowerPlan";
+            var towerPrefab = Resources.Load<TowerPlanBinder>(prefabTowerPlanPath);
+            var createdTower = Instantiate(towerPrefab, containerTowerPlan);
+            createdTower.Bind(viewModel);
+            _createdTowerPlanMap[viewModel.IdTowerPlan] = createdTower;
+        }
+
+
         private void CreateTowerCard(TowerCardViewModel viewModel)
         {
-            var count = _createdTowerCardMap.Count;
-            // Debug.Log(count);
-            var col = count / 5;
-            var row = count % 5;
-
-
-            //TODO Создаем из Префаба карту
-            //  var towerLevel = towerViewModel.Level;
-            // var towerType = towerViewModel.ConfigId;
-            viewModel.Position = new Vector2Int(row * 210 + 10, -col * 310 - 10);
             var prefabTowerCardPath =
                 $"Prefabs/UI/MainMenu/ScreenInventory/TowerCard";
             var towerPrefab = Resources.Load<TowerCardBinder>(prefabTowerCardPath);
@@ -57,6 +73,8 @@ namespace Game.MainMenu.View.ScreenInventory
             createdTower.Bind(viewModel);
             _createdTowerCardMap[viewModel.IdTowerCard] = createdTower;
         }
+        
+        
 
         private void DestroyTowerCard(TowerCardViewModel viewModel)
         {
@@ -66,6 +84,17 @@ namespace Game.MainMenu.View.ScreenInventory
                 _createdTowerCardMap.Remove(viewModel.IdTowerCard);
             }
         }
+        
+        private void DestroyTowerPlan(TowerPlanViewModel viewModel)
+        {
+            if (_createdTowerPlanMap.TryGetValue(viewModel.IdTowerPlan, out var towerPlanBinder))
+            {
+                Destroy(towerPlanBinder.gameObject);
+                _createdTowerPlanMap.Remove(viewModel.IdTowerPlan);
+            }
+        }        
+        
+        
 
         private void OnEnable()
         {

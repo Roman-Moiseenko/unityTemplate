@@ -36,7 +36,7 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
                 .Subscribe(newValue => { levelText.text = $"Ур. {newValue}"; })
                 .AddTo(ref d);
 
-            transform.GetComponent<RectTransform>().anchoredPosition = viewModel.Position;
+       //     transform.GetComponent<RectTransform>().anchoredPosition = viewModel.Position;
             _disposable = d.Build();
         }
 

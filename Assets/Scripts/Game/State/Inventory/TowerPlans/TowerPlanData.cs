@@ -5,6 +5,7 @@
      */
     public class TowerPlanData : InventoryItemData
     {
-        public override bool Accumulation => false;
+        public override bool Accumulation => true;
+        public override InventoryType TypeItem => InventoryType.TowerPlan;
     }
 }

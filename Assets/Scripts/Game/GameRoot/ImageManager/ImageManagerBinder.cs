@@ -30,6 +30,10 @@ namespace Game.GameRoot.ImageManager
         {
             return parameters.FirstOrDefault(t => t.TypeParameter == type)!.Sprite;
         }
-        
+
+        public Sprite GetTowerPlan(string configId)
+        {
+            return towerPlan.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
+        }
     }
 }

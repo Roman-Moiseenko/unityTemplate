@@ -3,6 +3,7 @@
     public class SkillCardData : InventoryItemData
     {
         public override bool Accumulation => false;
+        public override InventoryType TypeItem => InventoryType.SkillCard;
 
         public TypeEpicCard EpicLevel;
         public int Level;

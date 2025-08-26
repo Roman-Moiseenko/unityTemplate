@@ -108,7 +108,7 @@ namespace Game.MainMenu.Root
 
         private void InitPopup(DIContainer container)
         {
-            var uiManager = container.Resolve<MainMenuUIManager>();
+           // var uiManager = container.Resolve<MainMenuUIManager>();
             //TODO Сделать проверку, что есть сохраненные данные о сессии
             //Запрашиваем окно и переходим в игру или очищаем
             return;

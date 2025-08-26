@@ -3,6 +3,7 @@ using DI;
 using Game.MainMenu.Services;
 using Game.MainMenu.View.ScreenInventory.PopupTowerCard;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
+using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using Game.State;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
@@ -29,16 +30,17 @@ namespace Game.MainMenu.View.ScreenInventory
         public GameStateProxy GameState;
 
         public IObservableCollection<TowerCardViewModel> TowerCards;
-        private readonly TowerCardService _towerCardService;
+        public IObservableCollection<TowerPlanViewModel> TowerPlans;
+        private readonly TowerCardPlanService _towerCardPlanService;
 
         public ScreenInventoryViewModel(MainMenuUIManager uiManager, DIContainer container)
         {
             _uiManager = uiManager;
             _container = container;
             GameState = container.Resolve<IGameStateProvider>().GameState;
-            _towerCardService = container.Resolve<TowerCardService>();
-            TowerCards = _towerCardService.AllTowerCards;
-
+            _towerCardPlanService = container.Resolve<TowerCardPlanService>();
+            TowerCards = _towerCardPlanService.AllTowerCards;
+            TowerPlans = _towerCardPlanService.AllTowerPlans;
 
 /*
             foreach (var inventoryItem in GameState.InventoryItems)

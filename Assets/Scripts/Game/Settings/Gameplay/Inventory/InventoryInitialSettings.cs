@@ -8,5 +8,6 @@ namespace Game.Settings.Gameplay.Inventory
     public class InventoryInitialSettings : ScriptableObject
     {
         public List<TowerCardSettings> TowerCards;
+        public List<TowerPlanSettings> TowerPlans;
     }
 }

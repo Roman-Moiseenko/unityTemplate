@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Linq;
 using DI;
-using Game.Common;
-using Game.GamePlay.Commands;
-using Game.GamePlay.Commands.Inventory;
 using Game.MainMenu.Commands.InventoryCommands;
 using Game.MainMenu.Commands.ResourceCommands;
 using Game.MainMenu.Commands.SoftCurrency;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.Services;
-using Game.MainMenu.View;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
+using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using Game.Settings;
 using Game.State;
 using MVVM.CMD;
@@ -32,28 +29,36 @@ namespace Game.MainMenu.Root
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
 
+            //HРЕГИСТРИРУЕМ СОБЫТИЯ
             var subjectExitParams = new Subject<MainMenuExitParams>();
             container.RegisterFactory(_ => new Subject<TowerCardViewModel>()).AsSingle();
-
-            //    container.RegisterInstance(AppConstants.EXIT_SCENE_REQUEST_TAG,
+            container.RegisterFactory(_ => new Subject<TowerPlanViewModel>()).AsSingle();
+            
             // new Subject<Unit>()); //Событие, требующее смены сцены
             container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
 
             //  var cmd = container.Resolve<ICommandProcessor>();
             var cmd = container.Resolve<ICommandProcessor>();
-            //container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
 
             //команды работы с инвентарем
-            cmd.RegisterHandler(new CommandResourcesAddHandler(gameState));
-            cmd.RegisterHandler(new CommandResourcesSpendHandler(gameState));
-            cmd.RegisterHandler(
-                new CommandCreateInventoryHandler(gameState, gameSettings)); //Создание базового инвентаря
-            //Сервисы работы с карточками, кланом (присоединиться, запрос и др.) и другое
+            
+            //INVENTORY
+            cmd.RegisterHandler(new CommandCreateInventoryHandler(gameState, gameSettings, cmd));
             cmd.RegisterHandler(new CommandInventoryItemAddHandler(gameState));
             cmd.RegisterHandler(new CommandInventoryItemSpendHandler(gameState));
-            
+            //RESOURCE
+            cmd.RegisterHandler(new CommandResourcesAddHandler(gameState));
+            cmd.RegisterHandler(new CommandResourcesSpendHandler(gameState));
+            //CURRENCY
             cmd.RegisterHandler(new CommandSoftCurrencySpendHandler(gameState));
+            //TOWER
             cmd.RegisterHandler(new CommandTowerCardLevelUpHandler(gameState));
+            cmd.RegisterHandler(new CommandTowerCardAddHandler(gameState, gameSettings));
+            cmd.RegisterHandler(new CommandTowerCardSpendHandler(gameState));
+            
+            cmd.RegisterHandler(new CommandTowerPlanAddHandler(gameState));
+            cmd.RegisterHandler(new CommandTowerPlanSpendHandler(gameState));
+            //
 
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
             //container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
@@ -69,17 +74,14 @@ namespace Game.MainMenu.Root
                 {
                     throw new Exception($"Инвентарь не создался");
                 }
-            //    Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.Origin.TowerCardBag.Items, Formatting.Indented));
+                Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.DeckCards, Formatting.Indented));
+                Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.BattleDeck, Formatting.Indented));
             }
             //TODO Загружаем настройки и другое с сервера. Либо перенести в GameRoot 
-
             
-            //var commandLoad = new CommandLoadSettings();
-            //cmd.Process(commandLoad);
-
             //Сервисы карточек
 
-            var towerCardService = new TowerCardService(
+            var towerCardService = new TowerCardPlanService(
                 gameState.Inventory,
                 gameSettings.TowersSettings,
                 cmd,

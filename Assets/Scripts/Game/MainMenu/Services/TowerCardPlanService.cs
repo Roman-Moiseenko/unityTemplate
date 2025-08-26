@@ -7,9 +7,11 @@ using Game.MainMenu.Commands.SoftCurrency;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.View;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
+using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
+using Game.State.Inventory.TowerPlans;
 using Game.State.Maps.Towers;
 using MVVM.CMD;
 using ObservableCollections;
@@ -18,7 +20,7 @@ using UnityEngine;
 
 namespace Game.MainMenu.Services
 {
-    public class TowerCardService
+    public class TowerCardPlanService
     {
         private readonly IObservableCollection<InventoryItem> _items; //кешируем
         private readonly InventoryRoot _inventoryRoot;
@@ -26,13 +28,17 @@ namespace Game.MainMenu.Services
         private readonly DIContainer _container;
 
         private readonly ObservableList<TowerCardViewModel> _allTowerCards = new();
+        private readonly ObservableList<TowerPlanViewModel> _allTowerPlans = new();
         private readonly Dictionary<int, TowerCardViewModel> _towerCardsMap = new();
+        private readonly Dictionary<int, TowerPlanViewModel> _towerPlansMap = new();
+        
         private readonly Dictionary<string, TowerSettings> _towerSettingsMap = new();
 
         public IObservableCollection<TowerCardViewModel> AllTowerCards =>
             _allTowerCards; //Интерфейс менять нельзя, возвращаем через динамический массив
-
-        public TowerCardService(
+        public IObservableCollection<TowerPlanViewModel> AllTowerPlans =>
+            _allTowerPlans; //Интерфейс менять нельзя, возвращаем через динамический массив
+        public TowerCardPlanService(
             InventoryRoot inventoryRoot,
             TowersSettings towersSettings,
             ICommandProcessor cmd,
@@ -58,6 +64,13 @@ namespace Game.MainMenu.Services
                     towerCard.Level.Subscribe(e => UpdateParameterTowerCard(towerCard));
                     CreateTowerCardViewModel(towerCard);
                 }
+
+                if (item is TowerPlan towerPlan)
+                {
+                    CreateTowerPlanViewModel(towerPlan);
+
+                }
+                
             }
 
             _items.ObserveAdd().Subscribe(e =>
@@ -68,20 +81,25 @@ namespace Game.MainMenu.Services
                     towerCard.Level.Subscribe(_ => UpdateParameterTowerCard(towerCard));
                     CreateTowerCardViewModel(towerCard); //Создаем View Model
                 }
+                if (e.Value is TowerPlan towerPlan)
+                {
+                    CreateTowerPlanViewModel(towerPlan);
+                }
+                
             });
             //Если у сущности изменился уровень, меняем его и во вью-модели
             _items.ObserveRemove().Subscribe(e =>
             {
                 if (e.Value is TowerCard towerCard) RemoveTowerCardViewModel(towerCard);
+                if (e.Value is TowerPlan towerPlan) RemoveTowerPlanViewModel(towerPlan);
             });
         }
-        
+
+
         //ПУБЛИЧНЫЕ МЕТОДЫ ИЗМЕНЕНИЯ TowerCardEntity
 
         public void LevelUpTowerCard(int uniqueId)
         {
-            //TODO Протестить 
-            
             var towerCardEntity = _inventoryRoot.Get<TowerCard>(uniqueId);
             var towerCard = _inventoryRoot.Get<TowerCard>(uniqueId);
             var commandCard = new CommandTowerCardLevelUp(uniqueId);
@@ -146,6 +164,25 @@ namespace Game.MainMenu.Services
             }
         }
 
+        private void CreateTowerPlanViewModel(TowerPlan towerPlan)
+        {
+            var towerPlanViewModel = new TowerPlanViewModel(towerPlan, 
+                _towerSettingsMap[towerPlan.ConfigId], 
+                _container);
+
+            _allTowerPlans.Add(towerPlanViewModel); //4
+            _towerPlansMap[towerPlan.UniqueId] = towerPlanViewModel;
+        }
+        
+        private void RemoveTowerPlanViewModel(TowerPlan towerPlan)
+        {
+            if (_towerPlansMap.TryGetValue(towerPlan.UniqueId, out var towerPlanViewModel))
+            {
+                _allTowerPlans.Remove(towerPlanViewModel);
+                _towerPlansMap.Remove(towerPlan.UniqueId);
+            }
+        }
+        
         /**
          * Пересчитываем параметры башни в зависимости от уровня и эпичности
          */

@@ -82,7 +82,7 @@ namespace Game.MainMenu.View
         
         public PopupTowerCardViewModel OpenPopupTowerCard(TowerCardViewModel viewModel)
         {
-            var b = new PopupTowerCardViewModel(viewModel);
+            var b = new PopupTowerCardViewModel(viewModel, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             b.CloseRequested.Subscribe(e =>
             {
