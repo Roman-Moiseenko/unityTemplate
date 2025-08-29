@@ -11,9 +11,7 @@ namespace Game.State.Inventory.TowerCards
     {
         public ReactiveProperty<TypeEpicCard> EpicLevel;
         public readonly ReactiveProperty<int> Level;
-        
         public ObservableDictionary<TowerParameterType, TowerParameter> Parameters;
-
         public ObservableDictionary<TowerParameterType, TowerParameter> BaseParameters;
         
         public TowerCard(TowerCardData data) : base(data)
@@ -41,6 +39,8 @@ namespace Game.State.Inventory.TowerCards
 
             //     TowerType = data.TowerType;
         }
+
+        
 
 
         public int MaxLevel()

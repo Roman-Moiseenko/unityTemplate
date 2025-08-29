@@ -16,6 +16,10 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
         public ReadOnlyReactiveProperty<TypeEpicCard> EpicLevel => _towerCardEntity.EpicLevel;
         public ReadOnlyReactiveProperty<int> Level => _towerCardEntity.Level;
         public int IdTowerCard => _towerCardEntity.UniqueId;
+        public int NumberCardDeck { get; set; } //Номер места в колоде (для присваивания парента)
+
+        public ReactiveProperty<bool> IsDeck = new(false);
+        //public ReactiveProperty<bool> IsDeck = new(false);
         
         private readonly TowerCard _towerCardEntity;
         private readonly TowerCardPlanService _planService;

@@ -32,6 +32,7 @@ namespace Game.MainMenu.View.ScreenInventory
         public IObservableCollection<TowerCardViewModel> TowerCards;
         public IObservableCollection<TowerPlanViewModel> TowerPlans;
         private readonly TowerCardPlanService _towerCardPlanService;
+        private readonly InventoryUIManager _inventoryUIManager;
 
         public ScreenInventoryViewModel(MainMenuUIManager uiManager, DIContainer container)
         {
@@ -41,6 +42,7 @@ namespace Game.MainMenu.View.ScreenInventory
             _towerCardPlanService = container.Resolve<TowerCardPlanService>();
             TowerCards = _towerCardPlanService.AllTowerCards;
             TowerPlans = _towerCardPlanService.AllTowerPlans;
+            _inventoryUIManager = container.Resolve<InventoryUIManager>();
 
 /*
             foreach (var inventoryItem in GameState.InventoryItems)
@@ -60,9 +62,11 @@ namespace Game.MainMenu.View.ScreenInventory
             _uiManager.OpenPopupTowerCard(viewModel);
         }
 */
-    public void Test()
+    
+
+        public void RequestPopupBlacksmith()
         {
-;
+            _inventoryUIManager.OpenPopupBlacksmith();
         }
     }
 }

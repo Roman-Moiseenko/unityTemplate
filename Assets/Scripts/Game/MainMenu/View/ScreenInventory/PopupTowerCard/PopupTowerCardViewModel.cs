@@ -45,5 +45,10 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
         {
             _service.LevelUpTowerCard(CardViewModel.IdTowerCard);
         }
+
+        public void TowerCardChangeDeck()
+        {
+            _service.ChangeDeckTowerCard(CardViewModel.IdTowerCard);
+        }
     }
 }

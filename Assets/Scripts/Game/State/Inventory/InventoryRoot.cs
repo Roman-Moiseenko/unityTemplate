@@ -21,10 +21,22 @@ namespace Game.State.Inventory
 
             foreach (var itemData in rootData.Items)
             {
-                _items.Add(InventoryFactory.CreateInventory(itemData));
+                var itemEntity = InventoryFactory.CreateInventory(itemData);
+                itemEntity.Amount
+                    .Where(x => x == 0)
+                    .Subscribe(_ => _items.Remove(itemEntity));
+                
+                _items.Add(itemEntity);
             }
 
-            _items.ObserveAdd().Subscribe(e => { Origin.Items.Add(e.Value.Origin); });
+            _items.ObserveAdd().Subscribe(e =>
+            {
+                var itemEntity = e.Value;
+                itemEntity.Amount
+                    .Where(x => x == 0)
+                    .Subscribe(_ => _items.Remove(itemEntity));
+                Origin.Items.Add(e.Value.Origin);
+            });
             _items.ObserveRemove().Subscribe(e => { Origin.Items.Remove(e.Value.Origin); });
 
             BattleDeck = new ReactiveProperty<int>(rootData.BattleDeck);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.Settings;
+using Game.State.Inventory;
 using Game.State.Inventory.Deck;
 using Game.State.Inventory.TowerCards;
 using Game.State.Root;
@@ -56,6 +57,8 @@ namespace Game.MainMenu.Commands.InventoryCommands
                 _cmd.Process(commandTowerCard);
             }
             
+
+            
             var initialDeck = new DeckCardData(); //Создаем начальную колоду
             var index = 0;
             foreach (var inventoryItem in _gameState.Inventory.Items)
@@ -69,8 +72,33 @@ namespace Game.MainMenu.Commands.InventoryCommands
             }
             _gameState.Inventory.DeckCards.Add(1, new DeckCard(initialDeck));
             
+            ////ДЛЯ ТЕСТА 
+            for (int i = 0; i < 107; i++)
+            {
+                var commandTowerCard2 = new CommandTowerCardAdd
+                {
+                    ConfigId = "Tower01",
+                    EpicLevel = TypeEpicCard.Normal,
+                    Level = 1
+                };
+                _cmd.Process(commandTowerCard2);
+            }
+            for (int i = 0; i < 12; i++)
+            {
+                var commandTowerCard3 = new CommandTowerCardAdd
+                {
+                    ConfigId = "Tower02",
+                    EpicLevel = TypeEpicCard.Normal,
+                    Level = 1
+                };
+                _cmd.Process(commandTowerCard3);
+            }
+            
+            
             //TODO Начальные навыки из настроек
             //TODO Начальный герой из настроек
+            
+            
             
             _gameState.HardCurrency.OnNext(5000);
             _gameState.SoftCurrency.OnNext(45000);

@@ -1,4 +1,5 @@
 ﻿using DI;
+using Game.MainMenu.View.ScreenInventory.PopupBlacksmith;
 using Game.MainMenu.View.ScreenInventory.PopupTowerCard;
 using Game.MainMenu.View.ScreenInventory.PopupTowerPlan;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
@@ -47,6 +48,18 @@ namespace Game.MainMenu.View.ScreenInventory
             rootUI.OpenPopup(b);
             return b;
         }
-        
+
+        public PopupBlacksmithViewModel OpenPopupBlacksmith()
+        {
+            var b = new PopupBlacksmithViewModel(Container);
+            var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
+            
+            b.CloseRequested.Subscribe(e =>
+            {
+            });
+            rootUI.OpenPopup(b);
+            return b;
+            
+        }
     }
 }

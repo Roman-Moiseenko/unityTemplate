@@ -2,6 +2,7 @@ using System.Collections;
 using DI;
 using Game.Common;
 using Game.GamePlay.Root;
+using Game.GameRoot.Commands;
 using Game.GameRoot.Commands.HardCurrency;
 using Game.GameRoot.ImageManager;
 using Game.GameRoot.Services;
@@ -82,7 +83,8 @@ namespace Scripts.Game.GameRoot
             //Регистрируем общие команды для всей игры.
             //Потратить валюту.
            // Debug.Log(JsonConvert.SerializeObject());
-            cmd.RegisterHandler(new CommandSpendHardCurrencyHandler(gameStateProvider.GameState));            
+            cmd.RegisterHandler(new CommandSpendHardCurrencyHandler(gameStateProvider.GameState)); 
+            cmd.RegisterHandler(new CommandSaveGameStateHandler());
             _rootContainer.RegisterInstance<IGameStateProvider>(gameStateProvider);
             _rootContainer.RegisterFactory(c => new SomeCommonService()).AsSingle(); //Сервис ... создастся при первом вызове
             _rootContainer.RegisterFactory(c => new AdService(_rootContainer)).AsSingle(); //Сервис рекламы

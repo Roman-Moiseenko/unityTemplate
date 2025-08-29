@@ -18,25 +18,16 @@ namespace Game.MainMenu.View.ScreenInventory.Parameters
         public void Bind(Sprite imageParam, string nameParam, string valueParam, string measure, ReadOnlyReactiveProperty<float> value)
         {
             var d = Disposable.CreateBuilder();
+            
             imageParameter.sprite = imageParam;
             textName.text = nameParam;
             textValue.text = valueParam + " " + measure;
-
-            value.Subscribe(v =>
-            {
-                Debug.Log(nameParam + " " + v);
-                textValue.text = v + " " + measure;
-            }).AddTo(ref d);
+            value.Subscribe(v => textValue.text = v + " " + measure).AddTo(ref d);
             gameObject.SetActive(true);
 
             _disposable = d.Build();
         }
         
-        public void Updates()
-        {
-            
-        }
-
         private void OnDestroy()
         {
             _disposable?.Dispose();

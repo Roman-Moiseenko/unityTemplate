@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DI;
+using Game.GameRoot.Commands;
 using Game.MainMenu.Commands.InventoryCommands;
 using Game.MainMenu.Commands.SoftCurrency;
 using Game.MainMenu.Commands.TowerCommands;
@@ -10,10 +11,12 @@ using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory;
+using Game.State.Inventory.Deck;
 using Game.State.Inventory.TowerCards;
 using Game.State.Inventory.TowerPlans;
 using Game.State.Maps.Towers;
 using MVVM.CMD;
+using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -33,6 +36,7 @@ namespace Game.MainMenu.Services
         private readonly Dictionary<int, TowerPlanViewModel> _towerPlansMap = new();
         
         private readonly Dictionary<string, TowerSettings> _towerSettingsMap = new();
+        private readonly DeckCard _currentDeck;
 
         public IObservableCollection<TowerCardViewModel> AllTowerCards =>
             _allTowerCards; //Интерфейс менять нельзя, возвращаем через динамический массив
@@ -49,7 +53,8 @@ namespace Game.MainMenu.Services
             _items = inventoryRoot.Items;
             _cmd = cmd;
             _container = container;
-
+            _currentDeck = _inventoryRoot.GetCurrentDeckCard();
+            
             //Кешируем настройки зданий / обектов
             foreach (var towerSettings in towersSettings.AllTowers)
             {
@@ -64,13 +69,10 @@ namespace Game.MainMenu.Services
                     towerCard.Level.Subscribe(e => UpdateParameterTowerCard(towerCard));
                     CreateTowerCardViewModel(towerCard);
                 }
-
                 if (item is TowerPlan towerPlan)
                 {
                     CreateTowerPlanViewModel(towerPlan);
-
                 }
-                
             }
 
             _items.ObserveAdd().Subscribe(e =>
@@ -93,8 +95,57 @@ namespace Game.MainMenu.Services
                 if (e.Value is TowerCard towerCard) RemoveTowerCardViewModel(towerCard);
                 if (e.Value is TowerPlan towerPlan) RemoveTowerPlanViewModel(towerPlan);
             });
+            
+            foreach (var deckTowerCardId in _currentDeck.TowerCardIds)
+            {
+                ChangeDeckTowerCardViewModel(deckTowerCardId.Value);
+            }
+            
+            _currentDeck.TowerCardIds.ObserveAdd().Subscribe(e =>
+            {
+                ChangeDeckTowerCardViewModel(e.Value.Value);
+            });
+            _currentDeck.TowerCardIds.ObserveRemove().Subscribe(e =>
+            {
+                ChangeDeckTowerCardViewModel(e.Value.Value);
+            });
+          //  Debug.Log(JsonConvert.SerializeObject(_allTowerCards[3].NumberCardDeck, Formatting.Indented));
         }
+        public void ChangeDeckTowerCard(int uniqueId)
+        {
+            var towerView = _allTowerCards.FirstOrDefault(t => t.IdTowerCard == uniqueId)!;
 
+            if (_currentDeck.TowerCardInDeck(uniqueId))
+            {
+                _currentDeck.ExtractFromDeck(uniqueId);
+                towerView.NumberCardDeck = 0;
+                towerView.IsDeck.OnNext(false);
+            }
+            else
+            {
+                towerView.NumberCardDeck = _currentDeck.PushToDeck(uniqueId);
+                towerView.IsDeck.OnNext(true);
+            }
+            
+            var command = new CommandSaveGameState();
+            _cmd.Process(command);
+        }
+        
+        private void ChangeDeckTowerCardViewModel(int uniqueId)
+        {
+            var towerView = _allTowerCards.FirstOrDefault(t => t.IdTowerCard == uniqueId)!;
+            towerView.NumberCardDeck = 0;
+            foreach (var towerCardId in _currentDeck.TowerCardIds)
+            {
+                if (towerCardId.Value == uniqueId)
+                {
+                    towerView.NumberCardDeck = towerCardId.Key;
+                    towerView.IsDeck.Value = true;
+                    return;
+                }
+            }
+            towerView.IsDeck.Value = false;
+        }
 
         //ПУБЛИЧНЫЕ МЕТОДЫ ИЗМЕНЕНИЯ TowerCardEntity
 
@@ -114,29 +165,6 @@ namespace Game.MainMenu.Services
             _cmd.Process(commandCard);
             _cmd.Process(commandCurrency);
         }
-
-        public int GetCostPlanLevelUpTowerCard(int uniqueId)
-        {
-            var towerCardEntity = _inventoryRoot.Get<TowerCard>(uniqueId);
-            var levelCost = (towerCardEntity.Level.CurrentValue / 5 + 1); 
-            return levelCost * 2;
-        }
-        
-        public int GetCostCurrencyLevelUpTowerCard(int uniqueId)
-        {
-            var towerCardEntity = _inventoryRoot.Get<TowerCard>(uniqueId);
-            var levelCost = (towerCardEntity.Level.CurrentValue / 5 + 1); 
-            return levelCost * 1000;
-        }
-        
-        
-        public bool IsLevelUpTowerCard(int uniqueId)
-        {
-            //TODO Найти инвентарь и проверить стомость и передать в команду
-            
-            return true;
-        }
-
 
         private void CreateTowerCardViewModel(TowerCard towerCard)
         {
@@ -163,17 +191,14 @@ namespace Game.MainMenu.Services
                 _towerCardsMap.Remove(towerCard.UniqueId);
             }
         }
-
         private void CreateTowerPlanViewModel(TowerPlan towerPlan)
         {
             var towerPlanViewModel = new TowerPlanViewModel(towerPlan, 
                 _towerSettingsMap[towerPlan.ConfigId], 
                 _container);
-
             _allTowerPlans.Add(towerPlanViewModel); //4
             _towerPlansMap[towerPlan.UniqueId] = towerPlanViewModel;
         }
-        
         private void RemoveTowerPlanViewModel(TowerPlan towerPlan)
         {
             if (_towerPlansMap.TryGetValue(towerPlan.UniqueId, out var towerPlanViewModel))
@@ -230,5 +255,7 @@ namespace Game.MainMenu.Services
 
             //Debug.Log("UpdateParameterTowerCard для " + towerCard.UniqueId + $" ({towerCard.ConfigId})");
         }
+
+
     }
 }

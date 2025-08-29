@@ -74,8 +74,8 @@ namespace Game.MainMenu.Root
                 {
                     throw new Exception($"Инвентарь не создался");
                 }
-                Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.DeckCards, Formatting.Indented));
-                Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.BattleDeck, Formatting.Indented));
+                //Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.DeckCards, Formatting.Indented));
+                //Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.BattleDeck, Formatting.Indented));
             }
             //TODO Загружаем настройки и другое с сервера. Либо перенести в GameRoot 
             

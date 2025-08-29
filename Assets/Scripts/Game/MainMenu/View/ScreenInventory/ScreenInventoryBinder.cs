@@ -18,8 +18,9 @@ namespace Game.MainMenu.View.ScreenInventory
         [SerializeField] private Transform containerTowerCard;
         [SerializeField] private Transform containerTowerPlan;
 
-        [SerializeField] private Button buttonTest;
-
+        [SerializeField] private Button buttonBlacksmith ;
+        [SerializeField] private List<Transform> deckCards = new(6);
+        
         private readonly Dictionary<int, TowerCardBinder> _createdTowerCardMap = new();
         private readonly Dictionary<int, TowerPlanBinder> _createdTowerPlanMap = new();
 
@@ -30,9 +31,25 @@ namespace Game.MainMenu.View.ScreenInventory
             foreach (var towerCardViewModel in viewModel.TowerCards)
             {
                 CreateTowerCard(towerCardViewModel);
+                towerCardViewModel.IsDeck.Subscribe(v =>
+                {
+                    ChangeParentTowerCard(towerCardViewModel);
+                    UpdateHeightContainerTowerCard();
+                });
+                //towerCardViewModel
             }
 
-            viewModel.TowerCards.ObserveAdd().Subscribe(e => { CreateTowerCard(e.Value); }).AddTo(ref d);
+            viewModel.TowerCards.ObserveAdd().Subscribe(e =>
+            {
+                var towerCardViewModel = e.Value;
+                CreateTowerCard(e.Value);
+                towerCardViewModel.IsDeck.Skip(1).Subscribe(v =>
+                {
+                    ChangeParentTowerCard(towerCardViewModel);
+                    UpdateHeightContainerTowerCard();
+                });
+                UpdateHeightContainerTowerCard();
+            }).AddTo(ref d);
             viewModel.TowerCards.ObserveRemove().Subscribe(e =>
             {
                 DestroyTowerCard(e.Value);
@@ -43,27 +60,60 @@ namespace Game.MainMenu.View.ScreenInventory
                 CreateTowerPlan(towerPlanViewModel);
             }
 
-            viewModel.TowerPlans.ObserveAdd().Subscribe(e => { CreateTowerPlan(e.Value); }).AddTo(ref d);
-            viewModel.TowerPlans.ObserveRemove().Subscribe(e =>
-            {
-                DestroyTowerPlan(e.Value);
-            }).AddTo(ref d);
-            
+            UpdateHeightContainerTowerPlan();
+            viewModel.TowerPlans.ObserveAdd()
+                .Subscribe(e =>
+                {
+                    CreateTowerPlan(e.Value);
+                    UpdateHeightContainerTowerPlan();
+                })
+                .AddTo(ref d);
+            viewModel.TowerPlans.ObserveRemove()
+                .Subscribe(e => DestroyTowerPlan(e.Value))
+                .AddTo(ref d);
             
             _disposable = d.Build();
         }
 
-        private void CreateTowerPlan(TowerPlanViewModel viewModel)
+        private void ChangeParentTowerCard(TowerCardViewModel viewModel)
         {
-            var prefabTowerPlanPath =
-                $"Prefabs/UI/MainMenu/ScreenInventory/TowerPlan";
-            var towerPrefab = Resources.Load<TowerPlanBinder>(prefabTowerPlanPath);
-            var createdTower = Instantiate(towerPrefab, containerTowerPlan);
-            createdTower.Bind(viewModel);
-            _createdTowerPlanMap[viewModel.IdTowerPlan] = createdTower;
+            if (viewModel.IsDeck.Value)
+            {
+                _createdTowerCardMap[viewModel.IdTowerCard].transform.SetParent(deckCards[viewModel.NumberCardDeck - 1]);
+                _createdTowerCardMap[viewModel.IdTowerCard].transform.localPosition = new Vector3(0, 0, 0);
+            }
+            else
+            {
+                _createdTowerCardMap[viewModel.IdTowerCard].transform.SetParent(containerTowerCard);
+            }
         }
 
+        
+        private void UpdateHeightContainerTowerCard()
+        {
+            var container = containerTowerCard.GetComponent<RectTransform>();
+            const int blockHeight = 250;
+            const int blockSpacing = 22;
+            var rows = Math.Ceiling(container.childCount / 5f);
+            
+            container.sizeDelta = container.childCount == 0 
+                ? new Vector2(1040, 0) 
+                : new Vector2(1040, (float)(rows * blockHeight + (rows - 1) * blockSpacing));
+        }
 
+        private void UpdateHeightContainerTowerPlan()
+        {
+           // Debug.Log("1");
+            var container = containerTowerPlan.GetComponent<RectTransform>();
+            const int blockHeight = 240;
+            const int blockSpacing = 20;
+            var rows = Math.Ceiling(container.childCount / 4f);
+          //  Debug.Log(rows + "  " + container.childCount);
+            container.sizeDelta = container.childCount == 0 
+                ? new Vector2(1040, 0) 
+                : new Vector2(1040, (float)(rows * blockHeight + (rows - 1) * blockSpacing));
+        }
+        
         private void CreateTowerCard(TowerCardViewModel viewModel)
         {
             var prefabTowerCardPath =
@@ -74,7 +124,15 @@ namespace Game.MainMenu.View.ScreenInventory
             _createdTowerCardMap[viewModel.IdTowerCard] = createdTower;
         }
         
-        
+        private void CreateTowerPlan(TowerPlanViewModel viewModel)
+                {
+                    var prefabTowerPlanPath =
+                        $"Prefabs/UI/MainMenu/ScreenInventory/TowerPlan";
+                    var towerPrefab = Resources.Load<TowerPlanBinder>(prefabTowerPlanPath);
+                    var createdTower = Instantiate(towerPrefab, containerTowerPlan);
+                    createdTower.Bind(viewModel);
+                    _createdTowerPlanMap[viewModel.IdTowerPlan] = createdTower;
+                }
 
         private void DestroyTowerCard(TowerCardViewModel viewModel)
         {
@@ -98,17 +156,17 @@ namespace Game.MainMenu.View.ScreenInventory
 
         private void OnEnable()
         {
-            buttonTest.onClick.AddListener(OnGoToPlayButtonClicked);
+            buttonBlacksmith.onClick.AddListener(OnOpenPopupBlacksmith);
         }
 
         private void OnDisable()
         {
-            buttonTest.onClick.RemoveListener(OnGoToPlayButtonClicked);
+            buttonBlacksmith.onClick.RemoveListener(OnOpenPopupBlacksmith);
         }
 
-        private void OnGoToPlayButtonClicked()
+        private void OnOpenPopupBlacksmith()
         {
-            ViewModel.Test();
+            ViewModel.RequestPopupBlacksmith();
         }
 
         private void OnDestroy()
