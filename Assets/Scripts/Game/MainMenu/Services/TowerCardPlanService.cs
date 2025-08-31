@@ -7,6 +7,7 @@ using Game.MainMenu.Commands.InventoryCommands;
 using Game.MainMenu.Commands.SoftCurrency;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.View;
+using Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using Game.Settings.Gameplay.Entities.Tower;
@@ -211,7 +212,7 @@ namespace Game.MainMenu.Services
         /**
          * Пересчитываем параметры башни в зависимости от уровня и эпичности
          */
-        private void UpdateParameterTowerCard(TowerCard towerCard)
+        public void UpdateParameterTowerCard(TowerCard towerCard)
         {
             var epic = towerCard.EpicLevel.Value;
             var level = towerCard.Level.Value;
@@ -256,6 +257,53 @@ namespace Game.MainMenu.Services
             //Debug.Log("UpdateParameterTowerCard для " + towerCard.UniqueId + $" ({towerCard.ConfigId})");
         }
 
+
+        public InfoUpgradedViewModel GetInfoUpgradedViewModel(string configId,
+            TypeEpicCard epicLevel, int level)
+        {
+            var viewModel = new InfoUpgradedViewModel();
+            var towerSetting = _towerSettingsMap[configId];
+            var maxLevel = epicLevel.MaxLevel();
+            viewModel.NameTower = towerSetting.TitleLid;
+            viewModel.NameEpic = epicLevel.GetString();
+
+            var towerCardData = new TowerCardData
+            {
+                EpicLevel = epicLevel,
+                ConfigId = configId,
+                Level = level,
+                Parameters = new Dictionary<TowerParameterType, TowerParameterData>(),
+            };
+            foreach (var baseParameter in towerSetting.BaseParameters)
+            {
+                towerCardData.Parameters.Add(baseParameter.ParameterType, new TowerParameterData(baseParameter));
+            }
+
+            var towerCard = new TowerCard(towerCardData);
+            towerCardData.EpicLevel = towerCardData.EpicLevel.Next();
+            var towerCardAfter = new TowerCard(towerCardData);
+
+            UpdateParameterTowerCard(towerCard);
+            UpdateParameterTowerCard(towerCardAfter);
+
+            viewModel.Parameters.Add(
+                "МАКС.УРОВЕНЬ", 
+                new Vector2(towerCard.EpicLevel.Value.MaxLevel(), towerCardAfter.EpicLevel.Value.MaxLevel())
+            );
+            
+            foreach (var valuePair in towerCard.Parameters)
+            {
+                if (!towerCardAfter.Parameters.TryGetValue(valuePair.Key, out var valueAfter))
+                    throw new Exception("Ошибка");
+                
+                if (!Mathf.Approximately(valuePair.Value.Value.CurrentValue, valueAfter.Value.CurrentValue))
+                    viewModel.Parameters.Add(valuePair.Key.GetString(), 
+                        new Vector2(valuePair.Value.Value.CurrentValue, valueAfter.Value.CurrentValue));
+            }
+            
+            return viewModel;
+
+        }
 
     }
 }

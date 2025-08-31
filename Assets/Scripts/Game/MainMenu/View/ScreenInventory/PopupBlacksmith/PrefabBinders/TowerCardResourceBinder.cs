@@ -2,6 +2,7 @@
 using Game.Common;
 using Game.GameRoot.ImageManager;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
+using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
 using R3;
 using TMPro;
@@ -23,8 +24,11 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
         [SerializeField] private Image selectImage;
 
         //TODO Отслеживать и перемещать модель в Binder 
-        public ReactiveProperty<bool> IsInDeck = new(false);
-        private TowerCardResourceViewModel _viewModel;
+    //    public ReactiveProperty<bool> IsInDeck = new(false);
+        
+    private TowerCardResourceViewModel _viewModel;
+        public string ConfigId => _viewModel.ConfigId;
+        public TypeEpicCard EpicLevel => _viewModel.EpicLevel;
 
         public void Bind(TowerCardResourceViewModel viewModel)
         {
@@ -40,7 +44,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
             {
                 selectImage.gameObject.SetActive(v);
             });
-            
+
             //     transform.GetComponent<RectTransform>().anchoredPosition = viewModel.Position;
             _disposable = d.Build();
         }

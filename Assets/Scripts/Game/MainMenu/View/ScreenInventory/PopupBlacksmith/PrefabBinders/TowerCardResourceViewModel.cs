@@ -19,6 +19,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
         public string ConfigId => _towerCardEntity.ConfigId;
         public int Level => _towerCardEntity.Level.Value;
         public TypeEpicCard EpicLevel => _towerCardEntity.EpicLevel.Value;
+        public string NameCard => _towerCardEntity.Name;
 
 
         public TowerCardResourceViewModel(
@@ -29,7 +30,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
             _towerCardEntity = towerCardEntity;
             _container = container;
             _limitedSelected = limitedSelected;
-//            IsSelected.Subscribe(e => Debug.Log(TowerEntityId + " " + e));
         }
 
         public void RequestSelectedTowerCard()

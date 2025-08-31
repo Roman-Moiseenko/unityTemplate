@@ -14,7 +14,8 @@ namespace Game.MainMenu.Commands.TowerCommands
         
         public bool Handle(CommandTowerCardSpend command)
         {
-            throw new System.NotImplementedException();
+            _gameState.Inventory.RemoveItem(command.UniqueId);
+            return true;
         }
     }
 }

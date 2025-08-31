@@ -7,6 +7,10 @@
         Rare = 2,
         Epic = 3,
         EpicPlus = 4,
-        Legend = 5
+        Legend = 5,
+        LegendPlus = 6,
+        Cult = 7,
+        CultPlus = 8,
+        Excellent = 9
     }
 }

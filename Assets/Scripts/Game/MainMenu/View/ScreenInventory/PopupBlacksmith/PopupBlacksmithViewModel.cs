@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using DI;
+using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.Services;
 using Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders;
+using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
 using Game.State.Root;
+using MVVM.CMD;
 using MVVM.UI;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -27,27 +30,25 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
         public List<TowerCard> BaseListCard = new();
         public ObservableList<TowerCardResourceViewModel> TowerCardMaps = new();
         private readonly DIContainer _container;
-
+        public readonly TowerSettings TowerSettings;
 
         public TowerCardUpgradingViewModel TowerUpgrading = new();
         public TowerCardUpgradingViewModel UpgradingNecessary1 = new();
         public TowerCardUpgradingViewModel UpgradingNecessary2 = new();
+       // public InfoUpgradedViewModel InfoUpgraded;
 
         public ReactiveProperty<bool> LimitSelectedCard = new(false);
+        public ReactiveProperty<int> MaxLevel = new(1);
+        private readonly ICommandProcessor _cmd;
+
         public PopupBlacksmithViewModel(DIContainer container)
         {
             _container = container;
             _gameState = container.Resolve<IGameStateProvider>().GameState;
             _towerCardPlanService = container.Resolve<TowerCardPlanService>();
+            _cmd = container.Resolve<ICommandProcessor>();
 
-
-            foreach (var inventoryItem in _gameState.Inventory.Items)
-            {
-                if (inventoryItem is TowerCard towerCard)
-                {
-                    BaseListCard.Add(towerCard);
-                }
-            }
+            UpdateBaseListCard();
 
             TowerCardMaps.ObserveAdd().Subscribe(e =>
             {
@@ -57,12 +58,35 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
                     SelectedCard(towerViewModel);
                 });
             });
+            TowerUpgrading.IsSetCard
+                .Merge(UpgradingNecessary1.IsSetCard)
+                .Merge(UpgradingNecessary2.IsSetCard)
+                .Subscribe(_ =>
+                {
+                    var l0 = TowerUpgrading.Level;
+                    var l1 = UpgradingNecessary1.Level;
+                    var l2 = UpgradingNecessary2.Level;
+                    MaxLevel.Value = new[] { l0, l1, l2 }.Max();
+                });
+            
+            //
+            UpdateBaseListCard();
             Sorting();
-
             //TODO Отслеживать процесс слияния карт, обновлять BaseListCard и Sorting();
         }
 
-
+        private void UpdateBaseListCard()
+        {
+            BaseListCard.Clear();
+            foreach (var inventoryItem in _gameState.Inventory.Items)
+            {
+                if (inventoryItem is TowerCard towerCard)
+                {
+                    BaseListCard.Add(towerCard);
+                }
+            }
+        }
+        
         private void Sorting()
         {
             TowerCardMaps.Clear();
@@ -70,6 +94,9 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
             Dictionary<string, Dictionary<TypeEpicCard, List<int>>> array = new();
             foreach (var towerCard in BaseListCard)
             {
+                if (TowerUpgrading.IsSetCard.CurrentValue && 
+                    TowerUpgrading.ConfigId != towerCard.ConfigId) continue;
+                
                 var epic = towerCard.EpicLevel.CurrentValue;
 
                 if (array.TryGetValue(towerCard.ConfigId, out var arrayEpics))
@@ -106,7 +133,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
                 if (configPair.Value.Count == 0) array.Remove(configPair.Key);
             }
 
-            Debug.Log(JsonConvert.SerializeObject(array, Formatting.Indented));
+           // Debug.Log(JsonConvert.SerializeObject(array, Formatting.Indented));
 
             foreach (var configPair in array)
             {
@@ -177,6 +204,43 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
 
             return true;
         }
-        
+
+        public InfoUpgradedViewModel GetInfoUpdates()
+        {
+            
+        /*    var l0 = TowerUpgrading.Level;
+            var l1 = UpgradingNecessary1.Level;
+            var l2 = UpgradingNecessary2.Level;*/
+            return _towerCardPlanService.GetInfoUpgradedViewModel(
+                TowerUpgrading.ConfigId, TowerUpgrading.EpicLevel,
+                MaxLevel.CurrentValue
+                );
+        }
+
+        public void MergeTowerCard()
+        {
+
+            var command = new CommandTowerCardAdd();
+            command.ConfigId = TowerUpgrading.ConfigId;
+            command.Level = MaxLevel.CurrentValue;
+            command.EpicLevel = TowerUpgrading.EpicLevel.Next();
+            _cmd.Process(command);
+
+            var commandDelete = new CommandTowerCardSpend();
+            commandDelete.UniqueId = TowerUpgrading.TowerEntityId;
+            _cmd.Process(commandDelete);
+            
+            commandDelete.UniqueId = UpgradingNecessary1.TowerEntityId;
+            _cmd.Process(commandDelete);
+            
+            commandDelete.UniqueId = UpgradingNecessary2.TowerEntityId;
+            _cmd.Process(commandDelete);
+            
+            UpgradingNecessary2.ResetNecessary();
+            UpgradingNecessary1.ResetNecessary();
+            TowerUpgrading.ResetNecessary();
+            UpdateBaseListCard();
+            Sorting();
+        }
     }
 }

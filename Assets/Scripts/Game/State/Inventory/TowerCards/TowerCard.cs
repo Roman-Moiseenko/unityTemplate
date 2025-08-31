@@ -12,7 +12,7 @@ namespace Game.State.Inventory.TowerCards
         public ReactiveProperty<TypeEpicCard> EpicLevel;
         public readonly ReactiveProperty<int> Level;
         public ObservableDictionary<TowerParameterType, TowerParameter> Parameters;
-        public ObservableDictionary<TowerParameterType, TowerParameter> BaseParameters;
+       // public ObservableDictionary<TowerParameterType, TowerParameter> BaseParameters;
         
         public TowerCard(TowerCardData data) : base(data)
         {

@@ -26,6 +26,8 @@ namespace Game.MainMenu.View.ScreenInventory
 
         protected override void OnBind(ScreenInventoryViewModel viewModel)
         {
+            //TODO Сделать пул объектов инвентаря, не загружая. Также как Damage в ScreenGameplay
+            
             var d = Disposable.CreateBuilder();
             base.OnBind(viewModel);
             foreach (var towerCardViewModel in viewModel.TowerCards)

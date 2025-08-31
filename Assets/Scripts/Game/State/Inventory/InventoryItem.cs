@@ -8,6 +8,7 @@ namespace Game.State.Inventory
         public InventoryType TypeItem => Origin.TypeItem;
         public string ConfigId => Origin.ConfigId;
         public int UniqueId => Origin.UniqueId;
+        public string Name => Origin.Name;
         public readonly ReactiveProperty<int> Amount;
         
         protected InventoryItem(InventoryItemData data)

@@ -7,5 +7,7 @@
         public string ConfigId { get; set; } //Идентификатор для поиска настроек сущности
         public int Amount { get; set; }
         public int UniqueId { get; set; }
+        public string Name { get; set; }
+
     }
 }

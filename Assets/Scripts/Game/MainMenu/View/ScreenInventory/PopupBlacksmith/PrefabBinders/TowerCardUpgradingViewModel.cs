@@ -12,15 +12,18 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
         public ReactiveProperty<bool> IsSetCard = new(false);
         public ReactiveProperty<bool> IsNecessary = new(false); 
         public string ConfigId;
-        public int Level;
+        public int Level = 1;
         public TypeEpicCard EpicLevel;
         public int Position = 0;
         public int TowerEntityId;
+        public string NameCard { get; set; }
 
         public TowerCardUpgradingViewModel()
         {
             
         }
+
+        
 
         public void SetTowerCardNecessary(TowerCardResourceViewModel viewModel)
         {
@@ -29,11 +32,11 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
             EpicLevel = viewModel.EpicLevel;
             IsNecessary.Value = true;
         }
-
-
+        
         public void SetTowerCardViewModel(TowerCardResourceViewModel viewModel)
         {
             _viewModel = viewModel;
+            NameCard = viewModel.NameCard;
             PositionResource = _viewModel.Position;
             Level = viewModel.Level;
             TowerEntityId = viewModel.TowerEntityId;
@@ -42,8 +45,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
 
         public void ResetViewModel()
         {
-            //_viewModel.IsSelected.OnNext(false);
-            
             _viewModel = null;
             PositionResource = Vector3.zero;
             Level = 1;

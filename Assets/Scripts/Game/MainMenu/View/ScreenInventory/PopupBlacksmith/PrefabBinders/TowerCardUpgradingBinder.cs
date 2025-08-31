@@ -11,7 +11,7 @@ using Image = UnityEngine.UI.Image;
 
 namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
 {
-    public class TowerCardUpgradedBinder : MonoBehaviour
+    public class TowerCardUpgradingBinder : MonoBehaviour
     {
         private TowerCardUpgradingViewModel _viewModel;
         private IDisposable _disposable;
