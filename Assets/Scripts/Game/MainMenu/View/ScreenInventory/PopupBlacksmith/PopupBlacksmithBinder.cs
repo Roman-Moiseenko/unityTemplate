@@ -16,16 +16,12 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
         [SerializeField] private Transform upgradedInfo;
         [SerializeField] private Transform upgradedTower;
         [SerializeField] private Transform upgradingTower;
-
         [SerializeField] private Transform upgradingNecessary1;
         [SerializeField] private Transform upgradingNecessary2;
-
         [SerializeField] private Transform containerResources;
-
         [SerializeField] private Button buttonMerge;
 
         private readonly List<TowerCardResourceBinder> _createdTowerCardMap = new();
-
         private IDisposable _disposable;
 
         protected override void OnBind(PopupBlacksmithViewModel viewModel)
@@ -50,7 +46,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
                 {
                     Destroy(createdTower.gameObject);
                 }
-
                 _createdTowerCardMap.Clear();
                 UpdateHeightContainerResource();
             }).AddTo(ref d);
@@ -69,8 +64,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
                 {
                     upgradedTowerBinder.Bind(viewModel.TowerUpgrading);
                     upgradedInfo.GetComponent<InfoUpgradedBinder>().Bind(viewModel.GetInfoUpdates());
-
-                    //InfoUpgradedBinder.Show(viewModel.TowerUpgrading);
                     //Показываем характеристики
                     upgradedTower.gameObject.SetActive(true);
                     //Не показываем другого типа 
@@ -86,7 +79,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
                 {
                     upgradedTower.gameObject.SetActive(false);
                     upgradedInfo.GetComponent<InfoUpgradedBinder>().Empty();
-                    //InfoUpgradedBinder.Empty();
                     foreach (var towerCardResourceBinder in _createdTowerCardMap)
                     {
                         towerCardResourceBinder.gameObject.SetActive(true);
@@ -100,10 +92,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
                 .Merge(viewModel.UpgradingNecessary2.IsSetCard)
                 .Subscribe(v =>
                 {
-                  /*  var l0 = viewModel.TowerUpgrading.Level;
-                    var l1 = viewModel.UpgradingNecessary1.Level;
-                    var l2 = viewModel.UpgradingNecessary2.Level;*/
-
                     upgradedTowerBinder.SetLevel(viewModel.MaxLevel.CurrentValue);
                     if (viewModel.TowerUpgrading.IsSetCard.CurrentValue)
                         upgradedInfo.GetComponent<InfoUpgradedBinder>().Bind(viewModel.GetInfoUpdates());    
@@ -116,8 +104,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
 
             _disposable = d.Build();
         }
-
-
+        
         private void CreateTowerCard(TowerCardResourceViewModel viewModel)
         {
             var prefabTowerCardPath =
@@ -131,19 +118,11 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
         private void UpdateHeightContainerResource()
         {
             var container = containerResources.GetComponent<RectTransform>();
-            var count = 0;
-            foreach (var towerCardResourceBinder in _createdTowerCardMap)
-            {
-                if (towerCardResourceBinder.gameObject.activeSelf)
-                {
-                    count++;
-                }
-            }
-
-
+            var count = _createdTowerCardMap.Count(t => t.gameObject.activeSelf);
+            
             const int blockHeight = 250;
             const int blockSpacing = 22;
-            var rows = Math.Ceiling(count / 5f); // container.childCount
+            var rows = Math.Ceiling(count / 5f);
 
             container.sizeDelta = count == 0
                 ? new Vector2(1040, 0)
@@ -164,8 +143,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
         {
             buttonMerge.onClick.RemoveListener(OnMergeTowerCard);
         }
-
-
+        
         protected override void OnDestroy()
         {
             base.OnDestroy();

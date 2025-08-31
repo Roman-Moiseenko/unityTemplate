@@ -14,19 +14,14 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
 {
     public class TowerCardResourceBinder : MonoBehaviour
     {
-        private IDisposable _disposable;
-
         [SerializeField] private Image epicImage;
         [SerializeField] private Image towerImage;
         [SerializeField] private TMP_Text levelText;
         [SerializeField] private Button buttonSet;
-
         [SerializeField] private Image selectImage;
-
-        //TODO Отслеживать и перемещать модель в Binder 
-    //    public ReactiveProperty<bool> IsInDeck = new(false);
         
-    private TowerCardResourceViewModel _viewModel;
+        private TowerCardResourceViewModel _viewModel;
+        private IDisposable _disposable;
         public string ConfigId => _viewModel.ConfigId;
         public TypeEpicCard EpicLevel => _viewModel.EpicLevel;
 
@@ -37,25 +32,15 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
             var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
 
             towerImage.sprite = imageManager.GetTowerCard(viewModel.ConfigId, 1);
-
             epicImage.sprite = imageManager.GetEpicLevel(viewModel.EpicLevel);
             levelText.text = $"Ур. {viewModel.Level}";
-            _viewModel.IsSelected.Subscribe(v =>
-            {
-                selectImage.gameObject.SetActive(v);
-            });
-
-            //     transform.GetComponent<RectTransform>().anchoredPosition = viewModel.Position;
+            _viewModel.IsSelected.Subscribe(v => selectImage.gameObject.SetActive(v));
+            
             _disposable = d.Build();
         }
         
-
         private void OnEnable()
         {
-          //  Debug.Log("OnEnable transform.position = " + transform.position);
-
-//            _viewModel.Position = transform.position;
-            
             buttonSet.onClick.AddListener(OnSelectedCard);
         }
 

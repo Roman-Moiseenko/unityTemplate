@@ -30,12 +30,10 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
         public List<TowerCard> BaseListCard = new();
         public ObservableList<TowerCardResourceViewModel> TowerCardMaps = new();
         private readonly DIContainer _container;
-        public readonly TowerSettings TowerSettings;
 
         public TowerCardUpgradingViewModel TowerUpgrading = new();
         public TowerCardUpgradingViewModel UpgradingNecessary1 = new();
         public TowerCardUpgradingViewModel UpgradingNecessary2 = new();
-       // public InfoUpgradedViewModel InfoUpgraded;
 
         public ReactiveProperty<bool> LimitSelectedCard = new(false);
         public ReactiveProperty<int> MaxLevel = new(1);
@@ -47,9 +45,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
             _gameState = container.Resolve<IGameStateProvider>().GameState;
             _towerCardPlanService = container.Resolve<TowerCardPlanService>();
             _cmd = container.Resolve<ICommandProcessor>();
-
-            UpdateBaseListCard();
-
+            
             TowerCardMaps.ObserveAdd().Subscribe(e =>
             {
                 var towerViewModel = e.Value;
@@ -69,10 +65,8 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
                     MaxLevel.Value = new[] { l0, l1, l2 }.Max();
                 });
             
-            //
             UpdateBaseListCard();
             Sorting();
-            //TODO Отслеживать процесс слияния карт, обновлять BaseListCard и Sorting();
         }
 
         private void UpdateBaseListCard()
@@ -133,7 +127,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
                 if (configPair.Value.Count == 0) array.Remove(configPair.Key);
             }
 
-           // Debug.Log(JsonConvert.SerializeObject(array, Formatting.Indented));
 
             foreach (var configPair in array)
             {
@@ -207,10 +200,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
 
         public InfoUpgradedViewModel GetInfoUpdates()
         {
-            
-        /*    var l0 = TowerUpgrading.Level;
-            var l1 = UpgradingNecessary1.Level;
-            var l2 = UpgradingNecessary2.Level;*/
             return _towerCardPlanService.GetInfoUpgradedViewModel(
                 TowerUpgrading.ConfigId, TowerUpgrading.EpicLevel,
                 MaxLevel.CurrentValue

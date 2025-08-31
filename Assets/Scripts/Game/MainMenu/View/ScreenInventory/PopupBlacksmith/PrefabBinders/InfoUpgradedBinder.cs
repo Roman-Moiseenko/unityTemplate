@@ -31,7 +31,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
                 parameters[index].GetComponent<InfoParameterBinder>().Bind(
                     parameter);
                 index++;
-                //Debug.Log(parameter.Key + " " + parameter.Value.x + " " + parameter.Value.y);
             }
 
             infoTowerBlock.GetComponent<RectTransform>().sizeDelta = new Vector2(

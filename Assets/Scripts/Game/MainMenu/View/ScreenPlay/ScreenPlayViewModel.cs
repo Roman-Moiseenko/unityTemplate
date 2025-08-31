@@ -18,7 +18,7 @@ namespace Game.MainMenu.View.ScreenPlay
 
         //  private readonly Subject<MainMenuExitParams> _exitSceneRequest2 = new();
         public override string Id => "ScreenPlay";
-        public override string Path => "MainMenu/";
+        public override string Path => "MainMenu/ScreenPlay/";
         
         public ScreenPlayViewModel(
             MainMenuUIManager uiManager, 
@@ -46,7 +46,13 @@ namespace Game.MainMenu.View.ScreenPlay
             //TODO Если осталась сессия, то сброс ее ... Перенести в сервис
             _container.Resolve<IGameStateProvider>().ResetGameplayState();
             _exitSceneRequest.OnNext(mainMenuExitParams);
-        }        
+        }
+
+        public void RequestInfinityGame()
+        {
+            var mainMenuExitParams = _exitParamsService.GetExitParams(0);    
+        }
+        
         /**
          * Временная ф-ция, перейдет в попап подтверждения возврата к игре
          */
