@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9d0e66572464868ae4c2640011bfdf9, type: 3}
   m_Name: Boss01
   m_EditorClassIdentifier: 
-  <ConfigId>k__BackingField: Boss
+  <ConfigId>k__BackingField: Boss01
   <TitleLid>k__BackingField: "\u0417\u0434\u043E\u0440\u043E\u0432\u044F\u043A"
   <DescriptionLid>k__BackingField: 
   <Type>k__BackingField: 2
@@ -23,3 +23,19 @@ MonoBehaviour:
   <Armor>k__BackingField: 10
   <Attack>k__BackingField: 100
   <RewardCurrency>k__BackingField: 200
+  <Parameters>k__BackingField:
+  - Level: 1
+    Health: 6000
+    Armor: 0
+    Attack: 1333.3
+    RewardCurrency: 200
+  - Level: 2
+    Health: 8794.1
+    Armor: 0
+    Attack: 1416.7
+    RewardCurrency: 400
+  - Level: 3
+    Health: 14753
+    Armor: 0
+    Attack: 1500
+    RewardCurrency: 800

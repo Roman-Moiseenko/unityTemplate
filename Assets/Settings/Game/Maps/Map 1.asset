@@ -59,117 +59,117 @@ MonoBehaviour:
     Waves:
     - WaveItems:
       - Quantity: 3
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 4
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 4
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 2
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
       - Quantity: 3
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 3
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
       - Quantity: 2
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 5
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
     - WaveItems:
       - Quantity: 8
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 2
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
       - Quantity: 4
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 6
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
     - WaveItems:
       - Quantity: 2
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
       - Quantity: 9
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 5
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
     - WaveItems:
       - Quantity: 4
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
       - Quantity: 8
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 5
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
       - Quantity: 8
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 9
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
     - WaveItems:
       - Quantity: 7
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
       - Quantity: 11
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 6
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
       - Quantity: 6
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 7
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
       - Quantity: 9
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 6
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
       - Quantity: 12
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 9
-        Mob: {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
         Level: 1
+        MobConfigId: HeavyInfantry
       - Quantity: 10
-        Mob: {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
         Level: 1
+        MobConfigId: Infantry
     - WaveItems:
       - Quantity: 1
-        Mob: {fileID: 11400000, guid: 97fd5f3ea0eea134aa2b6af974272479, type: 2}
         Level: 1
+        MobConfigId: Boss01
     groundDefault: Grass01
     smallMap: 0
     obstacle: 0

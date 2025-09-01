@@ -16,3 +16,4 @@ MonoBehaviour:
   TowersSettings: {fileID: 11400000, guid: 3c8853ae75226e444b2ed2d733f552a2, type: 2}
   CastleInitialSettings: {fileID: 11400000, guid: 066d2e8608c7b9c4cab825ea54468a91, type: 2}
   InventoryInitialSettings: {fileID: 11400000, guid: 897b29f7d03c67a43b13e8c675cab475, type: 2}
+  MobsSettings: {fileID: 11400000, guid: c2f3bba83ea73154f894273b26a42ef2, type: 2}

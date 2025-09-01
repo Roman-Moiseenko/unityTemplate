@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.State.Entities;
+using Game.State.Maps.Mobs;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
@@ -22,7 +23,7 @@ namespace Game.State.Maps.Towers
         public readonly bool IsMultiShot;
         
         public ReactiveProperty<bool> IsShot = new(false);
-        
+        public MobDefence Defence => Origin.Defence;
         
         public Dictionary<TowerParameterType, TowerParameterData> Parameters = new();
         

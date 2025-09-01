@@ -4,11 +4,13 @@ using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Commands;
+using Game.GamePlay.Commands.CastleCommands;
 using Game.GamePlay.Commands.GroundCommands;
 using Game.GamePlay.Commands.MapCommand;
 using Game.GamePlay.Commands.RewardCommand;
 using Game.GamePlay.Commands.RoadCommand;
 using Game.GamePlay.Commands.TowerCommand;
+using Game.GamePlay.Commands.WaveCommands;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Services;
@@ -42,7 +44,8 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(Fsm);
             var subjectExitParams = new Subject<GameplayExitParams>();
             container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
-
+          //  var generateService = new GenerateService();
+           // container.RegisterInstance(generateService);
             //    var cmd = container.Resolve<ICommandProcessor>(); //Создаем обработчик команд
             var cmd = container.Resolve<ICommandProcessor>();
             //var cmd = new CommandProcessorGameplay(gameStateProvider); //Создаем обработчик команд
@@ -55,8 +58,15 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandCreateGroundHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState, gameSettings.TowersSettings));
             cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
-            cmd.RegisterHandler(new CommandCreateLevelHandler(gameSettings,
-                gameplayState, cmd)); //Регистрируем команду создания уровня из конфигурации
+            cmd.RegisterHandler(new CommandCreateWaveHandler(gameSettings, gameplayState));
+            cmd.RegisterHandler(new CommandCastleCreateHandler(gameSettings, gameplayState));
+            cmd.RegisterHandler(new CommandGroundCreateBaseHandler(cmd));
+            cmd.RegisterHandler(new CommandRoadCreateBaseHandler(gameplayState, cmd));
+            //Команды создания карт
+            cmd.RegisterHandler(new CommandCreateLevelHandler(gameSettings, gameplayState, cmd)); // по уровням 
+            cmd.RegisterHandler(new CommandCreateInfinityHandler(gameSettings, gameplayState, cmd)); // бесконечный            
+            //cmd.RegisterHandler(new CommandCreateEventHandler(gameSettings, gameplayState, cmd)); //евенты            
+            
             cmd.RegisterHandler(new CommandRewardKillMobHandler(gameplayState));
             cmd.RegisterHandler(new CommandDeleteTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
@@ -139,11 +149,32 @@ namespace Game.GamePlay.Root
             //Загружаем уровень из настроек, если gameplayState пуст.
             if (gameplayState.Towers.Any() != true)
             {
-                var command = new CommandCreateLevel(gameplayEnterParams.MapId);
-                var success = cmd.Process(command);
+                var success = false;
+                switch (gameplayEnterParams.TypeGameplay)
+                {
+                    case TypeGameplay.Infinity:
+                    {
+                        var command = new CommandCreateInfinity(gameplayEnterParams.MapId);
+                        success = cmd.Process(command);
+                        break;
+                    }
+                    case TypeGameplay.Levels:
+                    {
+                        var command = new CommandCreateLevel(gameplayEnterParams.MapId);
+                        success = cmd.Process(command);
+                        break;
+                    }
+                    case TypeGameplay.Event:
+                        break;
+                    case TypeGameplay.Resume:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                
                 if (!success) throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
                 Fsm.Fsm.SetState<FsmStateBuildBegin>(); //Устанавливаем начальный режим строительства
-                //rewardService.StartRewardCard(); 
+                
             }
             
             waveService.Start(); //Запуск таймера

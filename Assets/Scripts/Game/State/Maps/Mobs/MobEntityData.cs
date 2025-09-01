@@ -11,7 +11,8 @@ namespace Game.State.Maps.Mobs
         //public Vector2 Direction;
         public MobType Type;
         public int Level;
-        
+
+        public MobDefence Defence;
         
         public bool IsFly;
         

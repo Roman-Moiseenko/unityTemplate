@@ -103,6 +103,9 @@ namespace Game.GamePlay.Services
                 }
             }
             
+            if (towerEntity.Defence.Previous() == mobEntity.Defence) damage *= 0.8f;
+            if (towerEntity.Defence.Next() == mobEntity.Defence) damage *= 1.2f;
+            
             var shotEntityData = new ShotEntityData
             {
                 TowerEntityId = towerEntity.UniqueId,

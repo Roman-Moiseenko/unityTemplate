@@ -29,6 +29,10 @@ namespace MVVM.CMD
             if (_handlesMap.TryGetValue(typeof(TCommand), out var handler))
             {
                 var typeHandler = (ICommandHandler<TCommand>)handler;
+                if (typeHandler == null)
+                {
+                    throw new Exception("Не загружена команда " + typeof(TCommand));
+                }
                 var result = typeHandler.Handle(command);
                 if (result) //Если команда успешно обработалась, то сохраняем состояние игры
                 {

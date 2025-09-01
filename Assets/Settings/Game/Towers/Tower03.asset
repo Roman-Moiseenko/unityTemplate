@@ -22,6 +22,7 @@ MonoBehaviour:
   <OnRoad>k__BackingField: 0
   <MultiShot>k__BackingField: 1
   <TypeEnemy>k__BackingField: 0
+  <Defence>k__BackingField: 2
   <Shot>k__BackingField:
     Speed: 0.1
     LineTrajectory: 1

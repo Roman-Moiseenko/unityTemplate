@@ -1,4 +1,5 @@
 ﻿using Game.Settings.Gameplay.Buildings;
+using Game.Settings.Gameplay.Enemies;
 using Game.Settings.Gameplay.Entities.Buildings;
 
 using Game.Settings.Gameplay.Entities.Castle;
@@ -17,5 +18,6 @@ namespace Game.Settings
         public TowersSettings TowersSettings;
         public CastleInitialSettings CastleInitialSettings;
         public InventoryInitialSettings InventoryInitialSettings;
+        public MobsSettings MobsSettings;
     }
 }

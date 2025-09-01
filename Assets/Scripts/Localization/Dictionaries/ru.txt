@@ -1,0 +1,1 @@
+﻿screenplay.start_battle=К БОЮ

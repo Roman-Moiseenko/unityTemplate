@@ -9,5 +9,7 @@ namespace Game.Settings.Gameplay.Maps
     public class MapsSettings : ScriptableObject
     {
         public List<MapSettings> Maps;
+        public List<string> GroundConfigIds;
+        public List<string> RoadConfigIds;
     }
 }

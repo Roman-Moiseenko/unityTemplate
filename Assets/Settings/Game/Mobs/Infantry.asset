@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9d0e66572464868ae4c2640011bfdf9, type: 3}
-  m_Name: Infantry01
+  m_Name: Infantry
   m_EditorClassIdentifier: 
   <ConfigId>k__BackingField: Infantry
   <TitleLid>k__BackingField: "\u041F\u0435\u0445\u043E\u0442\u0438\u043D\u0435\u0446"
@@ -18,8 +18,33 @@ MonoBehaviour:
   <Type>k__BackingField: 0
   <PrefabPath>k__BackingField: 
   <Speed>k__BackingField: 1
+  <SpeedMove>k__BackingField: 0
+  <SpeedAttack>k__BackingField: 0
   <IsFly>k__BackingField: 0
-  <Health>k__BackingField: 250
+  <Health>k__BackingField: 260
   <Armor>k__BackingField: 0
   <Attack>k__BackingField: 10
   <RewardCurrency>k__BackingField: 10
+  <Defence>k__BackingField: 0
+  <BaseParameters>k__BackingField:
+    Level: 1
+    Health: 260
+    Armor: 0
+    Attack: 94.1
+    RewardCurrency: 10
+  <Parameters>k__BackingField:
+  - Level: 1
+    Health: 260
+    Armor: 0
+    Attack: 94.1
+    RewardCurrency: 10
+  - Level: 2
+    Health: 652.6
+    Armor: 0
+    Attack: 94.1
+    RewardCurrency: 20
+  - Level: 3
+    Health: 1323.5
+    Armor: 0
+    Attack: 94.1
+    RewardCurrency: 30

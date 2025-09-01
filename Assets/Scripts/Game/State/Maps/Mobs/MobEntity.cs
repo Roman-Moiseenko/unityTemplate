@@ -26,7 +26,8 @@ namespace Game.State.Maps.Mobs
         public float Attack => Origin.Attack;
         public float Delta;
         public ReactiveProperty<MobState> State;
-
+        public MobDefence Defence => Origin.Defence;
+        
         public ObservableDictionary<string, MobDebuff> Debuffs = new();
 
         public readonly ReactiveProperty<Vector3> PositionTarget = new();
@@ -69,9 +70,15 @@ namespace Game.State.Maps.Mobs
 
         public float SetDamage(float damage)
         {
+            //посчитать коэфициент урона +-20% от defenceTower и defenceMob 
+            Health.Value -= damage;
+            return damage;
+
+            /*
             var damageReceived = damage - Armor.Value;
             Health.Value -= damageReceived;
-            return damageReceived;
+
+            return damageReceived;*/
         }
         
         public void SetDebuff(string configId, MobDebuff debuff)

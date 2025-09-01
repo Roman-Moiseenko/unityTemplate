@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.State.Entities;
+using Game.State.Maps.Mobs;
 using UnityEngine;
 
 namespace Game.State.Maps.Towers
@@ -20,6 +21,7 @@ namespace Game.State.Maps.Towers
         
         public bool IsMultiShot { get; set; }
         
+        public MobDefence Defence { get; set; }
         
     }
 }

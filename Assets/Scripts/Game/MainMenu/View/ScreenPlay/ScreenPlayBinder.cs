@@ -7,19 +7,19 @@ namespace Game.MainMenu.View.ScreenPlay
 {
     public class ScreenPlayBinder : WindowBinder<ScreenPlayViewModel>
     {
-        [SerializeField] private Button _btnBeginGame;
+        [SerializeField] private Button btnInfinityBattle;
         [SerializeField] private Button _btnResumeGame;
         
         
         private void OnEnable()
         {
-            _btnBeginGame.onClick.AddListener(OnBeginGameButtonClicked);
+            btnInfinityBattle.onClick.AddListener(OnResumeInfinityBattleClicked);
             _btnResumeGame.onClick.AddListener(OnResumeGameButtonClicked);
         }
 
         private void OnDisable()
         {
-            _btnBeginGame.onClick.RemoveListener(OnBeginGameButtonClicked);
+            btnInfinityBattle.onClick.RemoveListener(OnResumeInfinityBattleClicked);
             _btnResumeGame.onClick.RemoveListener(OnResumeGameButtonClicked);
         }
 
@@ -33,5 +33,15 @@ namespace Game.MainMenu.View.ScreenPlay
             ViewModel.RequestResumeGame();
         }
         
+        
+        private void OnResumeInfinityBattleClicked()
+        {
+            if (ViewModel.RequestInfinityGame())
+            {
+                //TODO Попап с ошибкой . Не назначены карты, скилы или герой, или не потратили что то еще
+            }
+
+            
+        }
     }
 }

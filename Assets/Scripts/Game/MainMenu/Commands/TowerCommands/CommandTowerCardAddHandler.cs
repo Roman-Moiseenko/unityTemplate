@@ -35,6 +35,7 @@ namespace Game.MainMenu.Commands.TowerCommands
                 Level = command.Level,
                 Amount = 1, //towerCard.Amount,
                 Parameters = new Dictionary<TowerParameterType, TowerParameterData>(),
+                Defence = towerConfig.Defence,
             };
                
             foreach (var baseParameter in towerConfig.BaseParameters)

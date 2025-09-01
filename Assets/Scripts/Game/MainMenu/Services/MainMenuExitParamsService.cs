@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using DI;
+using Game.GamePlay.Classes;
 using Game.GamePlay.Root;
 using Game.MainMenu.Root;
 using Game.State;
@@ -20,9 +21,9 @@ namespace Game.MainMenu.Services
             _gameState = container.Resolve<IGameStateProvider>().GameState;
         }
 
-        public MainMenuExitParams GetExitParams(int currentIdMap)
+        public MainMenuExitParams GetExitParams(TypeGameplay typeGameplay, int currentIdMap)
         {
-            var gameplayEnterParams = new GameplayEnterParams(currentIdMap);
+            var gameplayEnterParams = new GameplayEnterParams(typeGameplay, currentIdMap);
             var gameState = _container.Resolve<IGameStateProvider>().GameState;
             var deckCard = gameState.Inventory.GetCurrentDeckCard();
             

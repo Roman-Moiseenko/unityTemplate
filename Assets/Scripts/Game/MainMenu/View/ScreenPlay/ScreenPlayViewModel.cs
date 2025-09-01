@@ -1,4 +1,5 @@
 ﻿using DI;
+using Game.GamePlay.Classes;
 using Game.GamePlay.Root;
 using Game.MainMenu.Root;
 using Game.MainMenu.Services;
@@ -42,15 +43,20 @@ namespace Game.MainMenu.View.ScreenPlay
         {
             //TODO Получить из GameState текущую карту
             //Грузим данные для игры - бустеры, колоду и другое
-            var mainMenuExitParams = _exitParamsService.GetExitParams(0);
+            var mainMenuExitParams = _exitParamsService.GetExitParams(TypeGameplay.Levels, 0);
             //TODO Если осталась сессия, то сброс ее ... Перенести в сервис
             _container.Resolve<IGameStateProvider>().ResetGameplayState();
             _exitSceneRequest.OnNext(mainMenuExitParams);
         }
 
-        public void RequestInfinityGame()
+        public bool RequestInfinityGame()
         {
-            var mainMenuExitParams = _exitParamsService.GetExitParams(0);    
+            var mainMenuExitParams = _exitParamsService.GetExitParams(TypeGameplay.Infinity, 0);
+            //TODO проверка на колоду return false;
+            _container.Resolve<IGameStateProvider>().ResetGameplayState();
+            _exitSceneRequest.OnNext(mainMenuExitParams);
+            return true;
+
         }
         
         /**
@@ -59,7 +65,7 @@ namespace Game.MainMenu.View.ScreenPlay
         public void RequestResumeGame()
         {
             //Грузим данные для игры - бустеры, колоду и другое
-            var mainMenuExitParams = _exitParamsService.GetExitParams(0);
+            var mainMenuExitParams = _exitParamsService.GetExitParams(TypeGameplay.Resume, 0);
            // mainMenuExitParams.TargetSceneEnterParams.As<GameplayEnterParams>().HasSessionGameplay = true;
 
             _exitSceneRequest.OnNext(mainMenuExitParams);

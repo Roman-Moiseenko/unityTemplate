@@ -7,6 +7,7 @@ using Game.GamePlay.Root;
 using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.State;
+using Game.State.Maps.Mobs;
 using Game.State.Root;
 using R3;
 using Scripts.Game.GameRoot.Entity;

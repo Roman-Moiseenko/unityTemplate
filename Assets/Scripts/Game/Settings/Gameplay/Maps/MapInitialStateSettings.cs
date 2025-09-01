@@ -14,22 +14,23 @@ namespace Game.Settings.Gameplay.Maps
     [Serializable]
     public class MapInitialStateSettings
     {
-        //public CastleInitialSettings Castle;
-        public List<BuildingInitialSettings> Buildings;
-        public List<GroundInitialSettings> Grounds;
+     //   public List<BuildingInitialSettings> Buildings;
+     //   public List<GroundInitialSettings> Grounds;
         
         public List<TowerInitialSettings> Towers;
 
-        public List<RoadInitialSettings> WayMain;
-        public List<RoadInitialSettings> WaySecond;
-        public List<RoadInitialSettings> WayDisabled;
+   //     public List<RoadInitialSettings> WayMain;
+   //     public List<RoadInitialSettings> WaySecond;
+     //   public List<RoadInitialSettings> WayDisabled;
 
         public List<WaveSettings> Waves;
         
         public string groundDefault;
         public bool smallMap = false;
-        public bool obstacle = false;
-        public int collapse = 0;
+        public bool hasWaySecond = false;
+        public bool hasWayDisabled = false;
+        public bool obstacle = false; //Препятствия
+        public int collapse = 0; //Степень провалов на начальной карте
         public string roadDefault = "Road";
         //Доп.настройки карты
     }

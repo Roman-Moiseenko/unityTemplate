@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9d0e66572464868ae4c2640011bfdf9, type: 3}
-  m_Name: HeavyInfantry01
+  m_Name: HeavyInfantry
   m_EditorClassIdentifier: 
   <ConfigId>k__BackingField: HeavyInfantry
   <TitleLid>k__BackingField: "\u0422\u044F\u0436\u0435\u043B\u044B\u0439 \u043F\u0435\u0445\u043E\u0442\u0438\u043D\u0435\u0446"
@@ -18,8 +18,33 @@ MonoBehaviour:
   <Type>k__BackingField: 1
   <PrefabPath>k__BackingField: 
   <Speed>k__BackingField: 1
+  <SpeedMove>k__BackingField: 0
+  <SpeedAttack>k__BackingField: 0
   <IsFly>k__BackingField: 0
-  <Health>k__BackingField: 500
-  <Armor>k__BackingField: 6
-  <Attack>k__BackingField: 25
+  <Health>k__BackingField: 600
+  <Armor>k__BackingField: 0
+  <Attack>k__BackingField: 86
   <RewardCurrency>k__BackingField: 20
+  <Defence>k__BackingField: 1
+  <BaseParameters>k__BackingField:
+    Level: 1
+    Health: 600
+    Armor: 0
+    Attack: 86
+    RewardCurrency: 20
+  <Parameters>k__BackingField:
+  - Level: 1
+    Health: 600
+    Armor: 6
+    Attack: 85.7
+    RewardCurrency: 20
+  - Level: 2
+    Health: 1385.3
+    Armor: 8
+    Attack: 85.7
+    RewardCurrency: 40
+  - Level: 3
+    Health: 2727.1
+    Armor: 12
+    Attack: 85.7
+    RewardCurrency: 80

@@ -273,6 +273,7 @@ namespace Game.MainMenu.Services
                 ConfigId = configId,
                 Level = level,
                 Parameters = new Dictionary<TowerParameterType, TowerParameterData>(),
+                Defence = towerSetting.Defence,
             };
             foreach (var baseParameter in towerSetting.BaseParameters)
             {
