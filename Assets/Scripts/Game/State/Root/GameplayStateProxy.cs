@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Game.GamePlay.Classes;
 using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
@@ -28,7 +29,7 @@ namespace Game.State.Root
         public CastleEntity Castle;
 
         public int PreviousGameSpeed => Origin.PreviousGameSpeed;
-        
+        //public ReactiveProperty<TypeGameplay> TypeGameplay = new();
         public ObservableList<TowerEntity> Towers { get; } = new();
         public ObservableList<GroundEntity> Grounds { get; } = new();
 
@@ -65,6 +66,9 @@ namespace Game.State.Root
 
             MapId = new ReactiveProperty<int>(origin.MapId);
             MapId.Subscribe(newValue => origin.MapId = newValue);
+            
+         //   TypeGameplay = new ReactiveProperty<TypeGameplay>(origin.TypeGameplay);
+        //    TypeGameplay.Subscribe(newValue => origin.TypeGameplay = newValue);
             
          //   Debug.Log("gameplayState = " + JsonConvert.SerializeObject(gameplayState, Formatting.Indented));
             InitMaps(origin);
@@ -218,6 +222,16 @@ namespace Game.State.Root
         public bool IsFinishWaves()
         {
             return CurrentWave.CurrentValue > Waves.Count;
+        }
+
+        public bool IsInfinity()
+        {
+            return Origin.TypeGameplay == TypeGameplay.Infinity;
+        }
+
+        public void SetTypeGameplay(TypeGameplay typeGameplay)
+        {
+            Origin.TypeGameplay = typeGameplay;
         }
     }
 }

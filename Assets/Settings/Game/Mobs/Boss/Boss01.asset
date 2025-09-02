@@ -18,11 +18,20 @@ MonoBehaviour:
   <Type>k__BackingField: 2
   <PrefabPath>k__BackingField: 
   <Speed>k__BackingField: 1
+  <SpeedMove>k__BackingField: 0.5
+  <SpeedAttack>k__BackingField: 0.5
   <IsFly>k__BackingField: 0
   <Health>k__BackingField: 3000
   <Armor>k__BackingField: 10
   <Attack>k__BackingField: 100
   <RewardCurrency>k__BackingField: 200
+  <Defence>k__BackingField: 0
+  <BaseParameters>k__BackingField:
+    Level: 0
+    Health: 0
+    Armor: 0
+    Attack: 0
+    RewardCurrency: 0
   <Parameters>k__BackingField:
   - Level: 1
     Health: 6000

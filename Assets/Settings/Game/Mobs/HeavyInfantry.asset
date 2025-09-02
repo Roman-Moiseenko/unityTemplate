@@ -18,8 +18,8 @@ MonoBehaviour:
   <Type>k__BackingField: 1
   <PrefabPath>k__BackingField: 
   <Speed>k__BackingField: 1
-  <SpeedMove>k__BackingField: 0
-  <SpeedAttack>k__BackingField: 0
+  <SpeedMove>k__BackingField: 0.8
+  <SpeedAttack>k__BackingField: 0.8
   <IsFly>k__BackingField: 0
   <Health>k__BackingField: 600
   <Armor>k__BackingField: 0

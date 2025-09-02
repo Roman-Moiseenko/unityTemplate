@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9d0e66572464868ae4c2640011bfdf9, type: 3}
+  m_Name: Infantry3
+  m_EditorClassIdentifier: 
+  <ConfigId>k__BackingField: Infantry3
+  <TitleLid>k__BackingField: "\u041F\u0435\u0445\u043E\u0442\u0438\u043D\u0435\u0446"
+  <DescriptionLid>k__BackingField: 
+  <Type>k__BackingField: 0
+  <PrefabPath>k__BackingField: 
+  <Speed>k__BackingField: 1
+  <SpeedMove>k__BackingField: 1
+  <SpeedAttack>k__BackingField: 1
+  <IsFly>k__BackingField: 0
+  <Health>k__BackingField: 450
+  <Armor>k__BackingField: 0
+  <Attack>k__BackingField: 94.1
+  <RewardCurrency>k__BackingField: 10
+  <Defence>k__BackingField: 0

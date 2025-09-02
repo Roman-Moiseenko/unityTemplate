@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
-    public static class GenerateService
+    public static class GenerateServiceStat
     {
 
         public static MobParameters GenerateMobParameters(MobParameters baseParameters, int level)
@@ -14,7 +14,7 @@ namespace Game.GamePlay.Services
             {
                 Health = baseParameters.Health * ln(level),
                 Attack = baseParameters.Attack * ln(level),
-                Armor = (int)(baseParameters.Armor * ln(level, 1)),
+                //Armor = (int)(baseParameters.Armor * ln(level, 1)),
                 RewardCurrency = (int)(baseParameters.RewardCurrency * ln(level))
             };
             
@@ -32,6 +32,8 @@ namespace Game.GamePlay.Services
         public static int GetWaveHealth(int numberWave)
         {
             const int baseWaveHealth = 760;
+            if (numberWave == 1) return baseWaveHealth;
+            
             return (int)(baseWaveHealth * ln(numberWave));
         }
     }

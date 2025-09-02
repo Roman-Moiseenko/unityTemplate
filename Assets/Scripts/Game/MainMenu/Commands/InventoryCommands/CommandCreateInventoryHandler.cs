@@ -73,7 +73,7 @@ namespace Game.MainMenu.Commands.InventoryCommands
             _gameState.Inventory.DeckCards.Add(1, new DeckCard(initialDeck));
             
             ////ДЛЯ ТЕСТА 
-            for (int i = 0; i < 107; i++)
+         /*   for (int i = 0; i < 107; i++)
             {
                 var commandTowerCard2 = new CommandTowerCardAdd
                 {
@@ -94,7 +94,7 @@ namespace Game.MainMenu.Commands.InventoryCommands
                 _cmd.Process(commandTowerCard3);
             }
             
-            
+            */
             //TODO Начальные навыки из настроек
             //TODO Начальный герой из настроек
             

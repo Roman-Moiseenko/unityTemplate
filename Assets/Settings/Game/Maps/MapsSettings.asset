@@ -14,3 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Maps:
   - {fileID: 11400000, guid: 32b6421e5df9ad643a70bfd4222ab400, type: 2}
+  GroundConfigIds:
+  - Grass01
+  - Snow01
+  RoadConfigIds:
+  - Road

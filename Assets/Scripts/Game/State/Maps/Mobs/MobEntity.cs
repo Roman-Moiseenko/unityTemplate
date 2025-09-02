@@ -17,7 +17,8 @@ namespace Game.State.Maps.Mobs
         public ReactiveProperty<Vector2Int> Direction; //Данные не сохраняются в MobEntityData
         public MobType Type => Origin.Type;
         public bool IsWay = true; //На главной дороге
-        public float BaseSpeed => Origin.Speed;
+        public float SpeedMove => Origin.SpeedMove;
+        public float SpeedAttack => Origin.SpeedAttack;
         public bool IsFly => Origin.IsFly;
         public int Level => Origin.Level;
         public ReactiveProperty<float> Health;
@@ -93,12 +94,12 @@ namespace Game.State.Maps.Mobs
 
         public float Speed()
         {
-            var newSpeed = BaseSpeed;
+            var newSpeed = SpeedMove;
             foreach (var mobDebuff in Debuffs)
             {
                 if (mobDebuff.Value.Type == MobDebuffType.Speed)
                 {
-                    newSpeed -= BaseSpeed * mobDebuff.Value.Value / 100;
+                    newSpeed -= SpeedMove * mobDebuff.Value.Value / 100;
                 }
             }
 

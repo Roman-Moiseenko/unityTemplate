@@ -66,7 +66,7 @@ namespace Game.MainMenu.Services
             {
                 if (item is TowerCard towerCard)
                 {
-                    towerCard.EpicLevel.Subscribe(e => UpdateParameterTowerCard(towerCard));
+                    towerCard.EpicLevel.Skip(1).Subscribe(e => UpdateParameterTowerCard(towerCard));
                     towerCard.Level.Subscribe(e => UpdateParameterTowerCard(towerCard));
                     CreateTowerCardViewModel(towerCard);
                 }
@@ -214,12 +214,36 @@ namespace Game.MainMenu.Services
          */
         public void UpdateParameterTowerCard(TowerCard towerCard)
         {
-            var epic = towerCard.EpicLevel.Value;
-            var level = towerCard.Level.Value;
+        //    var epic = towerCard.EpicLevel.Value;
+        //    var level = towerCard.Level.Value;
             var settings = _towerSettingsMap[towerCard.ConfigId];
             
             foreach (var keyValue in towerCard.Parameters)
             {
+                var towerParam = keyValue.Value;
+                //Возвращаем базовое значение
+                towerParam.Value.Value = settings.BaseParameters.FirstOrDefault(p => p.ParameterType == towerParam.ParameterType)!.Value;
+                
+                //Обсчет эпичности
+                var epicCardParam = settings.EpicCardParameters.Find(p => p.ParameterType == towerParam.ParameterType);
+                if (epicCardParam != null)
+                {
+                    foreach (var epicParameter in epicCardParam.EpicParameters)
+                    {
+
+                        towerParam.Value.Value *= (1 + epicParameter.Percent / 100);
+                        if (epicParameter.Level == towerCard.EpicLevel.CurrentValue) break;
+                    }
+                }
+                
+                //Увеличиваем значения от уровня карты, если параметр изменчив
+                var levelParam = settings.LevelCardParameters.Find(p => p.ParameterType == towerParam.ParameterType);
+                if (levelParam != null)
+                {
+                    var rateEpic = Mathf.Pow(levelParam.PowEpic, towerCard.EpicLevel.Value.Index()); //Коэф.роста
+                    towerParam.Value.Value += rateEpic * levelParam.BaseValue * (towerCard.Level.Value - 1);
+                }
+                /*
                 if (towerCard.Parameters.TryGetValue(keyValue.Key, out var towerParameter))
                 {
                     //Возвращаем базовое значение
@@ -227,6 +251,7 @@ namespace Game.MainMenu.Services
                         param => param.ParameterType == keyValue.Key
                     )!.Value;
                     //Проходим все эпичные уровни и обсчитываем значения 
+                    
                     foreach (TypeEpicCard typeEpic in Enum.GetValues(typeof(TypeEpicCard)))
                     {
                         //Получаем настройки для уровня typeEpic
@@ -245,16 +270,22 @@ namespace Game.MainMenu.Services
                     }
 
                     //Рассчитываем для уровня Level
+                    
+                    
                     var levelUpgrade = settings.EpicLevels.FirstOrDefault(e => e.Level == epic)?.LevelCardParameters
                         .FirstOrDefault(e => e.ParameterType == keyValue.Key);
                     if (levelUpgrade != null)
                     {
                         towerParameter.Value.Value += levelUpgrade.Value * (level - 1);
-                    }
+                    } 
                 }
+
+*/
+
             }
 
-            //Debug.Log("UpdateParameterTowerCard для " + towerCard.UniqueId + $" ({towerCard.ConfigId})");
+            Debug.Log("UpdateParameterTowerCard для " + towerCard.UniqueId + $" ({towerCard.ConfigId})");
+            Debug.Log(JsonConvert.SerializeObject(towerCard.Parameters, Formatting.Indented));
         }
 
 

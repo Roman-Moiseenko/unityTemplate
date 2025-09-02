@@ -16,7 +16,8 @@ namespace Game.State.Maps.Mobs
         
         public bool IsFly;
         
-        public float Speed = 1f;
+        public float SpeedMove;
+        public float SpeedAttack;
         public float Health;
         public float Armor;
         public float Attack;

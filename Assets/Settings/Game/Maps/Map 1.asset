@@ -14,48 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MapId: 0
   InitialStateSettings:
-    Buildings:
-    - ConfigId: Base
-      Level: 1
-      Position: {x: 0, y: 0}
-    Grounds:
-    - Position: {x: 0, y: 0}
-    - Position: {x: 1, y: 0}
-    - Position: {x: 2, y: 0}
-    - Position: {x: 3, y: 0}
-    - Position: {x: 4, y: 0}
-    - Position: {x: 0, y: 1}
-    - Position: {x: 1, y: 1}
-    - Position: {x: 2, y: 1}
-    - Position: {x: 3, y: 1}
-    - Position: {x: 4, y: 1}
-    - Position: {x: 0, y: 2}
-    - Position: {x: 3, y: 2}
-    - Position: {x: 4, y: 2}
-    - Position: {x: 0, y: -1}
-    - Position: {x: 1, y: -1}
-    - Position: {x: 2, y: -1}
-    - Position: {x: 3, y: -1}
-    - Position: {x: 4, y: -1}
-    - Position: {x: -1, y: -1}
-    - Position: {x: -1, y: 0}
-    - Position: {x: -1, y: 1}
-    - Position: {x: 1, y: -2}
-    - Position: {x: 2, y: 2}
-    - Position: {x: 2, y: 3}
     Towers: []
-    WayMain:
-    - Position: {x: 1, y: 0}
-      Rotate: 0
-      IsTurn: 0
-    - Position: {x: 2, y: 0}
-      Rotate: 0
-      IsTurn: 0
-    - Position: {x: 3, y: 0}
-      Rotate: 0
-      IsTurn: 1
-    WaySecond: []
-    WayDisabled: []
     Waves:
     - WaveItems:
       - Quantity: 3
@@ -169,9 +128,11 @@ MonoBehaviour:
     - WaveItems:
       - Quantity: 1
         Level: 1
-        MobConfigId: Boss01
+        MobConfigId: BossTroll
     groundDefault: Grass01
     smallMap: 0
+    hasWaySecond: 0
+    hasWayDisabled: 0
     obstacle: 0
     collapse: 0
     roadDefault: Road

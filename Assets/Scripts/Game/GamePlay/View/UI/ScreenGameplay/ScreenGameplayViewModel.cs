@@ -78,7 +78,18 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             PositionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
 
             _gameplayState.CurrentWave
-                .Subscribe(n => { WaveText.Value = n + "/" + _gameplayState.Waves.Count; })
+                .Subscribe(n =>
+                {
+                    if (_gameplayState.IsInfinity())
+                    {
+                        WaveText.Value = n + "/-";
+                    }
+                    else
+                    {
+                        WaveText.Value = n + "/" + _gameplayState.Waves.Count;
+                    }
+                    
+                })
                 .AddTo(ref d);
             _waveService.FinishWave.Where(v => v).Subscribe(v =>
             {

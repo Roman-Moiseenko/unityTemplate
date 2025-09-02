@@ -56,5 +56,23 @@ namespace Game.State.Inventory
                 _ => 0
             };
         }
+        
+        public static int Index(this TypeEpicCard type)
+        {
+            return type switch
+            {
+                TypeEpicCard.Normal => 0,
+                TypeEpicCard.Good => 1,
+                TypeEpicCard.Rare => 2,
+                TypeEpicCard.Epic => 3,
+                TypeEpicCard.EpicPlus => 4,
+                TypeEpicCard.Legend => 5,
+                TypeEpicCard.LegendPlus => 6,
+                TypeEpicCard.Cult => 7,
+                TypeEpicCard.CultPlus => 8,
+                TypeEpicCard.Excellent => 9,
+                _ => 0
+            };
+        }
     }
 }

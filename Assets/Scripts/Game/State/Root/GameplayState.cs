@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.GamePlay.Classes;
 using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
@@ -24,6 +25,8 @@ namespace Game.State.Root
         public int SoftCurrency { get; set; } //При входе 0
         //public int HardCurrency { get; set; } //Дублирование?
         public int UpdateCards { get; set; }
+        
+        public TypeGameplay TypeGameplay { get; set; }
         
         //Список наград
         //Список Волн

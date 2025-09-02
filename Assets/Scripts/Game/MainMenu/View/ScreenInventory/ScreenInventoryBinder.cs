@@ -38,7 +38,6 @@ namespace Game.MainMenu.View.ScreenInventory
                     ChangeParentTowerCard(towerCardViewModel);
                     UpdateHeightContainerTowerCard();
                 });
-                //towerCardViewModel
             }
 
             viewModel.TowerCards.ObserveAdd().Subscribe(e =>
@@ -105,12 +104,10 @@ namespace Game.MainMenu.View.ScreenInventory
 
         private void UpdateHeightContainerTowerPlan()
         {
-           // Debug.Log("1");
             var container = containerTowerPlan.GetComponent<RectTransform>();
             const int blockHeight = 240;
             const int blockSpacing = 20;
             var rows = Math.Ceiling(container.childCount / 4f);
-          //  Debug.Log(rows + "  " + container.childCount);
             container.sizeDelta = container.childCount == 0 
                 ? new Vector2(1040, 0) 
                 : new Vector2(1040, (float)(rows * blockHeight + (rows - 1) * blockSpacing));

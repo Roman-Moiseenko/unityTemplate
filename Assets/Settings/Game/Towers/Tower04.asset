@@ -116,3 +116,48 @@ MonoBehaviour:
     LevelCardParameters:
     - ParameterType: 1
       Value: 26.5
+  <LevelCardParameters>k__BackingField:
+  - ParameterType: 1
+    BaseValue: 11
+    PowEpic: 1.21
+  <EpicCardParameters>k__BackingField:
+  - ParameterType: 1
+    EpicParameters:
+    - Level: 1
+      Percent: 3
+    - Level: 2
+      Percent: 5
+    - Level: 3
+      Percent: 7
+    - Level: 4
+      Percent: 15
+    - Level: 5
+      Percent: 21
+    - Level: 6
+      Percent: 28
+    - Level: 7
+      Percent: 35
+    - Level: 8
+      Percent: 45
+    - Level: 9
+      Percent: 100
+  - ParameterType: 5
+    EpicParameters:
+    - Level: 1
+      Percent: -2
+    - Level: 2
+      Percent: -5
+    - Level: 3
+      Percent: -7
+    - Level: 4
+      Percent: -3
+    - Level: 5
+      Percent: -7
+    - Level: 6
+      Percent: -10
+    - Level: 7
+      Percent: -5
+    - Level: 8
+      Percent: -3
+    - Level: 9
+      Percent: -7

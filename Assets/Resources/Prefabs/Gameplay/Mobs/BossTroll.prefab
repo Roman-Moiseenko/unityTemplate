@@ -262,7 +262,7 @@ GameObject:
   - component: {fileID: 3838673952091326586}
   - component: {fileID: -4213304302013466774}
   m_Layer: 0
-  m_Name: Boss
+  m_Name: BossTroll
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

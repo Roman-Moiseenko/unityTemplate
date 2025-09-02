@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using DI;
 using Game.Common;
+using Game.GamePlay.Classes;
+using Game.GamePlay.Commands.WaveCommands;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Root;
@@ -9,6 +12,7 @@ using Game.MainMenu.Root;
 using Game.State;
 using Game.State.Maps.Mobs;
 using Game.State.Root;
+using MVVM.CMD;
 using R3;
 using Scripts.Game.GameRoot.Entity;
 using UnityEngine;
@@ -27,8 +31,9 @@ namespace Game.GamePlay.Services
         private WaveService _waveService;
         private FsmGameplay _fsmGameplay;
         private readonly ResourceService _resourceService;
+        private readonly ICommandProcessor _cmd;
 
-        
+
         private IDisposable _disposable;
         // public ReactiveProperty<float> CastleHealth;
 
@@ -38,8 +43,9 @@ namespace Game.GamePlay.Services
             GameplayStateProxy gameplayState,
             AdService adService,
             FsmGameplay fsmGameplay,
-            ResourceService resourceService
-            )
+            ResourceService resourceService,
+            ICommandProcessor cmd
+        )
         {
             var d = Disposable.CreateBuilder();
             _exitSceneRequest = exitSceneRequest;
@@ -48,6 +54,7 @@ namespace Game.GamePlay.Services
             _fsmGameplay = fsmGameplay;
             _waveService = waveService;
             _resourceService = resourceService;
+            _cmd = cmd;
 
             waveService.IsMobsOnWay.Where(flag => flag == false).Subscribe(_ =>
                 {
@@ -56,8 +63,18 @@ namespace Game.GamePlay.Services
                 }
             ).AddTo(ref d);
 
-            //Сработала следующая волна, после максимальной => Победа
+            //Для бесконечной игры добавляем автоувеличение уровня
+            if (_gameplayState.IsInfinity())
+            {
+                _gameplayState.CurrentWave.Skip(1).Where(v => v == _gameplayState.Waves.Count).Subscribe(v =>
+                {
+                    var command = new CommandWaveGenerate(v + 1);
+                    cmd.Process(command);
+                }).AddTo(ref d);
+            }
+            
 
+            //Сработала следующая волна, после максимальной => Победа
             
             //Здоровье крепости меньше 0 => Проигрыш
             //gameplayState.Castle.IsDead.Subscribe(h => Lose()).AddTo(ref d);
@@ -131,7 +148,6 @@ namespace Game.GamePlay.Services
         {
             //TODO Тратим кристалы, если нет PopupError
             if (_resourceService.SpendHardCurrency(AppConstants.COST_REPAIR_CASTLE)) Repair();
-            
         }
 
         public void RepairAd()
@@ -158,7 +174,7 @@ namespace Game.GamePlay.Services
         private void Repair()
         {
             _gameplayState.Castle.Resurrection();
-            foreach (var entity  in _waveService.AllMobsMap)
+            foreach (var entity in _waveService.AllMobsMap.ToArray())
             {
                 entity.Value.SetDamage(_gameplayState.Castle.FullHealth);
             }

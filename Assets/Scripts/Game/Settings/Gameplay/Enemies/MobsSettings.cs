@@ -9,6 +9,7 @@ namespace Game.Settings.Gameplay.Enemies
     public class MobsSettings : ScriptableObject
     {
         public List<MobSettings> AllMobs;
+        public List<MobSettings> AllBosses;
 
     }
 }

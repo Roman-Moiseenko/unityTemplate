@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Game.GamePlay.Classes;
 using Game.GamePlay.Commands.CastleCommands;
 using Game.GamePlay.Commands.GroundCommands;
 using Game.GamePlay.Commands.RoadCommand;
@@ -84,6 +85,7 @@ namespace Game.GamePlay.Commands.MapCommand
 
             _gameplayState.CurrentWave.Value = 0;
             _gameplayState.MapId.Value = command.MapId;
+            _gameplayState.SetTypeGameplay(TypeGameplay.Levels);
             return true;
         }
     }

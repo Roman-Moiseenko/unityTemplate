@@ -92,6 +92,10 @@ namespace Scripts.Game.GameRoot
 
             //Положить в контейнер настройки игры ....
             //Сервисы аналитики, платежки, 
+
+            var gen = new GenerateService();
+            _rootContainer.RegisterFactory(c => gen);
+            
         }
         
         private async void RunGame()

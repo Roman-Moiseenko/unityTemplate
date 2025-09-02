@@ -58,7 +58,11 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandCreateGroundHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState, gameSettings.TowersSettings));
             cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
-            cmd.RegisterHandler(new CommandCreateWaveHandler(gameSettings, gameplayState));
+            cmd.RegisterHandler(new CommandCreateWaveHandler(gameSettings, gameplayState, 
+                container.Resolve<GenerateService>()));
+            cmd.RegisterHandler(new CommandWaveGenerateHandler(gameSettings, cmd, 
+                            container.Resolve<GenerateService>()));
+            
             cmd.RegisterHandler(new CommandCastleCreateHandler(gameSettings, gameplayState));
             cmd.RegisterHandler(new CommandGroundCreateBaseHandler(cmd));
             cmd.RegisterHandler(new CommandRoadCreateBaseHandler(gameplayState, cmd));
@@ -134,7 +138,8 @@ namespace Game.GamePlay.Root
                 waveService, gameplayState,
                 container.Resolve<AdService>(),
                 Fsm,
-                container.Resolve<ResourceService>()
+                container.Resolve<ResourceService>(),
+                cmd
                 );
             container.RegisterInstance(gameplayService); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             //Сервис создания выстрелов

@@ -57,6 +57,14 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 3ef42e304d9180347a4c01b641753df9, type: 3}
   - TypeEpic: 5
     Sprite: {fileID: 21300000, guid: fd7c9b94c4967ab438988269138b6a61, type: 3}
+  - TypeEpic: 6
+    Sprite: {fileID: 21300000, guid: f6fca000b6e25c241980ce68b8070d28, type: 3}
+  - TypeEpic: 7
+    Sprite: {fileID: 21300000, guid: b439678486616db49bad958db2d0d031, type: 3}
+  - TypeEpic: 8
+    Sprite: {fileID: 21300000, guid: cf618e545c6bfbd4bba7ef96939dfc7c, type: 3}
+  - TypeEpic: 8
+    Sprite: {fileID: 21300000, guid: cf618e545c6bfbd4bba7ef96939dfc7c, type: 3}
   towerPlan:
   - ConfigId: Tower01
     Sprite: {fileID: 21300000, guid: c548ec8e9e6a8e7498bbda56f697c1d2, type: 3}

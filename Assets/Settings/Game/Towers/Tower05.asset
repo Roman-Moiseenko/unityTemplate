@@ -21,6 +21,7 @@ MonoBehaviour:
   <OnRoad>k__BackingField: 1
   <MultiShot>k__BackingField: 1
   <TypeEnemy>k__BackingField: 1
+  <Defence>k__BackingField: 0
   <Shot>k__BackingField:
     Speed: 1000
     LineTrajectory: 1
@@ -107,3 +108,48 @@ MonoBehaviour:
     LevelCardParameters:
     - ParameterType: 0
       Value: 12.35
+  <LevelCardParameters>k__BackingField:
+  - ParameterType: 0
+    BaseValue: 4
+    PowEpic: 1.31
+  <EpicCardParameters>k__BackingField:
+  - ParameterType: 0
+    EpicParameters:
+    - Level: 1
+      Percent: 3
+    - Level: 2
+      Percent: 5
+    - Level: 3
+      Percent: 7
+    - Level: 4
+      Percent: 20
+    - Level: 5
+      Percent: 27
+    - Level: 6
+      Percent: 36
+    - Level: 7
+      Percent: 45
+    - Level: 8
+      Percent: 55
+    - Level: 9
+      Percent: 100
+  - ParameterType: 5
+    EpicParameters:
+    - Level: 1
+      Percent: -2
+    - Level: 2
+      Percent: -5
+    - Level: 3
+      Percent: -7
+    - Level: 4
+      Percent: -3
+    - Level: 5
+      Percent: -7
+    - Level: 6
+      Percent: -10
+    - Level: 7
+      Percent: -5
+    - Level: 8
+      Percent: -3
+    - Level: 9
+      Percent: -7

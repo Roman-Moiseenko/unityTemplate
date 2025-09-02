@@ -22,11 +22,19 @@ namespace Game.Settings.Gameplay.Entities.Tower
 
         //  [field: SerializeField] public string PrefabName { get; private set; }
         [field: SerializeField] public ShotSettings Shot { get; private set; }
+        
+        //Характеристики, которые зависят от уровня (звездочек) в гейплее - не влияют на карточку башни
         [field: SerializeField] public List<TowerLevelSettings> GameplayLevels { get; private set; }
 
+        //Базовые значения всех доступных характеристик для карты башни
         [field: SerializeField] public List<TowerParameterSettings> BaseParameters { get; private set; }
-        [field: SerializeField] public List<TowerEpicLevelCard> EpicLevels { get; private set; }
-
+       // [field: SerializeField] public List<TowerEpicLevelCard> EpicLevels { get; private set; }
+        
+        //Характеристики, которые растут от уровня карты башни, скорость роста зависит от Эпичности
+        [field: SerializeField] public List<LevelCardParameters> LevelCardParameters { get; private set; }
+        
+        //Характеристики, которые растут только от Эпичности карты башни
+        [field: SerializeField] public List<EpicCardParameters> EpicCardParameters { get; private set; }
 
         //Настройки выстрела
     }
