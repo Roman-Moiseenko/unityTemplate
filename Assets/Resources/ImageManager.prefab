@@ -116,3 +116,12 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: eca52a5c6a61e5b4b8861ef6b16b1744, type: 3}
   - TypeParameter: 8
     Sprite: {fileID: 21300000, guid: 096ba8dd29f47254faa172f672b14ad7, type: 3}
+  defences:
+  - Defence: 0
+    Sprite: {fileID: 21300000, guid: 8de6720f24fd83d48aa4e496927a89bb, type: 3}
+  - Defence: 1
+    Sprite: {fileID: 21300000, guid: ac9614214dc542746b42c77641f12a89, type: 3}
+  - Defence: 2
+    Sprite: {fileID: 21300000, guid: 62bdb6e18e9f2d24996d43008a99863d, type: 3}
+  - Defence: 3
+    Sprite: {fileID: 21300000, guid: 58edd5442b63c234a8c4de12039df663, type: 3}

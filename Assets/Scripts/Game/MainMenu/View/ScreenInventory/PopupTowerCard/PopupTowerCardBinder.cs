@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Game.Common;
-using Game.GamePlay.View.UI.PanelGateWave;
 using Game.GameRoot.ImageManager;
 using Game.MainMenu.View.ScreenInventory.Parameters;
 using Game.State.Inventory;
@@ -12,7 +11,6 @@ using MVVM.UI;
 using R3;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
@@ -94,11 +92,9 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
             var index = 0;
             foreach (var parameter in towerCardViewModel.TowerCard.Parameters)
             {
-                var value = (int)(parameter.Value.Value.CurrentValue * 100) / 100f;
                 _parameterBinders[index].Bind(
                     imageManager.GetParameter(parameter.Key),
                     parameter.Key.GetString(),
-                    value.ToString(CultureInfo.CurrentCulture),
                     parameter.Key.GetMeasure(),
                     parameter.Value.Value
                     );

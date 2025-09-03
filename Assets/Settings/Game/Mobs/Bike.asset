@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9d0e66572464868ae4c2640011bfdf9, type: 3}
-  m_Name: Infantry
+  m_Name: Bike
   m_EditorClassIdentifier: 
-  <ConfigId>k__BackingField: Infantry
-  <TitleLid>k__BackingField: "\u041F\u0435\u0445\u043E\u0442\u0438\u043D\u0435\u0446"
+  <ConfigId>k__BackingField: Bike
+  <TitleLid>k__BackingField: "\u0411\u0430\u0439\u043A\u0435\u0440\u044B"
   <DescriptionLid>k__BackingField: 
   <Type>k__BackingField: 0
   <PrefabPath>k__BackingField: 
-  <Speed>k__BackingField: 1
-  <SpeedMove>k__BackingField: 1.2
-  <SpeedAttack>k__BackingField: 80
+  <SpeedMove>k__BackingField: 0.8
+  <SpeedAttack>k__BackingField: 115
   <IsFly>k__BackingField: 0
-  <Health>k__BackingField: 260
+  <Health>k__BackingField: 400
   <Armor>k__BackingField: 0
-  <Attack>k__BackingField: 94.1
-  <RewardCurrency>k__BackingField: 10
-  <Defence>k__BackingField: 0
+  <Attack>k__BackingField: 34.8
+  <RewardCurrency>k__BackingField: 50
+  <Defence>k__BackingField: 1
+  <Count>k__BackingField: 2

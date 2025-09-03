@@ -216,32 +216,45 @@ namespace Game.MainMenu.Services
         {
         //    var epic = towerCard.EpicLevel.Value;
         //    var level = towerCard.Level.Value;
+        
             var settings = _towerSettingsMap[towerCard.ConfigId];
-            
+        
+        //    Debug.Log(towerCard.ConfigId);
             foreach (var keyValue in towerCard.Parameters)
             {
+              //  Debug.Log(keyValue.Key);
                 var towerParam = keyValue.Value;
                 //Возвращаем базовое значение
                 towerParam.Value.Value = settings.BaseParameters.FirstOrDefault(p => p.ParameterType == towerParam.ParameterType)!.Value;
-                
+             //   Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
+
+             //   Debug.Log(towerCard.EpicLevel.CurrentValue);
                 //Обсчет эпичности
                 var epicCardParam = settings.EpicCardParameters.Find(p => p.ParameterType == towerParam.ParameterType);
                 if (epicCardParam != null)
                 {
+//                    Debug.Log(JsonConvert.SerializeObject(epicCardParam, Formatting.Indented));
                     foreach (var epicParameter in epicCardParam.EpicParameters)
                     {
-
+                        if (towerCard.EpicLevel.CurrentValue.Index() < epicParameter.Level.Index()) break;
+                  //      Debug.Log(epicParameter.Level);
                         towerParam.Value.Value *= (1 + epicParameter.Percent / 100);
+                  //      Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
                         if (epicParameter.Level == towerCard.EpicLevel.CurrentValue) break;
                     }
                 }
-                
+            //    Debug.Log("2 towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
                 //Увеличиваем значения от уровня карты, если параметр изменчив
                 var levelParam = settings.LevelCardParameters.Find(p => p.ParameterType == towerParam.ParameterType);
                 if (levelParam != null)
                 {
+                   // Debug.Log(JsonConvert.SerializeObject(levelParam, Formatting.Indented));
+                    
                     var rateEpic = Mathf.Pow(levelParam.PowEpic, towerCard.EpicLevel.Value.Index()); //Коэф.роста
+           //         Debug.Log("rateEpic = " + rateEpic);
+           //         Debug.Log("towerCard.Level.Value = " + towerCard.Level.Value);
                     towerParam.Value.Value += rateEpic * levelParam.BaseValue * (towerCard.Level.Value - 1);
+          //          Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
                 }
                 /*
                 if (towerCard.Parameters.TryGetValue(keyValue.Key, out var towerParameter))
@@ -284,8 +297,8 @@ namespace Game.MainMenu.Services
 
             }
 
-            Debug.Log("UpdateParameterTowerCard для " + towerCard.UniqueId + $" ({towerCard.ConfigId})");
-            Debug.Log(JsonConvert.SerializeObject(towerCard.Parameters, Formatting.Indented));
+       //     Debug.Log("UpdateParameterTowerCard для " + towerCard.UniqueId + $" ({towerCard.ConfigId})");
+      //      Debug.Log(JsonConvert.SerializeObject(towerCard.Parameters, Formatting.Indented));
         }
 
 

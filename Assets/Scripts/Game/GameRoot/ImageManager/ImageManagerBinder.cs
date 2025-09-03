@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Game.State.Inventory;
+using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByConfig> towerPlan;
         [SerializeField] private List<ImageItemByConfigLevel> towerCard;
         [SerializeField] private List<ImageItemByParameter> parameters;
-
+        [SerializeField] private List<ImageItemByDefence> defences;
 
 
         public Sprite GetEpicLevel(TypeEpicCard typeEpicCard)
@@ -34,6 +35,11 @@ namespace Game.GameRoot.ImageManager
         public Sprite GetTowerPlan(string configId)
         {
             return towerPlan.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
+        }
+
+        public Sprite GetDefence(MobDefence defence)
+        {
+            return defences.FirstOrDefault(t => t.Defence == defence)!.Sprite;
         }
     }
 }

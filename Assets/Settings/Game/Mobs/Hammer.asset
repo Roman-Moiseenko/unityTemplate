@@ -10,19 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9d0e66572464868ae4c2640011bfdf9, type: 3}
-  m_Name: Infantry
+  m_Name: Hammer
   m_EditorClassIdentifier: 
-  <ConfigId>k__BackingField: Infantry
-  <TitleLid>k__BackingField: "\u041F\u0435\u0445\u043E\u0442\u0438\u043D\u0435\u0446"
+  <ConfigId>k__BackingField: Hammer
+  <TitleLid>k__BackingField: "\u041F\u043E\u0432\u0435\u043B\u0438\u0442\u0435\u043B\u044C
+    \u043C\u043E\u043B\u043E\u0442\u0430"
   <DescriptionLid>k__BackingField: 
   <Type>k__BackingField: 0
   <PrefabPath>k__BackingField: 
-  <Speed>k__BackingField: 1
-  <SpeedMove>k__BackingField: 1.2
-  <SpeedAttack>k__BackingField: 80
+  <SpeedMove>k__BackingField: 0.7
+  <SpeedAttack>k__BackingField: 85
   <IsFly>k__BackingField: 0
-  <Health>k__BackingField: 260
-  <Armor>k__BackingField: 0
+  <Health>k__BackingField: 315
+  <Armor>k__BackingField: 10
   <Attack>k__BackingField: 94.1
-  <RewardCurrency>k__BackingField: 10
-  <Defence>k__BackingField: 0
+  <RewardCurrency>k__BackingField: 100
+  <Defence>k__BackingField: 1
+  <Count>k__BackingField: 1

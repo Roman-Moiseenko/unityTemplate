@@ -13,10 +13,14 @@ MonoBehaviour:
   m_Name: MobsSettings
   m_EditorClassIdentifier: 
   AllMobs:
-  - {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
-  - {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
-  - {fileID: 11400000, guid: f3bd324ddd723514ca7cb17eb7b480b5, type: 2}
+  - {fileID: 11400000, guid: cb827d375c023e64c9b12f49d0ef12bb, type: 2}
+  - {fileID: 11400000, guid: 7d1d2598b33c21044ba03d700b766afd, type: 2}
   - {fileID: 11400000, guid: fa57417f9ef50534da3c646a1160d09f, type: 2}
+  - {fileID: 11400000, guid: 6e7a335d5deb1974b94a879717aa6d43, type: 2}
+  - {fileID: 11400000, guid: 2714cd7f44f50b148b267f93b2799a9d, type: 2}
+  - {fileID: 11400000, guid: 2a83d99b8428a734eaeffc47c831d79c, type: 2}
   - {fileID: 11400000, guid: 6d59195c40987a64582249945eb8aa30, type: 2}
+  - {fileID: 11400000, guid: 1bc20f5644ba6e44781817aad06ccde8, type: 2}
+  - {fileID: 11400000, guid: f3bd324ddd723514ca7cb17eb7b480b5, type: 2}
   AllBosses:
   - {fileID: 11400000, guid: e46d43fd332690743a9969e2672ab6b3, type: 2}

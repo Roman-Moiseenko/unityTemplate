@@ -46,7 +46,7 @@ namespace Game.GamePlay.View.Mobs
             viewModel.Direction.Skip(1).Subscribe(newValue =>
             {
                 var direction = new Vector3(newValue.x, 0, newValue.y);
-                _targetDirection = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.LookRotation(direction); //_targetDirection = 
             }).AddTo(ref d);
             
             viewModel.Position.Subscribe(newValue =>

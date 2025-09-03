@@ -38,7 +38,6 @@ namespace Game.GamePlay.Commands.WaveCommands
             const int bossOnWave = 10;
             
             var list = new List<WaveItemSettings>();
-            
             var levelMob = (int)Mathf.Ceil(numberWave / coefLevelMobFromWave); //Номинальный уровень моба на волну
             var waveHealth = _generateService.GetLevelData(numberWave) * 760; //Максимальная сила на волну
             if (numberWave % bossOnWave == 0) waveHealth /= 2; //если босс, то пополам
@@ -46,16 +45,18 @@ namespace Game.GamePlay.Commands.WaveCommands
             //Генерируем список мобов для волны
             var mobs = _gameSettings.MobsSettings.AllMobs.ToList();
             var mobsInWave = new Dictionary<string, float>();
-            var bL = (int)Mathf.Abs(Random.insideUnitSphere.x) + 1;
+            var bL = Mathf.RoundToInt(Mathf.Abs(Random.insideUnitSphere.x) + 1);
             var countTypeMob = Mathf.Min(numberWave / 10 + bL, mobs.Count, 5);
             if (countTypeMob == 5) //рандом на кол-во типов
-            {
-                countTypeMob = (int)Random.insideUnitSphere.x * 2 + 3;
-            }
+                countTypeMob = Mathf.RoundToInt(Random.insideUnitSphere.x * 2) + 3;
+            Debug.Log("countTypeMob = " + countTypeMob);
 
             for (int i = 0; i < countTypeMob; i++)
             {
-                var index = (int)Mathf.Abs(Random.insideUnitSphere.x) * mobs.Count;
+                var v = new System.Random();
+                var index = v.Next(0, mobs.Count - 1);
+                
+               // var index = Mathf.RoundToInt(Mathf.Abs(Random.insideUnitSphere.x) * mobs.Count);
                 var powerMob = _generateService.GetLevelData(levelMob)
                                * (mobs[index].Health * mobs[index].SpeedMove);
 
@@ -64,7 +65,8 @@ namespace Game.GamePlay.Commands.WaveCommands
             }
             
             var mediumPower = mobsInWave.Sum(f => f.Value);
-            var allCount = (int)(waveHealth / mediumPower);
+            var allCount = Mathf.RoundToInt(waveHealth / mediumPower);
+            Debug.Log(allCount);
 
             var _i = 0;
 
@@ -72,9 +74,9 @@ namespace Game.GamePlay.Commands.WaveCommands
             foreach (var pairMobs in mobsInWave)
             {
                 var mediumCount = allCount / (mobsInWave.Count - _i);
+                Debug.Log(mediumCount);
                 var q = (int)Mathf.Abs(Random.insideUnitSphere.x) * mediumCount + 1;
                 if (mediumCount == allCount) q = mediumCount;
-
                 var setWave = new WaveItemSettings
                 {
                     MobConfigId = pairMobs.Key,
@@ -88,8 +90,9 @@ namespace Game.GamePlay.Commands.WaveCommands
             if (numberWave % bossOnWave == 0)
             {
                 var bosses = _gameSettings.MobsSettings.AllBosses.ToList();
-                var indexBoss = (int)Mathf.Abs(Random.insideUnitSphere.x) + bosses.Count - 1;
-                
+                var v = new System.Random();
+                var indexBoss = v.Next(0, bosses.Count - 1);
+                //Mathf.RoundToInt(Mathf.Abs(Random.insideUnitSphere.x) * bosses.Count) - 1;
                 var setWave = new WaveItemSettings
                 {
                     MobConfigId = bosses[indexBoss].ConfigId,
@@ -97,10 +100,9 @@ namespace Game.GamePlay.Commands.WaveCommands
                     Quantity = 1
                 };
                 list.Add(setWave);
-                //Random 2й босс, после 20 волны и тип босса разный
-
+                //TODO Random 2й босс, после 20 волны и тип босса разный
             }
-
+            Debug.Log("numberWave = " + numberWave);
             Debug.Log(JsonConvert.SerializeObject(list, Formatting.Indented));
             return list;
         }

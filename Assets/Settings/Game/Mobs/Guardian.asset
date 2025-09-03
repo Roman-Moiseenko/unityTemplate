@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d9d0e66572464868ae4c2640011bfdf9, type: 3}
-  m_Name: Infantry4
+  m_Name: Guardian
   m_EditorClassIdentifier: 
-  <ConfigId>k__BackingField: Infantry4
-  <TitleLid>k__BackingField: "\u041F\u0435\u0445\u043E\u0442\u0438\u043D\u0435\u0446"
+  <ConfigId>k__BackingField: Guardian
+  <TitleLid>k__BackingField: "\u0421\u0442\u0440\u0430\u0436"
   <DescriptionLid>k__BackingField: 
   <Type>k__BackingField: 0
   <PrefabPath>k__BackingField: 
   <Speed>k__BackingField: 1
-  <SpeedMove>k__BackingField: 2
-  <SpeedAttack>k__BackingField: 1
+  <SpeedMove>k__BackingField: 1.2
+  <SpeedAttack>k__BackingField: 105
   <IsFly>k__BackingField: 0
-  <Health>k__BackingField: 180
+  <Health>k__BackingField: 528
   <Armor>k__BackingField: 0
-  <Attack>k__BackingField: 94.1
-  <RewardCurrency>k__BackingField: 10
+  <Attack>k__BackingField: 85.7
+  <RewardCurrency>k__BackingField: 20
   <Defence>k__BackingField: 0

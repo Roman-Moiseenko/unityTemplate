@@ -15,14 +15,14 @@ namespace Game.MainMenu.View.ScreenInventory.Parameters
         [SerializeField] private TMP_Text textUpgrade;
         private IDisposable _disposable;
 
-        public void Bind(Sprite imageParam, string nameParam, string valueParam, string measure, ReadOnlyReactiveProperty<float> value)
+        public void Bind(Sprite imageParam, string nameParam, string measure, ReadOnlyReactiveProperty<float> value)
         {
             var d = Disposable.CreateBuilder();
             
             imageParameter.sprite = imageParam;
             textName.text = nameParam;
-            textValue.text = valueParam + " " + measure;
-            value.Subscribe(v => textValue.text = v + " " + measure).AddTo(ref d);
+           // textValue.text = valueParam + " " + measure;
+            value.Subscribe(v => textValue.text = Mathf.Round(v * 100) / 100f + " " + measure).AddTo(ref d);
             gameObject.SetActive(true);
 
             _disposable = d.Build();

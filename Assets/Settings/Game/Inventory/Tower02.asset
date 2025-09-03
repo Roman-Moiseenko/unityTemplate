@@ -14,5 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ConfigId: Tower02
   epicCardLevel: 0
-  Level: 2
-  Amount: 1
+  Level: 1

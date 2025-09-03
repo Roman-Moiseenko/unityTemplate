@@ -26,23 +26,22 @@ namespace Game.State.Maps.Waves
 
         }
 
-        public Dictionary<MobType, int> GetListForInfo()
+        public Dictionary<string, int> GetInfoMobsFromWave()
         {
-            var d = new Dictionary<MobType, int>();
+            Dictionary<string, int> list = new();
             foreach (var mobEntity in Mobs)
             {
-                if (d.TryGetValue(mobEntity.Type, out var value))
+                if (list.TryGetValue(mobEntity.ConfigId, out var countMobs))
                 {
-                    d[mobEntity.Type]++;
-                }
-                else
+                    list[mobEntity.ConfigId] = countMobs +1;
+                    
+                } else
                 {
-                    d.Add(mobEntity.Type, 1);
+                    list.Add(mobEntity.ConfigId, 1);
                 }
-                
             }
 
-            return d;
+            return list;
         }
     }
 }

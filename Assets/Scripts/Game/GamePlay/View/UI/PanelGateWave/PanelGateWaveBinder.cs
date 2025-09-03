@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.Common;
+using Game.GameRoot.ImageManager;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
 using MVVM.UI;
@@ -14,8 +16,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave
     {
         [SerializeField] private Transform _infoBlock;
         [SerializeField] private Transform _infoTower;
-        [SerializeField] private List<MobDefenceImage> _mobDefenceImages;
-        [SerializeField] private List<ParameterTypeImage> _parameterImages;
+      //  [SerializeField] private List<MobDefenceImage> _mobDefenceImages;
+      //  [SerializeField] private List<ParameterTypeImage> _parameterImages;
         
         //Компоненты блока о Волне
         private Button _btnInfo;
@@ -32,7 +34,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         private Image _btnImage;
         private Animator _animator;
         private IDisposable _disposableImplementation;
-        
+        private ImageManagerBinder _imageManager;
+
         private void Awake()
         {
             //Инициализация
@@ -59,6 +62,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         protected override void OnBind(PanelGateWaveViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
+            _imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
             //Блок инфо о волне
             ViewModel.ShowInfoWave.OnNext(false);
             ViewModel.ShowButtonWave.Subscribe(showButton =>
@@ -92,13 +96,15 @@ namespace Game.GamePlay.View.UI.PanelGateWave
                 }
             }).AddTo(ref d);
             InfoWavePanelClear();
-            foreach (var defenceCountMob in ViewModel.DefenceCountMobs)
+            foreach (var defenceCountMob in ViewModel.InfoWaveMobs)
             {
                 InfoWavePanelAddEntity(defenceCountMob);
             }
 
-            ViewModel.DefenceCountMobs.ObserveAdd().Subscribe(e => InfoWavePanelAddEntity(e.Value)).AddTo(ref d);
-            ViewModel.DefenceCountMobs.ObserveClear().Subscribe(_ => InfoWavePanelClear()).AddTo(ref d);
+            ViewModel.InfoWaveMobs.ObserveAdd()
+                .Subscribe(e => InfoWavePanelAddEntity(e.Value)).
+                AddTo(ref d);
+            ViewModel.InfoWaveMobs.ObserveClear().Subscribe(_ => InfoWavePanelClear()).AddTo(ref d);
 
             //Блок инфо о башне
             ViewModel.ShowInfoTower.Subscribe(showTower =>
@@ -130,26 +136,24 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             _disposableImplementation = d.Build();
         }
 
-        private void InfoWavePanelAddEntity(KeyValuePair<MobType, int> objValue)
+        private void InfoWavePanelAddEntity(KeyValuePair<string, int> objValue)
         {
             var count = _enemyInfoBinders.Count;
+            var configId = objValue.Key;
+            
             var prefabPath = $"Prefabs/UI/Gameplay/Panels/GateWaveInfo/EnemyInfo"; //Перенести в настройки уровня
             var enemyPrefab = Resources.Load<EnemyInfoBinder>(prefabPath);
             var createdInfoString = Instantiate(enemyPrefab, _enemies);
+            
+            var mobConfig = ViewModel.MobsSettings.AllMobs.Find(t => t.ConfigId == configId);
+            if (mobConfig == null) 
+                mobConfig = ViewModel.MobsSettings.AllBosses.Find(t => t.ConfigId == configId);
+            
+            Sprite image = _imageManager.GetDefence(mobConfig.Defence);
 
-            Sprite image = null;
-            foreach (var defenceImage in _mobDefenceImages)
-            {
-                //Debug.Log(defenceImage.MobDefence + " == " + objValue.Key.GetDefence());
-                if (defenceImage.mobDefence != objValue.Key.GetDefence()) continue;
-                image = defenceImage.image;
-                break;
-
-            }
-            if (image == null) throw new Exception("Не найдено изображение для " + objValue.Key.GetDefence());
             createdInfoString.Bind(
                 image,
-                objValue.Key.GetString(),
+                mobConfig.TitleLid,
                 objValue.Value,
                 count
             );
@@ -175,14 +179,9 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             var paramPrefab = Resources.Load<BaseParameterBinder>(prefabPath);
             var createdBinder = Instantiate(paramPrefab, _baseParameters);
             
-            Sprite image = null;
-            foreach (var parameterImage in _parameterImages)
-            {
-                if (parameterImage.typeParameter != objValue.Key) continue;
-                image = parameterImage.image;
-                break;
-
-            }
+            
+            Sprite image = _imageManager.GetParameter(objValue.Key);
+   
             //if (image == null) throw new Exception("Не найдено изображение для " + objValue.Key);
             createdBinder.Bind(image, objValue.Key.GetString(), objValue.Value, count);
             _baseParameterBinders.Add(createdBinder);

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Towers;
+using Game.Settings;
+using Game.Settings.Gameplay.Enemies;
 using Game.State;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
@@ -40,13 +43,15 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         private GameplayCamera _cameraService;
         
         //Словари префабов для отображения в Binder
-        public ObservableDictionary<MobType, int> DefenceCountMobs = new();
         public ObservableDictionary<TowerParameterType, float> BaseParameters = new(); 
         public ObservableDictionary<TowerParameterType, float> UpgradeParameters = new();
             
         private Vector2Int _towerPrevious = Vector2Int.zero;
         public TowerViewModel TowerViewModel;
         private IDisposable _disposable;
+        
+        public ObservableDictionary<string, int> InfoWaveMobs = new(); //Информация о мобе в волн
+        public MobsSettings MobsSettings { get; private set; }
         
         public PanelGateWaveViewModel(
             GameplayUIManager uiManager, 
@@ -61,7 +66,9 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             var entityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
             var towerClick = container.Resolve<Subject<TowerViewModel>>();
-
+            MobsSettings = container.Resolve<ISettingsProvider>().GameSettings.MobsSettings;
+           
+            
             entityClick.Subscribe(_ =>
             {
                 ShowInfoWave.OnNext(false);
@@ -94,11 +101,10 @@ namespace Game.GamePlay.View.UI.PanelGateWave
 
             _gameplayStateProxy.CurrentWave.Subscribe(number =>
             {
-                DefenceCountMobs.Clear();
-                var list = _gameplayStateProxy.Waves[number]!.GetListForInfo();
-                foreach (var itemList in list)
+                InfoWaveMobs.Clear();
+                foreach (var keyPair in _gameplayStateProxy.Waves[number].GetInfoMobsFromWave())
                 {
-                    DefenceCountMobs.Add(itemList.Key, itemList.Value);
+                    InfoWaveMobs.Add(keyPair.Key, keyPair.Value);
                 }
             }).AddTo(ref d);
             
@@ -123,6 +129,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             
             _disposable = d.Build();
         }
+
+        
 
         private void NewPositionButtonInfo()
         {

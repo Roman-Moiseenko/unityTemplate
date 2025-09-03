@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: Tower03
   m_EditorClassIdentifier: 
   ConfigId: Tower03
-  epicCardLevel: 4
-  Level: 5
-  Amount: 1
+  epicCardLevel: 0
+  Level: 1
