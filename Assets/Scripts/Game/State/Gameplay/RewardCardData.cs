@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Game.State.Inventory;
+using Game.State.Maps.Mobs;
+using UnityEngine;
 
 namespace Game.State.Gameplay
 {
@@ -6,7 +8,7 @@ namespace Game.State.Gameplay
     {
         public RewardType RewardType;
         public string TargetId; //Цель Конфиг башни
-        public int RewardLevel; //Уровень наград
+        public int Level; //Уровень наград
         public string ConfigId; //Конфиг бустера ()
         public int Direction; //Направление 1-4
         public Vector2Int Position;
@@ -16,6 +18,8 @@ namespace Game.State.Gameplay
         public string Description;
         public string Name;
         public bool OnRoad;
+        public TypeEpicCard EpicLevel;
+        public MobDefence Defence;
 
 
         public bool IsBuild()

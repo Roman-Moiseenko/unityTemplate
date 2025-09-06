@@ -35,7 +35,7 @@ namespace Game.GamePlay.View.UI
             //Создаем панели, необходимые для Геймплея           
             rootUI.AddPanel(new PanelGateWaveViewModel(this, container));
             rootUI.AddPanel(new PanelBuildViewModel(container));
-            rootUI.AddPanel(new PanelActionsViewModel(this, container));
+           rootUI.AddPanel(new PanelActionsViewModel(this, container));
             rootUI.AddPanel(new PanelConfirmationViewModel(this, container));
             
             

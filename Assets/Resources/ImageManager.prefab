@@ -81,22 +81,72 @@ MonoBehaviour:
     ByLevels:
     - Level: 1
       Sprite: {fileID: 21300000, guid: 4e542c160c1c07c47af487be2c07ec73, type: 3}
+    - Level: 2
+      Sprite: {fileID: 21300000, guid: 42f0e5931563f2b42839cd09eb709a02, type: 3}
+    - Level: 3
+      Sprite: {fileID: 21300000, guid: 1073dc6472bb1d34dadf4e994da360cf, type: 3}
+    - Level: 4
+      Sprite: {fileID: 21300000, guid: 748261d5d75c75c429fabd3cbb46a99a, type: 3}
+    - Level: 5
+      Sprite: {fileID: 21300000, guid: ae8f4b7920c136d44a9258425190df1e, type: 3}
+    - Level: 6
+      Sprite: {fileID: 21300000, guid: 692ca436558cbd94989126e7beafd5b0, type: 3}
   - ConfigId: Tower02
     ByLevels:
     - Level: 1
       Sprite: {fileID: 21300000, guid: c45a9afcb9a5a8e41ac0c398616089b4, type: 3}
+    - Level: 2
+      Sprite: {fileID: 21300000, guid: 52b5221744d30c14fae5e73b30cdc712, type: 3}
+    - Level: 3
+      Sprite: {fileID: 21300000, guid: baa1f35c2bffa4e4cba0742615da5684, type: 3}
+    - Level: 4
+      Sprite: {fileID: 21300000, guid: 59197a5eb9a35014d87d153ac221405d, type: 3}
+    - Level: 5
+      Sprite: {fileID: 21300000, guid: 4a33e77702ca04b40a11c87fc3463cf3, type: 3}
+    - Level: 6
+      Sprite: {fileID: 21300000, guid: c035c6113bc3ec24e9ceda1ed0d0eac8, type: 3}
   - ConfigId: Tower03
     ByLevels:
     - Level: 1
       Sprite: {fileID: 21300000, guid: 6b83cf190fe095148a9382322bfc23de, type: 3}
+    - Level: 2
+      Sprite: {fileID: 21300000, guid: 44535a8f845a1124c86098ab46420b25, type: 3}
+    - Level: 3
+      Sprite: {fileID: 21300000, guid: f5783d354df88014d98dcc45bad9ddcf, type: 3}
+    - Level: 4
+      Sprite: {fileID: 21300000, guid: f0ebd1f3e1c17be4bbf43983aa3ea712, type: 3}
+    - Level: 5
+      Sprite: {fileID: 21300000, guid: 58d7778550168444f859fc7aa5f9b3e6, type: 3}
+    - Level: 6
+      Sprite: {fileID: 21300000, guid: fc4a4174c95b5d44388f62c8bd9ee7ca, type: 3}
   - ConfigId: Tower04
     ByLevels:
     - Level: 1
       Sprite: {fileID: 21300000, guid: 324c8e3917ab66747be9cbdb075fa979, type: 3}
+    - Level: 2
+      Sprite: {fileID: 21300000, guid: a89b67865cdc93c46a31c811c2bb5563, type: 3}
+    - Level: 3
+      Sprite: {fileID: 21300000, guid: 6cbb6dc887ba24d44b88afe9894a1daf, type: 3}
+    - Level: 4
+      Sprite: {fileID: 21300000, guid: d747e03c4555f87458cad1f61e0cf5a4, type: 3}
+    - Level: 5
+      Sprite: {fileID: 21300000, guid: 4d1539f49fe83fe49bbfcd28d3a47858, type: 3}
+    - Level: 6
+      Sprite: {fileID: 21300000, guid: a2467bcd39d24ed4cab30b859e1e2a06, type: 3}
   - ConfigId: Tower05
     ByLevels:
     - Level: 1
       Sprite: {fileID: 21300000, guid: 583173a11a8301840953f8641d3b86da, type: 3}
+    - Level: 2
+      Sprite: {fileID: 21300000, guid: ca6c476df02553c4eaeaef9ce190352b, type: 3}
+    - Level: 3
+      Sprite: {fileID: 21300000, guid: 420029c4787fd38418c2aca2a0ba7b7f, type: 3}
+    - Level: 4
+      Sprite: {fileID: 21300000, guid: 350afc0a2eaf5984daeece8c4f5a6120, type: 3}
+    - Level: 5
+      Sprite: {fileID: 21300000, guid: 43a508129498d5742b910368448e93f1, type: 3}
+    - Level: 6
+      Sprite: {fileID: 21300000, guid: 3dde272b881531a40bca0ad4a72a67e9, type: 3}
   parameters:
   - TypeParameter: 0
     Sprite: {fileID: 21300000, guid: a4d96f3dec5d91e40977d7600de5f355, type: 3}
@@ -125,3 +175,29 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 62bdb6e18e9f2d24996d43008a99863d, type: 3}
   - Defence: 3
     Sprite: {fileID: 21300000, guid: 58edd5442b63c234a8c4de12039df663, type: 3}
+  otherSprite:
+  - ConfigId: TowerUpCard
+    Sprite: {fileID: 21300000, guid: 80fd7e715a58c58419284abc35cbbd90, type: 3}
+  - ConfigId: CardBuild
+    Sprite: {fileID: 21300000, guid: 6ccfbdf6340763d4abadf43bb51e5c1a, type: 3}
+  - ConfigId: CardGround
+    Sprite: {fileID: 21300000, guid: 303ac3c4525551449bc66d68a0da07a1, type: 3}
+  roads:
+  - ConfigId: 0
+    Sprite: {fileID: 21300000, guid: 2786016e096b9c047af2a0b723586e21, type: 3}
+  - ConfigId: 1
+    Sprite: {fileID: 21300000, guid: cb493205cf813e74887fb6dc4801e072, type: 3}
+  - ConfigId: 2
+    Sprite: {fileID: 21300000, guid: b889e71c80248714e910cfb52ca8f786, type: 3}
+  - ConfigId: 3
+    Sprite: {fileID: 21300000, guid: d2164b00662c2bc45909e01d3ae2b37f, type: 3}
+  - ConfigId: 4
+    Sprite: {fileID: 21300000, guid: e897c9a45477c794d86f31a6ea7eccdc, type: 3}
+  - ConfigId: 5
+    Sprite: {fileID: 21300000, guid: 3dfd5322af7d14243b4b4bbb2fbc2299, type: 3}
+  - ConfigId: 6
+    Sprite: {fileID: 21300000, guid: 971c0cf16d4dcf144ac72def624bf47b, type: 3}
+  - ConfigId: 7
+    Sprite: {fileID: 21300000, guid: e7d44631c3853ce42b2ddc4efe7bca45, type: 3}
+  - ConfigId: 8
+    Sprite: {fileID: 21300000, guid: c3b0785a9a1a7504eb648e790771c3b1, type: 3}

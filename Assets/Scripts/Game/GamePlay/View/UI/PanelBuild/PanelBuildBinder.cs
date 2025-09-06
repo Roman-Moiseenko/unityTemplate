@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Game.Common;
+using Game.GameRoot.ImageManager;
+using Game.State.Gameplay;
+using Game.State.Maps.Towers;
 using MVVM.UI;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Game.GamePlay.View.UI.PanelBuild
@@ -17,13 +22,15 @@ namespace Game.GamePlay.View.UI.PanelBuild
         [SerializeField] private Button _btnBuild2;
         [SerializeField] private Button _btnBuild3;
         [SerializeField] private Button _btnUpdate;
-
-        private Dictionary<int, Button> Buttons = new();
+        [SerializeField] private List<Transform> cards;
+        
         private Transform _freeCaption;
         private Transform _paidCaption;
         private TMP_Text _paidText;
 
         private IDisposable _disposable;
+        private ImageManagerBinder _imageManager;
+
         private void Awake()
         {
             _freeCaption = _btnUpdate.transform.Find("Free");
@@ -32,6 +39,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 .transform.Find("ImageBlock")
                 .transform.Find("costText")
                 .gameObject.GetComponent<TMP_Text>();
+            _imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
         }
 
         protected override void OnBind(PanelBuildViewModel viewModel)
@@ -40,9 +48,11 @@ namespace Game.GamePlay.View.UI.PanelBuild
             _freeCaption.gameObject.SetActive(true);
             _paidCaption.gameObject.SetActive(false);
             
-            Buttons.Add(1, _btnBuild1);
-            Buttons.Add(2, _btnBuild2);
-            Buttons.Add(3, _btnBuild3);
+            for (var i = 1; i <= 3; i++)
+            {
+                var binder = cards[i-1].GetComponent<CardBinder>();
+                binder.Bind(viewModel.CardViewModels[i]);
+            }
 
             viewModel.UpdateCards.Subscribe(value =>
             {
@@ -59,64 +69,47 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 }
             }).AddTo(ref d);
             
-            foreach (var buttonCard in viewModel.ButtonCards)
-            {
-                if (Buttons.TryGetValue(buttonCard.Key, out var button))
-                    UpdateTextButton(button, buttonCard.Value);
-            }
-
-            viewModel.ButtonCards.ObserveAdd().Subscribe(e =>
-            {
-                var indexButton = e.Value.Key;
-                var buttonData = e.Value.Value;
-                if (Buttons.TryGetValue(indexButton, out var button)) UpdateTextButton(button, buttonData);
-            }).AddTo(ref d);
             _disposable = d.Build();
         }
-
-        private void UpdateTextButton(Button button, ButtonData buttonData)
-        {
-            button.transform.Find("Caption").GetComponentInChildren<TMP_Text>().text = buttonData.Caption;
-            button.transform.Find("Level").GetComponentInChildren<TMP_Text>().text = buttonData.Level;
-            button.transform.Find("Description").GetComponentInChildren<TMP_Text>().text = buttonData.Description;
-
-            if (buttonData.PrehabImage != "")
-            {
-                button.transform.Find("Image").GetComponentInChildren<Image>().sprite =
-                    Resources.Load<Sprite>($"Images/{buttonData.PrehabImage}");
-            }
-        }
-
+        
         public override void Show()
         {
             if (isShow) return;
             //Получаем у ViewModel данные для отображения на карточках, грузим картинки
             base.Show();
             panel.pivot = new Vector2(0.5f, 0);
+            StartCoroutine(ShowCards());
+            //Запустить анимацию
+        }
+
+        // ReSharper disable Unity.PerformanceAnalysis
+        private IEnumerator ShowCards()
+        {
+            foreach (var card in cards)
+            {
+                card.GetComponent<CardBinder>().ShowCard();
+                yield return new WaitForSeconds(0.2f);
+            }
         }
 
         public override void Hide()
         {
             if (!isShow) return;
             base.Hide();
+            foreach (var card in cards)
+            {
+                card.GetComponent<CardBinder>().HideCard();
+            }
             panel.pivot = new Vector2(0.5f, 1);
         }
-
-
+        
         private void OnEnable()
         {
-            _btnBuild1.onClick.AddListener(OnClickButtonBuild1);
-            _btnBuild2.onClick.AddListener(OnClickButtonBuild2);
-            _btnBuild3.onClick.AddListener(OnClickButtonBuild3);
             _btnUpdate.onClick.AddListener(OnClickUpdate);
         }
 
-
         private void OnDisable()
         {
-            _btnBuild1.onClick.RemoveListener(OnClickButtonBuild1);
-            _btnBuild2.onClick.RemoveListener(OnClickButtonBuild2);
-            _btnBuild3.onClick.RemoveListener(OnClickButtonBuild3);
             _btnUpdate.onClick.RemoveListener(OnClickUpdate);
         }
 
@@ -124,22 +117,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
         {
             ViewModel.OnUpdateCard();
         }
-
-        private void OnClickButtonBuild1()
-        {
-            ViewModel.OnBuild1();
-        }
-
-        private void OnClickButtonBuild2()
-        {
-            ViewModel.OnBuild2();
-        }
-
-        private void OnClickButtonBuild3()
-        {
-            ViewModel.OnBuild3();
-        }
-        
         public void OnDestroy()
         {
             _disposable.Dispose();

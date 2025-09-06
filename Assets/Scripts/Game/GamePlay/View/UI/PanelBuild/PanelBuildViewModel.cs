@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using DI;
 using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
 using Game.GamePlay.Services;
 using Game.GameRoot.Services;
+using Game.Settings;
+using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
 using Game.State.Gameplay;
 using Game.State.Root;
@@ -21,120 +24,65 @@ namespace Game.GamePlay.View.UI.PanelBuild
     public class PanelBuildViewModel : WindowViewModel
     {
         public override string Id => "PanelBuild";
-        public override string Path => "Gameplay/Panels/";
+        public override string Path => "Gameplay/Panels/BuildCards/";
         
         public ReactiveProperty<int> UpdateCards;
-
         public ObservableDictionary<int, ButtonData> ButtonCards = new();
-        private readonly FsmGameplay _fsmGameplay;
-        
+
         private readonly ResourceService _resourceService;
         private readonly RewardProgressService _rewardService;
 
         private RewardsProgress _rewards;
         private readonly GameplayStateProxy _gameplayState;
         private readonly IDisposable _disposable;
-
+        public ObservableDictionary<int, RewardCardData> RewardsCards = new();
+        public List<TowerSettings> AllTowerConfig { get; private set; }
+        public readonly ObservableDictionary<string, int> Levels;
+        public Dictionary<int, CardViewModel> CardViewModels = new();
+        
         public PanelBuildViewModel(DIContainer container)
         {
             var d = Disposable.CreateBuilder();
             var gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            var towerService  = container.Resolve<TowersService>();
+            var fsmGameplay = container.Resolve<FsmGameplay>();
+            var gameSettings = container.Resolve<ISettingsProvider>().GameSettings;
+            
             UpdateCards = gameplayState.UpdateCards;
             _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
-
             _resourceService = container.Resolve<ResourceService>();
             _rewardService = container.Resolve<RewardProgressService>();
-            _fsmGameplay = container.Resolve<FsmGameplay>();
-            _fsmGameplay.Fsm.StateCurrent
+            Levels = towerService.Levels;
+            
+            CardViewModels.Add(1, new CardViewModel(gameSettings, fsmGameplay));
+            CardViewModels.Add(2, new CardViewModel(gameSettings, fsmGameplay));
+            CardViewModels.Add(3, new CardViewModel(gameSettings, fsmGameplay));
+            
+            AllTowerConfig = container.Resolve<ISettingsProvider>().GameSettings.TowersSettings.AllTowers;
+            fsmGameplay.Fsm.StateCurrent
                 .Where(newState => newState.GetType() == typeof(FsmStateBuildBegin))
-                .Subscribe(_ => LoadRewardsToCards()).AddTo(ref d);
+                .Subscribe(_ =>
+                {
+                    if (fsmGameplay.Fsm.PreviousState.GetType() != typeof(FsmStateBuild))
+                    {
+                        LoadRewardsToCards();                        
+                    }
+                }).AddTo(ref d);
             _disposable = d.Build();
         }
 
         private void LoadRewardsToCards()
         {
-            ButtonCards.Clear();
+            RewardsCards.Clear();
             var start = _gameplayState.Progress.CurrentValue == 0;
             _rewards = start ? _rewardService.StartRewardProgress() : _rewardService.GenerateRewardProgress();
-            
-            foreach (var rewardsCard in _rewards.Cards)
+
+            for (var i = 1; i <= 3; i++)
             {
-                ButtonCards.Add(rewardsCard.Key, GetTextRewardButton(rewardsCard.Value));
+                CardViewModels[i].UpdateRewardInfo(_rewards.Cards[i]);
             }
         }
-
-        private ButtonData GetTextRewardButton(RewardCardData cardData)
-        {
-            var buttonData = new ButtonData();
-            switch (cardData.RewardType)
-            {
-                case RewardType.Tower:
-                    buttonData.Caption = "Построить башню";
-                    buttonData.PrehabImage = "Towers/" + cardData.ConfigId + "/Level_" + cardData.RewardLevel;
-                    buttonData.Level = cardData.RewardLevel.ToString();
-                    buttonData.Description = "Башня " + cardData.Name;
-                    break;
-                case RewardType.Ground:
-                    buttonData.Caption = "Построить участок";
-                    buttonData.PrehabImage = "Ground";
-
-                    break;
-                case RewardType.Road:
-                    buttonData.Caption = "Построить дорогу";
-                    buttonData.PrehabImage = "Roads/" + cardData.ConfigId;
-                    buttonData.Description = cardData.Description;
-                    break;
-                case RewardType.TowerLevelUp:
-                    buttonData.Caption = "Улучшить башню";
-                    buttonData.PrehabImage = "Towers/" + cardData.ConfigId + "/Level_" + cardData.RewardLevel;
-                    buttonData.Level = cardData.RewardLevel.ToString() + " +1";
-                    buttonData.Description = cardData.Description;
-                    break;
-                case RewardType.SkillLevelUp:
-                    buttonData.Caption = "Улучшить навык";
-                    break;
-                case RewardType.HeroLevelUp:
-                    buttonData.Caption = "Улучшить героя";
-                    break;
-                case RewardType.TowerMove:
-                    buttonData.Caption = "Передвинуть башню";
-                    break;
-                case RewardType.TowerReplace:
-                    buttonData.Caption = "Заменить башни";
-                    break;
-                default: throw new Exception("Не известное значение");
-            }
-
-            return buttonData;
-        }
-
-        public void OnBuild1()
-        {
-            BuildStateProgress(_rewards.Cards[1]); //Строим или применяем навык
-        }
-
-        public void OnBuild2()
-        {
-            BuildStateProgress(_rewards.Cards[2]); //Строим или применяем навык
-        }
-
-        public void OnBuild3()
-        {
-            BuildStateProgress(_rewards.Cards[3]); //Строим или применяем навык
-        }
-
-        private void BuildStateProgress(RewardCardData cardData)
-        {
-            if (cardData.IsBuild())
-            {
-                _fsmGameplay.Fsm.SetState<FsmStateBuild>(cardData);
-            }
-            else
-            {
-                _fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(cardData);
-            }
-        }
-
+        
         /**
          * Обновить награду, увеличить стоимость
          */

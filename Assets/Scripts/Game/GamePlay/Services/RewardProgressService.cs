@@ -205,7 +205,7 @@ namespace Game.GamePlay.Services
             {
                 RewardType = RewardType.Road,
                 ConfigId = rewardId,
-                Description = "Дорога " + text
+                Description = text
             };
         }
 
@@ -219,7 +219,7 @@ namespace Game.GamePlay.Services
             return new RewardCardData
             {
                 RewardType = RewardType.Ground,
-                Description = "ЗЕМЛЯ"
+               // Description = "ЗЕМЛЯ"
             };
         }
 
@@ -233,8 +233,8 @@ namespace Game.GamePlay.Services
                 availableTowers.Remove(rewardCardData.Value.ConfigId);
             }
 
-            var index = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) %
-                        availableTowers.Count; //Случ.порядковый номер для строения
+            var ran = new System.Random();
+            var index = ran.Next(0, availableTowers.Count - 1); //Случ.порядковый номер для строения
             var i = 0;
             foreach (var tower in availableTowers) //Перебираем список башен до случ.порядкового номера
             {
@@ -249,10 +249,12 @@ namespace Game.GamePlay.Services
                     {
                         RewardType = RewardType.Tower,
                         ConfigId = tower.Key,
-                        RewardLevel = tower.Value, //текущий уровень, для звездочек
-                        Name = towerSetting.name, //Название башни
-                        Description = "Башня " + towerSetting.name,
+                        Level = _towerService.Levels[tower.Key], //текущий уровень, для звездочек
+                        Name = towerSetting.TitleLid, //Название башни
+                        //Description = "Башня " + towerSetting.name,
                         OnRoad = towerSetting.OnRoad,
+                        Defence = towerSetting.Defence,
+                        EpicLevel = tower.Value,
                     };
                 }
 
@@ -296,7 +298,7 @@ namespace Game.GamePlay.Services
                     {
                         RewardType = RewardType.TowerLevelUp,
                         ConfigId = tower.Key,
-                        RewardLevel = tower.Value, //текущий уровень, для звездочек
+                        Level = tower.Value, //текущий уровень, для звездочек
                         Name = towerSetting.name, //Название башни
                         Description = textDescription,
                     };

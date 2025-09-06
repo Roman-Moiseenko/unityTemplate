@@ -26,7 +26,16 @@ namespace Game.GamePlay.View.Mobs
             _meshRenderer = _health.GetComponent<MeshRenderer>(); //
             _matBlock = new MaterialPropertyBlock();
             currentHealth.Subscribe(h => _currentHealth = h);
-            _level.GetComponent<Renderer>().material.mainTexture = _sprites[level - 1];
+
+            var first = level / 10;
+            var second = level % 10;
+            
+            var meshLevel = _level.GetComponent<MeshRenderer>();
+            meshLevel.GetPropertyBlock(_matBlock);
+            _matBlock.SetFloat("_First", first);
+            _matBlock.SetFloat("_Second", second);
+            meshLevel.SetPropertyBlock(_matBlock);
+          ///  _level.GetComponent<Renderer>().material.mainTexture = _sprites[level - 1];
         }
 
         public void OnUpdate()

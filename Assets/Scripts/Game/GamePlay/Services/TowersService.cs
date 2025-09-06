@@ -5,6 +5,7 @@ using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Entities;
+using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps.Towers;
 using MVVM.CMD;
@@ -209,13 +210,13 @@ namespace Game.GamePlay.Services
         /**
          * Список доступных башен на текущем уровне
          */
-        public Dictionary<string, int> GetAvailableTowers()
+        public Dictionary<string, TypeEpicCard> GetAvailableTowers()
         {
-            var towers = new Dictionary<string, int>();
+            var towers = new Dictionary<string, TypeEpicCard>();
 
             foreach (var towerCard in _baseTowerCards)
             {
-                towers.Add(towerCard.ConfigId, Levels[towerCard.ConfigId]);
+                towers.Add(towerCard.ConfigId, towerCard.EpicLevel);
             }
 
             return towers;

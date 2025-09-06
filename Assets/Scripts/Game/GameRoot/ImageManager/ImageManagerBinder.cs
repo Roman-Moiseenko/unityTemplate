@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.State.Inventory;
 using Game.State.Maps.Mobs;
@@ -14,11 +15,23 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByConfigLevel> towerCard;
         [SerializeField] private List<ImageItemByParameter> parameters;
         [SerializeField] private List<ImageItemByDefence> defences;
-
+        [SerializeField] private List<ImageItemByConfig> otherSprite;
+        [SerializeField] private List<ImageItemByConfig> roads;
+        
 
         public Sprite GetEpicLevel(TypeEpicCard typeEpicCard)
         {
             return epicLevels.FirstOrDefault(t => t.TypeEpic == typeEpicCard)!.Sprite;
+        }
+        
+        public Sprite GetEpicLevel(string indexEpic)
+        {
+            foreach (TypeEpicCard typeEpic in Enum.GetValues(typeof(TypeEpicCard)))
+            {
+                if (typeEpic.Index() == int.Parse(indexEpic))
+                    return epicLevels.FirstOrDefault(t => t.TypeEpic == typeEpic)!.Sprite;
+            }
+            return null;
         }
 
         public Sprite GetTowerCard(string configId, int level)
@@ -37,9 +50,21 @@ namespace Game.GameRoot.ImageManager
             return towerPlan.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
         }
 
-        public Sprite GetDefence(MobDefence defence)
+        public Sprite GetDefence(MobDefence? defence)
         {
-            return defences.FirstOrDefault(t => t.Defence == defence)!.Sprite;
+            return defence == null 
+                ? null 
+                : defences.FirstOrDefault(t => t.Defence == defence)!.Sprite;
+        }
+        
+        public Sprite GetOther(string configId)
+        {
+            return otherSprite.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
+        }
+
+        public Sprite GetRoad(string configId)
+        {
+            return roads.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
         }
     }
 }
