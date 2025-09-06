@@ -33,28 +33,35 @@ namespace Game.State
         //Игровая сессия
         public Observable<GameplayStateProxy> LoadGameplayState()
         {
+            Debug.Log("LoadGameplayState = 1");
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
             {
                 TypeNameHandling = TypeNameHandling.Auto,
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
             }; 
 //            Debug.Log("!PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY) = "  + !PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY));
-            
+            Debug.Log("LoadGameplayState = 2");
             if (!PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY))
             {
                 GameplayState = CreateGameplayStateFromSettings();
+                Debug.Log("LoadGameplayState = 2.1");
                 SaveGameplayState(); //Сохраняем дефолтное состояние
+                Debug.Log("LoadGameplayState = 2.2");
             }
             else
             {
                 //Загружаем
                 var json = PlayerPrefs.GetString(GAMEPLAY_STATE_KEY);
+                Debug.Log("LoadGameplayState = 2.3");
                 _gameplayStateOrigin = JsonConvert.DeserializeObject<GameplayState>(json);
-                Debug.Log(JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
+                Debug.Log("LoadGameplayState = 2.4");
+                //Debug.Log(JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
+                
                 GameplayState = new GameplayStateProxy(_gameplayStateOrigin);
+                Debug.Log("LoadGameplayState = 2.5");
              //   Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
             }
-            
+            Debug.Log("LoadGameplayState = 3");
             return Observable.Return(GameplayState);
         }
         private GameplayStateProxy CreateGameplayStateFromSettings()

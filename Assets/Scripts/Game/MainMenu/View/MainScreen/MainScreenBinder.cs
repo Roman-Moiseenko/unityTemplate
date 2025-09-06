@@ -4,9 +4,7 @@ using System.Linq;
 using Game.MainMenu.View.MainScreen.BotomMenu;
 using MVVM.UI;
 using R3;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Game.MainMenu.View.MainScreen

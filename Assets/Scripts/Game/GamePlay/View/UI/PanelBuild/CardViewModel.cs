@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.States;
+using Game.GamePlay.Services;
 using Game.GameRoot.Services;
 using Game.Settings;
 using Game.State.Gameplay;
@@ -18,31 +20,35 @@ namespace Game.GamePlay.View.UI.PanelBuild
         public string Description;
         public string ImageCard;
         public string ImageBack;
+        public string DescriptionBack;
         public int Level = 0;
+        public Dictionary<TowerParameterType, Vector2> Parameters = new();
 
         public MobDefence? Defence = null;
-
         public ReactiveProperty<bool> Updated = new(true);
+        
         
         public GameSettings _gameSettings;
         private RewardCardData _rewardData;
         private readonly FsmGameplay _fsmGameplay;
+        private readonly TowersService _towersService;
         public RewardType RewardType => _rewardData.RewardType; 
 
         //private readonly ResourceService _resourceService;
 
-        public CardViewModel(GameSettings gameSettings, FsmGameplay fsmGameplay)
+        public CardViewModel(GameSettings gameSettings, FsmGameplay fsmGameplay, TowersService towersService)
         {
           //  _resourceService = resourceService;
             _gameSettings = gameSettings;
             _fsmGameplay = fsmGameplay;
+            _towersService = towersService;
         }
 
 
         public void UpdateRewardInfo(RewardCardData rewardData)
         {
             _rewardData = rewardData;
-            
+            Parameters.Clear();
             switch (rewardData.RewardType)
             {
                 case RewardType.Tower: InfoTower(); break;
@@ -63,16 +69,17 @@ namespace Game.GamePlay.View.UI.PanelBuild
                     break;
                 default: throw new Exception("Не известное значение");
             }
-            
-            
         }
-
+    
         private void InfoTowerUp()
         {
             var config = _gameSettings.TowersSettings.AllTowers.Find(t => t.ConfigId == _rewardData.ConfigId);
             Level = _rewardData.Level;
+            
             Caption= "УЛУЧШЕНИЕ";
-            Defence = config.Defence;
+            DescriptionBack = Caption;
+            
+            Defence = null;
             ImageCard = _rewardData.ConfigId;
             ImageBack = "TowerUpCard";
 
@@ -82,6 +89,16 @@ namespace Game.GamePlay.View.UI.PanelBuild
             {
                 //Debug.Log($"{parameter.ParameterType.GetString()} {parameter.Value} %\n");
                 Description += $"{parameter.ParameterType.GetString()} {parameter.Value} %\n";
+            }
+            
+            foreach (var parameterData in _towersService.TowerParametersMap[_rewardData.ConfigId])
+            {
+                var data = new Vector2(parameterData.Value.Value, 0);
+                var paramUpdate = parameters.Parameters.Find(t => t.ParameterType == parameterData.Key);
+                
+                if (paramUpdate != null) data.y = parameterData.Value.Value;
+                
+                Parameters.Add(parameterData.Key, data);
             }
             
             Updated.OnNext(true);
@@ -95,7 +112,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
             ImageCard = _rewardData.ConfigId;
             ImageBack = "CardBuild";
             Description = _rewardData.Name + " \nПУТЬ";
-            
+            DescriptionBack = "РАСШИРЯЕТ ДОРОГУ";
             Updated.OnNext(true);
         }
 
@@ -107,19 +124,28 @@ namespace Game.GamePlay.View.UI.PanelBuild
             ImageCard = "CardGround";
             ImageBack = "CardBuild";
             Description = "ДОП.ПОЛЕ";
+            DescriptionBack = "РАСШИРЯЕТ ТЕРРИТОРИЮ";
             Updated.OnNext(true);
         }
 
         private void InfoTower()
         {
-            var config = _gameSettings.TowersSettings.AllTowers.Find(t => t.ConfigId == _rewardData.ConfigId);
+            var config = _gameSettings.TowersSettings.AllTowers
+                .Find(t => t.ConfigId == _rewardData.ConfigId);
             Caption = "";
             Level = _rewardData.Level;
+            
             Description = "БАШНЯ \n" + config.TitleLid;
+            DescriptionBack = Description;
+            
             Defence = config.Defence;
             
             ImageCard = _rewardData.ConfigId;
             ImageBack = _rewardData.EpicLevel.Index().ToString();
+            foreach (var parameterData in _towersService.TowerParametersMap[_rewardData.ConfigId])
+            {
+                Parameters.Add(parameterData.Key, new Vector2(parameterData.Value.Value, 0));
+            }
             
             Updated.OnNext(true);
         }

@@ -54,9 +54,9 @@ namespace Game.GamePlay.View.UI.PanelBuild
             _rewardService = container.Resolve<RewardProgressService>();
             Levels = towerService.Levels;
             
-            CardViewModels.Add(1, new CardViewModel(gameSettings, fsmGameplay));
-            CardViewModels.Add(2, new CardViewModel(gameSettings, fsmGameplay));
-            CardViewModels.Add(3, new CardViewModel(gameSettings, fsmGameplay));
+            CardViewModels.Add(1, new CardViewModel(gameSettings, fsmGameplay, towerService));
+            CardViewModels.Add(2, new CardViewModel(gameSettings, fsmGameplay, towerService));
+            CardViewModels.Add(3, new CardViewModel(gameSettings, fsmGameplay, towerService));
             
             AllTowerConfig = container.Resolve<ISettingsProvider>().GameSettings.TowersSettings.AllTowers;
             fsmGameplay.Fsm.StateCurrent
