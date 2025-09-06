@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using DI;
 using Game.Common;
@@ -42,8 +43,8 @@ namespace Game.GamePlay.Root
             //Регистрируем машину состояния
             var Fsm = new FsmGameplay(container);
             container.RegisterInstance(Fsm);
-            var subjectExitParams = new Subject<GameplayExitParams>();
-            container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
+           // var subjectExitParams = new Subject<GameplayExitParams>();
+          //  container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
           //  var generateService = new GenerateService();
            // container.RegisterInstance(generateService);
             //    var cmd = container.Resolve<ICommandProcessor>(); //Создаем обработчик команд
@@ -134,7 +135,7 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(rewardService);
 
             var gameplayService = new GameplayService(
-                subjectExitParams, 
+                container.Resolve<Subject<GameplayExitParams>>(), 
                 waveService, gameplayState,
                 container.Resolve<AdService>(),
                 Fsm,
@@ -183,6 +184,12 @@ namespace Game.GamePlay.Root
             }
             
             waveService.Start(); //Запуск таймера
+        }
+
+
+        public static IEnumerator RegisterCoroutine(DIContainer container, GameplayEnterParams gameplayEnterParams)
+        {
+            yield return null;
         }
     }
 }

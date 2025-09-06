@@ -16,16 +16,29 @@ namespace Game.GamePlay.View.UI.PanelBuild
     {
         private IDisposable _disposable;
         private ImageManagerBinder _imageManager;
-
+        
+        //BUTTONS
+        [SerializeField] private Button buttonBuild;
+        [SerializeField] private Button buttonShowInfo;
+        [SerializeField] private Button buttonHideInfo;
+        
+        //FRONTEND
         [SerializeField] private TMP_Text textCaption;
         [SerializeField] private Image imageDefence;
         [SerializeField] private TMP_Text textDescription;
         [SerializeField] private Image imageCard;
         [SerializeField] private Image imageBack;
 
-        [SerializeField] private Button buttonBuild;
-        [SerializeField] private Button buttonShowInfo;
-        [SerializeField] private Button buttonHideInfo;
+        //BACKEND
+        [SerializeField] private TMP_Text textDescriptionBack;
+        [SerializeField] private Image imageBackBack;
+        //Изображение башни на обороте
+        [SerializeField] private Image imageCardTowerBack;
+        //Изображение остального на обороте
+        [SerializeField] private Image imageCardOtherBack;
+        [SerializeField] private Transform blockParameters;
+        
+
 
         //  private GameSettings _gameSettings;
         private CardViewModel _viewModel;
@@ -34,7 +47,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
         private void Awake()
         {
             _imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
-            
         }
 
         public void Bind(CardViewModel viewModel)
@@ -49,7 +61,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 if (_viewModel.Defence != null)
                 {
                     imageDefence.sprite = _imageManager.GetDefence(_viewModel.Defence);
-
                     imageDefence.gameObject.SetActive(true);
                 }
                 else
@@ -63,6 +74,8 @@ namespace Game.GamePlay.View.UI.PanelBuild
                     _ => _imageManager.GetOther(_viewModel.ImageBack)
                 };
 
+                imageBackBack.sprite = imageBack.sprite;
+
                 imageCard.sprite = _viewModel.RewardType switch
                 {
                     RewardType.Road => _imageManager.GetRoad(_viewModel.ImageCard),
@@ -70,9 +83,11 @@ namespace Game.GamePlay.View.UI.PanelBuild
                     RewardType.Tower => _imageManager.GetTowerCard(_viewModel.ImageCard, _viewModel.Level),
                     _ => _imageManager.GetOther(_viewModel.ImageCard),
                 };
+
+                imageCardTowerBack.sprite = imageCard.sprite;
             });
 
-           // HideCard();
+            HideCard();
             _disposable = d.Build();
         }
 
@@ -108,7 +123,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
         {
             gameObject.SetActive(true);
             _animator.gameObject.SetActive(true);
-         //   _animator.Play("start_card");
+            _animator.Play("start_card");
         }
 
         public void HideCard()

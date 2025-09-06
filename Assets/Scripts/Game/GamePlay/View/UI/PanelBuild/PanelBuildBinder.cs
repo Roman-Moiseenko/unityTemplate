@@ -79,7 +79,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
             base.Show();
             panel.pivot = new Vector2(0.5f, 0);
             StartCoroutine(ShowCards());
-            //Запустить анимацию
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
@@ -88,7 +87,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
             foreach (var card in cards)
             {
                 card.GetComponent<CardBinder>().ShowCard();
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.1f);
             }
         }
 
