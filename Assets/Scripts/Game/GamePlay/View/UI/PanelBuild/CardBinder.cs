@@ -37,6 +37,10 @@ namespace Game.GamePlay.View.UI.PanelBuild
         [SerializeField] private Transform blockParameters;
         [SerializeField] private List<CardParameterBinder> parameterBinders; 
 
+        [SerializeField] private Transform blockLevel;
+        [SerializeField] private Transform blockLevelUp;
+        
+        
         private RectTransform _imageCardBackTransform;
         private RectTransform _textDescriptionTransform;
         private readonly Vector3 _positionCardTower = new(0, 240, 0);
@@ -123,6 +127,24 @@ namespace Game.GamePlay.View.UI.PanelBuild
                     _textDescriptionTransform.localPosition = _positionTextDescriptionOther;
                     
                     blockParameters.gameObject.SetActive(false);
+                }
+
+                if (_viewModel.RewardType == RewardType.Tower)
+                {
+                    blockLevel.GetComponent<LevelBinder>().Bind(_viewModel.Level);
+                    blockLevel.gameObject.SetActive(true);
+                } else
+                {
+                    blockLevel.gameObject.SetActive(false);
+                }
+                
+                if (_viewModel.RewardType == RewardType.TowerLevelUp)
+                {
+                    blockLevelUp.gameObject.SetActive(true);
+                    blockLevelUp.GetComponent<LevelUpBinder>().Show(_viewModel.Level);
+                } else
+                {
+                    blockLevelUp.GetComponent<LevelUpBinder>().Hide();
                 }
                 textDescriptionBack.text = _viewModel.DescriptionBack;
                 imageCardBack.sprite = imageCard.sprite;
