@@ -30,7 +30,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         public override string Path => "Gameplay/Panels/GateWaveInfo/";
         public readonly int CurrentSpeed;
         private readonly GameplayStateProxy _gameplayStateProxy;
-        public ReactiveProperty<bool> StartForced;
+      //  public ReactiveProperty<bool> StartForced;
         
         //Состояния отображения окон
         public ReactiveProperty<bool> ShowButtonWave;
@@ -109,7 +109,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             }).AddTo(ref d);
             
             //TODO Переделать в машину состояния
-            StartForced = _waveService.StartForced;
+        //    StartForced = _waveService.StartForced;
             ShowButtonWave = _waveService.ShowInfoWave;
             
             CurrentSpeed = _gameplayStateProxy.GetCurrentSpeed();

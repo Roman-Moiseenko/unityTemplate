@@ -183,7 +183,7 @@ namespace Game.GamePlay.Root
                 
             }
             
-            waveService.Start(); //Запуск таймера
+            
         }
         
     }

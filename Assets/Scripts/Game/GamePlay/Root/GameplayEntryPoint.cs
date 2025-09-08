@@ -45,7 +45,9 @@ namespace Game.GamePlay.Root
             gameplayContainer.Resolve<IGameStateProvider>().SaveGameplayState();
             
             Debug.Log($"GAME PLAY ENTER POINT: Results MapId {enterParams?.MapId}");
-
+            
+            gameplayContainer.Resolve<WaveService>().Start(); //Запуск таймера
+            
             //Создаем выходные параметры для входа в Меню
          //   var mainMenuEnterParams = new MainMenuEnterParams("Fatality");
            // var exitParams = new GameplayExitParams(mainMenuEnterParams);
