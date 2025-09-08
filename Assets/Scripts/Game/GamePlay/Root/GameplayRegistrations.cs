@@ -185,11 +185,6 @@ namespace Game.GamePlay.Root
             
             waveService.Start(); //Запуск таймера
         }
-
-
-        public static IEnumerator RegisterCoroutine(DIContainer container, GameplayEnterParams gameplayEnterParams)
-        {
-            yield return null;
-        }
+        
     }
 }

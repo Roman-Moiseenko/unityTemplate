@@ -124,53 +124,38 @@ namespace Scripts.Game.GameRoot
 
         private IEnumerator LoadAndStartGameplay(GameplayEnterParams enterParams)
         {
-            Debug.Log("LoadAndStartGameplay - 0");
             _uiRoot.ShowLoadingScreen();
             _cachedSceneContainer?.Dispose();
             yield return LoadScene(Scenes.BOOT);
+            Debug.Log("0");
             yield return LoadScene(Scenes.GAMEPLAY);
 
             //  yield return new WaitForSeconds(1);
             //Ждем когда загрузится сохранение игры
-            var isGameStateLoaded = false; //не загружено
+            //var isGameStateLoaded = false; //не загружено
             //При загрузке, по подписке поменяем флажок на Загружено
-            Debug.Log("LoadAndStartGameplay - 1");
-            while (!isGameStateLoaded)
-            {
-                _rootContainer.Resolve<IGameStateProvider>().LoadGameplayState()
-                    .Subscribe(_ =>
-                    {
-                        Debug.Log(" * ");
-                        isGameStateLoaded = true;
-                        Debug.Log(" * " + isGameStateLoaded);
-                        
-                    });
-                Debug.Log("LoadAndStartGameplay - 2 + " + Time.deltaTime);
-                yield return null;
-                Debug.Log(" *** " + isGameStateLoaded + " + " + Time.deltaTime);
-            }
-            //yield return new WaitUntil(() => isGameStateLoaded);
 
-            Debug.Log("LoadAndStartGameplay - 3");
+            Debug.Log("1");
+            _rootContainer.Resolve<IGameStateProvider>().LoadGameplayState();
+                //.Subscribe(_ => isGameStateLoaded = true);
+
+           // yield return new WaitUntil(() => isGameStateLoaded);
+            Debug.Log("3");
             //Контейнер
             var sceneEntryPoint = Object.FindFirstObjectByType<GameplayEntryPoint>();
             var gameplayContainer = _cachedSceneContainer = new DIContainer(_rootContainer);
 
-            Debug.Log("LoadAndStartGameplay - 4");
             sceneEntryPoint.Run(gameplayContainer, enterParams).Subscribe(gameplayExitParams =>
             {
                 {
-                    Debug.Log("LoadAndStartGameplay - 5");
                     //Debug.Log("enterParams = " + JsonConvert.SerializeObject(gameplayExitParams, Formatting.Indented));
                     _coroutines.StartCoroutine(LoadAndStartMainMenu(gameplayExitParams.MainMenuEnterParams));
-                    Debug.Log("LoadAndStartGameplay - 6");
                     if (gameplayExitParams.SaveGameplay == false)
                         _rootContainer.Resolve<IGameStateProvider>()
                             .ResetGameplayState(); //При выходе сбрасываем данные
                 }
             });
 
-            Debug.Log("LoadAndStartGameplay - 7");
 
             _uiRoot.HideLoadingScreen();
         }

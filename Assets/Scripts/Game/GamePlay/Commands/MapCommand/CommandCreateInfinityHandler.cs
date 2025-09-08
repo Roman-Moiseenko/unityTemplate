@@ -27,7 +27,6 @@ namespace Game.GamePlay.Commands.MapCommand
 
         public bool Handle(CommandCreateInfinity command)
         {
-            Debug.Log("CommandCreateInfinityHandler");
             //Генерируем поверхность
             var newMapSettings = _gameSettings.MapsSettings;
             var groundConfigIds = newMapSettings.GroundConfigIds;

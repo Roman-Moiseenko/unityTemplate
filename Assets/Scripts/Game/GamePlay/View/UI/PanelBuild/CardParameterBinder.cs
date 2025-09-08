@@ -17,7 +17,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         private void Awake()
         {
-            Debug.Log("Awake");
             _imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
         }
 

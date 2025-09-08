@@ -32,9 +32,13 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 
                 index++;
             }
-            gameObject.SetActive(true);
-            StartCoroutine(ShowStar());
+            transform.gameObject.SetActive(true);
             
+        }
+
+        private void OnEnable()
+        {
+            StartCoroutine(ShowStar());
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
@@ -43,11 +47,12 @@ namespace Game.GamePlay.View.UI.PanelBuild
             if (_animationStart == 0) yield break; 
             
             stars[_animationStart].Find("starFill").gameObject.SetActive(true);
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.4f);
             stars[_animationStart].Find("starFill").gameObject.SetActive(false);
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.4f);
             StartCoroutine(ShowStar());
         }
+        
 
         public void Hide()
         {

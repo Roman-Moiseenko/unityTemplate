@@ -18,13 +18,10 @@ namespace Game.GamePlay.Root.View
     {
         public static void Register(DIContainer container)
         {
-            Debug.Log("GameplayViewModelsRegistrations 1");
             //Добавить сервис если нужен в UIGameplayRootViewModel и WorldGameplayRootViewModel
             container.RegisterFactory(c => new UIGameplayRootViewModel(container)).AsSingle();
-            Debug.Log("GameplayViewModelsRegistrations 2");
             //container.RegisterFactory(c => new GateWaveViewModel(c.Resolve<WaveService>())).AsSingle();
             container.RegisterFactory(c => new GameplayUIManager(container)).AsSingle();          
-            Debug.Log("GameplayViewModelsRegistrations 3");
             //Всегда последний
             container.RegisterFactory(c => new WorldGameplayRootViewModel(
                 //   c.Resolve<BuildingsService>(),
@@ -41,7 +38,6 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<ShotService>(),
                 container
             )).AsSingle();
-            Debug.Log("GameplayViewModelsRegistrations 4");
         }
     }
 }
