@@ -2,6 +2,7 @@
 using System.Linq;
 using Game.GameRoot.Services;
 using Game.Settings;
+using Game.Settings.Gameplay;
 using Game.Settings.Gameplay.Enemies;
 using MVVM.CMD;
 using Newtonsoft.Json;
@@ -14,12 +15,14 @@ namespace Game.GamePlay.Commands.WaveCommands
         private readonly GameSettings _gameSettings;
         private readonly ICommandProcessor _cmd;
         private readonly GenerateService _generateService;
-        
+        private readonly InfinitySetting _infinitySetting;
+
         public CommandWaveGenerateHandler(GameSettings gameSettings, ICommandProcessor cmd, GenerateService generateService)
         {
             _gameSettings = gameSettings;
             _cmd = cmd;
             _generateService = generateService;
+            _infinitySetting = _gameSettings.MapsSettings.InfinitySetting;
         }
         public bool Handle(CommandWaveGenerate command)
         {
@@ -34,15 +37,11 @@ namespace Game.GamePlay.Commands.WaveCommands
         
         private List<WaveItemSettings> GenerateWave(int numberWave)
         {
-            const float coefLevelMobFromWave = 10f;
-            const int bossOnWave = 10;
-            
-            
             var list = new List<WaveItemSettings>();
-            var levelMob = Mathf.Min((int)Mathf.Ceil(numberWave / coefLevelMobFromWave), 99); //Номинальный уровень моба на волну, не более 99
-            var waveHealth = _generateService.GetLevelData(numberWave) * 760; //Максимальная сила на волну
-            if (numberWave % bossOnWave == 0) waveHealth /= 2; //если босс, то пополам
-            
+            var levelMob = Mathf.Min((int)Mathf.Ceil(numberWave / _infinitySetting.rateLevelMob), 99); //Номинальный уровень моба на волну, не более 99
+            var waveHealth = _generateService.GetLevelData(numberWave, _infinitySetting.ratioCurveWave) * 760; //Максимальная сила на волну
+            if (numberWave % _infinitySetting.rateBoss == 0) waveHealth /= 2; //если босс, то пополам
+            Debug.Log("numberWave = " + numberWave + " сила на волну = " + waveHealth);
             //Генерируем список мобов для волны
             var mobs = _gameSettings.MobsSettings.AllMobs.ToList();
             var mobsInWave = new Dictionary<string, float>();
@@ -58,9 +57,10 @@ namespace Game.GamePlay.Commands.WaveCommands
                 var index = v.Next(0, mobs.Count - 1);
                 
                // var index = Mathf.RoundToInt(Mathf.Abs(Random.insideUnitSphere.x) * mobs.Count);
-                var powerMob = (_generateService.GetLevelData(levelMob) * mobs[index].Health)
-                               * (_generateService.GetLevelData(levelMob) * mobs[index].Attack) 
-                               * mobs[index].SpeedMove * mobs[index].SpeedAttack / 9000;
+                var powerMob = (_generateService.GetLevelData(levelMob, _infinitySetting.ratioCurveMobs) * mobs[index].Health)
+                               * (_generateService.GetLevelData(levelMob, _infinitySetting.ratioCurveMobs) * mobs[index].Attack) 
+                               * mobs[index].SpeedMove * mobs[index].SpeedAttack / 9000 * _infinitySetting.ratioPower;
+                Debug.Log(mobs[index].ConfigId + "  сила = " + powerMob);
 
                 mobsInWave.Add(mobs[index].ConfigId, powerMob);
                 mobs.Remove(mobs[index]);
@@ -68,7 +68,7 @@ namespace Game.GamePlay.Commands.WaveCommands
             
             var mediumPower = mobsInWave.Sum(f => f.Value);
             var allCount = Mathf.RoundToInt(waveHealth / mediumPower);
-            //Debug.Log(allCount);
+            Debug.Log("allCount = " + allCount);
 
             var _i = 0;
             
@@ -88,7 +88,7 @@ namespace Game.GamePlay.Commands.WaveCommands
                 _i++;
             }
             
-            if (numberWave % bossOnWave == 0)
+            if (numberWave % _infinitySetting.rateBoss == 0)
             {
                 var bosses = _gameSettings.MobsSettings.AllBosses.ToList();
                 var v = new System.Random();
@@ -97,14 +97,14 @@ namespace Game.GamePlay.Commands.WaveCommands
                 var setWave = new WaveItemSettings
                 {
                     MobConfigId = bosses[indexBoss].ConfigId,
-                    Level = numberWave / bossOnWave,
+                    Level = numberWave / _infinitySetting.rateBoss,
                     Quantity = 1
                 };
                 list.Add(setWave);
                 //TODO Random 2й босс, после 20 волны и тип босса разный
             }
 //            Debug.Log("numberWave = " + numberWave);
-         //   Debug.Log(JsonConvert.SerializeObject(list, Formatting.Indented));
+            Debug.Log(JsonConvert.SerializeObject(list, Formatting.Indented));
             return list;
         }
     }

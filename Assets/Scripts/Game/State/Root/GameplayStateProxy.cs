@@ -47,7 +47,7 @@ namespace Game.State.Root
             GameSpeed.Subscribe(newSpeed =>
             {
                 origin.GameSpeed = newSpeed;
-                Debug.Log($"Новая гейплей скорость = {newSpeed} PreviousGameSpeed = {PreviousGameSpeed.Value}");
+              //  Debug.Log($"Новая гейплей скорость = {newSpeed} PreviousGameSpeed = {PreviousGameSpeed.Value}");
             });
             
             Progress = new ReactiveProperty<int>(origin.Progress);

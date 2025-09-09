@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.GameRoot.Services;
 using Game.Settings;
+using Game.Settings.Gameplay;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Waves;
 using Game.State.Root;
@@ -15,6 +16,7 @@ namespace Game.GamePlay.Commands.WaveCommands
         private readonly GameSettings _gameSettings;
         private readonly GameplayStateProxy _gameplayState;
         private readonly GenerateService _generateService;
+        private readonly InfinitySetting _infinitySetting;
 
         //  private readonly GenerateService _generateService;
         // private readonly ICommandProcessor _cmd;
@@ -25,6 +27,7 @@ namespace Game.GamePlay.Commands.WaveCommands
             _gameSettings = gameSettings;
             _gameplayState = gameplayState;
             _generateService = generateService;
+            _infinitySetting = _gameSettings.MapsSettings.InfinitySetting;
         }
 
         public bool Handle(CommandCreateWave command)
@@ -57,7 +60,7 @@ namespace Game.GamePlay.Commands.WaveCommands
                     //  var mobParameters = mobConfig.Parameters.Find(p => p.Level == waveItem.Level);
                     //  if (mobParameters == null) throw new Exception($"Не найден уровень {waveItem.Level} в конфигурации {waveItem.MobConfigId} моба.");
                     // var mobParameters = GenerateServiceStat.GenerateMobParameters(mobConfig.BaseParameters, waveItem.Level);
-                    var levelCoef = _generateService.GetLevelData(waveItem.Level);
+                    var levelCoef = _generateService.GetLevelData(waveItem.Level, _infinitySetting.ratioCurveMobs);
                     var mob = new MobEntityData
                     {
                         ConfigId = mobConfig.ConfigId,

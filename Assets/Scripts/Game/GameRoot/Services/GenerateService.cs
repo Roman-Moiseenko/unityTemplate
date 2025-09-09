@@ -29,7 +29,7 @@ namespace Game.GameRoot.Services
         }
 
 
-        public float GetLevelData(int level)
+        public float GetLevelData(int level, float ratio)
         {
             if (level > LevelCoefs.Count) UpdateLevelCoefs(level);
             

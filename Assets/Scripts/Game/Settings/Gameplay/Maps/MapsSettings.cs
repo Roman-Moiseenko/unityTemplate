@@ -11,5 +11,7 @@ namespace Game.Settings.Gameplay.Maps
         public List<MapSettings> Maps;
         public List<string> GroundConfigIds;
         public List<string> RoadConfigIds;
+
+        public InfinitySetting InfinitySetting;
     }
 }
