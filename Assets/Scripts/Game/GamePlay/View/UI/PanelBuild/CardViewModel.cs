@@ -111,7 +111,13 @@ namespace Game.GamePlay.View.UI.PanelBuild
             Level = 0;
             ImageCard = _rewardData.ConfigId;
             ImageBack = "CardBuild";
-            Description = _rewardData.Name + " \nПУТЬ";
+            var text = _rewardData.ConfigId switch
+            {
+                "0" or "1" => "1X1",
+                "8" => "2X2",
+                _ => "1X2"
+            };
+            Description = text + " \nПУТЬ";
             DescriptionBack = "РАСШИРЯЕТ ДОРОГУ";
             Updated.OnNext(true);
         }
@@ -157,10 +163,14 @@ namespace Game.GamePlay.View.UI.PanelBuild
             if (_rewardData.IsBuild())
             {
                 _fsmGameplay.Fsm.SetState<FsmStateBuild>(_rewardData);
+//                Debug.Log("Режим строительства = " + _rewardData.ConfigId);
             }
             else
             {
                 _fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(_rewardData);
+                Debug.Log("RequestBuild");
+                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
+//                Debug.Log("Режим конца строительства = " + _rewardData.ConfigId);
             }
         }
     }

@@ -17,12 +17,12 @@ namespace Game.GamePlay.Services
     {
         private readonly GameplayStateProxy _gameplayState;
         private readonly ICommandProcessor _cmd;
-        private CastleEntity _castleEntity;
+        private readonly CastleEntity _castleEntity;
         private readonly Coroutines _coroutines;
 
         public ObservableList<float> RepairBuffer = new();
         public ReactiveProperty<float> CurrenHealth;
-        private ReactiveProperty<int> GameSpeed;
+        private readonly ReactiveProperty<int> _gameSpeed;
         private readonly FsmGameplay _fsmGameplay;
         
         //  private readonly ObservableList<BuildingViewModel> _allBuildings = new();
@@ -45,7 +45,7 @@ namespace Game.GamePlay.Services
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
             _castleEntity = gameplayState.Castle;
             _fsmGameplay = container.Resolve<FsmGameplay>();
-            GameSpeed = gameplayState.GameSpeed;
+            _gameSpeed = gameplayState.GameSpeed;
             CurrenHealth = castleEntity.CurrenHealth;
             CastleViewModel = new CastleViewModel(castleEntity, this);
 
@@ -78,7 +78,7 @@ namespace Game.GamePlay.Services
             RepairBuffer.Add(_castleEntity.ReduceHealth); //Буфер для отображения в UI
             _castleEntity.Repair();
 
-            yield return new WaitForSeconds(AppConstants.SPEED_REDICE_CASTLE / GameSpeed.Value);
+            yield return new WaitForSeconds(AppConstants.SPEED_REDICE_CASTLE / _gameSpeed.Value);
 
             if (_castleEntity.CurrenHealth.Value < _castleEntity.FullHealth)
             {

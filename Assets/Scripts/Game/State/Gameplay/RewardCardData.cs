@@ -14,12 +14,12 @@ namespace Game.State.Gameplay
         public Vector2Int Position;
         public int UniqueId;
         public object UniqueId2;
-        public string Caption;
-        public string Description;
+      //  public string Caption;
+      //  public string Description;
         public string Name;
         public bool OnRoad;
         public TypeEpicCard EpicLevel;
-        public MobDefence Defence;
+     //   public MobDefence Defence;
 
 
         public bool IsBuild()

@@ -28,7 +28,7 @@ namespace Game.State.Root
 
         public CastleEntity Castle;
 
-        public int PreviousGameSpeed => Origin.PreviousGameSpeed;
+        private ReactiveProperty<int> PreviousGameSpeed  = new();//{ get; set; }
         //public ReactiveProperty<TypeGameplay> TypeGameplay = new();
         public ObservableList<TowerEntity> Towers { get; } = new();
         public ObservableList<GroundEntity> Grounds { get; } = new();
@@ -42,12 +42,12 @@ namespace Game.State.Root
         {
             Origin = origin;
             Castle = new CastleEntity(origin.CastleData);
-            
+            PreviousGameSpeed.Value = Origin.GameSpeed;
             GameSpeed = new ReactiveProperty<int>(origin.GameSpeed);
             GameSpeed.Subscribe(newSpeed =>
             {
                 origin.GameSpeed = newSpeed;
-//                Debug.Log($"Новая гейплей скорость = {newSpeed}");
+                Debug.Log($"Новая гейплей скорость = {newSpeed} PreviousGameSpeed = {PreviousGameSpeed.Value}");
             });
             
             Progress = new ReactiveProperty<int>(origin.Progress);
@@ -156,30 +156,35 @@ namespace Game.State.Root
          */
         public void SetPauseGame() 
         {
-            Origin.PreviousGameSpeed = GameSpeed.Value;
+            PreviousGameSpeed.Value = GameSpeed.Value;
             GameSpeed.Value = 0;
         }
         
         /**
          * Возвращаемся к игре
          */
-        public void GameplayReturn() 
+        public void GameplayReturn()
         {
-            if (Origin.PreviousGameSpeed == 0)
-            {
-                GameSpeed.Value = 1;
-            } else
-            {
-                GameSpeed.Value = Origin.PreviousGameSpeed;
-            }
+            Debug.Log("PreviousGameSpeed = " + PreviousGameSpeed);
+            GameSpeed.Value = PreviousGameSpeed.Value == 0 ? 1 : PreviousGameSpeed.Value;
         }
 
-        public void SetGameSpeed(int newSpeed)
+        public void SetSkillSpeed()
+        {
+            PreviousGameSpeed.Value = GameSpeed.Value;
+            SetGameSpeed(1);
+        }
+        
+        private void SetGameSpeed(int newSpeed)
         {
             if (newSpeed == GameSpeed.Value) return;
             GameSpeed.Value = newSpeed;
         }
 
+        public int GetLastSpeedGame()
+        {
+            return Mathf.Max(GameSpeed.CurrentValue, PreviousGameSpeed.Value);
+        }
 
         public int GetCurrentSpeed()
         {

@@ -19,13 +19,13 @@ namespace Game.GamePlay.Fsm.States
         public override void Enter()
         {
             _gameplayStateProxy = _container.Resolve<IGameStateProvider>().GameplayState; 
-            _previousGameSpeed = _gameplayStateProxy.GetCurrentSpeed(); //Запоминаем текущую скорость
-            _gameplayStateProxy.SetGameSpeed(1); //Устанавливаем минимальную скорость
+            //_previousGameSpeed = _gameplayStateProxy.GetCurrentSpeed(); //Запоминаем текущую скорость
+            _gameplayStateProxy.SetSkillSpeed(); //Устанавливаем минимальную скорость
         }
 
         public override bool Exit(FSMState _next)
         {
-            _gameplayStateProxy.SetGameSpeed(_previousGameSpeed); //Возвращаем скорость
+            _gameplayStateProxy.GameplayReturn(); //Возвращаем скорость
             return true;
             //Любой режим может сменить текущее состояние, и скилл не применяется, если _next != FsmStateSetSkill
             /*

@@ -137,9 +137,10 @@ namespace Game.GamePlay.Root.View
                 //Режим завершения строительства
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
+                    
                     var card = ((FsmStateBuildEnd)newState).GetRewardCard();
                     var position = _fsmGameplay.GetPosition(); 
-                    
+                    //Debug.Log("WorldGameplayRootViewModel Режим конца строительства + " + card.RewardType);
                     switch (card.RewardType)
                     {
                         case RewardType.Tower: 
@@ -219,12 +220,6 @@ namespace Game.GamePlay.Root.View
                     {
                         _towerClick.OnNext(towerViewModel);
                         _cameraService.MoveCamera(towerViewModel.Position.Value);
-                        //Debug.Log(" Это башня " + towerViewModel.ConfigId);
-                       // var start = new Vector3()
-                        //Debug.DrawLine(towerViewModel.Position.Value, );
-                        //AreaViewModel.SetStartPosition(towerViewModel.Position.Value);
-                        //AreaViewModel.SetRadius(towerViewModel.GetRadius());
-                        
                         return;
                     }
                 }

@@ -74,6 +74,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             card.Direction = 2;
             card.Position = new Vector2Int(Random.Range(0, 5), Random.Range(0, 2));
             _fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(card);
+            _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
         }
         
         public void RequestCancel()

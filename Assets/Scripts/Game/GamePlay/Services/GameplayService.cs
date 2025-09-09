@@ -86,7 +86,7 @@ namespace Game.GamePlay.Services
         {
             var menuParams = new MainMenuEnterParams("Выход");
             //Передаем награду и некоторые настройки, для загрузки в меню
-            menuParams.GameSpeed = _gameplayState.PreviousGameSpeed;
+            menuParams.GameSpeed = _gameplayState.GetLastSpeedGame();
             menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
             menuParams.MapId = _gameplayState.MapId.CurrentValue;
             //menuParams.RewardCards = _gameplayState.RewardCards;
@@ -99,7 +99,7 @@ namespace Game.GamePlay.Services
         {
             var menuParams = new MainMenuEnterParams("Выход");
             //Передаем награду и некоторые настройки, для загрузки в меню
-            menuParams.GameSpeed = _gameplayState.PreviousGameSpeed;
+            menuParams.GameSpeed = _gameplayState.GetLastSpeedGame();
             menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
             menuParams.MapId = _gameplayState.MapId.CurrentValue;
             //menuParams.RewardCards = _gameplayState.RewardCards;
@@ -116,7 +116,7 @@ namespace Game.GamePlay.Services
         {
             var menuParams = new MainMenuEnterParams("Выход");
             //Передаем награду и некоторые настройки, для загрузки в меню
-            menuParams.GameSpeed = _gameplayState.PreviousGameSpeed;
+            menuParams.GameSpeed = _gameplayState.GetLastSpeedGame();
             menuParams.SoftCurrency = 0;
             menuParams.RewardCards = null;
             menuParams.LastWave = 0; //Прерван
@@ -131,7 +131,7 @@ namespace Game.GamePlay.Services
         public void ExitSave()
         {
             var menuParams = new MainMenuEnterParams("Выход с сохранением");
-            menuParams.GameSpeed = _gameplayState.PreviousGameSpeed;
+            menuParams.GameSpeed = _gameplayState.GetLastSpeedGame();
             menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
             //menuParams.RewardCards = _gameplayState.RewardCards;
             var exitParams = new GameplayExitParams(menuParams);

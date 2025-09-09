@@ -162,6 +162,13 @@ namespace Game.GamePlay.View.UI.PanelBuild
             buttonHideInfo.onClick.AddListener(OnRequestHideInfo);
         }
 
+        private void OnDisable()
+        {
+            buttonBuild.onClick.RemoveListener(OnRequestBuild);
+            buttonShowInfo.onClick.RemoveListener(OnRequestShowInfo);
+            buttonHideInfo.onClick.RemoveListener(OnRequestHideInfo);
+        }
+
         private void OnRequestShowInfo()
         {
             _animator.Play("show_info_card");

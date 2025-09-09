@@ -32,7 +32,7 @@ namespace Game.GamePlay.Services
         private Dictionary<int, ShotViewModel> _shotsMap = new();
         private readonly Dictionary<string, ShotSettings> _shotSettingsMap = new(); //Кешируем настройки выстрелов
         
-        public readonly ReactiveProperty<int> GameSpeed = new(1);
+        public readonly ReactiveProperty<int> GameSpeed;
         //TODO Нужны ли данные в конструктор? Возможно настройки базовые?
         public ShotService(GameplayStateProxy gameplayState, TowersSettings towersSettings, FsmGameplay fsmGameplay)
         {

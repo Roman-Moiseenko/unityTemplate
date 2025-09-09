@@ -18,9 +18,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
 {
     public class PanelBuildBinder : PanelBinder<PanelBuildViewModel>
     {
-        [SerializeField] private Button _btnBuild1;
-        [SerializeField] private Button _btnBuild2;
-        [SerializeField] private Button _btnBuild3;
         [SerializeField] private Button _btnUpdate;
         [SerializeField] private List<Transform> cards;
         

@@ -1,6 +1,7 @@
 ﻿using DI;
 using Game.State;
 using MVVM.FSM;
+using UnityEngine;
 
 namespace Game.GamePlay.Fsm.States
 {
@@ -12,8 +13,10 @@ namespace Game.GamePlay.Fsm.States
 
         public override void Enter()
         {
+          //  Debug.Log("FsmStateGamePlay Enter");
             if (Fsm.PreviousState != null)
             {
+          //      Debug.Log("FsmStateGamePlay Enter");
                 _container.Resolve<IGameStateProvider>().GameplayState.GameplayReturn();
             }
             
@@ -21,6 +24,7 @@ namespace Game.GamePlay.Fsm.States
 
         public override bool Exit(FSMState _next)
         {
+          //  Debug.Log("FsmStateGamePlay Exit");
             if (_next.GetType() == typeof(FsmStateGamePause)) return true;
             if (_next.GetType() == typeof(FsmStateSelectSkill)) return true;
             if (_next.GetType() == typeof(FsmStateBuildBegin)) return true;

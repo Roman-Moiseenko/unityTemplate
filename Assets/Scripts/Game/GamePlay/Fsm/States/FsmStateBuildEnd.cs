@@ -5,6 +5,7 @@ using Game.State;
 using Game.State.Gameplay;
 using Game.State.Root;
 using MVVM.FSM;
+using UnityEngine;
 
 namespace Game.GamePlay.Fsm.States
 {
@@ -22,12 +23,19 @@ namespace Game.GamePlay.Fsm.States
             //Входим в состояние Завершения строительства
             //Все подписчики его обрабатывают.
             //Переходим в состояние Игры
-            Fsm.SetState<FsmStateGamePlay>();
+       //     Debug.Log("FsmStateBuildEnd Enter");
+            //Fsm.SetState<FsmStateGamePlay>();
+            
         }
 
-        public override bool Exit(FSMState _next)
+        public override bool Exit(FSMState next)
         {
-            if (_next.GetType() == typeof(FsmStateGamePlay)) return true;
+            if (next.GetType() == typeof(FsmStateGamePlay))
+            {
+          //      Debug.Log("FsmStateBuildEnd Exit");
+                //_container.Resolve<IGameStateProvider>().GameplayState.GameplayReturn();
+                return true;
+            };
             return false;
         }
 

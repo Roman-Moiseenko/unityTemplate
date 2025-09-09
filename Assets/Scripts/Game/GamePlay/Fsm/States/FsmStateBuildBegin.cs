@@ -18,8 +18,9 @@ namespace Game.GamePlay.Fsm.States
 
         public override void Enter()
         {
-            _gameplayStateProxy = _container.Resolve<IGameStateProvider>().GameplayState;
-            _gameplayStateProxy.SetPauseGame();
+          //  Debug.Log("FsmStateBuildBegin " + _container.Resolve<IGameStateProvider>().GameplayState.GameSpeed.Value);
+            _container.Resolve<IGameStateProvider>().GameplayState.SetPauseGame();
+            //_gameplayStateProxy.SetPauseGame();
         }
 
         public override bool Exit(FSMState _next)
