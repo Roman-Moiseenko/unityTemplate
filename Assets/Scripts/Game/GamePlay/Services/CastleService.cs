@@ -73,7 +73,7 @@ namespace Game.GamePlay.Services
          */
         private IEnumerator RepairHealth()
         {
-            yield return _fsmGameplay.WaitPause();
+            while (_fsmGameplay.IsPause()) yield return null;
 
             RepairBuffer.Add(_castleEntity.ReduceHealth); //Буфер для отображения в UI
             _castleEntity.Repair();

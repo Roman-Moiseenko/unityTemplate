@@ -33,6 +33,7 @@ namespace Game.GamePlay.Services
         private readonly ResourceService _resourceService;
         private readonly ICommandProcessor _cmd;
 
+        public int CountRepair;
 
         private IDisposable _disposable;
         // public ReactiveProperty<float> CastleHealth;
@@ -48,6 +49,7 @@ namespace Game.GamePlay.Services
         )
         {
             var d = Disposable.CreateBuilder();
+            CountRepair = 0;
             _exitSceneRequest = exitSceneRequest;
             _gameplayState = gameplayState;
             _adService = adService;
@@ -73,7 +75,16 @@ namespace Game.GamePlay.Services
                     cmd.Process(command);
                 }).AddTo(ref d);
             }
-            
+            _gameplayState.Castle.IsDead.Where(e => e)
+                .Subscribe(newValue =>
+                {
+                    if (_gameplayState.Castle.CountResurrection.CurrentValue == 2)
+                    {
+                        Lose();                        
+                    }
+                    
+                })
+                .AddTo(ref d);
 
             //Сработала следующая волна, после максимальной => Победа
             
@@ -174,7 +185,9 @@ namespace Game.GamePlay.Services
 
         private void Repair()
         {
-            _gameplayState.Castle.Resurrection();
+            
+            if (!_gameplayState.Castle.Resurrection()) return;
+            
             foreach (var entity in _waveService.AllMobsMap.ToArray())
             {
                 entity.Value.SetDamage(_gameplayState.Castle.FullHealth);

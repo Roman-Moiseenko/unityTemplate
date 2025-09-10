@@ -106,7 +106,14 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _gameplayState.ProgressLevel.Subscribe(newValue => ProgressLevel.Value = newValue).AddTo(ref d);
             _gameplayState.SoftCurrency.Subscribe(newValue => SoftCurrency.Value = newValue).AddTo(ref d);
             _gameplayState.Castle.IsDead.Where(e => e)
-                .Subscribe(newValue => _uiManager.OpenPopupLose())
+                .Subscribe(newValue =>
+                {
+                    if (_gameplayState.Castle.CountResurrection.CurrentValue < 2)
+                    {
+                        _uiManager.OpenPopupLose();                        
+                    }
+                    
+                })
                 .AddTo(ref d);
             _disposable = d.Build();
         }

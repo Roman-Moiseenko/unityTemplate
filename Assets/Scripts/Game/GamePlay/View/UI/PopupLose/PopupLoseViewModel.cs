@@ -2,7 +2,6 @@
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
 using Game.State;
-using Game.State.Root;
 using MVVM.UI;
 using R3;
 
@@ -15,10 +14,9 @@ namespace Game.GamePlay.View.UI.PopupLose
         public override string Path => "Gameplay/Popups/";
         
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
-        private readonly DIContainer _container;
 
-        private readonly GameplayStateProxy _gameplayState;
         private readonly GameplayService _gameplayService;
+        public ReactiveProperty<bool> ShowButtonAd = new();
 
         public PopupLoseViewModel(
             GameplayUIManager uiManager, 
@@ -26,10 +24,10 @@ namespace Game.GamePlay.View.UI.PopupLose
             DIContainer container)
         {
             _exitSceneRequest = exitSceneRequest;
-            _container = container;
-            _gameplayService = _container.Resolve<GameplayService>();
+            _gameplayService = container.Resolve<GameplayService>();
 
-            _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            var gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            ShowButtonAd.Value = gameplayState.Castle.CountResurrection.CurrentValue == 0;
         }
 
         public override void RequestClose()

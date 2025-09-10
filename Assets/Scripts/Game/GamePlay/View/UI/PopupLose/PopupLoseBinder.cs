@@ -1,5 +1,6 @@
 ﻿using Game.GamePlay.View.UI.PopupPause;
 using MVVM.UI;
+using R3;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,17 @@ namespace Game.GamePlay.View.UI.PopupLose
     {
         [SerializeField] private Button _btnPlayAd;
         [SerializeField] private Button _btnSpendCristal;
-        
+
+        protected override void OnBind(PopupLoseViewModel viewModel)
+        {
+            base.OnBind(viewModel);
+
+            viewModel.ShowButtonAd.Subscribe(v =>
+            {
+                _btnPlayAd.gameObject.SetActive(v);
+            });
+        }
+
         private void OnEnable()
         {
             _btnPlayAd.onClick.AddListener(OnGoToPlayAdClicked);
