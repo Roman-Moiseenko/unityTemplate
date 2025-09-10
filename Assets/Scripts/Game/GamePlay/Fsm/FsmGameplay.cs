@@ -46,6 +46,10 @@ namespace Game.GamePlay.Fsm
         public void UpdateState()
         {
             Fsm?.Update();
+        }      
+        public bool IsPause()
+        {
+            return IsGamePause.CurrentValue;
         }
 
         public bool IsStateGamePlay()

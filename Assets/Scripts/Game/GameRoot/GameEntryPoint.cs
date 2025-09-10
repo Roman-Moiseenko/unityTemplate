@@ -127,7 +127,7 @@ namespace Scripts.Game.GameRoot
             _uiRoot.ShowLoadingScreen();
             _cachedSceneContainer?.Dispose();
             yield return LoadScene(Scenes.BOOT);
-            Debug.Log("0");
+         //   Debug.Log("0");
             yield return LoadScene(Scenes.GAMEPLAY);
 
             //  yield return new WaitForSeconds(1);
@@ -135,12 +135,12 @@ namespace Scripts.Game.GameRoot
             //var isGameStateLoaded = false; //не загружено
             //При загрузке, по подписке поменяем флажок на Загружено
 
-            Debug.Log("1");
+           // Debug.Log("1");
             _rootContainer.Resolve<IGameStateProvider>().LoadGameplayState();
                 //.Subscribe(_ => isGameStateLoaded = true);
 
            // yield return new WaitUntil(() => isGameStateLoaded);
-            Debug.Log("3");
+        //    Debug.Log("3");
             //Контейнер
             var sceneEntryPoint = Object.FindFirstObjectByType<GameplayEntryPoint>();
             var gameplayContainer = _cachedSceneContainer = new DIContainer(_rootContainer);

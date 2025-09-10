@@ -19,3 +19,9 @@ MonoBehaviour:
   - Snow01
   RoadConfigIds:
   - Road
+  InfinitySetting:
+    ratioCurveWave: 2.2
+    ratioCurveMobs: 2
+    rateLevelMob: 5
+    rateBoss: 10
+    ratioPower: 1

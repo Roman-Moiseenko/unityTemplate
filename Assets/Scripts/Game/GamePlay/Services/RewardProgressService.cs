@@ -10,6 +10,7 @@ using Game.State.Gameplay;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Towers;
 using Game.State.Root;
+using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -229,7 +230,7 @@ namespace Game.GamePlay.Services
             }
 
             var ran = new System.Random();
-            var index = ran.Next(0, availableTowers.Count - 1); //Случ.порядковый номер для строения
+            var index = ran.Next(0, availableTowers.Count); //Случ.порядковый номер для строения
             var i = 0;
             foreach (var tower in availableTowers) //Перебираем список башен до случ.порядкового номера
             {

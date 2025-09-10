@@ -23,8 +23,9 @@ namespace Game.GamePlay.Fsm.States
             _gameplayStateProxy.SetSkillSpeed(); //Устанавливаем минимальную скорость
         }
 
-        public override bool Exit(FSMState _next)
+        public override bool Exit(FSMState next = null)
         {
+            if (next == null) return false;
             _gameplayStateProxy.GameplayReturn(); //Возвращаем скорость
             return true;
             //Любой режим может сменить текущее состояние, и скилл не применяется, если _next != FsmStateSetSkill

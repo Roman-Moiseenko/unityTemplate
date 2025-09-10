@@ -28,15 +28,10 @@ namespace Game.GamePlay.Fsm.States
             
         }
 
-        public override bool Exit(FSMState next)
+        public override bool Exit(FSMState next = null)
         {
-            if (next.GetType() == typeof(FsmStateGamePlay))
-            {
-          //      Debug.Log("FsmStateBuildEnd Exit");
-                //_container.Resolve<IGameStateProvider>().GameplayState.GameplayReturn();
-                return true;
-            };
-            return false;
+            if (next == null) return false;
+            return next.GetType() == typeof(FsmStateGamePlay);
         }
 
         public override void Update()

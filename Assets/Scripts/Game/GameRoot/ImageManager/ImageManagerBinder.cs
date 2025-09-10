@@ -17,13 +17,13 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByDefence> defences;
         [SerializeField] private List<ImageItemByConfig> otherSprite;
         [SerializeField] private List<ImageItemByConfig> roads;
-        
+
 
         public Sprite GetEpicLevel(TypeEpicCard typeEpicCard)
         {
             return epicLevels.FirstOrDefault(t => t.TypeEpic == typeEpicCard)!.Sprite;
         }
-        
+
         public Sprite GetEpicLevel(string indexEpic)
         {
             foreach (TypeEpicCard typeEpic in Enum.GetValues(typeof(TypeEpicCard)))
@@ -52,11 +52,11 @@ namespace Game.GameRoot.ImageManager
 
         public Sprite GetDefence(MobDefence? defence)
         {
-            return defence == null 
-                ? null 
+            return defence == null
+                ? null
                 : defences.FirstOrDefault(t => t.Defence == defence)!.Sprite;
         }
-        
+
         public Sprite GetOther(string configId)
         {
             return otherSprite.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;

@@ -41,8 +41,11 @@ namespace Game.GamePlay.Root
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
             //Регистрируем машину состояния
-            var Fsm = new FsmGameplay(container);
-            container.RegisterInstance(Fsm);
+            var fsmGameplay = new FsmGameplay(container);
+            container.RegisterInstance(fsmGameplay);
+            var fsmWave = new FsmWave(container);
+            container.RegisterInstance(fsmWave);
+            
            // var subjectExitParams = new Subject<GameplayExitParams>();
           //  container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
           //  var generateService = new GenerateService();
@@ -138,16 +141,16 @@ namespace Game.GamePlay.Root
                 container.Resolve<Subject<GameplayExitParams>>(), 
                 waveService, gameplayState,
                 container.Resolve<AdService>(),
-                Fsm,
+                fsmGameplay,
                 container.Resolve<ResourceService>(),
                 cmd
                 );
             container.RegisterInstance(gameplayService); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             //Сервис создания выстрелов
-            var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, Fsm);
+            var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, fsmGameplay);
             container.RegisterInstance(shotService);
 
-            var damageService = new DamageService(Fsm, gameplayState, gameSettings.TowersSettings, waveService,
+            var damageService = new DamageService(fsmGameplay, gameplayState, gameSettings.TowersSettings, waveService,
                 towersService, shotService, rewardService);
 
             container.RegisterInstance(damageService);
@@ -179,7 +182,7 @@ namespace Game.GamePlay.Root
                 }
                 
                 if (!success) throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
-                Fsm.Fsm.SetState<FsmStateBuildBegin>(); //Устанавливаем начальный режим строительства
+                fsmGameplay.Fsm.SetState<FsmStateBuildBegin>(); //Устанавливаем начальный режим строительства
                 
             }
             

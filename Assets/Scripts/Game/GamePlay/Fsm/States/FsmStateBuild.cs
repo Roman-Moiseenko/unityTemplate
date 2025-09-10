@@ -17,13 +17,10 @@ namespace Game.GamePlay.Fsm.States
 
         public override void Enter() { }
 
-        public override bool Exit(FSMState _next = null)
+        public override bool Exit(FSMState next = null)
         {
-            if (_next.GetType() == typeof(FsmStateBuildBegin) || _next.GetType() == typeof(FsmStateBuildEnd))
-            {
-                return true;                
-            }
-            return false;
+            if (next == null) return false;
+            return next.GetType() == typeof(FsmStateBuildBegin) || next.GetType() == typeof(FsmStateBuildEnd);
         }
 
         public override void Update() { }

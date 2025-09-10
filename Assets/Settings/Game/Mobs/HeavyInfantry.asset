@@ -17,34 +17,12 @@ MonoBehaviour:
   <DescriptionLid>k__BackingField: 
   <Type>k__BackingField: 1
   <PrefabPath>k__BackingField: 
-  <Speed>k__BackingField: 1
   <SpeedMove>k__BackingField: 0.8
-  <SpeedAttack>k__BackingField: 0.8
+  <SpeedAttack>k__BackingField: 80
   <IsFly>k__BackingField: 0
   <Health>k__BackingField: 600
   <Armor>k__BackingField: 0
   <Attack>k__BackingField: 86
   <RewardCurrency>k__BackingField: 20
   <Defence>k__BackingField: 1
-  <BaseParameters>k__BackingField:
-    Level: 1
-    Health: 600
-    Armor: 0
-    Attack: 86
-    RewardCurrency: 20
-  <Parameters>k__BackingField:
-  - Level: 1
-    Health: 600
-    Armor: 6
-    Attack: 85.7
-    RewardCurrency: 20
-  - Level: 2
-    Health: 1385.3
-    Armor: 8
-    Attack: 85.7
-    RewardCurrency: 40
-  - Level: 3
-    Health: 2727.1
-    Armor: 12
-    Attack: 85.7
-    RewardCurrency: 80
+  <Count>k__BackingField: 1

@@ -63,6 +63,8 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: b439678486616db49bad958db2d0d031, type: 3}
   - TypeEpic: 8
     Sprite: {fileID: 21300000, guid: cf618e545c6bfbd4bba7ef96939dfc7c, type: 3}
+  - TypeEpic: 9
+    Sprite: {fileID: 21300000, guid: bf7e213deff3e1740800ab10288f2c35, type: 3}
   - TypeEpic: 8
     Sprite: {fileID: 21300000, guid: cf618e545c6bfbd4bba7ef96939dfc7c, type: 3}
   towerPlan:

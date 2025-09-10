@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Game.State.Inventory
 {
@@ -24,6 +25,7 @@ namespace Game.State.Inventory
 
         public static TypeEpicCard Next(this TypeEpicCard type)
         {
+            if (type == TypeEpicCard.Excellent) Debug.Log(" ERROR Next");
             return type switch
             {
                 TypeEpicCard.Normal => TypeEpicCard.Good,

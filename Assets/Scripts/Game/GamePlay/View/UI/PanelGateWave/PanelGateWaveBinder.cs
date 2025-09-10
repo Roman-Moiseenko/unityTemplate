@@ -224,11 +224,6 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             _btnInfo.onClick.RemoveListener(OnStartForced);
         }
 
-        private void OnShowInfo()
-        {
-            ViewModel.ShowPopupInfo();
-        }
-
         private void OnStartForced()
         {
             if (!ViewModel.ShowInfoWave.CurrentValue)

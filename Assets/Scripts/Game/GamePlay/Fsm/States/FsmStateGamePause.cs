@@ -16,20 +16,17 @@ namespace Game.GamePlay.Fsm.States
 
         public override void Enter()
         {
-        //    Debug.Log("FsmStateGamePause Enter");
             //Ставим игру на паузу
             _container.Resolve<IGameStateProvider>().GameplayState.SetPauseGame();
         }
 
-        public override bool Exit(FSMState _next)
+        public override bool Exit(FSMState next = null)
         {
-            if (_next.GetType() == typeof(FsmStateGamePlay))
-            {
-        //        Debug.Log("FsmStateGamePause Exit");
-                _container.Resolve<IGameStateProvider>().GameplayState.GameplayReturn();
-                return true;
-            }
-            return false;
+            if (next == null) return false;
+            if (next.GetType() != typeof(FsmStateGamePlay)) return false;
+            
+            _container.Resolve<IGameStateProvider>().GameplayState.GameplayReturn();
+            return true;
         }
 
         public override void Update()

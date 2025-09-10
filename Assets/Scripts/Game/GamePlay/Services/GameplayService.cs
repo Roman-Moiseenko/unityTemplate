@@ -56,6 +56,7 @@ namespace Game.GamePlay.Services
             _resourceService = resourceService;
             _cmd = cmd;
 
+            //TODO Переделать на другой параметр
             waveService.IsMobsOnWay.Where(flag => flag == false).Subscribe(_ =>
                 {
                     //Мобы на дороге закончились, проверяем закончились ли волны. 

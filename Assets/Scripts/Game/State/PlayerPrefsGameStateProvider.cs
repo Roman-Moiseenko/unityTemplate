@@ -54,7 +54,7 @@ namespace Game.State
                 GameplayState = new GameplayStateProxy(_gameplayStateOrigin);
              //   Debug.Log("_gameplayStateOrigin = " + JsonConvert.SerializeObject(_gameplayStateOrigin, Formatting.Indented));
             }
-            Debug.Log("2");
+//            Debug.Log("2");
             return Observable.Return(GameplayState);
         }
         private GameplayStateProxy CreateGameplayStateFromSettings()

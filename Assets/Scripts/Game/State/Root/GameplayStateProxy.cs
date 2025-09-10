@@ -165,7 +165,7 @@ namespace Game.State.Root
          */
         public void GameplayReturn()
         {
-            Debug.Log("PreviousGameSpeed = " + PreviousGameSpeed);
+           // Debug.Log("PreviousGameSpeed = " + PreviousGameSpeed);
             GameSpeed.Value = PreviousGameSpeed.Value == 0 ? 1 : PreviousGameSpeed.Value;
         }
 

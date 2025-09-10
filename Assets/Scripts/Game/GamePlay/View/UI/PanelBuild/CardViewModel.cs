@@ -168,7 +168,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
             else
             {
                 _fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(_rewardData);
-                Debug.Log("RequestBuild");
+                //Debug.Log("RequestBuild");
                 _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
 //                Debug.Log("Режим конца строительства = " + _rewardData.ConfigId);
             }

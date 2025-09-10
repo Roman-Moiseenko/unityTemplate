@@ -60,7 +60,7 @@ namespace Game.GamePlay.Commands.WaveCommands
                     //  var mobParameters = mobConfig.Parameters.Find(p => p.Level == waveItem.Level);
                     //  if (mobParameters == null) throw new Exception($"Не найден уровень {waveItem.Level} в конфигурации {waveItem.MobConfigId} моба.");
                     // var mobParameters = GenerateServiceStat.GenerateMobParameters(mobConfig.BaseParameters, waveItem.Level);
-                    var levelCoef = _generateService.GetLevelData(waveItem.Level, _infinitySetting.ratioCurveMobs);
+                    var levelCoef = _generateService.GetRatioCurve(waveItem.Level, _infinitySetting.ratioCurveMobs);
                     var mob = new MobEntityData
                     {
                         ConfigId = mobConfig.ConfigId,

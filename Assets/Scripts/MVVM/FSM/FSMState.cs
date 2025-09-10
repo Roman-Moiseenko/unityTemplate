@@ -8,7 +8,7 @@ namespace MVVM.FSM
         public object Params { get; set; }
         protected readonly DIContainer _container;
 
-        public FSMState(FsmProxy fsm, DIContainer container)
+        protected FSMState(FsmProxy fsm, DIContainer container)
         {
             Fsm = fsm;
             _container = container;
@@ -16,10 +16,9 @@ namespace MVVM.FSM
 
         public virtual void Enter() { }
 
-        public virtual bool Exit(FSMState _next = null)
+        public virtual bool Exit(FSMState next = null)
         {
-            if (_next == null) return true;
-            return false;
+            return next == null;
         }
         public virtual void Update() { }
     }

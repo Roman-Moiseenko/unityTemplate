@@ -13,28 +13,21 @@ namespace Game.GamePlay.Fsm.States
 
         public override void Enter()
         {
-          //  Debug.Log("FsmStateGamePlay Enter");
             if (Fsm.PreviousState != null)
-            {
-          //      Debug.Log("FsmStateGamePlay Enter");
                 _container.Resolve<IGameStateProvider>().GameplayState.GameplayReturn();
-            }
-            
         }
 
-        public override bool Exit(FSMState _next)
+        public override bool Exit(FSMState next = null)
         {
-          //  Debug.Log("FsmStateGamePlay Exit");
-            if (_next.GetType() == typeof(FsmStateGamePause)) return true;
-            if (_next.GetType() == typeof(FsmStateSelectSkill)) return true;
-            if (_next.GetType() == typeof(FsmStateBuildBegin)) return true;
-            
-            return false;
+            if (next == null) return false;
+
+            return next.GetType() == typeof(FsmStateGamePause) ||
+                   next.GetType() == typeof(FsmStateSelectSkill) ||
+                   next.GetType() == typeof(FsmStateBuildBegin);
         }
 
         public override void Update()
         {
-            
         }
     }
 }

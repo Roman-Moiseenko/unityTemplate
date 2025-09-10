@@ -23,10 +23,10 @@ namespace Game.GamePlay.Fsm.States
             Fsm.SetState<FsmStateGamePlay>();
         }
 
-        public override bool Exit(FSMState _next)
+        public override bool Exit(FSMState next = null)
         {
-            if (_next.GetType() == typeof(FsmStateGamePlay)) return true;
-            return false;
+            if (next == null) return false;
+            return next.GetType() == typeof(FsmStateGamePlay);
         }
 
         public override void Update()

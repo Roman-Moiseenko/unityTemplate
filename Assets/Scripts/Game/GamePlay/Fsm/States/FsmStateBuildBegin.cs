@@ -23,11 +23,10 @@ namespace Game.GamePlay.Fsm.States
             //_gameplayStateProxy.SetPauseGame();
         }
 
-        public override bool Exit(FSMState _next)
+        public override bool Exit(FSMState next = null)
         {
-            if (_next.GetType() == typeof(FsmStateBuild)) return true;
-            if (_next.GetType() == typeof(FsmStateBuildEnd)) return true;
-            return false;
+            if (next == null) return false;
+            return next.GetType() == typeof(FsmStateBuild) || next.GetType() == typeof(FsmStateBuildEnd);
         }
 
         public override void Update() { }

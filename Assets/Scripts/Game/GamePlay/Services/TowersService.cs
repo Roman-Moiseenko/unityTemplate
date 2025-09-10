@@ -118,6 +118,7 @@ namespace Game.GamePlay.Services
                 foreach (var towerEntity in _towerEntities)
                 {
                     if (towerEntity.ConfigId != configId) continue;
+                 //   Debug.Log(JsonConvert.SerializeObject(towerEntity.Parameters, Formatting.Indented));
                     RemoveTowerViewModel(towerEntity); //Удаляем все модели viewModel.ConfigId == x.NewItem.Key
                     CreateTowerViewModel(towerEntity); //Создаем модели Заново
                 }

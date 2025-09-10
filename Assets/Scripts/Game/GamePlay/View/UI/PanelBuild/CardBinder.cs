@@ -118,6 +118,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
                     {
                         parameterBinders[index].Bind(paramData.Key, paramData.Value);
                         index++;
+                        if (index >= 4) break;
                     }
                 }
                 else
