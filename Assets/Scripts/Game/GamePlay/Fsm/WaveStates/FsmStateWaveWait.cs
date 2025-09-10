@@ -12,7 +12,6 @@ namespace Game.GamePlay.Fsm.WaveStates
 
         public override void Enter()
         {
-           // Debug.Log("FsmStateWaveWait Enter");
         }
 
         public override bool Exit(FSMState next = null)
@@ -20,7 +19,7 @@ namespace Game.GamePlay.Fsm.WaveStates
             if (next == null) return false;
 
             var d= next.GetType() == typeof(FsmStateWaveTimer) 
-                   || next.GetType() == typeof(FsmStateWaveGo);
+                   || next.GetType() == typeof(FsmStateWaveBegin) ;
             return d;
         }
 

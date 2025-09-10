@@ -152,6 +152,7 @@ namespace Game.GamePlay.Services
 
         public void StartForcedNewWave()
         {
+            
             _fsmWave.Fsm.SetState<FsmStateWaveBegin>();
         }
 

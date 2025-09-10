@@ -13,20 +13,12 @@ namespace Game.GamePlay.Fsm.WaveStates
 
         public override void Enter()
         {
-          //  Debug.Log("FsmStateWaveGo Enter");
         }
 
         public override bool Exit(FSMState next = null)
         {
             if (next == null) return false;
-            if (next.GetType() == typeof(FsmStateWaveEnd))
-            {
-            //    Debug.Log("FsmStateWaveGo Exit");
-                return true;
-            }
-
-            return false;
-
+            return next.GetType() == typeof(FsmStateWaveEnd);
         }
 
         public override void Update() { }
