@@ -15,14 +15,14 @@ MonoBehaviour:
   <ConfigId>k__BackingField: Mechanoid
   <TitleLid>k__BackingField: "\u041C\u0435\u0445\u0430\u043D\u043E\u0438\u0434"
   <DescriptionLid>k__BackingField: 
-  <Type>k__BackingField: 0
   <PrefabPath>k__BackingField: 
-  <Speed>k__BackingField: 1
   <SpeedMove>k__BackingField: 1.5
   <SpeedAttack>k__BackingField: 85
   <IsFly>k__BackingField: 0
+  <AvailableWave>k__BackingField: 40
   <Health>k__BackingField: 240
   <Armor>k__BackingField: 0
   <Attack>k__BackingField: 98.8
   <RewardCurrency>k__BackingField: 20
   <Defence>k__BackingField: 0
+  <Count>k__BackingField: 1

@@ -68,6 +68,8 @@ MonoBehaviour:
   - TypeEpic: 8
     Sprite: {fileID: 21300000, guid: cf618e545c6bfbd4bba7ef96939dfc7c, type: 3}
   towerPlan:
+  - ConfigId: Background
+    Sprite: {fileID: 21300000, guid: 79ebbc9508155e949b7897bbabe0824e, type: 3}
   - ConfigId: Tower01
     Sprite: {fileID: 21300000, guid: c548ec8e9e6a8e7498bbda56f697c1d2, type: 3}
   - ConfigId: Tower02
@@ -78,6 +80,8 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: f6cbb22424eba9f4b8a0c8f00aef4ae5, type: 3}
   - ConfigId: Tower05
     Sprite: {fileID: 21300000, guid: 4797874de9f734a4dbfd22a8ac9a54a7, type: 3}
+  - ConfigId: Tower07
+    Sprite: {fileID: 21300000, guid: fd4415f43c291b54891d662d8318793c, type: 3}
   towerCard:
   - ConfigId: Tower01
     ByLevels:
@@ -149,6 +153,20 @@ MonoBehaviour:
       Sprite: {fileID: 21300000, guid: 43a508129498d5742b910368448e93f1, type: 3}
     - Level: 6
       Sprite: {fileID: 21300000, guid: 3dde272b881531a40bca0ad4a72a67e9, type: 3}
+  - ConfigId: Tower07
+    ByLevels:
+    - Level: 1
+      Sprite: {fileID: 21300000, guid: e2d16031755264943af3a75377120634, type: 3}
+    - Level: 2
+      Sprite: {fileID: 21300000, guid: 29c594307144025409f14d2bc372e697, type: 3}
+    - Level: 3
+      Sprite: {fileID: 21300000, guid: 831e931e99f5e0646ae7547f5afee373, type: 3}
+    - Level: 4
+      Sprite: {fileID: 21300000, guid: 10b5da35fed94d14db4f57277da78b9c, type: 3}
+    - Level: 5
+      Sprite: {fileID: 21300000, guid: 05bda83c1606e2b4589cb3b5dc669b68, type: 3}
+    - Level: 6
+      Sprite: {fileID: 21300000, guid: d084fac76374f744ca3a95e24985a403, type: 3}
   parameters:
   - TypeParameter: 0
     Sprite: {fileID: 21300000, guid: a4d96f3dec5d91e40977d7600de5f355, type: 3}

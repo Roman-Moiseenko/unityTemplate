@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using DI;
 using Game.Common;
@@ -13,9 +14,11 @@ using Game.State;
 using Game.State.Maps.Mobs;
 using Game.State.Root;
 using MVVM.CMD;
+using Newtonsoft.Json;
 using R3;
 using Scripts.Game.GameRoot.Entity;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Game.GamePlay.Services
 {
@@ -85,7 +88,10 @@ namespace Game.GamePlay.Services
                     
                 })
                 .AddTo(ref d);
-
+            _exitSceneRequest.Subscribe(e =>
+            {
+                Debug.Log(JsonConvert.SerializeObject(e.MainMenuEnterParams, Formatting.Indented));
+            });
             //Сработала следующая волна, после максимальной => Победа
             
             //Здоровье крепости меньше 0 => Проигрыш
@@ -101,6 +107,7 @@ namespace Game.GamePlay.Services
             menuParams.GameSpeed = _gameplayState.GetLastSpeedGame();
             menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
             menuParams.MapId = _gameplayState.MapId.CurrentValue;
+            menuParams.RewardCards = _gameplayState.Origin.RewardEntities;
             //menuParams.RewardCards = _gameplayState.RewardCards;
             menuParams.CompletedLevel = true;
             var exitParams = new GameplayExitParams(menuParams);
@@ -114,6 +121,7 @@ namespace Game.GamePlay.Services
             menuParams.GameSpeed = _gameplayState.GetLastSpeedGame();
             menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
             menuParams.MapId = _gameplayState.MapId.CurrentValue;
+            menuParams.RewardCards = _gameplayState.Origin.RewardEntities;
             //menuParams.RewardCards = _gameplayState.RewardCards;
             menuParams.LastWave = _gameplayState.CurrentWave.CurrentValue - 1; //Текущая волна -1
             menuParams.CompletedLevel = false; //Не завершен
@@ -145,7 +153,7 @@ namespace Game.GamePlay.Services
             var menuParams = new MainMenuEnterParams("Выход с сохранением");
             menuParams.GameSpeed = _gameplayState.GetLastSpeedGame();
             menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
-            //menuParams.RewardCards = _gameplayState.RewardCards;
+            menuParams.RewardCards = _gameplayState.Origin.RewardEntities;
             var exitParams = new GameplayExitParams(menuParams);
             exitParams.SaveGameplay = true;
             _exitSceneRequest.OnNext(exitParams);

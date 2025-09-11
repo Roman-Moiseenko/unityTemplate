@@ -134,7 +134,7 @@ namespace Game.GamePlay.Root
            // Fsm.Fsm.SetState<FsmStateGamePlay>();
 
             //Сервис наград
-            var rewardService = new RewardProgressService(gameplayState, container, gameSettings.TowersSettings);
+            var rewardService = new RewardProgressService(gameplayState, container, gameSettings);
             container.RegisterInstance(rewardService);
 
             var gameplayService = new GameplayService(

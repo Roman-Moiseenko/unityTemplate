@@ -9,7 +9,7 @@ namespace Game.State.Maps.Mobs
         public int UniqueId;
        // public Vector3 Position;
         //public Vector2 Direction;
-        public MobType Type;
+       // public MobType Type;
         public int Level;
 
         public MobDefence Defence;

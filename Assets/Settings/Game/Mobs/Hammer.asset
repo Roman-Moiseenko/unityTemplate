@@ -16,11 +16,11 @@ MonoBehaviour:
   <TitleLid>k__BackingField: "\u041F\u043E\u0432\u0435\u043B\u0438\u0442\u0435\u043B\u044C
     \u043C\u043E\u043B\u043E\u0442\u0430"
   <DescriptionLid>k__BackingField: 
-  <Type>k__BackingField: 0
   <PrefabPath>k__BackingField: 
   <SpeedMove>k__BackingField: 0.7
   <SpeedAttack>k__BackingField: 85
   <IsFly>k__BackingField: 0
+  <AvailableWave>k__BackingField: 50
   <Health>k__BackingField: 315
   <Armor>k__BackingField: 10
   <Attack>k__BackingField: 94.1

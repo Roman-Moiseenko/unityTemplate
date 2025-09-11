@@ -15,7 +15,7 @@ namespace Game.State.Maps.Mobs
         public int UniqueId => Origin.UniqueId;
         public ReactiveProperty<Vector2> Position; //Данные не сохраняются в MobEntityData
         public ReactiveProperty<Vector2Int> Direction; //Данные не сохраняются в MobEntityData
-        public MobType Type => Origin.Type;
+        //public MobType Type => Origin.Type;
         public bool IsWay = true; //На главной дороге
         public float SpeedMove => Origin.SpeedMove;
         public float SpeedAttack => Origin.SpeedAttack;

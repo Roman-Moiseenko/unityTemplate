@@ -15,11 +15,11 @@ MonoBehaviour:
   <ConfigId>k__BackingField: BossTroll
   <TitleLid>k__BackingField: "\u0417\u0434\u043E\u0440\u043E\u0432\u044F\u043A"
   <DescriptionLid>k__BackingField: 
-  <Type>k__BackingField: 2
   <PrefabPath>k__BackingField: 
   <SpeedMove>k__BackingField: 0.5
   <SpeedAttack>k__BackingField: 50
   <IsFly>k__BackingField: 0
+  <AvailableWave>k__BackingField: 1
   <Health>k__BackingField: 3000
   <Armor>k__BackingField: 10
   <Attack>k__BackingField: 100

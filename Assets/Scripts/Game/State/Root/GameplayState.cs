@@ -3,6 +3,7 @@ using Game.GamePlay.Classes;
 using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
+using Game.State.Maps.Rewards;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Waves;
@@ -11,7 +12,6 @@ namespace Game.State.Root
 {
     public class GameplayState
     {
-
         public int MapId { get; set; }
         public int CurrentWave { get; set; }
         public int GlobalEntityId { get; set; }
@@ -34,6 +34,8 @@ namespace Game.State.Root
         public CastleEntityData CastleData { get; set; } 
         
         public int Id { get; set; }
+        
+        public List<RewardEntityData> RewardEntities = new(); 
         public List<TowerEntityData> Towers;  //Либо разделить на Tower и Ground 
 
         public List<GroundEntityData> Grounds;

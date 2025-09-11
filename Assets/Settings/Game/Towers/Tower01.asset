@@ -28,13 +28,14 @@ MonoBehaviour:
     LineTrajectory: 1
     Single: 1
     NotPrefab: 0
+  <AvailableWave>k__BackingField: 1
   <GameplayLevels>k__BackingField:
   - Level: 1
     Parameters: []
   - Level: 2
     Parameters:
     - ParameterType: 0
-      Value: 19.3
+      Value: 20
   - Level: 3
     Parameters:
     - ParameterType: 6
@@ -44,7 +45,7 @@ MonoBehaviour:
   - Level: 4
     Parameters:
     - ParameterType: 0
-      Value: 19.3
+      Value: 20
   - Level: 5
     Parameters:
     - ParameterType: 6
@@ -54,7 +55,7 @@ MonoBehaviour:
   - Level: 6
     Parameters:
     - ParameterType: 0
-      Value: 19.6
+      Value: 20
   <BaseParameters>k__BackingField:
   - ParameterType: 0
     Value: 30
@@ -64,57 +65,6 @@ MonoBehaviour:
     Value: 20
   - ParameterType: 2
     Value: 0.9
-  <EpicLevels>k__BackingField:
-  - Level: 0
-    UpgradeParameters: []
-    LevelCardParameters:
-    - ParameterType: 0
-      Value: 2.25
-  - Level: 1
-    UpgradeParameters:
-    - ParameterType: 0
-      Value: 3
-    - ParameterType: 5
-      Value: -2
-    LevelCardParameters:
-    - ParameterType: 0
-      Value: 2.66
-  - Level: 2
-    UpgradeParameters:
-    - ParameterType: 0
-      Value: 5
-    - ParameterType: 5
-      Value: -5
-    LevelCardParameters:
-    - ParameterType: 0
-      Value: 2.89
-  - Level: 3
-    UpgradeParameters:
-    - ParameterType: 0
-      Value: 7
-    - ParameterType: 5
-      Value: -7
-    LevelCardParameters:
-    - ParameterType: 0
-      Value: 3.96
-  - Level: 4
-    UpgradeParameters:
-    - ParameterType: 0
-      Value: 13
-    - ParameterType: 5
-      Value: -3
-    LevelCardParameters:
-    - ParameterType: 0
-      Value: 4.5
-  - Level: 5
-    UpgradeParameters:
-    - ParameterType: 0
-      Value: 25
-    - ParameterType: 5
-      Value: -5
-    LevelCardParameters:
-    - ParameterType: 0
-      Value: 5
   <LevelCardParameters>k__BackingField:
   - ParameterType: 0
     BaseValue: 2.25

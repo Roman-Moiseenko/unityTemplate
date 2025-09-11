@@ -27,6 +27,7 @@ MonoBehaviour:
     LineTrajectory: 0
     Single: 0
     NotPrefab: 0
+  <AvailableWave>k__BackingField: 11
   <GameplayLevels>k__BackingField:
   - Level: 1
     Parameters: []
@@ -65,57 +66,6 @@ MonoBehaviour:
     Value: 2.5
   - ParameterType: 4
     Value: 1
-  <EpicLevels>k__BackingField:
-  - Level: 0
-    UpgradeParameters: []
-    LevelCardParameters:
-    - ParameterType: 1
-      Value: 11
-  - Level: 1
-    UpgradeParameters:
-    - ParameterType: 1
-      Value: 3
-    - ParameterType: 5
-      Value: -2
-    LevelCardParameters:
-    - ParameterType: 1
-      Value: 12
-  - Level: 2
-    UpgradeParameters:
-    - ParameterType: 1
-      Value: 5
-    - ParameterType: 5
-      Value: -5
-    LevelCardParameters:
-    - ParameterType: 1
-      Value: 16
-  - Level: 3
-    UpgradeParameters:
-    - ParameterType: 1
-      Value: 7
-    - ParameterType: 5
-      Value: -7
-    LevelCardParameters:
-    - ParameterType: 1
-      Value: 19.2
-  - Level: 4
-    UpgradeParameters:
-    - ParameterType: 1
-      Value: 15
-    - ParameterType: 5
-      Value: -3
-    LevelCardParameters:
-    - ParameterType: 1
-      Value: 22.5
-  - Level: 5
-    UpgradeParameters:
-    - ParameterType: 1
-      Value: 21
-    - ParameterType: 5
-      Value: -7
-    LevelCardParameters:
-    - ParameterType: 1
-      Value: 26.5
   <LevelCardParameters>k__BackingField:
   - ParameterType: 1
     BaseValue: 11

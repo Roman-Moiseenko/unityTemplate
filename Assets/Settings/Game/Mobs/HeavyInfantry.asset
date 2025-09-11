@@ -15,11 +15,11 @@ MonoBehaviour:
   <ConfigId>k__BackingField: HeavyInfantry
   <TitleLid>k__BackingField: "\u0422\u044F\u0436\u0435\u043B\u044B\u0439 \u043F\u0435\u0445\u043E\u0442\u0438\u043D\u0435\u0446"
   <DescriptionLid>k__BackingField: 
-  <Type>k__BackingField: 1
   <PrefabPath>k__BackingField: 
   <SpeedMove>k__BackingField: 0.8
   <SpeedAttack>k__BackingField: 80
   <IsFly>k__BackingField: 0
+  <AvailableWave>k__BackingField: 2
   <Health>k__BackingField: 600
   <Armor>k__BackingField: 0
   <Attack>k__BackingField: 86

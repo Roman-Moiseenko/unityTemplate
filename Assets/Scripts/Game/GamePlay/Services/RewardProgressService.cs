@@ -4,6 +4,7 @@ using System.Linq;
 using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
+using Game.Settings;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
 using Game.State.Gameplay;
@@ -20,47 +21,40 @@ namespace Game.GamePlay.Services
 {
     public class RewardProgressService
     {
+        private readonly GameplayStateProxy _gameplayState;
         private readonly DIContainer _container;
+        private readonly GameSettings _gameSettings;
         private readonly TowersSettings _towersSettings;
         private readonly TowersService _towerService;
-        private readonly GroundsService _groundService;
-        private FsmGameplay _fsmGameplay;
+        private Dictionary<int, bool> _rewardsMap = new();
+       
 
         public ObservableList<RewardCurrencyEntity> RewardMaps = new();
-        private readonly GameplayStateProxy _gameplayState;
 
+        public ReactiveProperty<RewardEntity> RewardEntity = new();
         public RewardProgressService(
             GameplayStateProxy gameplayState,
             DIContainer container,
-            TowersSettings towersSettings
+            GameSettings gameSettings
             //TODO Добавить SkillsSettings, HeroesSettings
         )
         {
-            _container = container;
             _gameplayState = gameplayState;
-
-            //Сервисы для наград
+            _container = container;
+            _gameSettings = gameSettings;
             _towerService = container.Resolve<TowersService>();
-            _groundService = container.Resolve<GroundsService>();
+            _towersSettings = gameSettings.TowersSettings;
+            
+            var fsmGameplay = container.Resolve<FsmGameplay>();
 
-            var gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
-            _towersSettings = towersSettings;
-
-
-            _fsmGameplay = container.Resolve<FsmGameplay>();
-
-            gameplayStateProxy.Progress.Where(v => v >= 100).Subscribe(newValue =>
+            gameplayState.Progress.Where(v => v >= 100).Subscribe(newValue =>
             {
-                //Debug.Log("Прогресс = " + newValue);
-                if (!_fsmGameplay.IsStateGamePlay()) return;
-               // Debug.Log("Прогресс > 100 и состояние " + _fsmGameplay.Fsm.StateCurrent.CurrentValue);
-             //   var rewards = GenerateRewardProgress(); //1. Создаем награды
-                _fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
+                if (!fsmGameplay.IsStateGamePlay()) return;
+                fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
             });
-
             
             //TODO Куда перенести
-            _fsmGameplay.Fsm.StateCurrent.Subscribe(newState =>
+            fsmGameplay.Fsm.StateCurrent.Subscribe(newState =>
             {
                 if (newState.GetType() == typeof(FsmStateBuild))
                 {
@@ -76,44 +70,82 @@ namespace Game.GamePlay.Services
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
                   //  Debug.Log("Построено");
-                    if (gameplayStateProxy.Progress.Value >= 100) gameplayStateProxy.Progress.Value -= 100;
+                    if (gameplayState.Progress.Value >= 100) gameplayState.Progress.Value -= 100;
                 //    Debug.Log("Прогресс остаточный = " + gameplayStateProxy.Progress.Value);
 
-                    gameplayStateProxy.ProgressLevel.Value++;
+                gameplayState.ProgressLevel.Value++;
                     
                 }
                 
                 if (newState.GetType() == typeof(FsmStateGamePlay))
                 {
                     //При завершении строительства, если еще остались очки прогресса
-                    if (gameplayStateProxy.Progress.Value >= 100)
+                    if (gameplayState.Progress.Value >= 100)
                     {
                      //   Debug.Log("Прогресс остаточный > 100 ");
                        // var rewards = GenerateRewardProgress();
-                        _fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
+                        fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
                     }
                 }
             });
             
-
             //Монетки долетели и удалились
             RewardMaps.ObserveRemove().Subscribe(r =>
             {
-                _gameplayState.ProgressUp();
-                _gameplayState.SoftCurrency.Value += r.Value.Currency;
+                gameplayState.ProgressUp();
+                gameplayState.SoftCurrency.Value += r.Value.Currency;
+            });
+            RewardEntity.Where(r => r != null).Subscribe(reward =>
+            {
+                gameplayState.RewardEntities.Add(reward.Origin);
             });
         }
 
         public void RewardKillMob(int currency, Vector2 position)
         {
-            
             RewardMaps.Add(new RewardCurrencyEntity
             {
                 Position = position,
                 Currency = currency,
                 
             });
-            //TODO Добавляем награду карточку 
+            //Алгоритм настройки получения награды
+            //Частота получения награды из настроек - каждую 5 волну
+
+            var waveReward = _gameSettings.MapsSettings.InfinitySetting.rateRewardEntity;
+            var waveCurrent = _gameplayState.CurrentWave.CurrentValue;
+            if (waveCurrent % waveReward != 0) return;
+
+            if (_rewardsMap.TryGetValue(waveCurrent, out var value)) return;
+            
+            
+            var listConfig = new List<string>();
+            foreach (var towerSettings in _towersSettings.AllTowers)
+            {
+                if (towerSettings.AvailableWave <= waveCurrent) listConfig.Add(towerSettings.ConfigId);
+            }
+
+            if (listConfig.Count == 0) throw new Exception("Исключительная ситуация");
+            var reward = new RewardEntityData();
+            
+            var random = new System.Random();
+            reward.RewardType = random.Next(0, 2) switch
+            {
+                0 => RewardEntityType.TowerCard,
+                1 => RewardEntityType.TowerPlan,
+                _ => reward.RewardType
+            };
+
+            reward.ConfigId = listConfig[random.Next(0, listConfig.Count)];
+            //TODO Добавляем награду карточку
+            var rewardEntity = new RewardEntity(reward)
+            {
+                Position = position
+            };
+            //Debug.Log(JsonConvert.SerializeObject(reward, Formatting.Indented));
+            RewardEntity.OnNext(rewardEntity);
+            _rewardsMap.Add(waveCurrent, true);
+            //_gameplayState.RewardEntities.Add(reward);
         }
         
         public void StartRewardCard()
@@ -208,11 +240,12 @@ namespace Game.GamePlay.Services
 
         private RewardCardData GetGround(RewardsProgress progress)
         {
-            foreach (var progressCard in progress.Cards)
-            {
-                if (progressCard.Value.RewardType == RewardType.Ground) return null;
-            }
+            if (progress.Cards
+                .Any(progressCard => progressCard.Value.RewardType == RewardType.Ground)
+                )
+                return null;
             
+
             return new RewardCardData
             {
                 RewardType = RewardType.Ground,

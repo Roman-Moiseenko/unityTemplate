@@ -22,6 +22,7 @@ namespace Game.Settings.Gameplay.Entities.Tower
 
         //  [field: SerializeField] public string PrefabName { get; private set; }
         [field: SerializeField] public ShotSettings Shot { get; private set; }
+        [field: SerializeField] public int AvailableWave { get; private set; }
         
         //Характеристики, которые зависят от уровня (звездочек) в гейплее - не влияют на карточку башни
         [field: SerializeField] public List<TowerLevelSettings> GameplayLevels { get; private set; }

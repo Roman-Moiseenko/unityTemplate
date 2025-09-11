@@ -4,6 +4,7 @@ using Game.GamePlay.Classes;
 using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
+using Game.State.Maps.Rewards;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Waves;
@@ -25,11 +26,15 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> MapId;
         public readonly ReactiveProperty<int> CurrentWave;
         public readonly ReactiveProperty<int> UpdateCards;
+        private readonly ReactiveProperty<int> _previousGameSpeed  = new();
+        
 
         public CastleEntity Castle;
 
-        private ReactiveProperty<int> PreviousGameSpeed  = new();//{ get; set; }
+        
         //public ReactiveProperty<TypeGameplay> TypeGameplay = new();
+        public ObservableList<RewardEntityData> RewardEntities { get; } = new(); 
+        
         public ObservableList<TowerEntity> Towers { get; } = new();
         public ObservableList<GroundEntity> Grounds { get; } = new();
 
@@ -42,7 +47,7 @@ namespace Game.State.Root
         {
             Origin = origin;
             Castle = new CastleEntity(origin.CastleData);
-            PreviousGameSpeed.Value = Origin.GameSpeed;
+            _previousGameSpeed.Value = Origin.GameSpeed;
             GameSpeed = new ReactiveProperty<int>(origin.GameSpeed);
             GameSpeed.Subscribe(newSpeed =>
             {
@@ -67,15 +72,18 @@ namespace Game.State.Root
             MapId = new ReactiveProperty<int>(origin.MapId);
             MapId.Subscribe(newValue => origin.MapId = newValue);
             
-         //   TypeGameplay = new ReactiveProperty<TypeGameplay>(origin.TypeGameplay);
-        //    TypeGameplay.Subscribe(newValue => origin.TypeGameplay = newValue);
+            //Награды
+            origin.RewardEntities.ForEach(
+                reward => RewardEntities.Add(reward)
+            );
+            RewardEntities.ObserveAdd().Subscribe(e => origin.RewardEntities.Add(e.Value));
             
-         //   Debug.Log("gameplayState = " + JsonConvert.SerializeObject(gameplayState, Formatting.Indented));
             InitMaps(origin);
         }
 
         private void InitMaps(GameplayState gameplayState)
         {
+            //Земля
             gameplayState.Grounds.ForEach(
                 groundOriginal => Grounds.Add(new GroundEntity(groundOriginal))
             );
@@ -87,7 +95,7 @@ namespace Game.State.Root
                 gameplayState.Grounds.Remove(removedMapState);
             });
             
-            
+            //Башни
             gameplayState.Towers.ForEach(
                 towerOriginal => Towers.Add(new TowerEntity(towerOriginal))
             );
@@ -98,7 +106,6 @@ namespace Game.State.Root
                 var removedMapState = gameplayState.Towers.FirstOrDefault(b => b.UniqueId == e.Value.UniqueId);
                 gameplayState.Towers.Remove(removedMapState);
             });
-            
             
             //Дороги
             gameplayState.Way.ForEach(roadOriginal => Way.Add(new RoadEntity(roadOriginal)));
@@ -156,7 +163,7 @@ namespace Game.State.Root
          */
         public void SetPauseGame() 
         {
-            PreviousGameSpeed.Value = GameSpeed.Value;
+            _previousGameSpeed.Value = GameSpeed.Value;
             GameSpeed.Value = 0;
         }
         
@@ -166,12 +173,12 @@ namespace Game.State.Root
         public void GameplayReturn()
         {
            // Debug.Log("PreviousGameSpeed = " + PreviousGameSpeed);
-            GameSpeed.Value = PreviousGameSpeed.Value == 0 ? 1 : PreviousGameSpeed.Value;
+            GameSpeed.Value = _previousGameSpeed.Value == 0 ? 1 : _previousGameSpeed.Value;
         }
 
         public void SetSkillSpeed()
         {
-            PreviousGameSpeed.Value = GameSpeed.Value;
+            _previousGameSpeed.Value = GameSpeed.Value;
             SetGameSpeed(1);
         }
         
@@ -183,7 +190,7 @@ namespace Game.State.Root
 
         public int GetLastSpeedGame()
         {
-            return Mathf.Max(GameSpeed.CurrentValue, PreviousGameSpeed.Value);
+            return Mathf.Max(GameSpeed.CurrentValue, _previousGameSpeed.Value);
         }
 
         public int GetCurrentSpeed()

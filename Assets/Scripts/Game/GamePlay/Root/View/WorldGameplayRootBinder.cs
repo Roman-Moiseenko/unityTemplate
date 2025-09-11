@@ -162,11 +162,20 @@ namespace Game.GamePlay.Root.View
         
         private void CreateMob(MobViewModel mobViewModel)
         {
-            var prefabPath = $"Prefabs/Gameplay/Mobs/{mobViewModel.ConfigId}"; //Перенести в настройки уровня
-            var mobPrefab = Resources.Load<MobBinder>(prefabPath);
-            var createdMob = Instantiate(mobPrefab, transform);
-            createdMob.Bind(mobViewModel);
-            _createMobsMap[mobViewModel.MobEntityId] = createdMob;
+            try
+            {
+                var prefabPath = $"Prefabs/Gameplay/Mobs/{mobViewModel.ConfigId}"; //Перенести в настройки уровня
+                var mobPrefab = Resources.Load<MobBinder>(prefabPath);
+                var createdMob = Instantiate(mobPrefab, transform);
+                createdMob.Bind(mobViewModel);
+                _createMobsMap[mobViewModel.MobEntityId] = createdMob;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e + " " + mobViewModel.ConfigId);
+                throw;
+            }
+            
         }
 
         private void CreateCastle(CastleViewModel castleViewModel)

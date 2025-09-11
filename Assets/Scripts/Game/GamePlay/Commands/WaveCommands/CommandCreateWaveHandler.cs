@@ -66,7 +66,6 @@ namespace Game.GamePlay.Commands.WaveCommands
                         ConfigId = mobConfig.ConfigId,
                         UniqueId = _gameplayState.CreateEntityID(),
                         Health = mobConfig.Health * levelCoef,
-                        Type = mobConfig.Type,
                         Armor = mobConfig.Armor,
                         Attack = mobConfig.Attack * levelCoef,
                         SpeedMove = mobConfig.SpeedMove,

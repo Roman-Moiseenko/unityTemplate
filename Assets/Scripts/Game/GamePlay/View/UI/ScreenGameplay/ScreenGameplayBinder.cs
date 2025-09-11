@@ -27,6 +27,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         [SerializeField] private List<DamagePopupBinder> _damagePopups = new();
         [SerializeField] private List<CurrencyPopupBinder> _currencyPopups = new();
         [SerializeField] private List<CurrencyPopupBinder> _progressPopups = new();
+        [SerializeField] private RewardEntityBinder rewardEntity = new();
 
         [SerializeField] private Transform _targetCurrency;
         [SerializeField] private Transform _targetProgress;
@@ -53,7 +54,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
             startWave.gameObject.SetActive(false);
             finishWave.gameObject.SetActive(false);
-
+            rewardEntity.Bind();
+            
             //Пул всплывающих popup
             for (var i = 0; i < 20; i++)
             {
@@ -122,6 +124,13 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 });
             }).AddTo(ref d);
 
+            ViewModel.RewardEntity.Where(r => r != null).Subscribe(r =>
+            {
+                var position = new Vector3(r.Position.x, 1f, r.Position.y);
+                position = ViewModel.CameraService.Camera.WorldToScreenPoint(position);
+                rewardEntity.StartPopup(r.RewardType, r.ConfigId, position);
+
+            }).AddTo(ref d);
             //Показываем инфо начала и окончания волны
 
             ViewModel.ShowStartWave.Where(show => show).Subscribe(_ =>

@@ -6,7 +6,5 @@ namespace Game.State.Maps.Rewards
     {
         public Vector2 Position;
         public int Currency;
-        //public Card card;
-        
     }
 }

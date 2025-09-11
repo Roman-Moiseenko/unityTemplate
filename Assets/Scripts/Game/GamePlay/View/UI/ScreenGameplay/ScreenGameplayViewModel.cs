@@ -45,7 +45,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         public ReactiveProperty<bool> ShowStartWave = new(false);
         public ReactiveProperty<bool> ShowFinishWave = new(false);
-
+        public ReactiveProperty<RewardEntity> RewardEntity;
         public override string Id => "ScreenGameplay";
         public override string Path => "Gameplay/ScreenGameplay/";
         private IDisposable _disposable;
@@ -67,6 +67,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
             HardCurrency = container.Resolve<IGameStateProvider>().GameState.HardCurrency;
             AllRewards = _rewardService.RewardMaps;
+            RewardEntity = _rewardService.RewardEntity;
 
             CastleHealth = _gameplayState.Castle.CurrenHealth;
             CastleFullHealth = _gameplayState.Castle.FullHealth;

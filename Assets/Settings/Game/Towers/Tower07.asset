@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7296470140475f9390ad5151b068a3, type: 3}
+  m_Name: Tower07
+  m_EditorClassIdentifier: Assembly-CSharp::Game.Settings.Gameplay.Entities.Tower.TowerSettings
+  <ConfigId>k__BackingField: Tower07
+  <TitleLid>k__BackingField: "\u041D\u0435\u0431\u0435\u0441\u043D\u044B\u0439 \u0441\u0442\u0440\u0430\u0436"
+  <DescriptionLid>k__BackingField: 
+  <PrefabPath>k__BackingField: 
+  <OnRoad>k__BackingField: 0
+  <MultiShot>k__BackingField: 0
+  <TypeEnemy>k__BackingField: 2
+  <Defence>k__BackingField: 1
+  <Shot>k__BackingField:
+    Speed: 0.5
+    LineTrajectory: 1
+    Single: 1
+    NotPrefab: 0
+  <AvailableWave>k__BackingField: 11
+  <GameplayLevels>k__BackingField:
+  - Level: 2
+    Parameters:
+    - ParameterType: 0
+      Value: 20
+  - Level: 3
+    Parameters:
+    - ParameterType: 6
+      Value: 5
+    - ParameterType: 2
+      Value: 40
+  - Level: 4
+    Parameters:
+    - ParameterType: 0
+      Value: 20
+  - Level: 5
+    Parameters:
+    - ParameterType: 6
+      Value: 5
+    - ParameterType: 2
+      Value: 29
+  - Level: 6
+    Parameters:
+    - ParameterType: 0
+      Value: 20
+  <BaseParameters>k__BackingField:
+  - ParameterType: 0
+    Value: 203.3
+  - ParameterType: 5
+    Value: 1.11
+  - ParameterType: 6
+    Value: 10
+  - ParameterType: 2
+    Value: 1.25
+  <LevelCardParameters>k__BackingField:
+  - ParameterType: 0
+    BaseValue: 20.3
+    PowEpic: 1.35
+  <EpicCardParameters>k__BackingField:
+  - ParameterType: 0
+    EpicParameters:
+    - Level: 1
+      Percent: 3
+    - Level: 2
+      Percent: 5
+    - Level: 3
+      Percent: 7
+    - Level: 4
+      Percent: 2
+    - Level: 5
+      Percent: 36
+    - Level: 6
+      Percent: 28
+    - Level: 7
+      Percent: 35
+    - Level: 8
+      Percent: 45
+    - Level: 8
+      Percent: 55
+  - ParameterType: 5
+    EpicParameters:
+    - Level: 1
+      Percent: -2
+    - Level: 2
+      Percent: -5
+    - Level: 3
+      Percent: -7
+    - Level: 4
+      Percent: -3
+    - Level: 5
+      Percent: -7
+    - Level: 6
+      Percent: -10
+    - Level: 7
+      Percent: -5
+    - Level: 8
+      Percent: -3
+    - Level: 8
+      Percent: -7

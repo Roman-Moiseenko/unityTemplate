@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.State.Inventory;
+using Game.State.Maps.Rewards;
 
 namespace Game.MainMenu.Root
 {
@@ -15,7 +16,7 @@ namespace Game.MainMenu.Root
         public int MapId { get; set; }
 
         public List<InventoryItemData> Items = new (); 
-        public Dictionary<string, int> RewardCards = new (); //Список карт - наград
+        public List<RewardEntityData> RewardCards = new (); //Список карт - наград
         
 
         public MainMenuEnterParams(string result)

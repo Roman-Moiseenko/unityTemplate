@@ -20,8 +20,9 @@ MonoBehaviour:
   RoadConfigIds:
   - Road
   InfinitySetting:
-    ratioCurveWave: 2.2
+    ratioCurveWave: 1
     ratioCurveMobs: 2
-    rateLevelMob: 5
+    rateLevelMob: 10
     rateBoss: 10
     ratioPower: 1
+    rateRewardEntity: 5

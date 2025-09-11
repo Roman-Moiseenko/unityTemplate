@@ -15,14 +15,14 @@ MonoBehaviour:
   <ConfigId>k__BackingField: Shooter
   <TitleLid>k__BackingField: "\u0421\u0442\u0440\u0435\u043B\u043E\u043A"
   <DescriptionLid>k__BackingField: 
-  <Type>k__BackingField: 0
   <PrefabPath>k__BackingField: 
-  <Speed>k__BackingField: 1
   <SpeedMove>k__BackingField: 1
   <SpeedAttack>k__BackingField: 80
   <IsFly>k__BackingField: 0
+  <AvailableWave>k__BackingField: 10
   <Health>k__BackingField: 250
   <Armor>k__BackingField: 0
   <Attack>k__BackingField: 87.5
   <RewardCurrency>k__BackingField: 12
   <Defence>k__BackingField: 0
+  <Count>k__BackingField: 1
