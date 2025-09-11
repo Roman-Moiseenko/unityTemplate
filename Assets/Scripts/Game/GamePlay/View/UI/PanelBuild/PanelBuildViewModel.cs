@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DI;
 using Game.Common;
 using Game.GamePlay.Fsm;
-using Game.GamePlay.Fsm.States;
+using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Services;
 using Game.GameRoot.Services;
 using Game.Settings;

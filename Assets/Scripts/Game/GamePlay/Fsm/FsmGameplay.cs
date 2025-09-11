@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using DI;
-using Game.GamePlay.Fsm.States;
+using Game.GamePlay.Fsm.GameplayStates;
 using MVVM.FSM;
 using R3;
 using UnityEngine;

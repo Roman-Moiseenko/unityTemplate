@@ -5,7 +5,7 @@ using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Commands.WaveCommands;
 using Game.GamePlay.Fsm;
-using Game.GamePlay.Fsm.States;
+using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Root;
 using Game.GameRoot.Services;
 using Game.MainMenu.Root;

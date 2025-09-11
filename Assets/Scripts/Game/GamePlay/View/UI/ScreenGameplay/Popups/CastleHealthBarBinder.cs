@@ -32,7 +32,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
 
         public void SetHealth(float health)
         {
-            _healthText.text = health.ToString(CultureInfo.CurrentCulture);
+            _healthText.text = Mathf.RoundToInt(health).ToString(CultureInfo.CurrentCulture);
             _healthProgress.value = health / _castleFullHealth;
         }
 

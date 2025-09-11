@@ -1,13 +1,9 @@
-﻿using System;
-using DI;
-using Game.Settings;
-using Game.State;
+﻿using DI;
 using Game.State.Gameplay;
 using Game.State.Root;
 using MVVM.FSM;
-using UnityEngine;
 
-namespace Game.GamePlay.Fsm.States
+namespace Game.GamePlay.Fsm.GameplayStates
 {
     public class FsmStateBuildEnd : FSMState
     {

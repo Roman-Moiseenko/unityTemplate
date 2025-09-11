@@ -13,7 +13,7 @@ using Game.GamePlay.Commands.RoadCommand;
 using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Commands.WaveCommands;
 using Game.GamePlay.Fsm;
-using Game.GamePlay.Fsm.States;
+using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Services;
 using Game.GameRoot.Services;
 using Game.MainMenu.Services;

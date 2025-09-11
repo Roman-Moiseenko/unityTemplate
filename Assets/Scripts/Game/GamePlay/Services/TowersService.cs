@@ -55,8 +55,6 @@ namespace Game.GamePlay.Services
             //Debug.Log("Входные данные для башен " + JsonConvert.SerializeObject(baseTowerCards, Formatting.Indented));
             _towerEntities = towerEntities;
             _baseTowerCards = baseTowerCards;
-         //   Debug.Log(JsonConvert.SerializeObject(_baseTowerCards, Formatting.Indented));
-
             _cmd = cmd;
             _placementService = placementService;
 

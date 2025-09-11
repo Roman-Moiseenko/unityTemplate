@@ -1,11 +1,8 @@
-﻿using System;
-using DI;
-using Game.Settings;
+﻿using DI;
 using Game.State;
 using MVVM.FSM;
-using UnityEngine;
 
-namespace Game.GamePlay.Fsm.States
+namespace Game.GamePlay.Fsm.GameplayStates
 {
     public class FsmStateGamePause : FSMState
     {

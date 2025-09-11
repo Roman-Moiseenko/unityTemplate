@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DI;
 using Game.GamePlay.Fsm;
-using Game.GamePlay.Fsm.States;
+using Game.GamePlay.Fsm.GameplayStates;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
 using Game.State.Gameplay;

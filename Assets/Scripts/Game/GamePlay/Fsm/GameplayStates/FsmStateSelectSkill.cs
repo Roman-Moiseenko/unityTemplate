@@ -1,11 +1,9 @@
-﻿using System;
-using DI;
-using Game.Settings;
+﻿using DI;
 using Game.State;
 using Game.State.Root;
 using MVVM.FSM;
 
-namespace Game.GamePlay.Fsm.States
+namespace Game.GamePlay.Fsm.GameplayStates
 {
     public class FsmStateSelectSkill : FSMState
     {

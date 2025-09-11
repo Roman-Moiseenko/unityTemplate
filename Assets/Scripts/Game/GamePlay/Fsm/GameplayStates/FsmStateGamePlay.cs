@@ -1,9 +1,8 @@
 ﻿using DI;
 using Game.State;
 using MVVM.FSM;
-using UnityEngine;
 
-namespace Game.GamePlay.Fsm.States
+namespace Game.GamePlay.Fsm.GameplayStates
 {
     public class FsmStateGamePlay : FSMState
     {

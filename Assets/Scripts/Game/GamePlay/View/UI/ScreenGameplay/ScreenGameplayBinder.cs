@@ -103,7 +103,10 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 ViewModel.RepairBuffer.Remove(e.Value);
             }).AddTo(ref d);
 
-            ViewModel.CastleHealth.Skip(1).Subscribe(h => _castleHealthBar.SetHealth(h)).AddTo(ref d);
+            ViewModel.CastleHealth
+                .Skip(1)
+                .Subscribe(h => _castleHealthBar.SetHealth(h))
+                .AddTo(ref d);
 
             ViewModel.AllRewards.ObserveAdd().Subscribe(r =>
             {

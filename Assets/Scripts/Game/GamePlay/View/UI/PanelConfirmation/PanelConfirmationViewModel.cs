@@ -2,7 +2,7 @@
 using DI;
 using Game.GamePlay.Commands.RewardCommand;
 using Game.GamePlay.Fsm;
-using Game.GamePlay.Fsm.States;
+using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Frames;
 using Game.State;

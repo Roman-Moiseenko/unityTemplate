@@ -4,7 +4,7 @@ using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
-using Game.GamePlay.Fsm.States;
+using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.AttackAreas;
 using Game.GamePlay.View.Buildings;
