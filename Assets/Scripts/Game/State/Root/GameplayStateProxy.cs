@@ -22,17 +22,18 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> GameSpeed;
         public readonly ReactiveProperty<int> Progress;
         public readonly ReactiveProperty<int> ProgressLevel;
-        public readonly ReactiveProperty<int> SoftCurrency;
+        public readonly ReactiveProperty<long> SoftCurrency;
         public readonly ReactiveProperty<int> MapId;
         public readonly ReactiveProperty<int> CurrentWave;
         public readonly ReactiveProperty<int> UpdateCards;
         private readonly ReactiveProperty<int> _previousGameSpeed  = new();
-        
+
+        public readonly ReactiveProperty<int> KillMobs;
 
         public CastleEntity Castle;
 
         
-        //public ReactiveProperty<TypeGameplay> TypeGameplay = new();
+        //public ReactiveProperty<TypeGameplay> TypeGameplay;
         public ObservableList<RewardEntityData> RewardEntities { get; } = new(); 
         
         public ObservableList<TowerEntity> Towers { get; } = new();
@@ -60,7 +61,7 @@ namespace Game.State.Root
             ProgressLevel = new ReactiveProperty<int>(origin.ProgressLevel);
             ProgressLevel.Subscribe(newProgressLevel => origin.ProgressLevel = newProgressLevel);
 
-            SoftCurrency = new ReactiveProperty<int>(origin.SoftCurrency);
+            SoftCurrency = new ReactiveProperty<long>(origin.SoftCurrency);
             SoftCurrency.Subscribe(newValue => origin.SoftCurrency = newValue);
 
             CurrentWave = new ReactiveProperty<int>(origin.CurrentWave);
@@ -71,6 +72,9 @@ namespace Game.State.Root
 
             MapId = new ReactiveProperty<int>(origin.MapId);
             MapId.Subscribe(newValue => origin.MapId = newValue);
+
+            KillMobs = new ReactiveProperty<int>(origin.KillMobs);
+            KillMobs.Subscribe(newValue => origin.KillMobs = newValue);
             
             //Награды
             origin.RewardEntities.ForEach(

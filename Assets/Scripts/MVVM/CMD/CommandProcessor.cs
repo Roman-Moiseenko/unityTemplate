@@ -19,13 +19,14 @@ namespace MVVM.CMD
         {
             _handlesMap[typeof(TCommand)] = handler;
         }
-
+        
         /**
          * Сохранение процесса игры возможно будет нужно не везде, тогда можно создать
          * 2 процедуры: Process и ProcessNotSave / ProcessSave, либо добавить 2 параметр (..., bool saved = false) 
          */
         public bool Process<TCommand>(TCommand command) where TCommand : ICommand
         {
+        //    UnityEngine.Debug.Log("Process " + command.GetType());
             if (_handlesMap.TryGetValue(typeof(TCommand), out var handler))
             {
                 var typeHandler = (ICommandHandler<TCommand>)handler;
@@ -40,7 +41,9 @@ namespace MVVM.CMD
                 }
                 return result;
             }
-            return false;
+            throw new Exception("Не загружена команда " + typeof(TCommand));
+            //TODO на продакшн убрать исключения
+            //return false;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
 
         private InventoryRoot _inventory;
         private TowerCardPlanService _service;
-        public ReadOnlyReactiveProperty<int> SoftCurrency;
+        public ReadOnlyReactiveProperty<long> SoftCurrency;
         public ReadOnlyReactiveProperty<int> AmountPlans;
         public ReactiveProperty<int> CostPlan = new();
         public ReactiveProperty<int> CostCurrency = new();

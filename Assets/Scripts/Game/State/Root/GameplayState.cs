@@ -15,17 +15,14 @@ namespace Game.State.Root
         public int MapId { get; set; }
         public int CurrentWave { get; set; }
         public int GlobalEntityId { get; set; }
-
         public int GameSpeed { get; set; } = 1;
         //public int PreviousGameSpeed { get; set; }
-        
         public int Progress { get; set; } //Текущий прогресс игры, растет от убийства мобов, при = наполнении обнуляем и увеличиваем ProgressLevel на 1
         public int ProgressLevel { get; set; } //Влияет на коэффициент роста Progress в обратно-пропорциональном порядке 
-
-        public int SoftCurrency { get; set; } //При входе 0
+        public long SoftCurrency { get; set; } //При входе 0
         //public int HardCurrency { get; set; } //Дублирование?
         public int UpdateCards { get; set; }
-        
+        public int KillMobs { get; set; }
         public TypeGameplay TypeGameplay { get; set; }
         
         //Список наград

@@ -88,10 +88,10 @@ namespace Game.GamePlay.Services
                     
                 })
                 .AddTo(ref d);
-            _exitSceneRequest.Subscribe(e =>
+         /*   _exitSceneRequest.Subscribe(e =>
             {
                 Debug.Log(JsonConvert.SerializeObject(e.MainMenuEnterParams, Formatting.Indented));
-            });
+            });*/
             //Сработала следующая волна, после максимальной => Победа
             
             //Здоровье крепости меньше 0 => Проигрыш
@@ -102,31 +102,33 @@ namespace Game.GamePlay.Services
 
         public void Win() //private
         {
-            var menuParams = new MainMenuEnterParams("Выход");
-            //Передаем награду и некоторые настройки, для загрузки в меню
-            menuParams.GameSpeed = _gameplayState.GetLastSpeedGame();
-            menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
-            menuParams.MapId = _gameplayState.MapId.CurrentValue;
-            menuParams.RewardCards = _gameplayState.Origin.RewardEntities;
-            //menuParams.RewardCards = _gameplayState.RewardCards;
-            menuParams.CompletedLevel = true;
+            var menuParams = GetMainMenuParams(true);
             var exitParams = new GameplayExitParams(menuParams);
             _exitSceneRequest.OnNext(exitParams);
         }
 
         public void Lose() //private
         {
+            var menuParams = GetMainMenuParams(false);
+            var exitParams = new GameplayExitParams(menuParams);
+            _exitSceneRequest.OnNext(exitParams);
+        }
+
+        private MainMenuEnterParams GetMainMenuParams(bool completedLevel)
+        {
             var menuParams = new MainMenuEnterParams("Выход");
-            //Передаем награду и некоторые настройки, для загрузки в меню
             menuParams.GameSpeed = _gameplayState.GetLastSpeedGame();
             menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
             menuParams.MapId = _gameplayState.MapId.CurrentValue;
             menuParams.RewardCards = _gameplayState.Origin.RewardEntities;
-            //menuParams.RewardCards = _gameplayState.RewardCards;
-            menuParams.LastWave = _gameplayState.CurrentWave.CurrentValue - 1; //Текущая волна -1
-            menuParams.CompletedLevel = false; //Не завершен
-            var exitParams = new GameplayExitParams(menuParams);
-            _exitSceneRequest.OnNext(exitParams);
+            menuParams.CompletedLevel = completedLevel;
+            menuParams.LastWave = completedLevel
+                ? _gameplayState.CurrentWave.CurrentValue
+                : _gameplayState.CurrentWave.CurrentValue - 1;
+
+            menuParams.KillsMob = _gameplayState.KillMobs.CurrentValue;
+            menuParams.TypeGameplay = _gameplayState.Origin.TypeGameplay;
+            return menuParams;
         }
 
         /**

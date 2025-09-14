@@ -6,6 +6,7 @@ using Game.State.Inventory.TowerCards;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using MVVM.CMD;
+using UnityEngine;
 
 namespace Game.MainMenu.Commands.TowerCommands
 {
@@ -42,7 +43,7 @@ namespace Game.MainMenu.Commands.TowerCommands
             {
                 initialTowerCard.Parameters.Add(baseParameter.ParameterType, new TowerParameterData(baseParameter));
             }
-                
+            
             _gameState.Inventory.AddItem(initialTowerCard);
             return true;
         }

@@ -104,11 +104,14 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
             _disposable = d.Build();
         }
 
-        private string CurrencyToStr(int value)
+        private string CurrencyToStr(long value)
         {
             var t = 0f;
             switch (value)
             {
+                case >= 1000000000:
+                    t = (int)(value / 10000000) / 100f;
+                    return $"{t} B";
                 case >= 1000000:
                     t = (int)(value / 10000) / 100f;
                     return $"{t} M";
@@ -116,7 +119,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
                     t = (int)(value / 10) / 100f;
                     return $"{t} K";
                 default:
-                    return t.ToString();
+                    return value.ToString();
             }
         }
 

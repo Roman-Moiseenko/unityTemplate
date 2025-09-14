@@ -40,6 +40,7 @@ namespace Game.MainMenu.Root
             //  var cmd = container.Resolve<ICommandProcessor>();
             var cmd = container.Resolve<ICommandProcessor>();
 
+            
             //команды работы с инвентарем
             
             //INVENTORY
@@ -59,7 +60,8 @@ namespace Game.MainMenu.Root
             cmd.RegisterHandler(new CommandTowerPlanAddHandler(gameState));
             cmd.RegisterHandler(new CommandTowerPlanSpendHandler(gameState));
             //
-
+            container.RegisterFactory(_ => new InventoryService(cmd, gameState)).AsSingle();
+            
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
             //container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
 
@@ -67,7 +69,7 @@ namespace Game.MainMenu.Root
             //Для нового игрока загружаем базовый инвентарь
             if (gameState.Inventory.Items.Any() != true)
             {
-                Debug.Log("Загружаем Инвентарь из Настроек");
+               // Debug.Log("Загружаем Инвентарь из Настроек");
                 var command = new CommandCreateInventory();
                 var success = cmd.Process(command);
                 if (!success)

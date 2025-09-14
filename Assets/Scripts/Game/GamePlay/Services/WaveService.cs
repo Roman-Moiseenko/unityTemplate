@@ -99,7 +99,7 @@ namespace Game.GamePlay.Services
             _allMobsOnWay.ObserveRemove().Subscribe(e =>
             {
                 _coroutines.StopCoroutine(MovingMobOnWay(e.Value)); //Прерываем движение моба
-
+                _gameplayState.KillMobs.Value++;
                 var trigger = _allMobsOnWay.Any(mobViewModel => mobViewModel.NumberWave == e.Value.NumberWave);
                 if (!trigger) FinishWave.OnNext(true); //Текущая волна моба закончилась
                 

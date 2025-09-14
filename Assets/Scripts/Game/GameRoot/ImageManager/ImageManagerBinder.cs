@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.State.Inventory;
+using Game.State.Inventory.Chests;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
 using UnityEngine;
@@ -17,13 +18,20 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByDefence> defences;
         [SerializeField] private List<ImageItemByConfig> otherSprite;
         [SerializeField] private List<ImageItemByConfig> roads;
+        [SerializeField] private List<ImageItemByChest> chests;
 
 
         public Sprite GetEpicLevel(TypeEpicCard typeEpicCard)
         {
             return epicLevels.FirstOrDefault(t => t.TypeEpic == typeEpicCard)!.Sprite;
         }
-
+        public Sprite GetChest(TypeChest? typeChest)
+        {
+            if (typeChest == null) return GetOther("ChestNot");
+            
+            return chests.FirstOrDefault(t => t.TypeChest == typeChest)!.Sprite;
+        }
+        
         public Sprite GetEpicLevel(string indexEpic)
         {
             foreach (TypeEpicCard typeEpic in Enum.GetValues(typeof(TypeEpicCard)))

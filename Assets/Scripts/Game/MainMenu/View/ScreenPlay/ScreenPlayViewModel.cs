@@ -3,6 +3,7 @@ using Game.GamePlay.Classes;
 using Game.GamePlay.Root;
 using Game.MainMenu.Root;
 using Game.MainMenu.Services;
+using Game.MainMenu.View.ScreenPlay.Chests;
 using Game.State;
 using MVVM.UI;
 using R3;
@@ -15,6 +16,8 @@ namespace Game.MainMenu.View.ScreenPlay
         private readonly Subject<MainMenuExitParams> _exitSceneRequest;
         private readonly MainMenuExitParamsService _exitParamsService;
         private readonly DIContainer _container;
+
+        public ChestsViewModel ChestsViewModel;
 
 
         //  private readonly Subject<MainMenuExitParams> _exitSceneRequest2 = new();
@@ -32,6 +35,9 @@ namespace Game.MainMenu.View.ScreenPlay
             _exitSceneRequest = exitSceneRequest;
             _exitParamsService = exitParamsService;
             _container = container;
+            var gameState = container.Resolve<IGameStateProvider>().GameState;
+            ChestsViewModel = new ChestsViewModel(gameState, container);
+
         }
 
         

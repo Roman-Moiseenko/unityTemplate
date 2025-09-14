@@ -35,6 +35,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
         public void StartPopup(Vector3 position, int damage, DamageType damageType)
         {
             _position = position;
+            if (_camera == null)
+            {
+                //TODO Отследить, при проигрыше и закрытии запускается показ урона
+                return;
+            }
             transform.position = _camera.WorldToScreenPoint(position);
             _textPanel.GetComponent<TMP_Text>().text = damage.ToString();
             _textPanel.GetComponent<TMP_Text>().color = damageType switch

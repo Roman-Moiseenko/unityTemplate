@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.GamePlay.Classes;
 using Game.State.Inventory;
 using Game.State.Maps.Rewards;
 
@@ -7,13 +8,19 @@ namespace Game.MainMenu.Root
     public class MainMenuEnterParams
     {
         public string Result { get; }
-        public int SoftCurrency { get; set; }
+        public long SoftCurrency { get; set; }
         
         public int LastWave { get; set; } //Последняя волна, при проигрыше
         public bool CompletedLevel { get; set; } //Уровень выйгран
         
         public int GameSpeed { get; set; }
         public int MapId { get; set; }
+        public int KillsMob { get; set; }
+        public TypeGameplay TypeGameplay { get; set; }
+        /**
+         * Награда сундуком, № ячейки, или 0 если нет места
+         */
+        public int ChestCell { get; set; }
 
         public List<InventoryItemData> Items = new (); 
         public List<RewardEntityData> RewardCards = new (); //Список карт - наград

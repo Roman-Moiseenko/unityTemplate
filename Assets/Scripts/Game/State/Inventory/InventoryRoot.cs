@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using Game.State.Inventory.Deck;
+using Game.State.Inventory.TowerCards;
+using Game.State.Maps.Rewards;
 using ObservableCollections;
 using R3;
 
@@ -54,7 +56,7 @@ namespace Game.State.Inventory
 
         public void AddItem(InventoryItemData item)
         {
-            if (item.Accumulation)
+            if (item.TypeItem.IsAccumulation())
             {
                 foreach (var inventoryItem in _items)
                 {

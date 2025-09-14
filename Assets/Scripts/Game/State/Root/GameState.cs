@@ -4,6 +4,7 @@ using System.Collections.Generic;
 //using Game.State.Entities.Buildings;
 using Game.State.GameResources;
 using Game.State.Inventory;
+using Game.State.Inventory.Chests;
 using Game.State.Inventory.Deck;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps;
@@ -21,7 +22,10 @@ namespace Game.State.Root
         public InventoryRootData Inventory { get; set; } = new();
         
         public int HardCurrency { get; set; }
-        public int SoftCurrency { get; set; }
+        public long SoftCurrency { get; set; }
+
+        public ContainerChestsData ContainerChests { get; set; } = new();
+       // public Dictionary<int, ChestEntityData> Chests = new();
         
         public int CreateInventoryID()
         {

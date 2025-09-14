@@ -1,16 +1,19 @@
 ﻿using System.Linq;
 using DI;
 using Game.Common;
+using Game.GamePlay.Classes;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
 using Game.MainMenu.Root.View;
 using Game.MainMenu.Services;
 using Game.MainMenu.View;
 using Game.MainMenu.View.MainScreen;
+using Game.MainMenu.View.ScreenPlay;
 using Game.State;
 using Game.State.GameResources;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
+using MVVM.CMD;
 using Newtonsoft.Json;
 using R3;
 using Scripts.Game.GameRoot;
@@ -24,7 +27,7 @@ namespace Game.MainMenu.Root
 
         public Observable<MainMenuExitParams> Run(DIContainer mainMenuContainer, MainMenuEnterParams enterParams)
         {
-            Debug.Log(" MainMenuEnterParams " + JsonConvert.SerializeObject(enterParams, Formatting.Indented));
+            
             MainMenuRegistrations.Register(mainMenuContainer, enterParams); //Регистрируем все сервисы сцены меню
             var mainMenuViewModelsContainer = new DIContainer(mainMenuContainer); //Создаем контейнер для view-моделей
             MainMenuViewModelsRegistrations.Register(mainMenuViewModelsContainer);
@@ -33,28 +36,16 @@ namespace Game.MainMenu.Root
             var gameState = mainMenuContainer.Resolve<IGameStateProvider>().GameState;
             //  mainMenuViewModelsContainer.Resolve<UIMainMenuRootViewModel>();
              
+            
+            InitUI(mainMenuViewModelsContainer);
+            
             if (enterParams != null)
             {
-                //TODO Добавляем награды Возможно переделать под сервисы
-                //Добавляем золото
-                gameState.SoftCurrency.Value += enterParams.SoftCurrency;
-                enterParams.Items.ForEach(item => gameState.Inventory.AddItem(item));
-                
-                //Сохраняем входные данные в GameState если вышли из Игры
-                
-                
-              //  var resourcesService = mainMenuContainer.Resolve<ResourcesService>();
-                
-                
-               // resourcesService.AddResource(ResourceType.SoftCurrency, enterParams.SoftCurrency);
-                
-                
-                /*              var inventoryService = mainMenuContainer.Resolve<InventoryService>();
-                              enterParams.Inventory.ForEach(item =>
-                              {
-                                  InventoryService.AddInventory(InventoryFactory.CreateInventory(item));
-                              });
-              */
+                //Сервис обработки наград после геймплея
+                var inventory = mainMenuContainer.Resolve<InventoryService>();
+                if (enterParams.TypeGameplay == TypeGameplay.Infinity) inventory.InfinityRewardGamePlay(enterParams);
+                //enterParams сохраняет дополнительные данные, для передачи в popup
+
                 
                 //Сохраняем параметры/настройки для следующих геймплеев
                 var gameProvider = mainMenuContainer.Resolve<IGameStateProvider>();
@@ -64,8 +55,8 @@ namespace Game.MainMenu.Root
 
             }
             
-            InitUI(mainMenuViewModelsContainer);
-            InitPopup(mainMenuViewModelsContainer);
+            
+            InitPopupPlay(mainMenuViewModelsContainer, enterParams);
             
 //            Debug.Log($"MAIN MENU ENTER POINT: Results {enterParams?.Result}");
             
@@ -100,16 +91,27 @@ namespace Game.MainMenu.Root
             var uiManager = container.Resolve<MainMenuUIManager>();
 
             var mainScreenViewModel = new MainScreenViewModel(uiManager);
-            var Binder = uiSceneRootBinder.GetComponent<MainScreenBinder>();
-            Binder.Bind(mainScreenViewModel);
+            var binder = uiSceneRootBinder.GetComponent<MainScreenBinder>();
+            binder.Bind(mainScreenViewModel);
 
             uiManager.OpenScreenPlay();
         }
 
-        private void InitPopup(DIContainer container)
+        private void InitPopupPlay(DIContainer container, MainMenuEnterParams enterParams)
         {
+            var uiManager = container.Resolve<PlayUIManager>();
+            
+            
+            if (enterParams != null)
+            {
+                uiManager.OpenPopupFinishGameplay(enterParams);    
+            }
+            
+            
            // var uiManager = container.Resolve<MainMenuUIManager>();
             //TODO Сделать проверку, что есть сохраненные данные о сессии
+            
+            
             //Запрашиваем окно и переходим в игру или очищаем
             return;
             /*

@@ -4,6 +4,7 @@ using Game.GamePlay.View.UI;
 using Game.MainMenu.Services;
 using Game.MainMenu.View;
 using Game.MainMenu.View.ScreenInventory;
+using Game.MainMenu.View.ScreenPlay;
 using Game.Settings;
 using Game.State;
 using R3;
@@ -23,6 +24,8 @@ namespace Game.MainMenu.Root.View
             container.RegisterFactory(c => new UIMainMenuRootViewModel(container)).AsSingle();
             var inventoryUIManager = new InventoryUIManager(container);
             container.RegisterInstance(inventoryUIManager);
+            var playUIManager = new PlayUIManager(container);
+            container.RegisterInstance(playUIManager);
 
           //  container.RegisterFactory(c => new UIMainMenuRootViewModel(container.Resolve<SomeMainMenuService>())).AsSingle();
         }

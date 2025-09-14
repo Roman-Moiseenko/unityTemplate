@@ -6,6 +6,7 @@
         TowerPlan,
         SkillCard,
         SkillPlan,
-        HeroCard
+        HeroCard,
+        Other, //Используется только для отображения ???
     }
 }

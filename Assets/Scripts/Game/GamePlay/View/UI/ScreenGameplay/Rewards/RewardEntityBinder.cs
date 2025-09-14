@@ -37,7 +37,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
             
             RewardState.Skip(1).Subscribe(state =>
             {
-                if (state == CurrencyState.Animation) animator.enabled = true;
+                if (state == CurrencyState.Animation)
+                {
+                    animator.enabled = true;
+                    animator.Play("reward_entity");
+                }
                 if (state == CurrencyState.Ejection)
                 {
                     animator.enabled = false;
@@ -68,16 +72,16 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
             //Движение
         }
  
-        public void StartPopup(RewardEntityType rewardType, string configId, Vector3 position)
+        public void StartPopup(InventoryType rewardType, string configId, Vector3 position)
         {
-            if (rewardType == RewardEntityType.TowerCard)
+            if (rewardType == InventoryType.TowerCard)
             {
                 imageCard.sprite = _imageManager.GetTowerCard(configId, 1);
                 imageBack.sprite = _imageManager.GetEpicLevel(TypeEpicCard.Normal);
               //  imageCard.GetComponent<RectTransform>().sizeDelta = new Vector2(50, 50);
             }
 
-            if (rewardType == RewardEntityType.TowerPlan)
+            if (rewardType == InventoryType.TowerPlan)
             {
                 imageCard.sprite = _imageManager.GetTowerPlan(configId);
                 imageBack.sprite = _imageManager.GetTowerPlan("Background");

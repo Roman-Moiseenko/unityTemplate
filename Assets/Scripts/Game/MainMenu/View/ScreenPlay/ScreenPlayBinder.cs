@@ -1,4 +1,5 @@
-﻿using MVVM.UI;
+﻿using Game.MainMenu.View.ScreenPlay.Chests;
+using MVVM.UI;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -9,8 +10,16 @@ namespace Game.MainMenu.View.ScreenPlay
     {
         [SerializeField] private Button btnInfinityBattle;
         [SerializeField] private Button _btnResumeGame;
-        
-        
+        [SerializeField] private ChestsBinder chests;
+
+
+        protected override void OnBind(ScreenPlayViewModel viewModel)
+        {
+            base.OnBind(viewModel);
+            chests.Bind(viewModel.ChestsViewModel);
+            
+        }
+
         private void OnEnable()
         {
             btnInfinityBattle.onClick.AddListener(OnResumeInfinityBattleClicked);

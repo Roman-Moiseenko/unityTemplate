@@ -202,6 +202,12 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 6ccfbdf6340763d4abadf43bb51e5c1a, type: 3}
   - ConfigId: CardGround
     Sprite: {fileID: 21300000, guid: 303ac3c4525551449bc66d68a0da07a1, type: 3}
+  - ConfigId: TypeInfinity
+    Sprite: {fileID: 21300000, guid: fa3ea0caeb4ca8d40846edc4794b8a35, type: 3}
+  - ConfigId: Currency
+    Sprite: {fileID: 21300000, guid: 8048575ffec1447479768089bcd3b583, type: 3}
+  - ConfigId: ChestNot
+    Sprite: {fileID: 21300000, guid: a970457df5dff814a9d940f0f4a81126, type: 3}
   roads:
   - ConfigId: 0
     Sprite: {fileID: 21300000, guid: 2786016e096b9c047af2a0b723586e21, type: 3}
@@ -221,3 +227,12 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: e7d44631c3853ce42b2ddc4efe7bca45, type: 3}
   - ConfigId: 8
     Sprite: {fileID: 21300000, guid: c3b0785a9a1a7504eb648e790771c3b1, type: 3}
+  chests:
+  - TypeChest: 0
+    Sprite: {fileID: 21300000, guid: 6518c7e26416fcb4099b94e8bd7f5ab3, type: 3}
+  - TypeChest: 1
+    Sprite: {fileID: 21300000, guid: 89dd8cb7dfca10a418f99a0dc83d9432, type: 3}
+  - TypeChest: 2
+    Sprite: {fileID: 21300000, guid: 4cdac8c8ed207764ebe764f5a6cba296, type: 3}
+  - TypeChest: 3
+    Sprite: {fileID: 21300000, guid: 4cf48802d84fefe4bb1dd519fcf1e90d, type: 3}

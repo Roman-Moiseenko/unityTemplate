@@ -8,6 +8,7 @@ using Game.Settings;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
 using Game.State.Gameplay;
+using Game.State.Inventory;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Towers;
 using Game.State.Root;
@@ -131,8 +132,8 @@ namespace Game.GamePlay.Services
             var random = new System.Random();
             reward.RewardType = random.Next(0, 2) switch
             {
-                0 => RewardEntityType.TowerCard,
-                1 => RewardEntityType.TowerPlan,
+                0 => InventoryType.TowerCard,
+                1 => InventoryType.TowerPlan,
                 _ => reward.RewardType
             };
 

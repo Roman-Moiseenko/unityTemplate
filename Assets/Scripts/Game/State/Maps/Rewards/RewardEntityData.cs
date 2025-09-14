@@ -1,8 +1,10 @@
-﻿namespace Game.State.Maps.Rewards
+﻿using Game.State.Inventory;
+
+namespace Game.State.Maps.Rewards
 {
     public class RewardEntityData
     {
         public string ConfigId;
-        public RewardEntityType RewardType;
+        public InventoryType RewardType;
     }
 }

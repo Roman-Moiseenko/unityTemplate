@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Game.State.Inventory;
+using UnityEngine;
 
 namespace Game.State.Maps.Rewards
 {
@@ -6,7 +7,7 @@ namespace Game.State.Maps.Rewards
     {
         public RewardEntityData Origin;
         public string ConfigId => Origin.ConfigId;
-        public RewardEntityType RewardType => Origin.RewardType;
+        public InventoryType RewardType => Origin.RewardType;
         public Vector2 Position;
 
         public RewardEntity(RewardEntityData entityData)

@@ -1,6 +1,7 @@
 ﻿using Game.State.Inventory.TowerPlans;
 using Game.State.Root;
 using MVVM.CMD;
+using UnityEngine;
 
 namespace Game.MainMenu.Commands.TowerCommands
 {
@@ -23,7 +24,6 @@ namespace Game.MainMenu.Commands.TowerCommands
             };
             
             _gameState.Inventory.AddItem(towerPlanData);
-            
             return true;
         }
     }

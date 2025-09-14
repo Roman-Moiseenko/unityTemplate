@@ -25,4 +25,4 @@ MonoBehaviour:
     rateLevelMob: 10
     rateBoss: 10
     ratioPower: 1
-    rateRewardEntity: 5
+    rateRewardEntity: 1

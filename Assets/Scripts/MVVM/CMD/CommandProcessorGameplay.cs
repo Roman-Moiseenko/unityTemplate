@@ -38,5 +38,10 @@ namespace MVVM.CMD
             }
             return false;
         }
+
+        public void Debug()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

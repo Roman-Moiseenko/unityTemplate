@@ -96,7 +96,7 @@ namespace Game.GamePlay.Commands.WaveCommands
             var mediumPower = mobsInWavePower.Sum(f => f.Value);
             var allCount = Mathf.RoundToInt(waveHealth / mediumPower);
             
-            Debug.Log($"numberWave = {numberWave} waveHealth = {waveHealth} mediumPower = {mediumPower} allCount = {allCount}" );
+            //Debug.Log($"numberWave = {numberWave} waveHealth = {waveHealth} mediumPower = {mediumPower} allCount = {allCount}" );
             
 
             var _i = 0;
