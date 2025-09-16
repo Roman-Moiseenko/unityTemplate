@@ -17,7 +17,7 @@ namespace Game.State.Inventory.Chests
             };
         }
         
-        public static int TimeOut(this TypeChest type)
+        public static int FullHourOpening(this TypeChest type)
         {
             return type switch
             {
@@ -25,6 +25,18 @@ namespace Game.State.Inventory.Chests
                 TypeChest.Gold => 8 ,
                 TypeChest.Ruby => 12,
                 TypeChest.Diamond => 24,
+                _ => 0
+            };
+        }
+        
+        public static int GetIndex(this TypeChest type)
+        {
+            return type switch
+            {
+                TypeChest.Silver => 10,
+                TypeChest.Gold => 12,
+                TypeChest.Ruby => 15,
+                TypeChest.Diamond => 20,
                 _ => 0
             };
         }

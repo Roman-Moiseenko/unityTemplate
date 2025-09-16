@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.GamePlay.Classes;
 using R3;
 using UnityEngine;
 
@@ -9,20 +10,19 @@ namespace Game.State.Inventory.Chests
         public ChestEntityData Origin;
 
         public TypeChest TypeChest => Origin.TypeChest;
-        public ReactiveProperty<long> TimeStart;
+        public int Cell => Origin.Cell;
+        public int Wave => Origin.Wave;
+
+        public TypeGameplay Gameplay => Origin.Gameplay;
         
         public ReactiveProperty<bool> TimeOut = new(false);
 
         public ReactiveProperty<StatusChest> Status;
-
-        //public int FullTimeOpening => Origin.TypeChest.TimeOut();
         public int Level => Origin.Level;
 
         public Chest(ChestEntityData chestEntityData)
         {
             Origin = chestEntityData;
-            TimeStart = new ReactiveProperty<long>(chestEntityData.TimeStart);
-            TimeStart.Subscribe(newValue => chestEntityData.TimeStart = newValue);
             Status = new ReactiveProperty<StatusChest>(chestEntityData.Status);
             Status.Subscribe(newValue => chestEntityData.Status = newValue);
         }
@@ -39,7 +39,8 @@ namespace Game.State.Inventory.Chests
          */
         public Vector2Int GetTimeOut()
         {
-            var allTime = Origin.TypeChest.TimeOut() * 60;
+            
+          /*  var allTime = Origin.TypeChest.TimeOut() * 60;
             var time = Vector2Int.zero;
             if (Origin.TimeStart != 0)
             {
@@ -54,12 +55,9 @@ namespace Game.State.Inventory.Chests
             time.x = allTime / 60;
             time.y = allTime % 60;
             
-            return time;
+            return time;*/
+          return Vector2Int.zero;
         }
-
-        public bool IsClosed()
-        {
-            return TimeStart.CurrentValue == 0;
-        }
+        
     }
 }

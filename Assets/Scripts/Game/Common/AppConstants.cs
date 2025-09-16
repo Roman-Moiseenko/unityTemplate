@@ -15,6 +15,8 @@
         public const float SHOT_BASE_SPEED = 10f;
         public const float MOB_SPEED_ATTACK = 1f;
         public const float SPEED_REDICE_CASTLE = 1f;
+
+        public const float RATIO_COST_OPEN_CHEST = 0.4f;
         
         public const string MAIN_MENU_SHOP = nameof(MAIN_MENU_SHOP);
         public const string MAIN_MENU_INVENTORY = nameof(MAIN_MENU_INVENTORY);

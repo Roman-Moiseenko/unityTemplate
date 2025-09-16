@@ -38,34 +38,17 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
             textKillAmount.text = ViewModel.EnterParams.KillsMob.ToString();
             textLastWave.text = ViewModel.EnterParams.LastWave.ToString();
 
-            switch (ViewModel.EnterParams.TypeGameplay)
+            if (ViewModel.EnterParams.TypeGameplay == TypeGameplay.Infinity)
             {
-                case TypeGameplay.Infinity:
-                    imageMode.sprite = imageManager.GetOther("TypeInfinity");
-                    textMode.text = "Бесконечный режим";
-                    break;
-                case TypeGameplay.Levels:
-                    textMode.text = "Уровневый режим";
-                    break;
-                case TypeGameplay.Event:
-                    textMode.text = "Событие";
-                    break;
-                case TypeGameplay.Resume:
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                imageMode.sprite = imageManager.GetOther("TypeInfinity");
+                //TODO Заменить на imageManager.GetGameplay(ViewModel.EnterParams.TypeGameplay, ConfigId)
             }
-
+            
+            textMode.text = ViewModel.EnterParams.TypeGameplay.GetString();
             ViewModel.RewardResources.ForEach(CreateResourceCard);
             UpdateHeightContainerResource();
             chestBinder.Bind(ViewModel.RewardChest);
-            /*
-            ViewModel.RewardResources
-                .ObserveAdd()
-                .Subscribe(e => CreateResourceCard(e.Value))
-                .AddTo(ref d);
-            */
+
             _disposable = d.Build();
         }
 

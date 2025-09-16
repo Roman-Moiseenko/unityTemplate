@@ -52,7 +52,6 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
                     _rewards.Add(rewardCard.RewardType, config);
                 }
             }
-            Debug.Log(JsonConvert.SerializeObject(_rewards, Formatting.Indented));
 
             foreach (var (type, value) in _rewards)
             {
@@ -67,15 +66,8 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
                     RewardResources.Add(viewModel);
                 }
             }
-            Debug.Log(JsonConvert.SerializeObject(RewardResources, Formatting.Indented));
-
-            if (enterParams.ChestCell == 0) 
-            {
-                RewardChest = null;
-            } else
-            {
-                RewardChest = gameState.ContainerChests.Chests[enterParams.ChestCell].TypeChest;
-            }
+            
+            RewardChest = enterParams.TypeChest;
         }
     }
 }

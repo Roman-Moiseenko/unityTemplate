@@ -25,6 +25,9 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
         [SerializeField] private TMP_Text levelChest;
         
         [SerializeField] private Transform statusOpening;
+        [SerializeField] private TMP_Text timeLeft;
+        [SerializeField] private TMP_Text costOpen;
+        
         [SerializeField] private Transform statusOpened;
         
         private IDisposable _disposable;
@@ -42,48 +45,55 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
             _viewModel = viewModel;
             viewModel.ChestEntity.Subscribe(chest =>
             {
+                IDisposable dd = null;
                 if (chest == null)
                 {
                     showContainer.gameObject.SetActive(false);
+                    if (dd != null) dd.Dispose();
                 }
                 else
                 {
-                    imageBack.color = chest.Status.Value switch
-                    {
-                        StatusChest.Close => closed,
-                        StatusChest.Opening => opening,
-                        StatusChest.Opened => opened,
-                        _ => imageBack.color
-                    };
-
-                    chest.Status.Subscribe(status =>
+                    dd = chest.Status.Subscribe(status =>
                     {
 
+                        imageBack.color = status switch
+                        {
+                            StatusChest.Close => closed,
+                            StatusChest.Opening => opening,
+                            StatusChest.Opened => opened,
+                            _ => closed
+                        };
+                        
                         statusClose.gameObject.SetActive(false);
                         statusOpening.gameObject.SetActive(false);
                         statusOpened.gameObject.SetActive(false);
+                        
+                      //  Debug.Log("Сундук - " + chest.Cell + " " + status);
                         //От статуса заполняем и показываем разные блоки
+                        IDisposable d = null;
                         switch (status)
                         {
                             case StatusChest.Close:
-                                viewModel.IsOpening.Subscribe(v =>
+                                d = viewModel.IsOpening.Subscribe(v =>
                                 {
                                     toOpening.gameObject.SetActive(v);
                                     isClosed.gameObject.SetActive(!v);
                                 });
                                 
-                                timeChest.text = $"{chest.TypeChest.TimeOut()}ч";
+                                timeChest.text = $"{chest.TypeChest.FullHourOpening()}ч";
                                 levelChest.text = $"Уровень {chest.Level}";
                                 statusClose.gameObject.SetActive(true);
                                 break;
                             case StatusChest.Opening:
+                                if (d != null) d.Dispose();
+                                
                                 statusOpening.gameObject.SetActive(true);
                                 break;
                             case StatusChest.Opened:
+                                if (d != null) d.Dispose();
                                 statusOpened.gameObject.SetActive(true);
                                 break;
-                            default:
-                                throw new ArgumentOutOfRangeException(nameof(status), status, null);
+                            //default: throw new ArgumentOutOfRangeException(nameof(status), status, null);
                         }
                     });
 
@@ -94,7 +104,13 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
                 }
                 
             }).AddTo(ref d);
-            
+            viewModel.TimeLeft.Where(x => x != 0).Subscribe(t =>
+            {
+                timeLeft.text = t / 60 > 0 ? $"{t / 60}ч {t % 60}мин" : $"{t % 60}мин";
+            }).AddTo(ref d);
+            viewModel.CostLeft.Where(x => x!= 0).Subscribe(c =>
+                costOpen.text = $"{c}"
+                ).AddTo(ref d);
             _disposable = d.Build();
         }
 

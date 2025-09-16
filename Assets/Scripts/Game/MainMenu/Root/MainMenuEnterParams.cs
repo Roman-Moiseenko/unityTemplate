@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Game.GamePlay.Classes;
 using Game.State.Inventory;
+using Game.State.Inventory.Chests;
 using Game.State.Maps.Rewards;
 
 namespace Game.MainMenu.Root
@@ -20,7 +21,7 @@ namespace Game.MainMenu.Root
         /**
          * Награда сундуком, № ячейки, или 0 если нет места
          */
-        public int ChestCell { get; set; }
+        public TypeChest? TypeChest { get; set; }
 
         public List<InventoryItemData> Items = new (); 
         public List<RewardEntityData> RewardCards = new (); //Список карт - наград

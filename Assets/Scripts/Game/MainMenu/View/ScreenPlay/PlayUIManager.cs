@@ -1,7 +1,11 @@
-﻿using DI;
+﻿using System.Collections.Generic;
+using DI;
 using Game.MainMenu.Root;
 using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay;
 using Game.MainMenu.View.ScreenPlay.PopupOpenChest;
+using Game.MainMenu.View.ScreenPlay.PopupRewardChest;
+using Game.State.Inventory;
+using Game.State.Inventory.Chests;
 using MVVM.UI;
 using R3;
 
@@ -26,9 +30,9 @@ namespace Game.MainMenu.View.ScreenPlay
             return b;
         }
         
-        public PopupOpenChestViewModel OpenPopupOpenChest()
+        public PopupOpenChestViewModel OpenPopupOpenChest(Chest chest)
         {
-            var b = new PopupOpenChestViewModel(Container);
+            var b = new PopupOpenChestViewModel(chest, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             
             b.CloseRequested.Subscribe(e =>
@@ -36,6 +40,21 @@ namespace Game.MainMenu.View.ScreenPlay
             });
             rootUI.OpenPopup(b);
             return b;
+        }
+
+        public PopupRewardChestViewModel OpenPopupRewardChest(TypeChest typeChest, Dictionary<InventoryType, Dictionary<string, int>> rewards)
+        {
+            //TODO
+            
+            var b = new PopupRewardChestViewModel(typeChest, rewards, Container);
+            var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
+            
+            b.CloseRequested.Subscribe(e =>
+            {
+            });
+            rootUI.OpenPopup(b);
+            return b;
+            
         }
     }
 }

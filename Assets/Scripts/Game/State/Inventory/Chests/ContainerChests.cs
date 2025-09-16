@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.GamePlay.Classes;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -35,60 +36,19 @@ namespace Game.State.Inventory.Chests
                 var chest = e.Value.Value;
                 chestsData.Chests.Add(cell, chest.Origin);
             });
+            
             Chests
                 .ObserveRemove()
                 .Subscribe(e => { chestsData.Chests.Remove(e.Value.Key); });
             
         }
-        public int AddChest(int levelChest, int wave)
-        {
-            for (var i = 1; i <= MaxChest; i++)
-            {
-                if (Chests.TryGetValue(i, out var value)) continue;
-                
-                var epic = wave switch 
-                {
-                    100 => TypeChest.Diamond,
-                    > 60 => TypeChest.Ruby,
-                    > 30 => TypeChest.Gold,
-                    _ => TypeChest.Silver
-                };
-                    
-                var chest = new ChestEntityData
-                {
-                    Level = levelChest,
-                    TimeStart = 0,
-                    TypeChest = epic
-                };
-                Chests.Add(i, new Chest(chest));
-                return i;
-            }
 
-            return 0;
+        public Chest OpeningChest()
+        {
+            return CellOpening.CurrentValue == 0 ? null : Chests[CellOpening.CurrentValue];
         }
 
-        public void StartOpeningChest(int cell)
-        {
-            CellOpening.OnNext(cell);
-            StartOpening.OnNext(DateTime.Now.ToUniversalTime().ToFileTimeUtc());
-            Chests[cell].Status.OnNext(StatusChest.Opening);
-        }
-
-        public bool IsOpening()
-        {
-            return CellOpening.CurrentValue != 0;
-        }
-
-        public void OpenedChest(int cell)
-        {
-            CellOpening.OnNext(0);
-            StartOpening.OnNext(0);
-            Chests[cell].Status.OnNext(StatusChest.Opened);
-        }
-
-        public void ForcedOpening(int cell, int minutes)
-        {
-            
-        }
+        
+        
     }
 }

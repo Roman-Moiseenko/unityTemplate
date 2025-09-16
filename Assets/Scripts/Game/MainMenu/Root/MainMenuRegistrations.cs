@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using DI;
+using Game.MainMenu.Commands.ChestCommands;
 using Game.MainMenu.Commands.InventoryCommands;
 using Game.MainMenu.Commands.ResourceCommands;
 using Game.MainMenu.Commands.SoftCurrency;
@@ -33,16 +34,24 @@ namespace Game.MainMenu.Root
             var subjectExitParams = new Subject<MainMenuExitParams>();
             container.RegisterFactory(_ => new Subject<TowerCardViewModel>()).AsSingle();
             container.RegisterFactory(_ => new Subject<TowerPlanViewModel>()).AsSingle();
-            
+
+
             // new Subject<Unit>()); //Событие, требующее смены сцены
             container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
 
             //  var cmd = container.Resolve<ICommandProcessor>();
             var cmd = container.Resolve<ICommandProcessor>();
+            var chestService = new ChestService(gameState, cmd, gameSettings);
+            container.RegisterInstance(chestService);
 
-            
             //команды работы с инвентарем
-            
+            //CHEST
+            cmd.RegisterHandler(new CommandChestOpeningHandler(gameState));
+            cmd.RegisterHandler(new CommandChestAddHandler(gameState));
+            cmd.RegisterHandler(new CommandChestOpenedHandler(gameState));
+            cmd.RegisterHandler(new CommandChestOpenHandler(gameState, cmd));
+            cmd.RegisterHandler(new CommandInventoryFromRewardHandler(cmd));
+            cmd.RegisterHandler(new CommandChestForcedHandler(gameState));
             //INVENTORY
             cmd.RegisterHandler(new CommandCreateInventoryHandler(gameState, gameSettings, cmd));
             cmd.RegisterHandler(new CommandInventoryItemAddHandler(gameState));
@@ -51,25 +60,29 @@ namespace Game.MainMenu.Root
             cmd.RegisterHandler(new CommandResourcesAddHandler(gameState));
             cmd.RegisterHandler(new CommandResourcesSpendHandler(gameState));
             //CURRENCY
+            cmd.RegisterHandler(new CommandSoftCurrencyAddHandler(gameState));
             cmd.RegisterHandler(new CommandSoftCurrencySpendHandler(gameState));
             //TOWER
             cmd.RegisterHandler(new CommandTowerCardLevelUpHandler(gameState));
             cmd.RegisterHandler(new CommandTowerCardAddHandler(gameState, gameSettings));
             cmd.RegisterHandler(new CommandTowerCardSpendHandler(gameState));
-            
+
             cmd.RegisterHandler(new CommandTowerPlanAddHandler(gameState));
             cmd.RegisterHandler(new CommandTowerPlanSpendHandler(gameState));
-            //
-            container.RegisterFactory(_ => new InventoryService(cmd, gameState)).AsSingle();
+
             
+            
+            //
+            container.RegisterFactory(_ => new InventoryService(cmd, gameState, chestService)).AsSingle();
+
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
             //container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
 
-          //  Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.TowerCardBag.Items, Formatting.Indented));
+            //  Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.TowerCardBag.Items, Formatting.Indented));
             //Для нового игрока загружаем базовый инвентарь
             if (gameState.Inventory.Items.Any() != true)
             {
-               // Debug.Log("Загружаем Инвентарь из Настроек");
+                // Debug.Log("Загружаем Инвентарь из Настроек");
                 var command = new CommandCreateInventory();
                 var success = cmd.Process(command);
                 if (!success)
@@ -80,7 +93,7 @@ namespace Game.MainMenu.Root
                 //Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.BattleDeck, Formatting.Indented));
             }
             //TODO Загружаем настройки и другое с сервера. Либо перенести в GameRoot 
-            
+
             //Сервисы карточек
 
             var towerCardService = new TowerCardPlanService(
@@ -90,6 +103,11 @@ namespace Game.MainMenu.Root
                 container
             );
             container.RegisterInstance(towerCardService);
+            //TODO Запускаем первоначальные проверки
+            chestService.StartOpeningChests(); //Проверка на открывающиеся и открытые сундуки, меняем TimerLeft
+            
+            //var commandOpened = new CommandChestOpened();
+            //cmd.Process(commandOpened);
         }
     }
 }

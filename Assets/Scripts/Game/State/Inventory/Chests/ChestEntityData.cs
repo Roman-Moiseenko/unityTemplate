@@ -1,10 +1,14 @@
-﻿namespace Game.State.Inventory.Chests
+﻿using Game.GamePlay.Classes;
+
+namespace Game.State.Inventory.Chests
 {
     public class ChestEntityData
     {
         public TypeChest TypeChest;
+        public TypeGameplay Gameplay;
         public int Level;
-        public long TimeStart;
+        public int Cell;
+        public int Wave;
         public StatusChest Status;
     }
 }

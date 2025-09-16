@@ -1,5 +1,6 @@
 ﻿using System;
 using DI;
+using Game.GamePlay.Classes;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.Root;
 using Game.State.Inventory;
@@ -15,12 +16,14 @@ namespace Game.MainMenu.Services
     {
         private readonly ICommandProcessor _cmd;
         private readonly GameStateProxy _gameState;
+        private readonly ChestService _chestService;
         private readonly DIContainer _container;
 
-        public InventoryService(ICommandProcessor cmd, GameStateProxy gameState)
+        public InventoryService(ICommandProcessor cmd, GameStateProxy gameState, ChestService chestService)
         {
             _cmd = cmd;
             _gameState = gameState;
+            _chestService = chestService;
         }
 
         /**
@@ -33,12 +36,8 @@ namespace Game.MainMenu.Services
             _gameState.SoftCurrency.Value += enterParams.SoftCurrency;
             //Карты и чертежи (итемсы)
             enterParams.RewardCards.ForEach(RewardToItem);
-            //TODO Добавить сундук награды
-            var wave = enterParams.LastWave;
-            var levelChest = wave / 100 + 1;
             
-            enterParams.ChestCell = _gameState.ContainerChests.AddChest(levelChest, wave % 100);
-
+            enterParams.TypeChest = _chestService.AddChestInfinity(enterParams.LastWave);
         }
         
         

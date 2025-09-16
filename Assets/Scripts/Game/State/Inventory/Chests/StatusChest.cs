@@ -4,6 +4,7 @@
     {
         Close,
         Opening,
-        Opened
+        Opened,
+        Open, //Для подписки на получение наград
     }
 }

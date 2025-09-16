@@ -32,10 +32,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7432953269204471931}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 68.14, y: -31.921}
-  m_SizeDelta: {x: 60.28, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7502403104125148415
 CanvasRenderer:
@@ -187,7 +187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5558655646131126838
 RectTransform:
   m_ObjectHideFlags: 0
@@ -221,7 +221,7 @@ GameObject:
   - component: {fileID: 7684226552000173543}
   - component: {fileID: 3575307697249003448}
   m_Layer: 0
-  m_Name: Image
+  m_Name: ImageCristall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -241,10 +241,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 7432953269204471931}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 16, y: -31.921}
-  m_SizeDelta: {x: 32, y: 32}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7684226552000173543
 CanvasRenderer:
@@ -606,7 +606,7 @@ GameObject:
   - component: {fileID: 7347135339141174061}
   - component: {fileID: 127649058853401171}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: textOpen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -964,6 +964,8 @@ MonoBehaviour:
   timeChest: {fileID: 3980000480159612812}
   levelChest: {fileID: 8680842002663709348}
   statusOpening: {fileID: 5558655646131126838}
+  timeLeft: {fileID: 8529582201754096933}
+  costOpen: {fileID: 4306371005477317976}
   statusOpened: {fileID: 186897415904544311}
 --- !u!1 &4804114075646024414
 GameObject:
@@ -1439,7 +1441,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 2.6, y: -18.079}
-  m_SizeDelta: {x: 98.28, y: 63.842}
+  m_SizeDelta: {x: 0, y: 63.842}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3465569333235395525
 MonoBehaviour:
@@ -1630,7 +1632,7 @@ GameObject:
   - component: {fileID: 5799158352225117465}
   - component: {fileID: 8529582201754096933}
   m_Layer: 0
-  m_Name: textTimeOut
+  m_Name: textTimeLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

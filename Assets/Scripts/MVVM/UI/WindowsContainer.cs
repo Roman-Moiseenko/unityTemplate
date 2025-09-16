@@ -48,16 +48,13 @@ namespace MVVM.UI
         public void OpenPopup(WindowViewModel viewModel)
         {
             var prefabPath = GetPrefabPath(viewModel); //Получаем путь к префабу из view-модели
-            Debug.Log(prefabPath);
             var prefab = Resources.Load<GameObject>(prefabPath); //Загружаем префаб
             var createPopup = Instantiate(prefab, _popupsContainer); //Создаем префаб в контейнере _popupsContainer
             var binder = createPopup.GetComponent<IWindowBinder>(); //Достаем binder из префаба
-
             binder.Bind(viewModel);
             _openedPopupBinders.Add(viewModel, binder); //кешируем открый байндер
         }
-
-
+        
         public void ClosePopup(WindowViewModel popupViewModel)
         {
             var binder = _openedPopupBinders[popupViewModel];

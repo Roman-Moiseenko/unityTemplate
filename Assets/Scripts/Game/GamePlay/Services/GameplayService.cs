@@ -136,14 +136,7 @@ namespace Game.GamePlay.Services
          */
         public void Abort()
         {
-            var menuParams = new MainMenuEnterParams("Выход");
-            //Передаем награду и некоторые настройки, для загрузки в меню
-            menuParams.GameSpeed = _gameplayState.GetLastSpeedGame();
-            menuParams.SoftCurrency = 0;
-            menuParams.RewardCards = null;
-            menuParams.LastWave = 0; //Прерван
-            menuParams.CompletedLevel = false; //Не завершен
-            var exitParams = new GameplayExitParams(menuParams);
+            var exitParams = new GameplayExitParams(null);
             _exitSceneRequest.OnNext(exitParams);
         }
 
@@ -152,10 +145,7 @@ namespace Game.GamePlay.Services
          */
         public void ExitSave()
         {
-            var menuParams = new MainMenuEnterParams("Выход с сохранением");
-            menuParams.GameSpeed = _gameplayState.GetLastSpeedGame();
-            menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
-            menuParams.RewardCards = _gameplayState.Origin.RewardEntities;
+            var menuParams = GetMainMenuParams(false);
             var exitParams = new GameplayExitParams(menuParams);
             exitParams.SaveGameplay = true;
             _exitSceneRequest.OnNext(exitParams);

@@ -19,23 +19,23 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders
 
             if (viewModel.InventoryType == InventoryType.TowerCard)
             {
-                imageBack.sprite = imageManager.GetEpicLevel(TypeEpicCard.Normal);
+                imageBack.sprite = imageManager.GetOther("InventoryBackOther");
                 imageCard.sprite = imageManager.GetTowerCard(viewModel.ConfigId, 1);
             }
 
             if (viewModel.InventoryType == InventoryType.TowerPlan)
             {
-                imageBack.sprite = imageManager.GetTowerPlan("Background");
+                imageBack.sprite = imageManager.GetOther("InventoryBackTower");
                 imageCard.sprite = imageManager.GetTowerPlan(viewModel.ConfigId);
             }
 
             if (viewModel.InventoryType == InventoryType.Other)
             {
-                imageBack.sprite = imageManager.GetEpicLevel(TypeEpicCard.Normal);
+                imageBack.sprite = imageManager.GetOther("InventoryBackOther");
                 imageCard.sprite = imageManager.GetOther(viewModel.ConfigId);
             }
 
-            textAmount.text = CurrencyToStr(viewModel.Amount);
+            textAmount.text = $"x{CurrencyToStr(viewModel.Amount)}";
 
         }
 
@@ -46,13 +46,13 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders
             {
                 case >= 1000000000:
                     t = (int)(value / 10000000) / 100f;
-                    return $"{t} B";
+                    return $"{t}B";
                 case >= 1000000:
                     t = (int)(value / 10000) / 100f;
-                    return $"{t} M";
+                    return $"{t}M";
                 case >= 1000:
                     t = (int)(value / 10) / 100f;
-                    return $"{t} K";
+                    return $"{t}K";
                 default:
                     return value.ToString();
             }

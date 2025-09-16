@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using DI;
+using Game.State.Inventory.Chests;
 using Game.State.Root;
 using ObservableCollections;
 using R3;
@@ -17,14 +18,23 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
             //Инициализация моделей
             for (var i = 1; i <= GameStateProxy.MaxChest; i++)
             {
-                CellsViewModel.Add(i, new CellChestViewModel(gameState.ContainerChests, container));
+                if (gameState.ContainerChests.Chests.TryGetValue(i, out var chest))
+                {
+                    CellsViewModel.Add(i, new CellChestViewModel(gameState.ContainerChests, container, chest));
+                }
+                else
+                {
+                    CellsViewModel.Add(i, new CellChestViewModel(gameState.ContainerChests, container, null));
+                }
+                
             }
             //Заполняем модели сундуками
+            /*
             foreach (var (cell, chest) in gameState.ContainerChests.Chests)
             {
                 CellsViewModel[cell].SetChest(chest);
             }
-            
+            */
             gameState.ContainerChests.Chests.ObserveAdd().Subscribe(e =>
             {
                 var cell = e.Value.Key;

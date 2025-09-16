@@ -70,6 +70,8 @@ MonoBehaviour:
   towerPlan:
   - ConfigId: Background
     Sprite: {fileID: 21300000, guid: 79ebbc9508155e949b7897bbabe0824e, type: 3}
+  - ConfigId: UnKnow
+    Sprite: {fileID: 21300000, guid: c9598ebdfdd1d4149959fa7f35e46499, type: 3}
   - ConfigId: Tower01
     Sprite: {fileID: 21300000, guid: c548ec8e9e6a8e7498bbda56f697c1d2, type: 3}
   - ConfigId: Tower02
@@ -83,6 +85,10 @@ MonoBehaviour:
   - ConfigId: Tower07
     Sprite: {fileID: 21300000, guid: fd4415f43c291b54891d662d8318793c, type: 3}
   towerCard:
+  - ConfigId: UnKnow
+    ByLevels:
+    - Level: 1
+      Sprite: {fileID: 21300000, guid: c9598ebdfdd1d4149959fa7f35e46499, type: 3}
   - ConfigId: Tower01
     ByLevels:
     - Level: 1
@@ -208,6 +214,12 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 8048575ffec1447479768089bcd3b583, type: 3}
   - ConfigId: ChestNot
     Sprite: {fileID: 21300000, guid: a970457df5dff814a9d940f0f4a81126, type: 3}
+  - ConfigId: InventoryBackTower
+    Sprite: {fileID: 21300000, guid: b2355f7f08c84e94ea8c2bed4eb62f21, type: 3}
+  - ConfigId: InventoryBackSkill
+    Sprite: {fileID: 21300000, guid: b65a8a8edd4ccce42a8da3dd3497168d, type: 3}
+  - ConfigId: InventoryBackOther
+    Sprite: {fileID: 21300000, guid: 522aff60923fb92428c44320a7ab0c10, type: 3}
   roads:
   - ConfigId: 0
     Sprite: {fileID: 21300000, guid: 2786016e096b9c047af2a0b723586e21, type: 3}
