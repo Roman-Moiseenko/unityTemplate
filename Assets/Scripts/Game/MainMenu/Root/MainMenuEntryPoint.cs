@@ -90,7 +90,7 @@ namespace Game.MainMenu.Root
 
             var uiManager = container.Resolve<MainMenuUIManager>();
 
-            var mainScreenViewModel = new MainScreenViewModel(uiManager);
+            var mainScreenViewModel = new MainScreenViewModel(uiManager, container);
             var binder = uiSceneRootBinder.GetComponent<MainScreenBinder>();
             binder.Bind(mainScreenViewModel);
 

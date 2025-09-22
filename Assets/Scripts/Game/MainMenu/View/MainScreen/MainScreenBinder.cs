@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Common;
 using Game.MainMenu.View.MainScreen.BotomMenu;
 using MVVM.UI;
 using R3;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,27 +18,38 @@ namespace Game.MainMenu.View.MainScreen
         private readonly Dictionary<string, ButtonBinder> _buttonBinders = new();
 
         //Кнопки топ-меню
-        [SerializeField] private Button btnAccount;
-
+        [SerializeField] private Button btnProfile;
+        [SerializeField] private TMP_Text softCurrency;
+        [SerializeField] private TMP_Text hardCurrency;
+        
         private const int HeightBottomMenu = 200;
-
         private IDisposable _disposable;
+
         private void Awake()
         {
-            var d = Disposable.CreateBuilder();
             foreach (var button in bottomButtons)
             {
                 var buttonBinder = button.GetComponent<ButtonBinder>();
                 buttonBinder.Bind();
                 _buttonBinders.Add(button.name, buttonBinder);
             }
-            transform.Find("BottomMenu").GetComponent<RectTransform>().sizeDelta = new Vector2(0, HeightBottomMenu);
-            _disposable = d.Build();
+            transform.Find("BottomMenu")
+                .GetComponent<RectTransform>().sizeDelta = new Vector2(0, HeightBottomMenu);
         }
 
         protected override void OnBind(MainScreenViewModel viewModel)
         {
+            var d = Disposable.CreateBuilder();
+            //Подписки верхнего меню
+            ViewModel.SoftCurrency.Subscribe(v => { softCurrency.text = Func.CurrencyToStr(v); });
+            ViewModel.HardCurrency.Subscribe(v => { hardCurrency.text = v.ToString(); });
 
+            _disposable = d.Build();
+        }
+
+        public void OnProfile()
+        {
+            ViewModel.OpenProfile();
         }
 
         private void ClickUpdateButton(string nameButton)
@@ -61,7 +74,7 @@ namespace Game.MainMenu.View.MainScreen
                     position.x = i * baseWidth;
                     btnBinder.Click();
                 }
-                
+
                 btnBinder.Resize(sizeDelta, position);
                 i++;
             }
@@ -71,7 +84,7 @@ namespace Game.MainMenu.View.MainScreen
         {
             ClickUpdateButton("Play");
         }
-        
+
         public void OnResearch()
         {
             ClickUpdateButton("Research");

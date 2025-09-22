@@ -7,6 +7,7 @@ using Game.MainMenu.View.ScreenInventory;
 using Game.MainMenu.View.ScreenInventory.PopupTowerCard;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenPlay;
+using Game.MainMenu.View.ScreenPlay.PopupProfile;
 using Game.MainMenu.View.ScreenResearch;
 using Game.MainMenu.View.ScreenShop;
 using MVVM.UI;
@@ -31,15 +32,15 @@ namespace Game.MainMenu.View
             _exitParamsService = container.Resolve<MainMenuExitParamsService>();
 
         }
-
+/*
         public MainScreenViewModel OpenMainScreen()
         {
-            var viewModel = new MainScreenViewModel(this);
+            var viewModel = new MainScreenViewModel(this, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             rootUI.OpenScreen(viewModel);
             return viewModel;
         }
-        
+        */
         public ScreenShopViewModel OpenScreenShop()
         {
             var viewModel = new ScreenShopViewModel(this, Container);
@@ -98,6 +99,18 @@ namespace Game.MainMenu.View
         {
             //TODO
             Debug.Log("Открыть окно возврата в игру");
+        }
+        
+        public PopupProfileViewModel OpenPopupProfile()
+        {
+            var b = new PopupProfileViewModel(Container);
+            var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
+            
+            b.CloseRequested.Subscribe(e =>
+            {
+            });
+            rootUI.OpenPopup(b);
+            return b;
         }
     }
 }

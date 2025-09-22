@@ -3,6 +3,7 @@ using DI;
 using Game.MainMenu.Root;
 using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay;
 using Game.MainMenu.View.ScreenPlay.PopupOpenChest;
+using Game.MainMenu.View.ScreenPlay.PopupProfile;
 using Game.MainMenu.View.ScreenPlay.PopupRewardChest;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
@@ -56,5 +57,7 @@ namespace Game.MainMenu.View.ScreenPlay
             return b;
             
         }
+        
+
     }
 }

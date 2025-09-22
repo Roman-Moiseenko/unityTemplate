@@ -22,7 +22,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupRewardChest
             DIContainer container)
         {
             TypeChest = typeChest;
-            Debug.Log(JsonConvert.SerializeObject(rewards, Formatting.Indented));
+          //  Debug.Log(JsonConvert.SerializeObject(rewards, Formatting.Indented));
             foreach (var (type, value) in rewards)
             {
                 foreach (var (config, amount) in value)

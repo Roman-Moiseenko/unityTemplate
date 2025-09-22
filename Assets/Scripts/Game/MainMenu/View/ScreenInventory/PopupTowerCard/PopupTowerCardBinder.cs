@@ -84,7 +84,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
 
             ViewModel.SoftCurrency.Subscribe(newValue =>
             {
-                textSoftCurrency.text = CurrencyToStr(newValue);
+                textSoftCurrency.text = Func.CurrencyToStr(newValue);
                 buttonUpgrade.gameObject.SetActive(CheckUpgrade());
             }).AddTo(ref d);
             //textCost.text = towerCardViewModel.TowerCard.GetCostCurrencyLevelUpTowerCard().ToString();
@@ -103,26 +103,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
             
             _disposable = d.Build();
         }
-
-        private string CurrencyToStr(long value)
-        {
-            var t = 0f;
-            switch (value)
-            {
-                case >= 1000000000:
-                    t = (int)(value / 10000000) / 100f;
-                    return $"{t} B";
-                case >= 1000000:
-                    t = (int)(value / 10000) / 100f;
-                    return $"{t} M";
-                case >= 1000:
-                    t = (int)(value / 10) / 100f;
-                    return $"{t} K";
-                default:
-                    return value.ToString();
-            }
-        }
-
+        
         private bool CheckUpgrade()
         {
             return (ViewModel.AmountPlans.CurrentValue >= ViewModel.CostPlan.CurrentValue) && 
