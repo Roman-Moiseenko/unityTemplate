@@ -34,12 +34,12 @@ namespace Game.GamePlay.View.UI.PopupLose
         }
         private void OnSpendCristalClicked()
         {
-            ViewModel.RequestPlayAd();
+            ViewModel.RequestSpendCristal();
         }
 
         private void OnGoToPlayAdClicked()
         {
-            ViewModel.RequestSpendCristal();
+            ViewModel.RequestPlayAd();
         }
 
         protected override void OnCloseButtonClick()

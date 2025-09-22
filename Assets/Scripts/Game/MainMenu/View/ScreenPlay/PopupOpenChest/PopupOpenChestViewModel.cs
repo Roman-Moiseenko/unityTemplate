@@ -89,7 +89,6 @@ namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
 
         public void RequestCurrentForcedOpened()
         {
-            Debug.Log(Chest);
             _chestService.ForcedCurrentChest(Chest);
             RequestClose();
             

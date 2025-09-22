@@ -22,10 +22,12 @@ namespace Game.GamePlay.View.Mobs
         private int _currentIndexListPoint;
         
         IDisposable disposable;
-
+        public ReactiveProperty<bool> Free = new(true); //Доступность в пуле
         public void Bind(MobViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
+            Free.Value = false;
+            
             _viewModel = viewModel;
             _mobY = _viewModel.IsFly ? 0.9f : 0.0f;
             transform.position = new Vector3(viewModel.StartPosition.x, _mobY, viewModel.StartPosition.y);
@@ -70,10 +72,13 @@ namespace Game.GamePlay.View.Mobs
                 }
             }).AddTo(ref d);
             disposable = d.Build();
+            gameObject.SetActive(true);
         }
 
         public void Update()
         {
+            if (Free.Value) return;
+            
             _healthBarBinder.OnUpdate();
         }
 
@@ -81,7 +86,13 @@ namespace Game.GamePlay.View.Mobs
         {
            disposable.Dispose();
         }
-        
+
+        public void FreeUp()
+        {
+            gameObject.SetActive(false);
+            Free.OnNext(true);
+            disposable.Dispose();
+        }
         
         /*
         private Vector3 GetTargetPosition()

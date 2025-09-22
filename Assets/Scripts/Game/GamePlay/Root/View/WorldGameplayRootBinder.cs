@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using Game.GamePlay.Classes;
 using Game.GamePlay.View.AttackAreas;
-using Game.GamePlay.View.Buildings;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
@@ -17,12 +14,8 @@ using Game.GamePlay.View.Waves;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
-using Scripts.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
-
 
 namespace Game.GamePlay.Root.View
 {
@@ -39,85 +32,101 @@ namespace Game.GamePlay.Root.View
         private readonly List<GateWaveBinder> _createGateMap = new();
         private CastleBinder _castleBinder;
         private AttackAreaBinder _attackAreaBinder;
-        private readonly CompositeDisposable _disposables = new();
+        //private readonly CompositeDisposable _disposables = new();
 
         private bool _clickCoroutines = false;
         private bool _isMouseDown;
+        private IDisposable _disposable;
+
+
+        private Dictionary<string, List<MobBinder>> _mobsPull = new(); //Пул мобов
+        private Dictionary<string, List<ShotBinder>> _shotsPull = new(); //Пул выстрелов
 
         //private GameplayCamera _gameplayCamera;
         private WorldGameplayRootViewModel _viewModel;
 
         public void Bind(WorldGameplayRootViewModel viewModel)
         {
+            var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
             //1. Создаем все объекты мира из Прехабов
             //2. Подписываемся на добавление объектов в список (Создать) и на удаление (Уничтожить)
 
             //Поверхность уровня
-            foreach (var groundViewModel in viewModel.AllGrounds)
-                CreateGround(groundViewModel);
-            _disposables.Add(
-                viewModel.AllGrounds.ObserveAdd().Subscribe(e => CreateGround(e.Value))
-            );
-            _disposables.Remove(
-                viewModel.AllGrounds.ObserveRemove().Subscribe(e => DestroyGround(e.Value))
-            );
+            foreach (var groundViewModel in viewModel.AllGrounds) CreateGround(groundViewModel);
+            viewModel.AllGrounds.ObserveAdd()
+                .Subscribe(e => CreateGround(e.Value))
+                .AddTo(ref d);
+            viewModel.AllGrounds.ObserveRemove()
+                .Subscribe(e => DestroyGround(e.Value))
+                .AddTo(ref d);
+            
             //Башни
-            foreach (var towerViewModel in viewModel.AllTowers)
-                CreateTower(towerViewModel);
-            _disposables.Add(
-                viewModel.AllTowers.ObserveAdd().Subscribe(e =>
-                {
-                    // Debug.Log("Башня добавилась в список " + e.Value.ConfigId + e.Value.TowerEntityId);
-                    CreateTower(e.Value);
-                })
-            );
-            _disposables.Remove(
-                viewModel.AllTowers.ObserveRemove().Subscribe(e =>
-                {
-                    //Debug.Log("Башня удалилась из списка " + e.Value.ConfigId + e.Value.TowerEntityId);
-                    DestroyTower(e.Value);
-                })
-            );
+            foreach (var towerViewModel in viewModel.AllTowers) CreateTower(towerViewModel);
+            viewModel.AllTowers.ObserveAdd().Subscribe(e =>
+            {
+                // Debug.Log("Башня добавилась в список " + e.Value.ConfigId + e.Value.TowerEntityId);
+                CreateTower(e.Value);
+            }).AddTo(ref d);
+            viewModel.AllTowers.ObserveRemove()
+                .Subscribe(e => DestroyTower(e.Value))
+                .AddTo(ref d);
+            
             //Мобы
-            foreach (var mobViewModel in viewModel.AllMobs)
-                CreateMob(mobViewModel);
-            _disposables.Add(
-                viewModel.AllMobs.ObserveAdd().Subscribe(e => { CreateMob(e.Value); })
-            );
-            _disposables.Remove(
-                viewModel.AllMobs.ObserveRemove().Subscribe(e => DestroyMob(e.Value))
-            );
+            foreach (var mobViewModel in viewModel.AllMobs) CreateMob(mobViewModel);
+            viewModel.AllMobs
+                .ObserveAdd()
+                .Subscribe(e => FindFreeOrCreateMob(e.Value))
+                .AddTo(ref d);
+
+
+            viewModel.AllMobs
+                .ObserveRemove()
+                .Subscribe(e =>
+                {
+                    if (_mobsPull.TryGetValue(e.Value.ConfigId, out var listMobs))
+                    {
+                        var mobBinder = listMobs.Find(m => m._viewModel.MobEntityId == e.Value.MobEntityId);
+                        mobBinder.FreeUp();
+                    }
+                })
+                .AddTo(ref d);
 
             //Выстрелы
             foreach (var shotViewModel in viewModel.AllShots)
                 CreateShot(shotViewModel);
-            _disposables.Add(
-                viewModel.AllShots.ObserveAdd().Subscribe(e => CreateShot(e.Value))
-            );
-            _disposables.Remove(
-                viewModel.AllShots.ObserveRemove().Subscribe(e => DestroyShot(e.Value))
-            );
+            viewModel.AllShots.ObserveAdd()
+                .Subscribe(e => FindFreeOrCreateShot(e.Value))
+                .AddTo(ref d);
+            viewModel.AllShots.ObserveRemove()
+                .Subscribe(e => {
+                    if (_shotsPull.TryGetValue(e.Value.ConfigId, out var listShots))
+                    {
+                        var shotBinder = listShots.Find(m => m._viewModel.ShotEntityId == e.Value.ShotEntityId);
+                        shotBinder.FreeUp();
+                    }
+                })
+                .AddTo(ref d);
 
             //Замок
             CreateCastle(viewModel.CastleViewModel);
             //Дорога
-            foreach (var roadViewModel in viewModel.AllRoads)
-                CreateRoad(roadViewModel);
-            _disposables.Add(
-                viewModel.AllRoads.ObserveAdd().Subscribe(e => CreateRoad(e.Value))
-            );
-            _disposables.Remove(
-                viewModel.AllRoads.ObserveRemove().Subscribe(e => DestroyRoad(e.Value))
-            );
+            foreach (var roadViewModel in viewModel.AllRoads) CreateRoad(roadViewModel);
+
+            viewModel.AllRoads.ObserveAdd()
+                .Subscribe(e => CreateRoad(e.Value))
+                .AddTo(ref d);
+            viewModel.AllRoads.ObserveRemove()
+                .Subscribe(e => DestroyRoad(e.Value))
+                .AddTo(ref d);
 
             //Фрейм строительный //только подписка, в начале уровня его нет
-            _disposables.Add(
-                viewModel.FrameBlockViewModels.ObserveAdd().Subscribe(e => CreateFrameBlock(e.Value))
-            );
-            _disposables.Remove(
-                viewModel.FrameBlockViewModels.ObserveRemove().Subscribe(e => DestroyFrameBlock(e.Value))
-            );
+            viewModel.FrameBlockViewModels.ObserveAdd()
+                .Subscribe(e => CreateFrameBlock(e.Value))
+                .AddTo(ref d);
+            viewModel.FrameBlockViewModels.ObserveRemove()
+                .Subscribe(e => DestroyFrameBlock(e.Value))
+                .AddTo(ref d);
 
             //Создаем view-модель ворот из прехаба
             CreateGateWave(_viewModel.GateWaveViewModel);
@@ -126,6 +135,7 @@ namespace Game.GamePlay.Root.View
 
             //Запускаем следующую волну
             _viewModel.StartGameplayServices();
+            _disposable = d.Build();
         }
 
 
@@ -135,20 +145,13 @@ namespace Game.GamePlay.Root.View
 
             if (_attackAreaBinder != null) Destroy(_attackAreaBinder.gameObject);
 
-            _disposables.Dispose();
+          //  _disposables.Dispose();
+            _disposable?.Dispose();
             _createGateMap.ForEach(item => Destroy(item.gameObject));
         }
 
         //CREATE 
-        private void CreateShot(ShotViewModel shotViewModel)
-        {
-            if (shotViewModel.NotPrefab) return;
-            var prefabPath = $"Prefabs/Gameplay/Shots/{shotViewModel.ConfigId}"; //Перенести в настройки уровня
-            var shotPrefab = Resources.Load<ShotBinder>(prefabPath);
-            var createdShot = Instantiate(shotPrefab, transform);
-            createdShot.Bind(shotViewModel);
-            _createShotsMap[shotViewModel.ShotEntityId] = createdShot;
-        }
+
 
         private void CreateGateWave(GateWaveViewModel viewModel)
         {
@@ -160,13 +163,72 @@ namespace Game.GamePlay.Root.View
             _createGateMap.Add(createdGate);
         }
 
+        private void CreateShot(ShotViewModel shotViewModel)
+        {
+            if (shotViewModel.NotPrefab) return;
+            var prefabPath = $"Prefabs/Gameplay/Shots/{shotViewModel.ConfigId}"; //Перенести в настройки уровня
+            var shotPrefab = Resources.Load<ShotBinder>(prefabPath);
+            var createdShot = Instantiate(shotPrefab, transform);
+            createdShot.Bind(shotViewModel);
+            _createShotsMap[shotViewModel.ShotEntityId] = createdShot;
+            //Добавляем выстрел в пул
+            if (_shotsPull.TryGetValue(shotViewModel.ConfigId, out var listBinders))
+            {
+                listBinders.Add(createdShot);
+            }
+            else
+            {
+                var listBinder = new List<ShotBinder> { createdShot };
+                _shotsPull.Add(shotViewModel.ConfigId, listBinder);
+            }
+        }
+        
+        private void FindFreeOrCreateShot(ShotViewModel shotViewModel)
+        {
+            if (_shotsPull.TryGetValue(shotViewModel.ConfigId, out var listBinders))
+            {
+                foreach (var shotBinder in listBinders.Where(shotBinder => shotBinder.Free.Value))
+                {
+                    shotBinder.Bind(shotViewModel);
+                    return;
+                }
+            }
+            CreateShot(shotViewModel);
+        }
+        
         private void CreateMob(MobViewModel mobViewModel)
         {
             var prefabPath = $"Prefabs/Gameplay/Mobs/{mobViewModel.ConfigId}"; //Перенести в настройки уровня
             var mobPrefab = Resources.Load<MobBinder>(prefabPath);
             var createdMob = Instantiate(mobPrefab, transform);
-            createdMob.Bind(mobViewModel);
+            
             _createMobsMap[mobViewModel.MobEntityId] = createdMob;
+            //Добавляем моба в пул
+            if (_mobsPull.TryGetValue(mobViewModel.ConfigId, out var listBinders))
+            {
+                listBinders.Add(createdMob);
+            }
+            else
+            {
+                var listBinder = new List<MobBinder> { createdMob };
+                _mobsPull.Add(mobViewModel.ConfigId, listBinder);
+            }
+            
+            createdMob.Bind(mobViewModel);
+            //return createdMob;
+        }
+
+        private void FindFreeOrCreateMob(MobViewModel mobViewModel)
+        {
+            if (_mobsPull.TryGetValue(mobViewModel.ConfigId, out var listBinders))
+            {
+                foreach (var mobBinder in listBinders.Where(mobBinder => mobBinder.Free.Value))
+                {
+                    mobBinder.Bind(mobViewModel);
+                    return;
+                }
+            }
+            CreateMob(mobViewModel);
         }
 
         private void CreateCastle(CastleViewModel castleViewModel)

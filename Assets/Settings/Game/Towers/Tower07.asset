@@ -27,6 +27,8 @@ MonoBehaviour:
     NotPrefab: 0
   <AvailableWave>k__BackingField: 11
   <GameplayLevels>k__BackingField:
+  - Level: 1
+    Parameters: []
   - Level: 2
     Parameters:
     - ParameterType: 0

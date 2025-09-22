@@ -59,7 +59,7 @@ namespace Game.MainMenu.Services
                     if (_opening != null) _coroutines.StopCoroutine(_opening);
                 }
             });
-            TimeLeft.Subscribe(v => Debug.Log("v = " + v));
+//            TimeLeft.Subscribe(v => Debug.Log("v = " + v));
             //Проверка, если время на открытие вышло
             TimeLeft.Skip(1).Where(x => x == 0).Subscribe(_ =>
             {

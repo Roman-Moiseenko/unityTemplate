@@ -17,7 +17,6 @@ namespace Game.MainMenu.Commands.ChestCommands
         }
         public bool Handle(CommandChestOpened command)
         {
-            Debug.Log("сундук можно открыть бесплатно");
             //Меняем статус сундука на готов к открытию
             var chest = _gameState.ContainerChests.OpeningChest();
             

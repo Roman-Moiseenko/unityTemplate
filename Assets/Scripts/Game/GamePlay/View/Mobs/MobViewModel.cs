@@ -42,7 +42,7 @@ namespace Game.GamePlay.View.Mobs
         public IReadOnlyObservableDictionary<string, MobDebuff> Debuffs => _mobEntity.Debuffs;
         public int Level => _mobEntity.Level;
         public float Attack => _mobEntity.Attack;
-
+        
         public int NumberWave;
         //public float SpeedAttack => _mobEntity.SpeedAttack;
 

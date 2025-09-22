@@ -30,7 +30,7 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
                 if (ChestEntity.Value == null) return;
                // Debug.Log("2");
                 if (ChestService.CellOpening.Value != ChestEntity.Value.Cell) return;
-                Debug.Log("3 = " + t);
+                //Debug.Log("3 = " + t);
                 TimeLeft.Value = t;
             });
             ChestService.CostLeft.Subscribe(t =>
