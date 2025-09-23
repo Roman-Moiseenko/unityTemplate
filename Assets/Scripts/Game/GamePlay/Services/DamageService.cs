@@ -145,6 +145,7 @@ namespace Game.GamePlay.Services
             if (_fsmGameplay.IsGamePause.Value) return;
             if (_waveService.AllMobsMap.Count == 0) return;
 
+            
             foreach (var towerEntity in _gameplayState.Towers)
             {
                 if (towerEntity.IsShot.Value) continue;
