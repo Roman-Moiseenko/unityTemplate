@@ -17,6 +17,7 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
         [SerializeField] private Image towerImage;
         [SerializeField] private TMP_Text levelText;
         [SerializeField] private Button buttonPopup;
+        [SerializeField] private Transform canIsUpdate;
 
         //TODO Отслеживать и перемещать модель в Binder 
         public ReactiveProperty<bool> IsInDeck = new(false);
@@ -34,6 +35,9 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
                 .AddTo(ref d);
             viewModel.Level
                 .Subscribe(newValue => { levelText.text = $"Ур. {newValue}"; })
+                .AddTo(ref d);
+            viewModel.IsCanUpdate
+                .Subscribe(v => canIsUpdate.gameObject.SetActive(v))
                 .AddTo(ref d);
 
        //     transform.GetComponent<RectTransform>().anchoredPosition = viewModel.Position;

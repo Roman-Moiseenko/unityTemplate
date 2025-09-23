@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
-using Game.GamePlay.View.Mobs;
-using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Tower;
-using Game.State.Maps.Castle;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;

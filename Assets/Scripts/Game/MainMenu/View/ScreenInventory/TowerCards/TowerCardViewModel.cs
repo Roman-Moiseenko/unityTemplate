@@ -1,8 +1,10 @@
 ﻿using DI;
 using Game.MainMenu.Services;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.State;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
+using Game.State.Inventory.TowerPlans;
 using R3;
 using UnityEngine;
 
@@ -25,6 +27,13 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
         private readonly TowerCardPlanService _planService;
         private readonly DIContainer _container;
         
+        //Обновление карты
+        public ReadOnlyReactiveProperty<long> SoftCurrency;
+        public ReadOnlyReactiveProperty<int> AmountPlans;
+        public ReactiveProperty<int> CostPlan = new();
+        public ReactiveProperty<int> CostCurrency = new();
+        public ReactiveProperty<bool> IsCanUpdate = new();
+        
         public TowerCardViewModel(
             TowerCard towerCardEntity, 
             TowerSettings towerSettings, 
@@ -36,11 +45,36 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
             TowerSettings = towerSettings;
             _planService = planService;
             _container = container;
+            var inventory = container.Resolve<IGameStateProvider>().GameState.Inventory;
+            SoftCurrency = container.Resolve<IGameStateProvider>().GameState.SoftCurrency;
+            
+            var plan = inventory.GetByConfigAndType<TowerPlan>(InventoryType.TowerPlan, ConfigId);
+            AmountPlans = plan == null ? new ReactiveProperty<int>(0) : plan.Amount;
+            Level.Subscribe(newLevel =>
+            {
+                CostPlan.OnNext(TowerCard.GetCostPlanLevelUpTowerCard());
+                CostCurrency.OnNext(TowerCard.GetCostCurrencyLevelUpTowerCard());
+            });
+
+            Observable.Merge(
+                 AmountPlans, CostCurrency, TowerCard.Level
+                ).Subscribe(_ => IsCanUpdate.OnNext(CardCanUpdate()));
+            
+            SoftCurrency.Subscribe(_ => IsCanUpdate.OnNext(CardCanUpdate()));
+            
         }
+        
         
         public void RequestOpenPopupTowerCard()
         {
             _container.Resolve<Subject<TowerCardViewModel>>().OnNext(this);
+        }
+
+        private bool CardCanUpdate()
+        {
+            return (AmountPlans.CurrentValue >= CostPlan.CurrentValue) && 
+                   (SoftCurrency.CurrentValue >= CostCurrency.CurrentValue) && 
+                   (TowerCard.MaxLevel() > TowerCard.Level.CurrentValue);
         }
     }
 }

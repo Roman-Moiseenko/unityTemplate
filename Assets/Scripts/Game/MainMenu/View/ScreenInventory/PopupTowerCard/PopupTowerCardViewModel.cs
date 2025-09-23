@@ -18,6 +18,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
 
         private InventoryRoot _inventory;
         private TowerCardPlanService _service;
+        
         public ReadOnlyReactiveProperty<long> SoftCurrency;
         public ReadOnlyReactiveProperty<int> AmountPlans;
         public ReactiveProperty<int> CostPlan = new();
@@ -49,6 +50,13 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
         public void TowerCardChangeDeck()
         {
             _service.ChangeDeckTowerCard(CardViewModel.IdTowerCard);
+        }
+
+        public bool CardIsUpgrade()
+        {
+            return (AmountPlans.CurrentValue >= CostPlan.CurrentValue) && 
+                   (SoftCurrency.CurrentValue >= CostCurrency.CurrentValue) && 
+                   (CardViewModel.TowerCard.MaxLevel() > CardViewModel.TowerCard.Level.CurrentValue);
         }
     }
 }

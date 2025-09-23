@@ -79,14 +79,19 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
             {
                 textPlanAmount.text = $"{ViewModel.AmountPlans.CurrentValue} / {ViewModel.CostPlan.CurrentValue}";
                 
-                buttonUpgrade.gameObject.SetActive(CheckUpgrade()); //Проверяем стоимость и наличие 
+                 //Проверяем стоимость и наличие 
             }).AddTo(ref d);
 
             ViewModel.SoftCurrency.Subscribe(newValue =>
             {
                 textSoftCurrency.text = Func.CurrencyToStr(newValue);
-                buttonUpgrade.gameObject.SetActive(CheckUpgrade());
+               // buttonUpgrade.gameObject.SetActive(ViewModel.CardIsUpgrade());
             }).AddTo(ref d);
+            ViewModel.CardViewModel.IsCanUpdate
+                .Subscribe(v => buttonUpgrade.gameObject.SetActive(v))
+                .AddTo(ref d);
+            
+            
             //textCost.text = towerCardViewModel.TowerCard.GetCostCurrencyLevelUpTowerCard().ToString();
 
             var index = 0;
@@ -102,13 +107,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
             }
             
             _disposable = d.Build();
-        }
-        
-        private bool CheckUpgrade()
-        {
-            return (ViewModel.AmountPlans.CurrentValue >= ViewModel.CostPlan.CurrentValue) && 
-                   (ViewModel.SoftCurrency.CurrentValue >= ViewModel.CostCurrency.CurrentValue) && 
-                   (ViewModel.CardViewModel.TowerCard.MaxLevel() > ViewModel.CardViewModel.TowerCard.Level.CurrentValue);
         }
 
         private void OnEnable()
