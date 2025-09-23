@@ -52,7 +52,7 @@ namespace Game.GamePlay.Services
             waveService.AllMobsMap.ObserveAdd().Subscribe(e =>
             {
                 var mobEntity = e.Value.Value;
-                mobEntity.Position.Subscribe(newPosition => { });
+               // mobEntity.Position.Subscribe(newPosition => { });
 
 //                Debug.Log(mobEntity.UniqueId + " " + mobEntity.Health.CurrentValue + " " + mobEntity.IsDead.Value);
                 //Проверяем, что моб мертв выдаем награды и другое 
@@ -69,13 +69,13 @@ namespace Game.GamePlay.Services
                 );
             });
 
-            fsmGameplay.Fsm.StateCurrent.Subscribe(e =>
+  /*          fsmGameplay.Fsm.StateCurrent.Subscribe(e =>
             {
                 if (e.GetType() == typeof(FsmStateGamePlay))
                 {
                 }
             });
-
+*/
             _shotService.Shots.ObserveRemove().Subscribe(e =>
             {
                 var shot = e.Value;
