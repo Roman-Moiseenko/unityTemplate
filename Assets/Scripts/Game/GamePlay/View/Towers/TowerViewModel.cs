@@ -26,7 +26,12 @@ namespace Game.GamePlay.View.Towers
 
         public ReactiveProperty<Vector2Int> Position { get; set; }
         public bool IsOnRoad => _towerEntity.IsOnRoad;
+        public ReactiveProperty<bool> IsShot;
 
+        public ReactiveProperty<Vector2> Direction;
+        public ReactiveProperty<float> SpeedFire;
+        
+        
         public TowerViewModel(
             TowerEntity towerEntity,
             List<TowerLevelSettings> towerLevelSettings,
@@ -34,6 +39,7 @@ namespace Game.GamePlay.View.Towers
         )
         {
             _towerEntity = towerEntity;
+            IsShot = towerEntity.IsShot;
             _towerLevelSettings = towerLevelSettings;
             _towerService = towerService;
             TowerEntityId = towerEntity.UniqueId;
@@ -46,8 +52,21 @@ namespace Game.GamePlay.View.Towers
                     _towerLevelSettingsMap[towerLevelSetting.Level] = towerLevelSetting;
                 }
             }
-            
+
+            Direction = towerEntity.PrepareShot;
             Position = towerEntity.Position;
+            SpeedFire = new ReactiveProperty<float>();
+            if (towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
+            {
+                towerService.GameSpeed.Where(x => x != 0).Subscribe(v =>
+                {
+                    SpeedFire.Value = towerSpeed.Value / v; 
+                });
+            }
+            else
+            {
+                SpeedFire.Value = 0;
+            }
         }
 
         public TowerLevelSettings GetLevelSettings(int level)

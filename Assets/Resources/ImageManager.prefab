@@ -92,7 +92,7 @@ MonoBehaviour:
   - ConfigId: Tower01
     ByLevels:
     - Level: 1
-      Sprite: {fileID: 21300000, guid: 4e542c160c1c07c47af487be2c07ec73, type: 3}
+      Sprite: {fileID: 21300000, guid: 6c1508ed390d6af4e892bbc81680a39f, type: 3}
     - Level: 2
       Sprite: {fileID: 21300000, guid: 42f0e5931563f2b42839cd09eb709a02, type: 3}
     - Level: 3

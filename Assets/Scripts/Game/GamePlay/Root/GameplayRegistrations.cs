@@ -110,7 +110,7 @@ namespace Game.GamePlay.Root
 
             //Сервис башен
             var towersService = new TowersService(
-                gameplayState.Towers,
+                gameplayState,
                 gameSettings.TowersSettings,
                 gameplayEnterParams.Towers,
                 cmd,

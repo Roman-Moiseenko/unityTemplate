@@ -3,8 +3,7 @@
     public enum TowerParameterType
     {
         Damage,
-       // MiddleDamage,
-      //  HighDamage,
+
         DamageArea,
         Distance,
         MaxDistance,
@@ -13,5 +12,7 @@
         Critical,
         Health,
         SlowingDown,
+        // MiddleDamage,
+        //  HighDamage,
     }
 }

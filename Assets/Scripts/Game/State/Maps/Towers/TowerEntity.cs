@@ -23,9 +23,12 @@ namespace Game.State.Maps.Towers
         public readonly bool IsMultiShot;
         
         public ReactiveProperty<bool> IsShot = new(false);
+        public ReactiveProperty<bool> IsBusy = new(false);
         public MobDefence Defence => Origin.Defence;
         
         public Dictionary<TowerParameterType, TowerParameterData> Parameters = new();
+
+        public ReactiveProperty<Vector2> PrepareShot = new();
         
         public TowerEntity(TowerEntityData towerEntityData)
         {
@@ -41,15 +44,6 @@ namespace Game.State.Maps.Towers
             
             TypeEnemy = towerEntityData.TypeEnemy;
             IsMultiShot = towerEntityData.IsMultiShot;
-            IsShot.Subscribe(s =>
-            {
-                if (s)
-                {
-                   // Debug.Log("Выстрел " + ConfigId + " " + Time.time);
-                }
-
-                
-            });
 
             /*          Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
                       Parameters.ObserveAdd().Subscribe(e =>

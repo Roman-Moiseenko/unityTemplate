@@ -8,6 +8,7 @@ using Game.State.Entities;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps.Towers;
+using Game.State.Root;
 using MVVM.CMD;
 using Newtonsoft.Json;
 using ObservableCollections;
@@ -38,13 +39,15 @@ namespace Game.GamePlay.Services
 
         public readonly ObservableDictionary<string, int> Levels = new(); //Уровни башен по типам ConfigId
 
+        public ReactiveProperty<int> GameSpeed;
 
         /**
          * При загрузке создаем все view-модели из реактивного списка всех строений.
          * Подписываемся на событие добавления в массив Proxy сущностей
         */
         public TowersService(
-            IObservableCollection<TowerEntity> towerEntities,
+            GameplayStateProxy gameplayState,
+            
             TowersSettings towersSettings,
             List<TowerCardData> baseTowerCards, //Базовые настройки колоды
             ICommandProcessor cmd,
@@ -53,11 +56,11 @@ namespace Game.GamePlay.Services
         {
          //   Debug.Log(JsonConvert.SerializeObject(TowerParametersMap, Formatting.Indented));
             //Debug.Log("Входные данные для башен " + JsonConvert.SerializeObject(baseTowerCards, Formatting.Indented));
-            _towerEntities = towerEntities;
+            _towerEntities = gameplayState.Towers;
             _baseTowerCards = baseTowerCards;
             _cmd = cmd;
             _placementService = placementService;
-
+            GameSpeed = gameplayState.GameSpeed;
             //Кешируем настройки зданий / объектов
 
             foreach (var towerSettings in towersSettings.AllTowers)
@@ -67,7 +70,7 @@ namespace Game.GamePlay.Services
             }
 
             //Кешируем уровень башни по конфигу, если башня этого типа есть на карте
-            foreach (var towerEntity in towerEntities)
+            foreach (var towerEntity in _towerEntities)
             {
                 Levels[towerEntity.ConfigId] = towerEntity.Level.CurrentValue;
             }
@@ -89,14 +92,14 @@ namespace Game.GamePlay.Services
                 }
             }
 
-            foreach (var towerEntity in towerEntities)
+            foreach (var towerEntity in _towerEntities)
             {
                 towerEntity.Parameters =
                     TowerParametersMap[towerEntity.ConfigId]; //Присваиваем по ссылке параметры башни
                 CreateTowerViewModel(towerEntity);
             }
 
-            towerEntities.ObserveAdd().Subscribe(e =>
+            _towerEntities.ObserveAdd().Subscribe(e =>
             {
                 var towerEntity = e.Value;
                 towerEntity.Level.Value = Levels[towerEntity.ConfigId]; //Устанавливаем уровень апгрейда
@@ -105,7 +108,7 @@ namespace Game.GamePlay.Services
                 CreateTowerViewModel(towerEntity); //Создаем View Model
             });
             //Если у сущности изменился уровень, меняем его и во вью-модели
-            towerEntities.ObserveRemove().Subscribe(e => RemoveTowerViewModel(e.Value));
+            _towerEntities.ObserveRemove().Subscribe(e => RemoveTowerViewModel(e.Value));
 
             Levels.ObserveChanged().Subscribe(x =>
             {
@@ -170,7 +173,9 @@ namespace Game.GamePlay.Services
          */
         private void CreateTowerViewModel(TowerEntity towerEntity)
         {
-            var towerViewModel = new TowerViewModel(towerEntity, _towerSettingsMap[towerEntity.ConfigId], this); //3
+            var towerViewModel = new TowerViewModel(
+                towerEntity, 
+                _towerSettingsMap[towerEntity.ConfigId], this); //3
             _allTowers.Add(towerViewModel); //4
             _towersMap[towerEntity.UniqueId] = towerViewModel;
         }
