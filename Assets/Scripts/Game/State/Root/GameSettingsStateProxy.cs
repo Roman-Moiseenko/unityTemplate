@@ -4,11 +4,14 @@ namespace Game.State.Root
 {
     public class GameSettingsStateProxy
     {
+        public string UserId;
+        
         public ReactiveProperty<int> MusicVolume { get; }
         public ReactiveProperty<int> SFXVolume { get; }
 
         public GameSettingsStateProxy(GameSettingsState gameSettingsState)
         {
+            UserId = gameSettingsState.UserId;
             MusicVolume = new ReactiveProperty<int>(gameSettingsState.MusicVolume);
             SFXVolume = new ReactiveProperty<int>(gameSettingsState.SFXVolume);
 

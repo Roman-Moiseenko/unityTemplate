@@ -61,13 +61,25 @@ namespace Scripts.Game.GameRoot
             _imageManager.gameObject.name = AppConstants.IMAGE_MANAGER;
             Object.DontDestroyOnLoad(_imageManager.gameObject);
 
+            //
+            var gameStateProvider = new PlayerPrefsGameStateProvider(); //Заменить конструктор на другой - из облака
+            gameStateProvider.LoadSettingsState(); //Загрузили настройки игры  
+
+            if (string.IsNullOrEmpty(gameStateProvider.SettingsState.UserId))
+            {
+                //Генерация userId
+                //Сохраняем.
+                
+                
+                
+            }
+            
             //Настройки приложения
             var settingsProvider = new SettingsProvider();
             _rootContainer.RegisterInstance<ISettingsProvider>(settingsProvider);
 
 
-            var gameStateProvider = new PlayerPrefsGameStateProvider(); //Заменить конструктор на другой - из облака
-            gameStateProvider.LoadSettingsState(); //Загрузили настройки игры
+
             //Применяем настройки к окружению - звук, вибрация и т.п.
 
             gameStateProvider.LoadGameState(); //Загружаем данные игрока.

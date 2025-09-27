@@ -13,6 +13,7 @@ namespace Game.State.Root
      */
     public class GameStateProxy
     {
+        
         public const int MaxChest = 4;
         private readonly GameState _gameState;
         public ReactiveProperty<int> CurrentMapId = new();
@@ -44,7 +45,6 @@ namespace Game.State.Root
 
             Inventory = new InventoryRoot(gameState.Inventory);
             ContainerChests = new ContainerChests(gameState.ContainerChests);
-            
             CurrentMapId.Subscribe(newValue => { gameState.CurrentMapId = newValue; });
             
         }

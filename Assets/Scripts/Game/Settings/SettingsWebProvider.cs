@@ -1,15 +1,16 @@
 ﻿using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Game.Settings
 {
-    public class SettingsProvider : ISettingsProvider
+    public class SettingsWebProvider : ISettingsProvider
     {
         public GameSettings GameSettings => _gameSettings;
         public ApplicationSettings ApplicationSettings { get; }
         private GameSettings _gameSettings;
         
-        public SettingsProvider()
+        public SettingsWebProvider()
         {
             ApplicationSettings = Resources.Load<ApplicationSettings>("ApplicationSettings");
         }
@@ -17,8 +18,8 @@ namespace Game.Settings
         public Task<GameSettings> LoadGameSettings()
         {
             
-            _gameSettings = Resources.Load<GameSettings>("GameSettings");
-            
+            //_gameSettings = Resources.Load<GameSettings>("GameSettings");
+         //   var req = await UnityWebRequest.Get($"https://yrry.ru").SendWebRequest();
             
             return Task.FromResult(_gameSettings);
         }
