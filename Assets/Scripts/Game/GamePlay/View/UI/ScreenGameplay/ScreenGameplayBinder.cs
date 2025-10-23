@@ -24,10 +24,10 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         [SerializeField] private Canvas _panelPopupMessages;
         [SerializeField] private Canvas _panelRewardPopup;
-        [SerializeField] private List<DamagePopupBinder> _damagePopups = new();
-        [SerializeField] private List<CurrencyPopupBinder> _currencyPopups = new();
-        [SerializeField] private List<CurrencyPopupBinder> _progressPopups = new();
-        [SerializeField] private RewardEntityBinder rewardEntity = new();
+        [SerializeField] private List<DamagePopupBinder> _damagePopups;
+        [SerializeField] private List<CurrencyPopupBinder> _currencyPopups;
+        [SerializeField] private List<CurrencyPopupBinder> _progressPopups;
+        [SerializeField] private RewardEntityBinder rewardEntity;
 
         [SerializeField] private Transform _targetCurrency;
         [SerializeField] private Transform _targetProgress;

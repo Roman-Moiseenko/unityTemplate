@@ -1,4 +1,5 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 
 namespace Scripts.Game.GameRoot
@@ -11,6 +12,7 @@ namespace Scripts.Game.GameRoot
     public class UIRootView :MonoBehaviour
     {
         [SerializeField] private GameObject _loadingScreen;
+        [SerializeField] private GameObject _loadingFirstScreen;
         [SerializeField] private Transform _uiSceneContainer;
 
         private void Awake()
@@ -41,6 +43,21 @@ namespace Scripts.Game.GameRoot
             {
                 Destroy(_uiSceneContainer.GetChild(i).gameObject);
             }
+        }
+
+        public void ShowLoadingFirstScreen()
+        {
+            _loadingFirstScreen.SetActive(true); //Показать UI перехода
+        }
+
+        public void HideLoadingFirstScreen()
+        {
+            _loadingFirstScreen.SetActive(false);
+        }
+
+        public void TextLoadingFirst(string text)
+        {
+            _loadingScreen.transform.Find("textField").GetComponent<TMP_Text>().text = text;
         }
     }
 }

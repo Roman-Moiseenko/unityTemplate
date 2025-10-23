@@ -6,6 +6,10 @@
         public const string GAME_PLAY_STATE = nameof(GAME_PLAY_STATE);
         public const string CAMERA_MOVING = nameof(CAMERA_MOVING);
         
+        public const string USER_ID = nameof(USER_ID);
+        public const string USER_TOKEN = nameof(USER_TOKEN);
+
+
         
         public const string CLICK_WORLD_ENTITY = nameof(CLICK_WORLD_ENTITY);
         public const int COST_UPDATE_BUILD = 20; //стоимость повышения обновления карточек за каждый раз

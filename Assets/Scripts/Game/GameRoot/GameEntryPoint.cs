@@ -1,4 +1,5 @@
 using System.Collections;
+using System.IO;
 using DI;
 using Game.Common;
 using Game.GamePlay.Root;
@@ -9,6 +10,7 @@ using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.Settings;
 using Game.State;
+using Game.State.Root;
 using MVVM.CMD;
 using Newtonsoft.Json;
 using R3;
@@ -39,7 +41,8 @@ namespace Scripts.Game.GameRoot
 
 
             _instance = new GameEntryPoint();
-
+            
+            // _instance.LoadState();
             _instance.RunGame();
         }
 
@@ -55,34 +58,42 @@ namespace Scripts.Game.GameRoot
             _uiRoot = Object.Instantiate(prefabUIRoot);
             Object.DontDestroyOnLoad(_uiRoot.gameObject);
             _rootContainer.RegisterInstance(_uiRoot); //Регистрируем в корневом контейнере
+
             //Находим менеджер изображений
             var prefabImageManager = Resources.Load<ImageManagerBinder>("ImageManager");
             _imageManager = Object.Instantiate(prefabImageManager);
             _imageManager.gameObject.name = AppConstants.IMAGE_MANAGER;
             Object.DontDestroyOnLoad(_imageManager.gameObject);
 
+
+            /*
+                string userId;
+                string userToken;
+                var webService = new WebService();
+                //Проверяем игрока первый запуск?
+                if (!PlayerPrefs.HasKey(AppConstants.USER_ID))
+                {
+                    userId = Path.GetRandomFileName();
+                    PlayerPrefs.SetString(AppConstants.USER_ID, userId);
+                    webService.FirstAuthorization(userId);
+                    //TODO Первичная авторизация клиента
+                }
+                else
+                {
+                    userId = PlayerPrefs.GetString(AppConstants.USER_ID);
+                    userToken = PlayerPrefs.GetString(AppConstants.USER_TOKEN);
+                }
+                */
             //
             var gameStateProvider = new PlayerPrefsGameStateProvider(); //Заменить конструктор на другой - из облака
-            gameStateProvider.LoadSettingsState(); //Загрузили настройки игры  
-
-            if (string.IsNullOrEmpty(gameStateProvider.SettingsState.UserId))
-            {
-                //Генерация userId
-                //Сохраняем.
-                
-                
-                
-            }
+            // gameStateProvider.LoadSettingsState(); //Загрузили настройки игры  
             
             //Настройки приложения
             var settingsProvider = new SettingsProvider();
             _rootContainer.RegisterInstance<ISettingsProvider>(settingsProvider);
+            
 
-
-
-            //Применяем настройки к окружению - звук, вибрация и т.п.
-
-            gameStateProvider.LoadGameState(); //Загружаем данные игрока.
+           // gameStateProvider.LoadGameState(); //Загружаем данные игрока.
 
             var cmd = new CommandProcessor(gameStateProvider); //Создаем обработчик команд
             _rootContainer.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
@@ -105,33 +116,9 @@ namespace Scripts.Game.GameRoot
             _rootContainer.RegisterFactory(c => gen);
         }
 
-        private async void RunGame()
+        private void RunGame() //Нестатичный вызов.
         {
-            await _rootContainer.Resolve<ISettingsProvider>().LoadGameSettings();
-
-            /*
-#if UNITY_EDITOR
-            var sceneName = SceneManager.GetActiveScene().name;
-            if (sceneName == Scenes.GAMEPLAY)
-            {
-                var enterParams = new GameplayEnterParams(0);
-              //  enterParams.HasSessionGameplay = true;
-                _coroutines.StartCoroutine(LoadAndStartGameplay(enterParams));
-                return;
-            }
-
-         /*   if (sceneName == Scenes.MAINMENU)
-            {
-                _coroutines.StartCoroutine(LoadAndStartMainMenu());
-                return;
-            }
-            if (sceneName != Scenes.BOOT)
-            {
-                return;
-            }*/
-            /*
- #endif*/
-            _coroutines.StartCoroutine(LoadAndStartMainMenu());
+            _coroutines.StartCoroutine(LoadFirstBoot());
         }
 
         private IEnumerator LoadAndStartGameplay(GameplayEnterParams enterParams)
@@ -139,7 +126,7 @@ namespace Scripts.Game.GameRoot
             _uiRoot.ShowLoadingScreen();
             _cachedSceneContainer?.Dispose();
             yield return LoadScene(Scenes.BOOT);
-         //   Debug.Log("0");
+            //   Debug.Log("0");
             yield return LoadScene(Scenes.GAMEPLAY);
 
             //  yield return new WaitForSeconds(1);
@@ -147,12 +134,12 @@ namespace Scripts.Game.GameRoot
             //var isGameStateLoaded = false; //не загружено
             //При загрузке, по подписке поменяем флажок на Загружено
 
-           // Debug.Log("1");
+            // Debug.Log("1");
             _rootContainer.Resolve<IGameStateProvider>().LoadGameplayState();
-                //.Subscribe(_ => isGameStateLoaded = true);
+            //.Subscribe(_ => isGameStateLoaded = true);
 
-           // yield return new WaitUntil(() => isGameStateLoaded);
-        //    Debug.Log("3");
+            // yield return new WaitUntil(() => isGameStateLoaded);
+            //    Debug.Log("3");
             //Контейнер
             var sceneEntryPoint = Object.FindFirstObjectByType<GameplayEntryPoint>();
             var gameplayContainer = _cachedSceneContainer = new DIContainer(_rootContainer);
@@ -172,13 +159,14 @@ namespace Scripts.Game.GameRoot
             _uiRoot.HideLoadingScreen();
         }
 
-        private IEnumerator LoadAndStartMainMenu(MainMenuEnterParams enterParams = null)
+        private IEnumerator LoadAndStartMainMenu(MainMenuEnterParams enterParams)
         {
             _uiRoot.ShowLoadingScreen();
             _cachedSceneContainer?.Dispose();
             yield return LoadScene(Scenes.BOOT);
             yield return LoadScene(Scenes.MAINMENU);
 
+            
             //   yield return new WaitForSeconds(1);
 
             //Контейнер
@@ -200,9 +188,58 @@ namespace Scripts.Game.GameRoot
 
         private IEnumerator LoadFirstBoot()
         {
-            yield return LoadScene(Scenes.FIRST_BOOT);
+            _uiRoot.ShowLoadingFirstScreen();
+            _cachedSceneContainer?.Dispose();
+            yield return LoadScene(Scenes.BOOT);
+            yield return LoadScene(Scenes.MAINMENU);
             yield return new WaitForSeconds(1);
-            _instance.RunGame();
+            //Загружаем пользователя
+            var provider = _rootContainer.Resolve<IGameStateProvider>();
+            
+            var loadedSettings = new LoadingState();
+            provider.LoadSettingsState().Subscribe(v => loadedSettings = v);
+            while (!loadedSettings.Loaded)
+            {
+                _uiRoot.TextLoadingFirst(loadedSettings.TextState);
+                yield return null;
+            }
+
+            loadedSettings.Clear();
+            provider.LoadGameState().Subscribe(v => loadedSettings = v);
+            while (!loadedSettings.Loaded)
+            {
+                _uiRoot.TextLoadingFirst(loadedSettings.TextState);
+                yield return null;
+            }
+            //Загружаем данные по игре
+            var settings = _rootContainer.Resolve<ISettingsProvider>();
+            loadedSettings.Clear();
+            settings.LoadGameSettings().Subscribe(v => loadedSettings = v);
+            while (!loadedSettings.Loaded)
+            {
+                _uiRoot.TextLoadingFirst(loadedSettings.TextState);
+                yield return null;
+            }
+            //Загружаем новые ресурсы ...
+            
+            
+            //Применяем настройки пользователя к игре
+            _uiRoot.TextLoadingFirst("Регистрируем настройки");
+            yield return null;
+            //Контейнер
+            var sceneEntryPoint = Object.FindFirstObjectByType<MainMenuEntryPoint>();
+            var mainMenuContainer = _cachedSceneContainer = new DIContainer(_rootContainer);
+            sceneEntryPoint.Run(mainMenuContainer, null).Subscribe(mainMenuExitParams =>
+            {
+                var targetSceneName = mainMenuExitParams.TargetSceneEnterParams.SceneName;
+                if (targetSceneName == Scenes.GAMEPLAY)
+                {
+                    _coroutines.StartCoroutine(
+                        LoadAndStartGameplay(mainMenuExitParams.TargetSceneEnterParams.As<GameplayEnterParams>())
+                    );
+                }
+            });
+            _uiRoot.HideLoadingFirstScreen();
         }
 
         private IEnumerator LoadScene(string sceneName)

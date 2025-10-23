@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Game.State.Root;
+using R3;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -15,13 +17,17 @@ namespace Game.Settings
             ApplicationSettings = Resources.Load<ApplicationSettings>("ApplicationSettings");
         }
         
-        public Task<GameSettings> LoadGameSettings()
+        public Observable<LoadingState> LoadGameSettings()
         {
+            var state = new LoadingState();
+
+            //TODO WEB!!!
             
-            //_gameSettings = Resources.Load<GameSettings>("GameSettings");
-         //   var req = await UnityWebRequest.Get($"https://yrry.ru").SendWebRequest();
-            
-            return Task.FromResult(_gameSettings);
+            state.TextState = "Загружаем настройки игры";
+
+            state.Loaded = true;
+
+            return Observable.Return(state);
         }
     }
 }

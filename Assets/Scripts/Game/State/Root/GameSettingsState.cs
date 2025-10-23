@@ -6,6 +6,7 @@ namespace Game.State.Root
     public class GameSettingsState
     {
         public string UserId { get; set; }
+        public string UserToken { get; set; }
         
         public int MusicVolume;
         public int SFXVolume;

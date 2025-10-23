@@ -14,7 +14,8 @@ namespace Game.State
          */
         public GameStateProxy GameState { get; } //Данные игрока
 
-        public Observable<GameStateProxy> LoadGameState();
+        public Observable<LoadingState> LoadGameState();
+        //public Observable<GameStateProxy> LoadGameState();
         public Observable<bool> SaveGameState();
         public Observable<bool> ResetGameState();
 
@@ -24,7 +25,8 @@ namespace Game.State
          */
         public GameSettingsStateProxy SettingsState { get; } //Настройки игры
 
-        public Observable<GameSettingsStateProxy> LoadSettingsState();
+        public Observable<LoadingState> LoadSettingsState();
+        //public Observable<GameSettingsStateProxy> LoadSettingsState();
         public Observable<bool> SaveSettingsState();
         public Observable<bool> ResetSettingsState();
         

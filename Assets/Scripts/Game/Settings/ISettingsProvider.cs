@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Game.State.Root;
+using R3;
 
 namespace Game.Settings
 {
@@ -7,7 +9,7 @@ namespace Game.Settings
         GameSettings GameSettings { get; }
         ApplicationSettings ApplicationSettings { get; }
 
-        Task<GameSettings> LoadGameSettings();
+        public Observable<LoadingState> LoadGameSettings();
         
 
     }
