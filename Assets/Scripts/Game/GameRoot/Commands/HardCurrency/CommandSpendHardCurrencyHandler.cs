@@ -1,5 +1,6 @@
 ﻿using Game.State.Root;
 using MVVM.CMD;
+using UnityEngine;
 
 namespace Game.GameRoot.Commands.HardCurrency
 {
@@ -10,6 +11,7 @@ namespace Game.GameRoot.Commands.HardCurrency
         public CommandSpendHardCurrencyHandler(GameStateProxy gameState)
         {
             _gameState = gameState;
+            Debug.Log(gameState);
         }
 
         public bool Handle(CommandSpendHardCurrency command)

@@ -4,6 +4,7 @@ namespace Game.State.Root
 {
     public class GameSettingsStateProxy
     {
+        public readonly GameSettingsState Origin;
         public ReactiveProperty<string> UserId;
         public ReactiveProperty<string> UserToken;
         
@@ -12,6 +13,7 @@ namespace Game.State.Root
         
         public GameSettingsStateProxy(GameSettingsState gameSettingsState)
         {
+            Origin = gameSettingsState;
             UserId = new ReactiveProperty<string>(gameSettingsState.UserId);
             UserToken = new ReactiveProperty<string>(gameSettingsState.UserToken);
             

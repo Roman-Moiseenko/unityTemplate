@@ -102,7 +102,7 @@ namespace Scripts.Game.GameRoot
             //Регистрируем общие команды для всей игры.
             //Потратить валюту.
             // Debug.Log(JsonConvert.SerializeObject());
-            cmd.RegisterHandler(new CommandSpendHardCurrencyHandler(gameStateProvider.GameState));
+//            cmd.RegisterHandler(new CommandSpendHardCurrencyHandler(gameStateProvider.GameState));
             cmd.RegisterHandler(new CommandSaveGameStateHandler());
             _rootContainer.RegisterInstance<IGameStateProvider>(gameStateProvider);
             //_rootContainer.RegisterFactory(c => new SomeCommonService()).AsSingle(); //Сервис ... создастся при первом вызове
@@ -116,6 +116,10 @@ namespace Scripts.Game.GameRoot
             _rootContainer.RegisterFactory(c => gen);
         }
 
+        private void RegisterService()
+        {
+            
+        }
         private void RunGame() //Нестатичный вызов.
         {
             _coroutines.StartCoroutine(LoadFirstBoot());
@@ -222,6 +226,9 @@ namespace Scripts.Game.GameRoot
             }
             //Загружаем новые ресурсы ...
             
+            //Регистрируем общие команды и сервисы, зависимые от gameStateProvider
+            _rootContainer.Resolve<ICommandProcessor>()
+                .RegisterHandler(new CommandSpendHardCurrencyHandler(provider.GameState));
             
             //Применяем настройки пользователя к игре
             _uiRoot.TextLoadingFirst("Регистрируем настройки");

@@ -57,7 +57,7 @@ namespace Scripts.Game.GameRoot
 
         public void TextLoadingFirst(string text)
         {
-            _loadingScreen.transform.Find("textField").GetComponent<TMP_Text>().text = text;
+            _loadingFirstScreen.transform.Find("textField").GetComponent<TMP_Text>().text = text;
         }
     }
 }

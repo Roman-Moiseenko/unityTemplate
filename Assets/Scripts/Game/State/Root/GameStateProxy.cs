@@ -13,9 +13,9 @@ namespace Game.State.Root
      */
     public class GameStateProxy
     {
-        
+        public readonly GameState Origin;
         public const int MaxChest = 4;
-        private readonly GameState _gameState;
+        //private readonly GameState _gameState;
         public ReactiveProperty<int> CurrentMapId = new();
         public ReactiveProperty<int> GameSpeed;
         public ReactiveProperty<int> HardCurrency;
@@ -29,7 +29,8 @@ namespace Game.State.Root
 
         public GameStateProxy(GameState gameState)
         {
-            _gameState = gameState;
+            Origin = gameState;
+            //_gameState = gameState;
 
             GameSpeed = new ReactiveProperty<int>(gameState.GameSpeed);
             GameSpeed.Subscribe(newValue =>
@@ -83,7 +84,7 @@ namespace Game.State.Root
 
         public int CreateInventoryID()
         {
-            return _gameState.CreateInventoryID();
+            return Origin.CreateInventoryID();
         }
 
         public bool PaidHardCurrency(int value)

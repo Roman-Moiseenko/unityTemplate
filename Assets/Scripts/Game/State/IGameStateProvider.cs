@@ -18,8 +18,7 @@ namespace Game.State
         //public Observable<GameStateProxy> LoadGameState();
         public Observable<bool> SaveGameState();
         public Observable<bool> ResetGameState();
-
-
+        
         /**
          * Персональные настройки игры, Settings
          */
