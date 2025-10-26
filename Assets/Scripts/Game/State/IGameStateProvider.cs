@@ -9,6 +9,8 @@ namespace Game.State
      */
     public interface IGameStateProvider
     {
+     public DefaultGameState DefaultGameState { get; }
+        
         /**
          * Данные об игроке, его достижения за всю игру
          */

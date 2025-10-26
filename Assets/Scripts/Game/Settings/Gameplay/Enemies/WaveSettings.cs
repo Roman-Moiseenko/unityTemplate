@@ -8,6 +8,6 @@ namespace Game.Settings.Gameplay.Enemies
     public class WaveSettings
     {
 
-        public List<WaveItemSettings> WaveItems;
+        public List<WaveItemSettings> WaveItems = new();
     }
 }

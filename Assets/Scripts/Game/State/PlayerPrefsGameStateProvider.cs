@@ -29,7 +29,7 @@ namespace Game.State
       //  private GameState _gameStateOrigin; //Оригинальное состояние игры
       //  private GameSettingsState _settingsStateOrigin;
        // private GameplayState _gameplayStateOrigin; //Оригинальное состояние игры
-        private readonly DefaultGameState _defaultGameState = new();
+        public DefaultGameState DefaultGameState { get; private set; } = new();
 
         //Игровая сессия
         public Observable<GameplayStateProxy> LoadGameplayState()
@@ -41,7 +41,7 @@ namespace Game.State
             };
             if (!PlayerPrefs.HasKey(GAMEPLAY_STATE_KEY))
             {
-                GameplayState = _defaultGameState.CreateGameplayStateFromSettings();
+                GameplayState = DefaultGameState.CreateGameplayStateFromSettings();
                 SaveGameplayState(); //Сохраняем дефолтное состояние
             }
             else
@@ -99,7 +99,7 @@ namespace Game.State
 
             if (!PlayerPrefs.HasKey(GAME_STATE_KEY))
             {
-                GameState = _defaultGameState.CreateGameStateFromSettings();
+                GameState = DefaultGameState.CreateGameStateFromSettings();
                 SaveGameState(); //Сохраняем дефолтное состояние
             }
             else
@@ -109,32 +109,18 @@ namespace Game.State
                 var gameStateOrigin = JsonConvert.DeserializeObject<GameState>(json);
                 GameState = new GameStateProxy(gameStateOrigin);
             }
-            state.TextState = "Загружаем сохранение игрока";
+            state.Set("Загружаем сохранение игрока");
             state.Loaded = true;
             return Observable.Return(state);
         }
-/*
-        private GameStateProxy CreateGameStateFromSettings()
-        {
-            //Заполняем карты по умолчанию, и другие бонусы
-            //  var inventory = new List<InventoryData>(); //TODO Загрузить из настроек
-            _gameStateOrigin = new GameState
-            {
-                GameSpeed = 1
-            };
-            return new GameStateProxy(_gameStateOrigin);
-        }
-*/
+        
         public Observable<bool> SaveGameState()
         {
             Debug.Log(GameplayState);
-            if (GameplayState != null)
-            {
-                var gameplayJson = JsonConvert.SerializeObject(GameplayState.Origin, Formatting.Indented);
-                PlayerPrefs.SetString(GAMEPLAY_STATE_KEY, gameplayJson);
-            }
+            if (GameplayState != null) SaveGameplayState();
             
             var gameJson = JsonConvert.SerializeObject(GameState.Origin, Formatting.Indented);
+            Debug.Log(gameJson);
             PlayerPrefs.SetString(GAME_STATE_KEY, gameJson);
             
             return Observable.Return(true);
@@ -142,7 +128,7 @@ namespace Game.State
 
         public Observable<bool> ResetGameState()
         {
-            GameState = _defaultGameState.CreateGameStateFromSettings();
+            GameState = DefaultGameState.CreateGameStateFromSettings();
             SaveGameState();
             return Observable.Return(true);
         }
@@ -154,7 +140,7 @@ namespace Game.State
 
             if (!PlayerPrefs.HasKey(GAME_SETTINGS_STATE_KEY))
             {
-                SettingsState = _defaultGameState.CreateSettingsStateDefault();
+                SettingsState = DefaultGameState.CreateSettingsStateDefault();
                 SaveSettingsState(); //Сохраняем дефолтное состояние
             }
             else
@@ -165,7 +151,7 @@ namespace Game.State
                 SettingsState = new GameSettingsStateProxy(settingsStateOrigin);
             }
 
-            state.TextState = "Загружаем настройки игрока";
+            state.Set("Загружаем настройки игрока");
             state.Loaded = true;
 
             return Observable.Return(state);
@@ -180,7 +166,7 @@ namespace Game.State
 
         public Observable<bool> ResetSettingsState()
         {
-            SettingsState = _defaultGameState.CreateSettingsStateDefault();
+            SettingsState = DefaultGameState.CreateSettingsStateDefault();
             SaveSettingsState();
             return Observable.Return(true);
         }

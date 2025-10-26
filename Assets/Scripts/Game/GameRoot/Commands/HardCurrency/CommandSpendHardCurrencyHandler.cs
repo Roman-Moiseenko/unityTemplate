@@ -11,7 +11,6 @@ namespace Game.GameRoot.Commands.HardCurrency
         public CommandSpendHardCurrencyHandler(GameStateProxy gameState)
         {
             _gameState = gameState;
-            Debug.Log(gameState);
         }
 
         public bool Handle(CommandSpendHardCurrency command)

@@ -8,7 +8,7 @@ namespace Game.Settings.Gameplay.Entities.Tower
     public class TowerLevelSettings
     {
         public int Level;
-        public List<TowerParameterSettings> Parameters;
+        public List<TowerParameterSettings> Parameters = new();
 
     }
 }

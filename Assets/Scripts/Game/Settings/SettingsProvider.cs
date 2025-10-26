@@ -22,7 +22,7 @@ namespace Game.Settings
 
             _gameSettings = Resources.Load<GameSettings>("GameSettings");
             
-            state.TextState = "Загружаем настройки игры";
+            state.Set("Загружаем настройки игры");
 
             state.Loaded = true;
 
