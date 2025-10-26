@@ -17,7 +17,6 @@ MonoBehaviour:
   <TitleLid>k__BackingField: 
   <DescriptionLid>k__BackingField: 
   <PrefabPath>k__BackingField: 
-  <Levels>k__BackingField: []
   FullHealth: 1000
   ReduceHealth: 10
   Damage: 10

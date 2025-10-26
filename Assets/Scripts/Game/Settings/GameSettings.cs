@@ -1,7 +1,4 @@
-﻿using Game.Settings.Gameplay.Buildings;
-using Game.Settings.Gameplay.Enemies;
-using Game.Settings.Gameplay.Entities.Buildings;
-
+﻿using Game.Settings.Gameplay.Enemies;
 using Game.Settings.Gameplay.Entities.Castle;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.Settings.Gameplay.Inventory;

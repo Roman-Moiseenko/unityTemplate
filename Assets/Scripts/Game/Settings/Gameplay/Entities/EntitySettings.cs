@@ -12,8 +12,6 @@ namespace Game.Settings.Gameplay.Entities
         [field: SerializeField] public string DescriptionLid { get; private set; }
         [field: SerializeField] public string PrefabPath { get; private set; }
       //  [field: SerializeField] public string PrefabName { get; private set; }
-        [field: SerializeField] public List<T> Levels { get; private set; }
-        
     }
 
     [CreateAssetMenu(

@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using Game.GamePlay.Services;
-using Game.Settings.Gameplay.Entities.Buildings;
+﻿using Game.GamePlay.Services;
 using Game.State.Maps.Castle;
-using Game.State.Mergeable.Buildings;
 using R3;
 using UnityEngine;
 

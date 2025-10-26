@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Game.Settings.Gameplay.Entities.Buildings;
 using UnityEngine;
 using UnityEngine.Serialization;
 
