@@ -6,29 +6,30 @@ namespace Game.Settings.Gameplay.Enemies
 {
     public class MobSettingsWeb
     {
-        public string ConfigId { get; private set; }
-        public string TitleLid { get; private set; }
-        public string DescriptionLid { get; private set; }
-      //  public MobType Type { get; private set; }
-        
-        public string PrefabPath { get; private set; }
+        public string ConfigId;
+        public string TitleLid;
 
-       // public float Speed { get; private set; }
-        public float SpeedMove { get; private set; }
-        public float SpeedAttack { get; private set; }
-        public bool IsFly { get; private set; }
-        public int AvailableWave{ get; private set; }
+        public string DescriptionLid;
+        //  public MobType Type { get; private set; }
 
-        public float Health { get; private set; }
-        public float Armor { get; private set; }
-        public float Attack { get; private set; }
-        public int RewardCurrency { get; private set; }       
-        public MobDefence Defence { get; private set; }
+        public string PrefabPath;
+
+        // public float Speed { get; private set; }
+        public float SpeedMove;
+        public float SpeedAttack;
+        public bool IsFly;
+        public int AvailableWave;
+
+        public float Health;
+        public float Armor;
+        public float Attack;
+        public int RewardCurrency;
+
+        public MobDefence Defence;
+
         //Кол-во мобов на 1 единицу
-        public int Count { get; private set; } = 1; 
+        public int Count = 1;
         //public MobParameters BaseParameters  { get; private set; }
-     //   public List<MobParameters> Parameters { get; private set; }
-        
-
+        //   public List<MobParameters> Parameters { get; private set; }
     }
 }

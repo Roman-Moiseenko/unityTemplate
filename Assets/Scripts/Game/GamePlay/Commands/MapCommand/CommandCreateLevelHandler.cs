@@ -7,8 +7,6 @@ using Game.GamePlay.Commands.RoadCommand;
 using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Commands.WaveCommands;
 using Game.Settings;
-using Game.State.Maps.Castle;
-using Game.State.Maps.Roads;
 using Game.State.Root;
 using MVVM.CMD;
 using UnityEngine;
@@ -49,7 +47,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 Collapse = newMapInitialStateSettings.collapse,
                 Obstacle = newMapInitialStateSettings.obstacle
             };
-            _cmd.Process(commandGround);
+            _cmd.Process(commandGround, false);
 
             //Генерируем дороги
             var commandRoads = new CommandRoadCreateBase
@@ -58,7 +56,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 hasWaySecond = newMapInitialStateSettings.hasWaySecond,
                 hasWayDisabled = newMapInitialStateSettings.hasWayDisabled
             };
-            _cmd.Process(commandRoads);
+            _cmd.Process(commandRoads, false);
             
             //Добавляем Волны мобов
             for (var index = 0; index < newMapInitialStateSettings.Waves.Count; index++)
@@ -68,19 +66,19 @@ namespace Game.GamePlay.Commands.MapCommand
                     Index = index + 1,
                     WaveItems = newMapInitialStateSettings.Waves[index].WaveItems
                 };
-                _cmd.Process(commandWave);
+                _cmd.Process(commandWave, false);
             }
             
             //Размещаем крепость
             var commandCastle = new CommandCastleCreate();
-            _cmd.Process(commandCastle);
+            _cmd.Process(commandCastle, false);
 
 
             //Размещаем базовые башни, если имеются
             foreach (var towerSettings in newMapInitialStateSettings.Towers)
             {
                 var commandTower = new CommandPlaceTower(towerSettings.ConfigId, towerSettings.Position);
-                _cmd.Process(commandTower);
+                _cmd.Process(commandTower, false);
             }
 
             _gameplayState.CurrentWave.Value = 0;

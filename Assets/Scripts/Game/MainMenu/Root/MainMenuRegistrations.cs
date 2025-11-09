@@ -80,8 +80,10 @@ namespace Game.MainMenu.Root
 
             //  Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.TowerCardBag.Items, Formatting.Indented));
             //Для нового игрока загружаем базовый инвентарь
+          //  Debug.Log("MainMenuRegistrations");
             if (gameState.Inventory.Items.Any() != true)
             {
+              //  Debug.Log("gameState.Inventory.Items.Any");
                 // Debug.Log("Загружаем Инвентарь из Настроек");
                 var command = new CommandCreateInventory();
                 var success = cmd.Process(command);

@@ -24,7 +24,7 @@ namespace MVVM.CMD
          * Сохранение процесса игры возможно будет нужно не везде, тогда можно создать
          * 2 процедуры: Process и ProcessNotSave / ProcessSave, либо добавить 2 параметр (..., bool saved = false) 
          */
-        public bool Process<TCommand>(TCommand command) where TCommand : ICommand
+        public bool Process<TCommand>(TCommand command, bool autoSave = true) where TCommand : ICommand
         {
         //    UnityEngine.Debug.Log("Process " + command.GetType());
             if (_handlesMap.TryGetValue(typeof(TCommand), out var handler))
@@ -35,7 +35,7 @@ namespace MVVM.CMD
                     throw new Exception("Не загружена команда " + typeof(TCommand));
                 }
                 var result = typeHandler.Handle(command);
-                if (result) //Если команда успешно обработалась, то сохраняем состояние игры
+                if (result && autoSave) //Если команда успешно обработалась, то сохраняем состояние игры
                 {
                     _gameStateProvider.SaveGameState();
                 }

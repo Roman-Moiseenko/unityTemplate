@@ -90,7 +90,7 @@ namespace Scripts.Game.GameRoot
             // gameStateProvider.LoadSettingsState(); //Загрузили настройки игры  
             
             //Настройки приложения
-            var settingsProvider = new SettingsWebProvider();
+            var settingsProvider = new SettingsProviderWeb();
             _rootContainer.RegisterInstance<ISettingsProvider>(settingsProvider);
             
 

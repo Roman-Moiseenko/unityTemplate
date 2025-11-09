@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Game.Common;
 using Game.GameRoot.Services;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.State.Maps.Towers;
 using Game.State.Root;
 using Newtonsoft.Json;
 using R3;
@@ -12,7 +13,7 @@ using UnityEngine.Networking;
 
 namespace Game.Settings
 {
-    public class SettingsWebProvider : ISettingsProvider
+    public class SettingsProviderWeb : ISettingsProvider
     {
         public GameSettings GameSettings => _gameSettings;
         public ApplicationSettings ApplicationSettings { get; }
@@ -21,7 +22,7 @@ namespace Game.Settings
         private readonly Coroutines _coroutines;
         private ReactiveProperty<string> _response = new();
         
-        public SettingsWebProvider()
+        public SettingsProviderWeb()
         {
             ApplicationSettings = Resources.Load<ApplicationSettings>("ApplicationSettings");
             _webService = new WebService();
@@ -40,19 +41,24 @@ namespace Game.Settings
             var state = new LoadingState();
 
             //TODO WEB!!!
-            
+            var userId = PlayerPrefs.GetString(AppConstants.USER_ID);
+            var userToken = PlayerPrefs.GetString(AppConstants.USER_TOKEN);
             _gameSettings = Resources.Load<GameSettings>("GameSettings");
-            var t = new GameSettingsWeb();
-            t.TowersSettings.AllTowers.Add(new TowerSettingsWeb());
-            var s = JsonConvert.SerializeObject(t);
-            var d = JsonConvert.DeserializeObject<GameSettingsWeb>(s);
-            var formData = new WWWForm();
-            formData.AddField("data", s);
-            _coroutines.StartCoroutine(_webService.SaveDataToServer(WebConstants.WEB_SETTINGS_TEST, formData));
+            
+            _coroutines.StartCoroutine(LoadTextFromServer(WebConstants.WEB_SETTINGS, userToken, userId));
             //Debug.Log(s);
             state.Set("Загружаем настройки игры");
+            _response.Skip(1).Subscribe(v =>
+            {
 
-            state.Loaded = true;
+               // Debug.Log(v);
+                //var t = JsonConvert.DeserializeObject<GameSettingsWeb>(v);
+               // _gameSettings = JsonConvert.DeserializeObject<GameSettingsWeb>(v);
+                //Debug.Log(t);
+                state.Loaded = true;
+            });
+
+            //state.Loaded = true;
 
             return Observable.Return(state);
         }

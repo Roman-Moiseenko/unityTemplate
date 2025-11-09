@@ -24,13 +24,13 @@ namespace MVVM.CMD
          * Сохранение процесса игры возможно будет нужно не везде, тогда можно создать
          * 2 процедуры: Process и ProcessNotSave / ProcessSave, либо добавить 2 параметр (..., bool saved = false) 
          */
-        public bool Process<TCommand>(TCommand command) where TCommand : ICommand
+        public bool Process<TCommand>(TCommand command, bool autoSave = true) where TCommand : ICommand
         {
             if (_handlesMap.TryGetValue(typeof(TCommand), out var handler))
             {
                 var typeHandler = (ICommandHandler<TCommand>)handler;
                 var result = typeHandler.Handle(command);
-                if (result) //Если команда успешно обработалась, то сохраняем состояние сессии игры
+                if (result && autoSave) //Если команда успешно обработалась, то сохраняем состояние сессии игры
                 {
                     _gameStateProvider.SaveGameplayState();
                 }

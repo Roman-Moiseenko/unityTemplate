@@ -8,32 +8,32 @@ namespace Game.Settings.Gameplay.Entities.Tower
     
     public class TowerSettingsWeb
     {
-        public string ConfigId { get; private set; }
-        public string TitleLid { get; private set; }
-        public string DescriptionLid { get; private set; }
-        public string PrefabPath { get; private set; }
-        public bool OnRoad { get; private set; }
-        public bool MultiShot { get; private set; } //Массовый урон всем в области действия
-        public TowerTypeEnemy TypeEnemy { get; private set; }
+        public string ConfigId;
+        public string TitleLid;
+        public string DescriptionLid;
+        public string PrefabPath;
+        public bool OnRoad;
+        public bool MultiShot; //Массовый урон всем в области действия
+        public TowerTypeEnemy TypeEnemy;
 
-        public MobDefence Defence { get; private set; }
+        public MobDefence Defence;
 
         //  public string PrefabName { get; private set; }
-        public ShotSettings Shot { get; private set; } = new();
-        public int AvailableWave { get; private set; }
+        public ShotSettings Shot = new();
+        public int AvailableWave;
         
         //Характеристики, которые зависят от уровня (звездочек) в гейплее - не влияют на карточку башни
-        public List<TowerLevelSettings> GameplayLevels { get; private set; } = new();
+        public List<TowerLevelSettings> GameplayLevels = new();
 
         //Базовые значения всех доступных характеристик для карты башни
-        public List<TowerParameterSettings> BaseParameters { get; private set; } = new();
+        public List<TowerParameterSettings> BaseParameters = new();
        // [field: SerializeField] public List<TowerEpicLevelCard> EpicLevels { get; private set; } = new();
         
         //Характеристики, которые растут от уровня карты башни, скорость роста зависит от Эпичности
-        public List<LevelCardParameters> LevelCardParameters { get; private set; } = new();
+        public List<LevelCardParameters> LevelCardParameters = new();
         
         //Характеристики, которые растут только от Эпичности карты башни
-        public List<EpicCardParameters> EpicCardParameters { get; private set; } = new();
+        public List<EpicCardParameters> EpicCardParameters = new();
 
         //Настройки выстрела
     }

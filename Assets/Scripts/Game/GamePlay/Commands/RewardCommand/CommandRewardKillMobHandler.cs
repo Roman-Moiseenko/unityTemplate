@@ -17,12 +17,8 @@ namespace Game.GamePlay.Commands.RewardCommand
         {
             _gameplayState.SoftCurrency.Value += command.SoftCurrency;
             _gameplayState.Progress.Value += command.Progress * CoefRewardProgress;
-//            _gameplayState.Progress.Value += command.Progress * CoefRewardProgress / (_gameplayState.ProgressLevel.CurrentValue + 1);
             
-            //if (command.InventoryData != null) _gameplayState.Inventory.Add(InventoryFactory.CreateInventory(command.InventoryData));
-
             return true;
-
         }
     }
 }

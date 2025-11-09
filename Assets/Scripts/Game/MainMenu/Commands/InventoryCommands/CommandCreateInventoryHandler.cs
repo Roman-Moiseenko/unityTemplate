@@ -41,7 +41,7 @@ namespace Game.MainMenu.Commands.InventoryCommands
                     ConfigId = towerPlan.ConfigId,
                     Amount = towerPlan.Amount
                 };
-                _cmd.Process(commandTowerPlan);
+                _cmd.Process(commandTowerPlan, false);
             }
             
             foreach (var towerCard in towerCards) //Начальные башни из настроек
@@ -54,10 +54,8 @@ namespace Game.MainMenu.Commands.InventoryCommands
                     EpicLevel = towerCard.epicCardLevel,
                     Level = towerCard.Level
                 };
-                _cmd.Process(commandTowerCard);
+                _cmd.Process(commandTowerCard, false);
             }
-            
-
             
             var initialDeck = new DeckCardData(); //Создаем начальную колоду
             var index = 0;
@@ -72,32 +70,8 @@ namespace Game.MainMenu.Commands.InventoryCommands
             }
             _gameState.Inventory.DeckCards.Add(1, new DeckCard(initialDeck));
             
-            ////ДЛЯ ТЕСТА 
-         /*   for (int i = 0; i < 107; i++)
-            {
-                var commandTowerCard2 = new CommandTowerCardAdd
-                {
-                    ConfigId = "Tower01",
-                    EpicLevel = TypeEpicCard.Normal,
-                    Level = 1
-                };
-                _cmd.Process(commandTowerCard2);
-            }
-            for (int i = 0; i < 12; i++)
-            {
-                var commandTowerCard3 = new CommandTowerCardAdd
-                {
-                    ConfigId = "Tower02",
-                    EpicLevel = TypeEpicCard.Normal,
-                    Level = 1
-                };
-                _cmd.Process(commandTowerCard3);
-            }
-            
-            */
             //TODO Начальные навыки из настроек
             //TODO Начальный герой из настроек
-            
             
             
             _gameState.HardCurrency.OnNext(5000);

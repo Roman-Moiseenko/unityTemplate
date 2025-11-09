@@ -41,7 +41,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 Collapse = 0,
                 Obstacle = false
             };
-            _cmd.Process(commandGround);
+            _cmd.Process(commandGround, false);
 
             //Генерируем дороги
             var roadConfigIds = newMapSettings.RoadConfigIds;
@@ -55,18 +55,18 @@ namespace Game.GamePlay.Commands.MapCommand
                 hasWaySecond = false,
                 hasWayDisabled = false
             };
-            _cmd.Process(commandRoads);
+            _cmd.Process(commandRoads, false);
             
             //Добавляем Волны мобов
             for (var i = 0; i < 10; i++)
             {
                 var commandWave = new CommandWaveGenerate(i + 1);
-                _cmd.Process(commandWave);
+                _cmd.Process(commandWave, false);
             }
 
             //Размещаем крепость
             var commandCastle = new CommandCastleCreate();
-            _cmd.Process(commandCastle);
+            _cmd.Process(commandCastle, false);
             _gameplayState.CurrentWave.Value = 0;
             _gameplayState.MapId.OnNext(command.UniqueId);
             _gameplayState.SetTypeGameplay(TypeGameplay.Infinity);
