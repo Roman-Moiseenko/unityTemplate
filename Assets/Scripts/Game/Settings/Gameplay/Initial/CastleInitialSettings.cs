@@ -1,6 +1,6 @@
 ﻿namespace Game.Settings.Gameplay.Initial
 {
-    public class CastleInitialSettingsWeb
+    public class CastleInitialSettings
     {
         public string ConfigId;
         public string TitleLid;

@@ -2,7 +2,6 @@
 
 namespace Game.Settings.Gameplay.Maps
 {
-    [Serializable]
     public class MapInfoStateSettings
     {
 

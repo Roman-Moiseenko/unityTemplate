@@ -5,36 +5,34 @@ using UnityEngine;
 
 namespace Game.Settings.Gameplay.Entities.Tower
 {
-    [CreateAssetMenu(fileName = "TowerSettings",
-        menuName = "Game Settings/Towers/New Tower Settings")]
-    public class TowerSettings : ScriptableObject
+    public class TowerSettings
     {
-        [field: SerializeField] public string ConfigId { get; private set; }
-        [field: SerializeField] public string TitleLid { get; private set; }
-        [field: SerializeField] public string DescriptionLid { get; private set; }
-        [field: SerializeField] public string PrefabPath { get; private set; }
-        [field: SerializeField] public bool OnRoad { get; private set; }
-        [field: SerializeField] public bool MultiShot { get; private set; } //Массовый урон всем в области действия
-        [field: SerializeField] public TowerTypeEnemy TypeEnemy { get; private set; }
+        public string ConfigId;
+        public string TitleLid;
+        public string DescriptionLid;
+        public string PrefabPath;
+        public bool OnRoad;
+        public bool MultiShot; //Массовый урон всем в области действия
+        public TowerTypeEnemy TypeEnemy;
 
-        [field: SerializeField] public MobDefence Defence { get; private set; }
+        public MobDefence Defence;
 
-        //  [field: SerializeField] public string PrefabName { get; private set; }
-        [field: SerializeField] public ShotSettings Shot { get; private set; }
-        [field: SerializeField] public int AvailableWave { get; private set; }
+        //  public string PrefabName { get; private set; }
+        public ShotSettings Shot = new();
+        public int AvailableWave;
         
         //Характеристики, которые зависят от уровня (звездочек) в гейплее - не влияют на карточку башни
-        [field: SerializeField] public List<TowerLevelSettings> GameplayLevels { get; private set; }
+        public List<TowerLevelSettings> GameplayLevels = new();
 
         //Базовые значения всех доступных характеристик для карты башни
-        [field: SerializeField] public List<TowerParameterSettings> BaseParameters { get; private set; }
-       // [field: SerializeField] public List<TowerEpicLevelCard> EpicLevels { get; private set; }
+        public List<TowerParameterSettings> BaseParameters = new();
+        // [field: SerializeField] public List<TowerEpicLevelCard> EpicLevels { get; private set; } = new();
         
         //Характеристики, которые растут от уровня карты башни, скорость роста зависит от Эпичности
-        [field: SerializeField] public List<LevelCardParameters> LevelCardParameters { get; private set; }
+        public List<LevelCardParameters> LevelCardParameters = new();
         
         //Характеристики, которые растут только от Эпичности карты башни
-        [field: SerializeField] public List<EpicCardParameters> EpicCardParameters { get; private set; }
+        public List<EpicCardParameters> EpicCardParameters = new();
 
         //Настройки выстрела
     }

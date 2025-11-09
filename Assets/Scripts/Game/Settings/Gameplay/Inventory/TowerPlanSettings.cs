@@ -4,11 +4,9 @@ using UnityEngine.Serialization;
 
 namespace Game.Settings.Gameplay.Inventory
 {
-    [CreateAssetMenu(fileName = "InventoryInitialSettings", 
-        menuName = "Game Settings/Inventory/New Tower Plan")]
-    public class TowerPlanSettings : ScriptableObject
+    public class TowerPlanSettings
     {
-        [field: SerializeField] public string ConfigId;
-        [field: SerializeField] public int Amount;
+        public string ConfigId;
+        public int Amount;
     }
 }

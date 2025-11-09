@@ -4,12 +4,9 @@ using UnityEngine;
 namespace Game.Settings.Gameplay.Enemies
 {
     
-    [CreateAssetMenu(fileName = "MobsSettings", 
-        menuName = "Game Settings/Enemies/New Mobs Settings")]
-    public class MobsSettings : ScriptableObject
+    public class MobsSettings
     {
-        public List<MobSettings> AllMobs;
-        public List<MobSettings> AllBosses;
-
+        public List<MobSettings> AllMobs = new();
+        public List<MobSettings> AllBosses = new();
     }
 }

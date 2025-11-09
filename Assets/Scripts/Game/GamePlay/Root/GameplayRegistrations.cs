@@ -16,14 +16,11 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Services;
 using Game.GameRoot.Services;
-using Game.MainMenu.Services;
 using Game.Settings;
 using Game.State;
 using MVVM.CMD;
-using MVVM.FSM;
-using Newtonsoft.Json;
 using R3;
-using UnityEngine;
+using Random = System.Random;
 
 namespace Game.GamePlay.Root
 {
@@ -34,6 +31,11 @@ namespace Game.GamePlay.Root
          */
         public static void Register(DIContainer container, GameplayEnterParams gameplayEnterParams)
         {
+            var defaultGroundConfigId = "";
+            var defaultRoadConfigId = "";
+            //Загружаем параметры карт от типа игры 
+
+
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
             var gameState = gameStateProvider.GameState; //TODO Получим кристалы для изменения
 
@@ -45,11 +47,42 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(fsmGameplay);
             var fsmWave = new FsmWave(container);
             container.RegisterInstance(fsmWave);
-            
-           // var subjectExitParams = new Subject<GameplayExitParams>();
-          //  container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
-          //  var generateService = new GenerateService();
-           // container.RegisterInstance(generateService);
+
+
+            switch (gameplayEnterParams.TypeGameplay)
+            {
+                case TypeGameplay.Infinity:
+                {
+                    var random = new Random();
+                    var indexGround = random.Next(gameSettings.MapsSettings.GroundConfigIds.Count);
+                    defaultGroundConfigId = gameSettings.MapsSettings.GroundConfigIds[indexGround];
+                    var indexRoad = random.Next(gameSettings.MapsSettings.RoadConfigIds.Count);
+                    defaultRoadConfigId = gameSettings.MapsSettings.RoadConfigIds[indexRoad];
+                    break;
+                }
+                case TypeGameplay.Levels:
+                {
+                    var newMapSettings =
+                        gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
+                    defaultGroundConfigId = newMapSettings.InitialStateSettings.groundDefault;
+                    defaultRoadConfigId = newMapSettings.InitialStateSettings.roadDefault;
+                    break;
+                }
+                case TypeGameplay.Event:
+
+                    break;
+                case TypeGameplay.Resume:
+
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+
+            // var subjectExitParams = new Subject<GameplayExitParams>();
+            //  container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
+            //  var generateService = new GenerateService();
+            // container.RegisterInstance(generateService);
             //    var cmd = container.Resolve<ICommandProcessor>(); //Создаем обработчик команд
             var cmd = container.Resolve<ICommandProcessor>();
             //var cmd = new CommandProcessorGameplay(gameStateProvider); //Создаем обработчик команд
@@ -62,27 +95,29 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandCreateGroundHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState, gameSettings.TowersSettings));
             cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
-            cmd.RegisterHandler(new CommandCreateWaveHandler(gameSettings, gameplayState, 
+            cmd.RegisterHandler(new CommandCreateWaveHandler(gameSettings, gameplayState,
                 container.Resolve<GenerateService>()));
-            cmd.RegisterHandler(new CommandWaveGenerateHandler(gameSettings, cmd, 
-                            container.Resolve<GenerateService>()));
-            
+            cmd.RegisterHandler(new CommandWaveGenerateHandler(gameSettings, cmd,
+                container.Resolve<GenerateService>()));
+
             cmd.RegisterHandler(new CommandCastleCreateHandler(gameSettings, gameplayState));
             cmd.RegisterHandler(new CommandGroundCreateBaseHandler(cmd));
             cmd.RegisterHandler(new CommandRoadCreateBaseHandler(gameplayState, cmd));
             //Команды создания карт
             cmd.RegisterHandler(new CommandCreateLevelHandler(gameSettings, gameplayState, cmd)); // по уровням 
-            cmd.RegisterHandler(new CommandCreateInfinityHandler(gameSettings, gameplayState, cmd)); // бесконечный            
+
+            if (gameplayEnterParams.TypeGameplay == TypeGameplay.Infinity)
+                cmd.RegisterHandler(new CommandCreateInfinityHandler(gameSettings, gameplayState,
+                    cmd, defaultGroundConfigId, defaultRoadConfigId)); // бесконечный            
             //cmd.RegisterHandler(new CommandCreateEventHandler(gameSettings, gameplayState, cmd)); //евенты            
-            
+
             cmd.RegisterHandler(new CommandRewardKillMobHandler(gameplayState));
             cmd.RegisterHandler(new CommandDeleteTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceRoadHandler(gameplayState));
 
-            var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
-            var groundConfigId = newMapSettings.InitialStateSettings.groundDefault;
-            var roadConfigId = newMapSettings.InitialStateSettings.roadDefault;
+
+            //var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
 
 
             var wayService = new WayService(); //Сервис обсчета дороги
@@ -95,7 +130,7 @@ namespace Game.GamePlay.Root
                 gameplayState.Way,
                 gameplayState.WaySecond,
                 gameplayState.WayDisabled,
-                roadConfigId,
+                defaultRoadConfigId,
                 cmd);
             //Регистрируем сервис по Дорогам
             container.RegisterInstance(roadsService);
@@ -103,7 +138,7 @@ namespace Game.GamePlay.Root
             //Сервис по земле
             container.RegisterFactory(_ => new GroundsService(
                     gameplayState.Grounds,
-                    groundConfigId,
+                    defaultGroundConfigId,
                     cmd
                 )
             ).AsSingle();
@@ -131,21 +166,22 @@ namespace Game.GamePlay.Root
             container.RegisterFactory(_ => new CastleService(container,
                 gameplayState.Castle, gameplayState)).AsSingle();
 
-           // Fsm.Fsm.SetState<FsmStateGamePlay>();
+            // Fsm.Fsm.SetState<FsmStateGamePlay>();
 
             //Сервис наград
             var rewardService = new RewardProgressService(gameplayState, container, gameSettings);
             container.RegisterInstance(rewardService);
 
             var gameplayService = new GameplayService(
-                container.Resolve<Subject<GameplayExitParams>>(), 
+                container.Resolve<Subject<GameplayExitParams>>(),
                 waveService, gameplayState,
                 container.Resolve<AdService>(),
                 fsmGameplay,
                 container.Resolve<ResourceService>(),
                 cmd
-                );
-            container.RegisterInstance(gameplayService); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
+            );
+            container.RegisterInstance(
+                gameplayService); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             //Сервис создания выстрелов
             var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, fsmGameplay);
             container.RegisterInstance(shotService);
@@ -180,14 +216,10 @@ namespace Game.GamePlay.Root
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                
+
                 if (!success) throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
                 fsmGameplay.Fsm.SetState<FsmStateBuildBegin>(); //Устанавливаем начальный режим строительства
-                
             }
-            
-            
         }
-        
     }
 }

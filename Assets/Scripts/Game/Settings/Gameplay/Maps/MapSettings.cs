@@ -1,14 +1,13 @@
-﻿using UnityEngine;
+﻿using Game.Settings.Gameplay.Initial;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Game.Settings.Gameplay.Maps
 {
-    [CreateAssetMenu(fileName = "MapSettings", 
-        menuName = "Game Settings/Maps/New Map Settings")]
-    public class MapSettings: ScriptableObject
+    public class MapSettings
     {
         public int MapId;
-        public MapInitialStateSettings InitialStateSettings;
-        public MapInfoStateSettings InfoStateSettings;
+        public MapInitialStateSettings InitialStateSettings = new();
+        public MapInfoStateSettings InfoStateSettings = new();
     }
 }

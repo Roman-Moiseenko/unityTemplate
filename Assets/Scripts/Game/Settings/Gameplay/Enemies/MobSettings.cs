@@ -4,33 +4,32 @@ using UnityEngine;
 
 namespace Game.Settings.Gameplay.Enemies
 {
-    [CreateAssetMenu(fileName = "MobSettings", 
-        menuName = "Game Settings/Enemies/New Mob Settings")]
-    public class MobSettings : ScriptableObject
+    public class MobSettings
     {
-        [field: SerializeField] public string ConfigId { get; private set; }
-        [field: SerializeField] public string TitleLid { get; private set; }
-        [field: SerializeField] public string DescriptionLid { get; private set; }
-      //  [field: SerializeField] public MobType Type { get; private set; }
-        
-        [field: SerializeField] public string PrefabPath { get; private set; }
+        public string ConfigId;
+        public string TitleLid;
 
-       // [field: SerializeField] public float Speed { get; private set; }
-        [field: SerializeField] public float SpeedMove { get; private set; }
-        [field: SerializeField] public float SpeedAttack { get; private set; }
-        [field: SerializeField] public bool IsFly { get; private set; }
-        [field: SerializeField] public int AvailableWave{ get; private set; }
+        public string DescriptionLid;
+        //  public MobType Type { get; private set; }
 
-        [field: SerializeField] public float Health { get; private set; }
-        [field: SerializeField] public float Armor { get; private set; }
-        [field: SerializeField] public float Attack { get; private set; }
-        [field: SerializeField] public int RewardCurrency { get; private set; }       
-        [field: SerializeField] public MobDefence Defence { get; private set; }
+        public string PrefabPath;
+
+        // public float Speed { get; private set; }
+        public float SpeedMove;
+        public float SpeedAttack;
+        public bool IsFly;
+        public int AvailableWave;
+
+        public float Health;
+        public float Armor;
+        public float Attack;
+        public int RewardCurrency;
+
+        public MobDefence Defence;
+
         //Кол-во мобов на 1 единицу
-        [field: SerializeField] public int Count { get; private set; } = 1; 
-        //[field: SerializeField] public MobParameters BaseParameters  { get; private set; }
-     //   [field: SerializeField] public List<MobParameters> Parameters { get; private set; }
-        
-
+        public int Count = 1;
+        //public MobParameters BaseParameters  { get; private set; }
+        //   public List<MobParameters> Parameters { get; private set; }
     }
 }

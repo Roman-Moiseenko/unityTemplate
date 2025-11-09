@@ -4,10 +4,8 @@ using UnityEngine.Serialization;
 
 namespace Game.Settings.Gameplay.Entities.Tower
 {
-    [CreateAssetMenu(fileName = "TowersSettings", 
-        menuName = "Game Settings/Towers/New Towers Settings")]
-    public class TowersSettings : ScriptableObject
+    public class TowersSettings
     {
-        public List<TowerSettings> AllTowers;
+        public List<TowerSettings> AllTowers = new();
     }
 }

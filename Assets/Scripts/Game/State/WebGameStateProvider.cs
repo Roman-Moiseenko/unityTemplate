@@ -105,7 +105,6 @@ namespace Game.State
                 var gameplayStateOrigin = JsonConvert.DeserializeObject<GameplayState>(json);
                 GameplayState = new GameplayStateProxy(gameplayStateOrigin);
             }
-            Debug.Log(GameplayState);
             return Observable.Return(GameplayState);
         }
 

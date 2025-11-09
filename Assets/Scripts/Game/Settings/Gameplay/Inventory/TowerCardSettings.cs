@@ -4,12 +4,10 @@ using UnityEngine.Serialization;
 
 namespace Game.Settings.Gameplay.Inventory
 {
-    [CreateAssetMenu(fileName = "InventoryInitialSettings", 
-        menuName = "Game Settings/Inventory/New Tower Card")]
-    public class TowerCardSettings : ScriptableObject
+    public class TowerCardSettings
     {
-        [field: SerializeField] public string ConfigId;
-        [field: SerializeField] public TypeEpicCard epicCardLevel;
-        [field: SerializeField] public int Level;
+        public string ConfigId;
+        public TypeEpicCard epicCardLevel;
+        public int Level;
     }
 }

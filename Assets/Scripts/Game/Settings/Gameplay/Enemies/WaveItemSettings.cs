@@ -3,7 +3,6 @@ using UnityEngine.Serialization;
 
 namespace Game.Settings.Gameplay.Enemies
 {
-    [Serializable]
     public class WaveItemSettings
     {
         public int Quantity; //Кол-во мобов в пакете

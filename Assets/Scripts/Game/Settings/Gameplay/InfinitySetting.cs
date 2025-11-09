@@ -2,7 +2,6 @@
 
 namespace Game.Settings.Gameplay
 {
-    [Serializable]
     public class InfinitySetting
     {
         public float ratioCurveWave = 2;//Коэф.роста сложности волны от ее номера

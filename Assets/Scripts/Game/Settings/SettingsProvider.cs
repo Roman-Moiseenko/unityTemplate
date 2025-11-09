@@ -20,7 +20,7 @@ namespace Game.Settings
         {
             var state = new LoadingState();
 
-            _gameSettings = Resources.Load<GameSettings>("GameSettings");
+           // _gameSettings = Resources.Load<GameSettings>("GameSettings");
             
             state.Set("Загружаем настройки игры");
 

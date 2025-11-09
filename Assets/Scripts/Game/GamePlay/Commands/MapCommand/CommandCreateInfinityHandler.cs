@@ -6,7 +6,6 @@ using Game.GamePlay.Commands.WaveCommands;
 using Game.Settings;
 using Game.State.Root;
 using MVVM.CMD;
-using UnityEngine;
 
 namespace Game.GamePlay.Commands.MapCommand
 {
@@ -15,43 +14,40 @@ namespace Game.GamePlay.Commands.MapCommand
         private readonly GameSettings _gameSettings;
         private readonly GameplayStateProxy _gameplayState;
         private readonly ICommandProcessor _cmd;
+        private readonly string _defaultGroundConfigId;
+        private readonly string _defaultRoadConfigId;
 
         public CommandCreateInfinityHandler(GameSettings gameSettings,
-            GameplayStateProxy gameplayState, ICommandProcessor cmd
+            GameplayStateProxy gameplayState, ICommandProcessor cmd, 
+            string defaultGroundConfigId, 
+            string defaultRoadConfigId
         )
         {
             _gameSettings = gameSettings;
             _gameplayState = gameplayState;
             _cmd = cmd;
+            _defaultGroundConfigId = defaultGroundConfigId;
+            _defaultRoadConfigId = defaultRoadConfigId;
         }
 
         public bool Handle(CommandCreateInfinity command)
         {
             //Генерируем поверхность
-            var newMapSettings = _gameSettings.MapsSettings;
-            var groundConfigIds = newMapSettings.GroundConfigIds;
-            var index = Mathf.Min(
-                (int)Mathf.Ceil(Mathf.Abs(Random.insideUnitSphere.x) * groundConfigIds.Count),
-                groundConfigIds.Count - 1
-            );
+
             var commandGround = new CommandGroundCreateBase
             {
                 IsSmall = false,
-                GroundConfigId = groundConfigIds[index],
+                GroundConfigId = _defaultGroundConfigId,
                 Collapse = 0,
                 Obstacle = false
             };
             _cmd.Process(commandGround, false);
 
             //Генерируем дороги
-            var roadConfigIds = newMapSettings.RoadConfigIds;
-            index = Mathf.Min(
-                (int)Mathf.Ceil(Mathf.Abs(Random.insideUnitSphere.x) * roadConfigIds.Count),
-                roadConfigIds.Count - 1
-            );
+
             var commandRoads = new CommandRoadCreateBase
             {
-                RoadConfigId = roadConfigIds[index],
+                RoadConfigId = _defaultRoadConfigId,
                 hasWaySecond = false,
                 hasWayDisabled = false
             };

@@ -39,11 +39,10 @@ namespace Game.Settings
             };
             
             var state = new LoadingState();
-
-            //TODO WEB!!!
+            
             var userId = PlayerPrefs.GetString(AppConstants.USER_ID);
             var userToken = PlayerPrefs.GetString(AppConstants.USER_TOKEN);
-            _gameSettings = Resources.Load<GameSettings>("GameSettings");
+            //_gameSettings = Resources.Load<GameSettings>("GameSettings");
             
             _coroutines.StartCoroutine(LoadTextFromServer(WebConstants.WEB_SETTINGS, userToken, userId));
             //Debug.Log(s);
@@ -53,7 +52,7 @@ namespace Game.Settings
 
                // Debug.Log(v);
                 //var t = JsonConvert.DeserializeObject<GameSettingsWeb>(v);
-               // _gameSettings = JsonConvert.DeserializeObject<GameSettingsWeb>(v);
+               _gameSettings = JsonConvert.DeserializeObject<GameSettings>(v);
                 //Debug.Log(t);
                 state.Loaded = true;
             });

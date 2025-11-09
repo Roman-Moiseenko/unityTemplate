@@ -4,14 +4,12 @@ using UnityEngine.Serialization;
 
 namespace Game.Settings.Gameplay.Maps
 {
-    [CreateAssetMenu(fileName = "MapsSettings", 
-        menuName = "Game Settings/Maps/New Maps Settings")]
-    public class MapsSettings : ScriptableObject
+    public class MapsSettings
     {
-        public List<MapSettings> Maps;
-        public List<string> GroundConfigIds;
-        public List<string> RoadConfigIds;
+        public List<MapSettings> Maps = new();
+        public List<string> GroundConfigIds = new();
+        public List<string> RoadConfigIds = new();
 
-        public InfinitySetting InfinitySetting;
+        public InfinitySetting InfinitySetting = new();
     }
 }

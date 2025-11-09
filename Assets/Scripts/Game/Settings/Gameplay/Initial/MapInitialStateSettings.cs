@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.Settings.Gameplay.Enemies;
 
 namespace Game.Settings.Gameplay.Initial
 {
-    public class MapInitialStateSettingsWeb
+    public class MapInitialStateSettings
     {
-        public List<TowerInitialSettingsWeb> Towers = new();
+        public List<TowerInitialSettings> Towers = new();
         public List<WaveSettings> Waves = new();
         
         public string groundDefault;
