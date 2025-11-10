@@ -14,15 +14,24 @@ namespace Game.State.Inventory.Chests
 
         public ReactiveProperty<long> StartOpening;
         public ReactiveProperty<int> CellOpening;
-
+        
+        public Subject<Unit> UpdateData = new();
         public ContainerChests(ContainerChestsData chestsData)
         {
             Origin = chestsData;
             StartOpening = new ReactiveProperty<long>(chestsData.StartOpening);
-            StartOpening.Subscribe(newValue => chestsData.StartOpening = newValue);
+            StartOpening.Subscribe(newValue =>
+            {
+                chestsData.StartOpening = newValue;
+                UpdateData.OnNext(Unit.Default);
+            });
             //Debug.Log("chestsData.CellOpening = " + chestsData.CellOpening);
             CellOpening = new ReactiveProperty<int>(chestsData.CellOpening);
-            CellOpening.Subscribe(newValue => chestsData.CellOpening = newValue);
+            CellOpening.Subscribe(newValue =>
+            {
+                chestsData.CellOpening = newValue;
+                UpdateData.OnNext(Unit.Default);
+            });
             
             Chests = new ObservableDictionary<int, Chest>();
             foreach (var (cell, chestData) in chestsData.Chests)
@@ -35,20 +44,22 @@ namespace Game.State.Inventory.Chests
                 var cell = e.Value.Key;
                 var chest = e.Value.Value;
                 chestsData.Chests.Add(cell, chest.Origin);
+                UpdateData.OnNext(Unit.Default);
             });
             
             Chests
                 .ObserveRemove()
-                .Subscribe(e => { chestsData.Chests.Remove(e.Value.Key); });
-            
+                .Subscribe(e =>
+                {
+                    chestsData.Chests.Remove(e.Value.Key);
+                    UpdateData.OnNext(Unit.Default);
+                });
         }
 
         public Chest OpeningChest()
         {
             return CellOpening.CurrentValue == 0 ? null : Chests[CellOpening.CurrentValue];
         }
-
-        
         
     }
 }

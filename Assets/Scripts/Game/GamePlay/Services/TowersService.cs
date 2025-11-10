@@ -47,7 +47,6 @@ namespace Game.GamePlay.Services
         */
         public TowersService(
             GameplayStateProxy gameplayState,
-            
             TowersSettings towersSettings,
             List<TowerCardData> baseTowerCards, //Базовые настройки колоды
             ICommandProcessor cmd,
@@ -62,7 +61,7 @@ namespace Game.GamePlay.Services
             _placementService = placementService;
             GameSpeed = gameplayState.GameSpeed;
             //Кешируем настройки зданий / объектов
-
+            
             foreach (var towerSettings in towersSettings.AllTowers)
             {
                 _towerSettingsMap[towerSettings.ConfigId] = towerSettings.GameplayLevels;
@@ -83,9 +82,7 @@ namespace Game.GamePlay.Services
                 {
                     param.Add(parameterData.Key, parameterData.Value.GetCopy());
                 }
-
                 TowerParametersMap.Add(towerCardData.ConfigId, param);
-
                 for (var i = 1; i <= Levels[towerCardData.ConfigId]; i++)
                 {
                     UpdateParams(towerCardData.ConfigId, i); //Увеличиваем параметры по геймплей уровню башни
@@ -104,7 +101,6 @@ namespace Game.GamePlay.Services
                 var towerEntity = e.Value;
                 towerEntity.Level.Value = Levels[towerEntity.ConfigId]; //Устанавливаем уровень апгрейда
                 towerEntity.Parameters = TowerParametersMap[towerEntity.ConfigId];
-
                 CreateTowerViewModel(towerEntity); //Создаем View Model
             });
             //Если у сущности изменился уровень, меняем его и во вью-модели

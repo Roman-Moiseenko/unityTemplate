@@ -21,43 +21,37 @@ namespace Game.Settings
         private readonly WebService _webService;
         private readonly Coroutines _coroutines;
         private ReactiveProperty<string> _response = new();
-        
+
         public SettingsProviderWeb()
         {
             ApplicationSettings = Resources.Load<ApplicationSettings>("ApplicationSettings");
             _webService = new WebService();
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
         }
-        
+
         public Observable<LoadingState> LoadGameSettings()
         {
-            
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
             {
                 TypeNameHandling = TypeNameHandling.Auto,
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
             };
-            
+
             var state = new LoadingState();
-            
+
             var userId = PlayerPrefs.GetString(AppConstants.USER_ID);
             var userToken = PlayerPrefs.GetString(AppConstants.USER_TOKEN);
             //_gameSettings = Resources.Load<GameSettings>("GameSettings");
-            
+
             _coroutines.StartCoroutine(LoadTextFromServer(WebConstants.WEB_SETTINGS, userToken, userId));
-            //Debug.Log(s);
+
             state.Set("Загружаем настройки игры");
             _response.Skip(1).Subscribe(v =>
             {
-
-               // Debug.Log(v);
-                //var t = JsonConvert.DeserializeObject<GameSettingsWeb>(v);
-               _gameSettings = JsonConvert.DeserializeObject<GameSettings>(v);
-                //Debug.Log(t);
+                //Debug.Log(v);
+                _gameSettings = JsonConvert.DeserializeObject<GameSettings>(v);
                 state.Loaded = true;
             });
-
-            //state.Loaded = true;
 
             return Observable.Return(state);
         }
@@ -66,7 +60,7 @@ namespace Game.Settings
         {
             yield return null;
         }
-        
+
         private IEnumerator LoadTextFromServer(string url, string token, string userId)
         {
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
@@ -74,7 +68,7 @@ namespace Game.Settings
                 TypeNameHandling = TypeNameHandling.Auto,
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple
             };
-            
+
             _response.Value = null;
             var formData = new WWWForm();
             formData.AddField("user_id", userId);
@@ -101,17 +95,16 @@ namespace Game.Settings
             var userId = PlayerPrefs.GetString(AppConstants.USER_ID);
             var userToken = PlayerPrefs.GetString(AppConstants.USER_TOKEN);
             yield return null;
-            
+
             formData.AddField("user_id", userId);
             var request = UnityWebRequest.Post(url, formData);
             request.SetRequestHeader("authorization", $"Bearer {userToken}");
             yield return request.SendWebRequest();
             if (request.result != UnityWebRequest.Result.Success)
                 Debug.Log("web ERROR = " + request.downloadHandler.text);
-            
+
 
             request.Dispose();
         }
-        
     }
 }

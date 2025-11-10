@@ -88,6 +88,11 @@ namespace Game.State
         }
         
         //Данные игрока и игры
+        public Observable<LoadingState> CheckWebAvailable()
+        {
+            throw new NotImplementedException();
+        }
+
         public Observable<LoadingState> LoadGameState()
         {
             var state = new LoadingState();

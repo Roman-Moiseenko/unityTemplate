@@ -26,7 +26,8 @@ namespace Game.State.Root
 
         public ContainerChestsData ContainerChests { get; set; } = new();
        // public Dictionary<int, ChestEntityData> Chests = new();
-        
+
+       public DateTime DateVersion { get; set; } = new();
         public int CreateInventoryID()
         {
             return GlobalInventoryId++;

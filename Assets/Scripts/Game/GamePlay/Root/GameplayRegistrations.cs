@@ -19,7 +19,9 @@ using Game.GameRoot.Services;
 using Game.Settings;
 using Game.State;
 using MVVM.CMD;
+using Newtonsoft.Json;
 using R3;
+using UnityEngine;
 using Random = System.Random;
 
 namespace Game.GamePlay.Root
@@ -42,6 +44,8 @@ namespace Game.GamePlay.Root
             var gameplayState = gameStateProvider.GameplayState;
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
+            
+
             //Регистрируем машину состояния
             var fsmGameplay = new FsmGameplay(container);
             container.RegisterInstance(fsmGameplay);

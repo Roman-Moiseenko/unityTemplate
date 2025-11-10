@@ -1,4 +1,5 @@
-﻿using Game.State.Inventory;
+﻿using System;
+using Game.State.Inventory;
 using Game.State.Inventory.Chests;
 using ObservableCollections;
 using R3;
@@ -23,6 +24,8 @@ namespace Game.State.Root
 
         public InventoryRoot Inventory { get; set; }
         public ContainerChests ContainerChests { get; set; }
+        
+        
 
         //public ObservableDictionary<int, Chest> ListChests;
 
@@ -36,18 +39,34 @@ namespace Game.State.Root
             GameSpeed.Subscribe(newValue =>
             {
                 gameState.GameSpeed = newValue;
+                UpdateDateVersion();
                 Debug.Log($"Сохраняем скорость игры в GameState = {newValue}");
             });
             SoftCurrency = new ReactiveProperty<long>(gameState.SoftCurrency);
-            SoftCurrency.Subscribe(newValue => gameState.SoftCurrency = newValue);
+            SoftCurrency.Subscribe(newValue =>
+            {
+                gameState.SoftCurrency = newValue;
+                UpdateDateVersion();
+            });
 
             HardCurrency = new ReactiveProperty<int>(gameState.HardCurrency);
-            HardCurrency.Subscribe(newValue => gameState.HardCurrency = newValue);
+            HardCurrency.Subscribe(newValue =>
+            {
+                gameState.HardCurrency = newValue;
+                UpdateDateVersion();
+            });
 
             Inventory = new InventoryRoot(gameState.Inventory);
             ContainerChests = new ContainerChests(gameState.ContainerChests);
-            CurrentMapId.Subscribe(newValue => { gameState.CurrentMapId = newValue; });
-            
+            CurrentMapId.Subscribe(newValue =>
+            {
+                gameState.CurrentMapId = newValue;
+                UpdateDateVersion();
+            });
+
+            Inventory.UpdateData.Subscribe(_ => UpdateDateVersion());
+            ContainerChests.UpdateData.Subscribe(_ => UpdateDateVersion());
+
         }
 
         private void InitResource(GameState gameState)
@@ -95,5 +114,11 @@ namespace Game.State.Root
             //TODO Сохранить данные!!!!!
             return true;
         }
+
+        private void UpdateDateVersion()
+        {
+            Origin.DateVersion = DateTime.Now;
+        }
+        
     }
 }

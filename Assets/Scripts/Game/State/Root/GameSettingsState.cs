@@ -10,5 +10,7 @@ namespace Game.State.Root
         
         public int MusicVolume;
         public int SFXVolume;
+
+        public DateTime DateVersion;
     }
 }

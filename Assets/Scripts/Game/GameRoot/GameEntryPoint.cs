@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using DI;
 using Game.Common;
@@ -17,6 +19,7 @@ using R3;
 using Scripts.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace Scripts.Game.GameRoot
 {
@@ -133,10 +136,20 @@ namespace Scripts.Game.GameRoot
             yield return LoadScene(Scenes.BOOT);
             yield return LoadScene(Scenes.MAINMENU);
             yield return new WaitForSeconds(1);
+
             //Загружаем пользователя
             var provider = _rootContainer.Resolve<IGameStateProvider>();
             
             var loadedSettings = new LoadingState();
+
+            provider.CheckWebAvailable().Subscribe(v => loadedSettings = v);
+            while (!loadedSettings.Loaded)
+            {
+                _uiRoot.TextLoadingFirst(loadedSettings.TextState.CurrentValue);
+                yield return null;
+            }
+            Debug.Log("Check Available");
+            
             provider.LoadSettingsState().Subscribe(v => loadedSettings = v);
             while (!loadedSettings.Loaded)
             {
@@ -219,8 +232,7 @@ namespace Scripts.Game.GameRoot
                             .ResetGameplayState(); //При выходе сбрасываем данные
                 }
             });
-
-
+            
             _uiRoot.HideLoadingScreen();
         }
 

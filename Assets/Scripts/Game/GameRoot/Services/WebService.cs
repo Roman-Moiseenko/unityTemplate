@@ -19,6 +19,16 @@ namespace Game.GameRoot.Services
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
         }
 
+        public IEnumerator CheckWeb(Action<bool> callback)
+        {
+            var request = UnityWebRequest.Get(WebConstants.WEB_CHECK);
+            request.SetRequestHeader("authorization", $"Bearer {WebConstants.BASE_TOKEN}");
+            yield return request.SendWebRequest();
+            callback(request.result == UnityWebRequest.Result.Success);
+            
+            request.Dispose();
+        }
+
         public IEnumerator LoadTextFromServer(string url, string token, string userId, Action<string> callback)
         {
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings()

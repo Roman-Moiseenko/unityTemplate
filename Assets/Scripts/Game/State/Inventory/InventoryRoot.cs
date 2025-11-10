@@ -5,6 +5,7 @@ using Game.State.Maps.Rewards;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+using DeckCard = Game.State.Inventory.Deck.DeckCard;
 
 
 namespace Game.State.Inventory
@@ -15,8 +16,10 @@ namespace Game.State.Inventory
         public ObservableDictionary<int, DeckCard> DeckCards { get; set; } //Колоды карт
         public ReactiveProperty<int> BattleDeck;
         public IObservableCollection<InventoryItem> Items => _items;
-
+        
         private readonly ObservableList<InventoryItem> _items = new();
+
+        public Subject<Unit> UpdateData = new();
 
         public InventoryRoot(InventoryRootData rootData)
         {
@@ -27,7 +30,11 @@ namespace Game.State.Inventory
                 var itemEntity = InventoryFactory.CreateInventory(itemData);
                 itemEntity.Amount
                     .Where(x => x == 0)
-                    .Subscribe(_ => _items.Remove(itemEntity));
+                    .Subscribe(_ =>
+                    {
+                        _items.Remove(itemEntity);
+                        UpdateData.OnNext(Unit.Default);
+                    });
                 
                 _items.Add(itemEntity);
             }
@@ -37,13 +44,26 @@ namespace Game.State.Inventory
                 var itemEntity = e.Value;
                 itemEntity.Amount
                     .Where(x => x == 0)
-                    .Subscribe(_ => _items.Remove(itemEntity));
+                    .Subscribe(_ =>
+                    {
+                        _items.Remove(itemEntity);
+                        UpdateData.OnNext(Unit.Default);
+                    });
                 Origin.Items.Add(e.Value.Origin);
             });
-            _items.ObserveRemove().Subscribe(e => { Origin.Items.Remove(e.Value.Origin); });
+            _items.ObserveRemove().Subscribe(e =>
+            {
+                Origin.Items.Remove(e.Value.Origin);
+                UpdateData.OnNext(Unit.Default);
+            });
 
             BattleDeck = new ReactiveProperty<int>(rootData.BattleDeck);
-            BattleDeck.Subscribe(newValue => rootData.BattleDeck = newValue);
+            BattleDeck.Subscribe(newValue =>
+            {
+                rootData.BattleDeck = newValue;
+                UpdateData.OnNext(Unit.Default);
+            });
+            
             DeckCards = new ObservableDictionary<int, DeckCard>();
 
             foreach (var keyValue in rootData.DeckCards)
@@ -51,8 +71,16 @@ namespace Game.State.Inventory
                 DeckCards.Add(keyValue.Key, new DeckCard(keyValue.Value));
             }
 
-            DeckCards.ObserveAdd().Subscribe(e => { rootData.DeckCards.Add(e.Value.Key, e.Value.Value.Origin); });
-            DeckCards.ObserveRemove().Subscribe(e => { rootData.DeckCards.Remove(e.Value.Key); });
+            DeckCards.ObserveAdd().Subscribe(e =>
+            {
+                rootData.DeckCards.Add(e.Value.Key, e.Value.Value.Origin);
+                UpdateData.OnNext(Unit.Default);
+            });
+            DeckCards.ObserveRemove().Subscribe(e =>
+            {
+                rootData.DeckCards.Remove(e.Value.Key);
+                UpdateData.OnNext(Unit.Default);
+            });
         }
 
         public void AddItem(InventoryItemData item)

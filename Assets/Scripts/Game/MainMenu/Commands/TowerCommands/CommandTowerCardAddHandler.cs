@@ -27,7 +27,6 @@ namespace Game.MainMenu.Commands.TowerCommands
             
             if (towerConfig == null) throw new Exception($"towerConfig = {command.ConfigId}  Not Find");
 
-            
             var initialTowerCard = new TowerCardData
             {
                 UniqueId = _gameState.CreateInventoryID(),

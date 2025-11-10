@@ -9,5 +9,9 @@
         public int UniqueId { get; set; }
         public string Name { get; set; }
 
+        public T As<T>() where T : InventoryItemData
+        {
+            return (T)this;
+        }
     }
 }

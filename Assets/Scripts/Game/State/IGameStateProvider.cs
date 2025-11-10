@@ -16,6 +16,8 @@ namespace Game.State
          */
         public GameStateProxy GameState { get; } //Данные игрока
 
+        public Observable<LoadingState> CheckWebAvailable();
+        
         public Observable<LoadingState> LoadGameState();
         //public Observable<GameStateProxy> LoadGameState();
         public Observable<bool> SaveGameState();

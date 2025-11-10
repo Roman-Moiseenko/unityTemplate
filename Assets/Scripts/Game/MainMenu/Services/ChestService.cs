@@ -273,7 +273,7 @@ namespace Game.MainMenu.Services
             
             //Генерируем награды
             var reward = GenerateRewards(chest);
-            Debug.Log(JsonConvert.SerializeObject(reward, Formatting.Indented));
+            //Debug.Log(JsonConvert.SerializeObject(reward, Formatting.Indented));
             //Команда открытия сундука с наградами (сохраняем награды, удаляем сундук)
             var command = new CommandChestOpen(); 
             command.Rewards = reward;

@@ -32,10 +32,26 @@ namespace Game.State.Inventory.TowerCards
                 Parameters.Add(parameter.Key, new TowerParameter(parameter.Value));
             }
 
+            Parameters.ObserveAdd().Subscribe(e =>
+            {
+                var key = e.Value.Key;
+                var value = e.Value.Value;
+                Origin.As<TowerCardData>().Parameters.Add(key, value.Origin);
+            });
+            Parameters.ObserveRemove().Subscribe(e =>
+            {
+                var key = e.Value.Key;
+                Origin.As<TowerCardData>().Parameters.Remove(key);
+            });
+            Parameters.ObserveClear().Subscribe(_ =>
+            {
+                Origin.As<TowerCardData>().Parameters.Clear();
+            });
             Parameters.ObserveChanged().Subscribe(newValue =>
             {
                 var ket = newValue.NewItem.Key;
                 var value = newValue.NewItem.Value;
+               // Debug.Log($"{ket} + {value}");
                 //TODO Протестить, может и не понадобится
             });
 

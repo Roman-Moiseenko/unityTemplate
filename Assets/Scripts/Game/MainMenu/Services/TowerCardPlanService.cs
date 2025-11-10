@@ -11,6 +11,7 @@ using Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.State;
 using Game.State.Inventory;
 using Game.State.Inventory.Deck;
 using Game.State.Inventory.TowerCards;
@@ -35,14 +36,16 @@ namespace Game.MainMenu.Services
         private readonly ObservableList<TowerPlanViewModel> _allTowerPlans = new();
         private readonly Dictionary<int, TowerCardViewModel> _towerCardsMap = new();
         private readonly Dictionary<int, TowerPlanViewModel> _towerPlansMap = new();
-        
+
         private readonly Dictionary<string, TowerSettings> _towerSettingsMap = new();
         private readonly DeckCard _currentDeck;
 
         public IObservableCollection<TowerCardViewModel> AllTowerCards =>
             _allTowerCards; //Интерфейс менять нельзя, возвращаем через динамический массив
+
         public IObservableCollection<TowerPlanViewModel> AllTowerPlans =>
             _allTowerPlans; //Интерфейс менять нельзя, возвращаем через динамический массив
+
         public TowerCardPlanService(
             InventoryRoot inventoryRoot,
             TowersSettings towersSettings,
@@ -50,17 +53,23 @@ namespace Game.MainMenu.Services
             DIContainer container
         )
         {
+       //     var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
+         //   var gameState = gameStateProvider.GameState;
+            
             _inventoryRoot = inventoryRoot;
             _items = inventoryRoot.Items;
             _cmd = cmd;
             _container = container;
             _currentDeck = _inventoryRoot.GetCurrentDeckCard();
-            
+
             //Кешируем настройки зданий / обектов
             foreach (var towerSettings in towersSettings.AllTowers)
             {
                 _towerSettingsMap[towerSettings.ConfigId] = towerSettings;
             }
+        //    Debug.Log(JsonConvert.SerializeObject(_towerSettingsMap, Formatting.Indented));
+
+         //   Debug.Log(JsonConvert.SerializeObject(_items, Formatting.Indented));
 
             foreach (var item in _items)
             {
@@ -68,14 +77,21 @@ namespace Game.MainMenu.Services
                 {
                     towerCard.EpicLevel.Skip(1).Subscribe(e => UpdateParameterTowerCard(towerCard));
                     towerCard.Level.Subscribe(e => UpdateParameterTowerCard(towerCard));
+                    UpdateParameterTowerCard(towerCard);
                     CreateTowerCardViewModel(towerCard);
+
                 }
+
                 if (item is TowerPlan towerPlan)
                 {
                     CreateTowerPlanViewModel(towerPlan);
                 }
             }
+            //Debug.Log(JsonConvert.SerializeObject(_items, Formatting.Indented));
+        //    Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.Items, Formatting.Indented));
 
+            var command = new CommandSaveGameState();
+            cmd.Process(command);
             _items.ObserveAdd().Subscribe(e =>
             {
                 if (e.Value is TowerCard towerCard)
@@ -84,11 +100,11 @@ namespace Game.MainMenu.Services
                     towerCard.Level.Subscribe(_ => UpdateParameterTowerCard(towerCard));
                     CreateTowerCardViewModel(towerCard); //Создаем View Model
                 }
+
                 if (e.Value is TowerPlan towerPlan)
                 {
                     CreateTowerPlanViewModel(towerPlan);
                 }
-                
             });
             //Если у сущности изменился уровень, меняем его и во вью-модели
             _items.ObserveRemove().Subscribe(e =>
@@ -96,22 +112,17 @@ namespace Game.MainMenu.Services
                 if (e.Value is TowerCard towerCard) RemoveTowerCardViewModel(towerCard);
                 if (e.Value is TowerPlan towerPlan) RemoveTowerPlanViewModel(towerPlan);
             });
-            
+
             foreach (var deckTowerCardId in _currentDeck.TowerCardIds)
             {
                 ChangeDeckTowerCardViewModel(deckTowerCardId.Value);
             }
-            
-            _currentDeck.TowerCardIds.ObserveAdd().Subscribe(e =>
-            {
-                ChangeDeckTowerCardViewModel(e.Value.Value);
-            });
-            _currentDeck.TowerCardIds.ObserveRemove().Subscribe(e =>
-            {
-                ChangeDeckTowerCardViewModel(e.Value.Value);
-            });
-          //  Debug.Log(JsonConvert.SerializeObject(_allTowerCards[3].NumberCardDeck, Formatting.Indented));
+
+            _currentDeck.TowerCardIds.ObserveAdd().Subscribe(e => { ChangeDeckTowerCardViewModel(e.Value.Value); });
+            _currentDeck.TowerCardIds.ObserveRemove().Subscribe(e => { ChangeDeckTowerCardViewModel(e.Value.Value); });
+            //  Debug.Log(JsonConvert.SerializeObject(_allTowerCards[3].NumberCardDeck, Formatting.Indented));
         }
+
         public void ChangeDeckTowerCard(int uniqueId)
         {
             var towerView = _allTowerCards.FirstOrDefault(t => t.IdTowerCard == uniqueId)!;
@@ -127,11 +138,11 @@ namespace Game.MainMenu.Services
                 towerView.NumberCardDeck = _currentDeck.PushToDeck(uniqueId);
                 towerView.IsDeck.OnNext(true);
             }
-            
+
             var command = new CommandSaveGameState();
             _cmd.Process(command);
         }
-        
+
         private void ChangeDeckTowerCardViewModel(int uniqueId)
         {
             var towerView = _allTowerCards.FirstOrDefault(t => t.IdTowerCard == uniqueId)!;
@@ -145,6 +156,7 @@ namespace Game.MainMenu.Services
                     return;
                 }
             }
+
             towerView.IsDeck.Value = false;
         }
 
@@ -170,11 +182,11 @@ namespace Game.MainMenu.Services
         private void CreateTowerCardViewModel(TowerCard towerCard)
         {
             var towerCardViewModel = new TowerCardViewModel(
-                towerCard, 
-                _towerSettingsMap[towerCard.ConfigId], 
+                towerCard,
+                _towerSettingsMap[towerCard.ConfigId],
                 this,
                 _container
-                ); //3
+            ); //3
 
             //TODO Проверить находится ли карта в колоде
             _allTowerCards.Add(towerCardViewModel); //4
@@ -192,14 +204,16 @@ namespace Game.MainMenu.Services
                 _towerCardsMap.Remove(towerCard.UniqueId);
             }
         }
+
         private void CreateTowerPlanViewModel(TowerPlan towerPlan)
         {
-            var towerPlanViewModel = new TowerPlanViewModel(towerPlan, 
-                _towerSettingsMap[towerPlan.ConfigId], 
+            var towerPlanViewModel = new TowerPlanViewModel(towerPlan,
+                _towerSettingsMap[towerPlan.ConfigId],
                 _container);
             _allTowerPlans.Add(towerPlanViewModel); //4
             _towerPlansMap[towerPlan.UniqueId] = towerPlanViewModel;
         }
+
         private void RemoveTowerPlanViewModel(TowerPlan towerPlan)
         {
             if (_towerPlansMap.TryGetValue(towerPlan.UniqueId, out var towerPlanViewModel))
@@ -208,27 +222,37 @@ namespace Game.MainMenu.Services
                 _towerPlansMap.Remove(towerPlan.UniqueId);
             }
         }
-        
+
         /**
          * Пересчитываем параметры башни в зависимости от уровня и эпичности
          */
         public void UpdateParameterTowerCard(TowerCard towerCard)
         {
-        //    var epic = towerCard.EpicLevel.Value;
-        //    var level = towerCard.Level.Value;
-        
+            //    var epic = towerCard.EpicLevel.Value;
+            //    var level = towerCard.Level.Value;
+
             var settings = _towerSettingsMap[towerCard.ConfigId];
-        
-        //    Debug.Log(towerCard.ConfigId);
+            
+
+            towerCard.Parameters.Clear();
+            foreach (var baseParameter in settings.BaseParameters)
+            {
+                towerCard.Parameters.Add(baseParameter.ParameterType, new TowerParameter(new TowerParameterData(baseParameter)));
+            }
+            
+            //Debug.Log(JsonConvert.SerializeObject(towerCard.Parameters, Formatting.Indented));
+
+            //TODO Пересчет от базовых параметров 
             foreach (var keyValue in towerCard.Parameters)
             {
-              //  Debug.Log(keyValue.Key);
+                //  Debug.Log(keyValue.Key);
                 var towerParam = keyValue.Value;
                 //Возвращаем базовое значение
-                towerParam.Value.Value = settings.BaseParameters.FirstOrDefault(p => p.ParameterType == towerParam.ParameterType)!.Value;
-             //   Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
+                towerParam.Value.Value =
+                    settings.BaseParameters.FirstOrDefault(p => p.ParameterType == towerParam.ParameterType)!.Value;
+                //   Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
 
-             //   Debug.Log(towerCard.EpicLevel.CurrentValue);
+                //   Debug.Log(towerCard.EpicLevel.CurrentValue);
                 //Обсчет эпичности
                 var epicCardParam = settings.EpicCardParameters.Find(p => p.ParameterType == towerParam.ParameterType);
                 if (epicCardParam != null)
@@ -237,24 +261,25 @@ namespace Game.MainMenu.Services
                     foreach (var epicParameter in epicCardParam.EpicParameters)
                     {
                         if (towerCard.EpicLevel.CurrentValue.Index() < epicParameter.Level.Index()) break;
-                  //      Debug.Log(epicParameter.Level);
+                        //      Debug.Log(epicParameter.Level);
                         towerParam.Value.Value *= (1 + epicParameter.Percent / 100);
-                  //      Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
+                        //      Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
                         if (epicParameter.Level == towerCard.EpicLevel.CurrentValue) break;
                     }
                 }
-            //    Debug.Log("2 towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
+
+                //    Debug.Log("2 towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
                 //Увеличиваем значения от уровня карты, если параметр изменчив
                 var levelParam = settings.LevelCardParameters.Find(p => p.ParameterType == towerParam.ParameterType);
                 if (levelParam != null)
                 {
-                   // Debug.Log(JsonConvert.SerializeObject(levelParam, Formatting.Indented));
-                    
+                    // Debug.Log(JsonConvert.SerializeObject(levelParam, Formatting.Indented));
+
                     var rateEpic = Mathf.Pow(levelParam.PowEpic, towerCard.EpicLevel.Value.Index()); //Коэф.роста
-           //         Debug.Log("rateEpic = " + rateEpic);
-           //         Debug.Log("towerCard.Level.Value = " + towerCard.Level.Value);
+                    //         Debug.Log("rateEpic = " + rateEpic);
+                    //         Debug.Log("towerCard.Level.Value = " + towerCard.Level.Value);
                     towerParam.Value.Value += rateEpic * levelParam.BaseValue * (towerCard.Level.Value - 1);
-          //          Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
+                    //          Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
                 }
                 /*
                 if (towerCard.Parameters.TryGetValue(keyValue.Key, out var towerParameter))
@@ -263,8 +288,8 @@ namespace Game.MainMenu.Services
                     towerParameter.Value.Value = settings.BaseParameters.FirstOrDefault(
                         param => param.ParameterType == keyValue.Key
                     )!.Value;
-                    //Проходим все эпичные уровни и обсчитываем значения 
-                    
+                    //Проходим все эпичные уровни и обсчитываем значения
+
                     foreach (TypeEpicCard typeEpic in Enum.GetValues(typeof(TypeEpicCard)))
                     {
                         //Получаем настройки для уровня typeEpic
@@ -283,22 +308,21 @@ namespace Game.MainMenu.Services
                     }
 
                     //Рассчитываем для уровня Level
-                    
-                    
+
+
                     var levelUpgrade = settings.EpicLevels.FirstOrDefault(e => e.Level == epic)?.LevelCardParameters
                         .FirstOrDefault(e => e.ParameterType == keyValue.Key);
                     if (levelUpgrade != null)
                     {
                         towerParameter.Value.Value += levelUpgrade.Value * (level - 1);
-                    } 
+                    }
                 }
 
 */
-
             }
 
-       //     Debug.Log("UpdateParameterTowerCard для " + towerCard.UniqueId + $" ({towerCard.ConfigId})");
-      //      Debug.Log(JsonConvert.SerializeObject(towerCard.Parameters, Formatting.Indented));
+            //     Debug.Log("UpdateParameterTowerCard для " + towerCard.UniqueId + $" ({towerCard.ConfigId})");
+            //      Debug.Log(JsonConvert.SerializeObject(towerCard.Parameters, Formatting.Indented));
         }
 
 
@@ -332,23 +356,21 @@ namespace Game.MainMenu.Services
             UpdateParameterTowerCard(towerCardAfter);
 
             viewModel.Parameters.Add(
-                "МАКС.УРОВЕНЬ", 
+                "МАКС.УРОВЕНЬ",
                 new Vector2(towerCard.EpicLevel.Value.MaxLevel(), towerCardAfter.EpicLevel.Value.MaxLevel())
             );
-            
+
             foreach (var valuePair in towerCard.Parameters)
             {
                 if (!towerCardAfter.Parameters.TryGetValue(valuePair.Key, out var valueAfter))
                     throw new Exception("Ошибка");
-                
+
                 if (!Mathf.Approximately(valuePair.Value.Value.CurrentValue, valueAfter.Value.CurrentValue))
-                    viewModel.Parameters.Add(valuePair.Key.GetString(), 
+                    viewModel.Parameters.Add(valuePair.Key.GetString(),
                         new Vector2(valuePair.Value.Value.CurrentValue, valueAfter.Value.CurrentValue));
             }
-            
+
             return viewModel;
-
         }
-
     }
 }
