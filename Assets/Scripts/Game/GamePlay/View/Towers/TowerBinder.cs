@@ -67,10 +67,10 @@ namespace Game.GamePlay.View.Towers
                         {
                             case true:
                                 animator.SetBool("IsFire", true);
-                                Debug.Log(viewModel.Position.CurrentValue);
+                                //Debug.Log(viewModel.Position.CurrentValue);
                                 break;
                             case false:
-                                Debug.Log("StartCoroutine");
+                                //Debug.Log("StartCoroutine");
                                 StartCoroutine(PauseTowerFire());
                                 break;
                         }

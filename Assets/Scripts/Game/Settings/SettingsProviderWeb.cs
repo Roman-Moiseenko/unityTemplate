@@ -48,8 +48,9 @@ namespace Game.Settings
             state.Set("Загружаем настройки игры");
             _response.Skip(1).Subscribe(v =>
             {
-                //Debug.Log(v);
+//                Debug.Log(v);
                 _gameSettings = JsonConvert.DeserializeObject<GameSettings>(v);
+                //Debug.Log(JsonConvert.SerializeObject(_gameSettings.MapsSettings.Maps, Formatting.Indented));
                 state.Loaded = true;
             });
 

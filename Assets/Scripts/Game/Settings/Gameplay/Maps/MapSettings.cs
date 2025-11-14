@@ -9,5 +9,6 @@ namespace Game.Settings.Gameplay.Maps
         public int MapId;
         public MapInitialStateSettings InitialStateSettings = new();
         public MapInfoStateSettings InfoStateSettings = new();
+        public MapRewardSetting MapRewardSetting = new();
     }
 }

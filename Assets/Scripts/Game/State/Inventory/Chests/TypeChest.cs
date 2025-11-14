@@ -4,7 +4,7 @@
     {
         Silver,
         Gold,
-        Ruby,
-        Diamond
+        Epic,
+        Legend
     }
 }

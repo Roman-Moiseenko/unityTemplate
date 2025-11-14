@@ -10,8 +10,8 @@ namespace Game.State.Inventory.Chests
             {
                 TypeChest.Silver => "Серебрянный сундук",
                 TypeChest.Gold => "Золотой сундук",
-                TypeChest.Ruby => "Рубиновый сундук",
-                TypeChest.Diamond => "Алмазный сундук",
+                TypeChest.Epic => "Рубиновый сундук",
+                TypeChest.Legend => "Алмазный сундук",
                 null => "Нет места под сундук",
                 _ => ""
             };
@@ -23,8 +23,8 @@ namespace Game.State.Inventory.Chests
             {
                 TypeChest.Silver => 3,
                 TypeChest.Gold => 8 ,
-                TypeChest.Ruby => 12,
-                TypeChest.Diamond => 24,
+                TypeChest.Epic => 12,
+                TypeChest.Legend => 24,
                 _ => 0
             };
         }
@@ -35,8 +35,20 @@ namespace Game.State.Inventory.Chests
             {
                 TypeChest.Silver => 10,
                 TypeChest.Gold => 12,
-                TypeChest.Ruby => 15,
-                TypeChest.Diamond => 20,
+                TypeChest.Epic => 15,
+                TypeChest.Legend => 20,
+                _ => 0
+            };
+        }
+        
+        public static int GetRandom(this TypeChest type)
+        {
+            return type switch
+            {
+                TypeChest.Silver => 55,
+                TypeChest.Gold => 30,
+                TypeChest.Epic => 10,
+                TypeChest.Legend => 5,
                 _ => 0
             };
         }

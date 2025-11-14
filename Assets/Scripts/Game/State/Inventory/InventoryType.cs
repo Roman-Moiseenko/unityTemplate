@@ -7,6 +7,8 @@
         SkillCard,
         SkillPlan,
         HeroCard,
+        SoftCurrency,
+        HardCurrency,
         Other, //Используется только для отображения ???
     }
 }

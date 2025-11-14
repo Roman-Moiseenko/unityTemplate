@@ -39,7 +39,11 @@ namespace Game.MainMenu.Services
             
             enterParams.TypeChest = _chestService.AddChestInfinity(enterParams.LastWave);
         }
-        
+
+        public void LevelsRewardGamePlay(MainMenuEnterParams enterParams)
+        {
+            //TODO 
+        }
         
         public void RewardToItem(RewardEntityData rewardEntityData)
         {

@@ -113,7 +113,7 @@ namespace Game.GamePlay.Services
             //Алгоритм настройки получения награды
             //Частота получения награды из настроек - каждую 5 волну
 
-            var waveReward = _gameSettings.MapsSettings.InfinitySetting.rateRewardEntity;
+            var waveReward = _gameSettings.MapsSettings.CommonSetting.rateRewardEntity;
             var waveCurrent = _gameplayState.CurrentWave.CurrentValue;
             if (waveCurrent % waveReward != 0) return;
 

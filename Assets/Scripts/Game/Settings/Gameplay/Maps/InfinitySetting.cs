@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Game.Settings.Gameplay
+﻿namespace Game.Settings.Gameplay.Maps
 {
     public class InfinitySetting
     {
@@ -9,6 +7,5 @@ namespace Game.Settings.Gameplay
         public float rateLevelMob = 10f; //Через сколько волн увеличивается лвл мобов
         public int rateBoss = 10; //Частота появления босса
         public float ratioPower = 1f; //Усиление мобов
-        public int rateRewardEntity = 5; //Через сколько волн выдается награда карточкой или чертежом
     }
 }

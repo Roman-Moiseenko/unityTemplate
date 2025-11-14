@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.State.GameStates;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
 using ObservableCollections;
@@ -23,10 +24,9 @@ namespace Game.State.Root
         public ReactiveProperty<long> SoftCurrency;
 
         public InventoryRoot Inventory { get; set; }
+        public MapStates MapStates { get; set; }
         public ContainerChests ContainerChests { get; set; }
         
-        
-
         //public ObservableDictionary<int, Chest> ListChests;
 
 
@@ -64,6 +64,9 @@ namespace Game.State.Root
                 UpdateDateVersion();
             });
 
+            MapStates = new MapStates(gameState.MapStatesData);
+
+            MapStates.UpdateData.Subscribe(_ => UpdateDateVersion());
             Inventory.UpdateData.Subscribe(_ => UpdateDateVersion());
             ContainerChests.UpdateData.Subscribe(_ => UpdateDateVersion());
 

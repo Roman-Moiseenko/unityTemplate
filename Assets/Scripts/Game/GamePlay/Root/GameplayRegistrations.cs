@@ -182,7 +182,9 @@ namespace Game.GamePlay.Root
                 container.Resolve<AdService>(),
                 fsmGameplay,
                 container.Resolve<ResourceService>(),
-                cmd
+                cmd,
+                gameState,
+                gameSettings.MapsSettings
             );
             container.RegisterInstance(
                 gameplayService); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры

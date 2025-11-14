@@ -6,5 +6,6 @@ namespace Game.State.Maps.Rewards
     {
         public string ConfigId;
         public InventoryType RewardType;
+        public int Amount = 0;
     }
 }

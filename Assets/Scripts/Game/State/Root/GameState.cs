@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 //using Game.State.Entities.Buildings;
 using Game.State.GameResources;
+using Game.State.GameStates;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
 using Game.State.Inventory.Deck;
@@ -21,6 +22,7 @@ namespace Game.State.Root
      //   public List<ResourceData> Resources { get; set; } = new();
         public InventoryRootData Inventory { get; set; } = new();
         
+        public MapStatesData MapStatesData { get; set; } = new();
         public int HardCurrency { get; set; }
         public long SoftCurrency { get; set; }
 

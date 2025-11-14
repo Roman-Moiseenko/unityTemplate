@@ -18,6 +18,9 @@ namespace Game.MainMenu.Root
         public int MapId { get; set; }
         public int KillsMob { get; set; }
         public TypeGameplay TypeGameplay { get; set; }
+
+        public int LastRewardOnWave { get; set; }
+        public TypeChest? LastRewardChest { get; set; }
         /**
          * Награда сундуком, № ячейки, или 0 если нет места
          */
@@ -25,7 +28,8 @@ namespace Game.MainMenu.Root
 
         public List<InventoryItemData> Items = new (); 
         public List<RewardEntityData> RewardCards = new (); //Список карт - наград
-        
+        public List<RewardEntityData> RewardOnWave = new (); //Список карт - наград
+
 
         public MainMenuEnterParams(string result)
         {
@@ -33,5 +37,6 @@ namespace Game.MainMenu.Root
             SoftCurrency = 0;
             Result = result;
         }
+        
     }
 }

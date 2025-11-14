@@ -11,5 +11,6 @@ namespace Game.Settings.Gameplay.Maps
         public List<string> RoadConfigIds = new();
 
         public InfinitySetting InfinitySetting = new();
+        public CommonSetting CommonSetting = new();
     }
 }

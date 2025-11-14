@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using DI;
@@ -11,7 +12,10 @@ using Game.GameRoot.ImageManager;
 using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.Settings;
+using Game.Settings.Gameplay.Maps;
 using Game.State;
+using Game.State.Inventory;
+using Game.State.Inventory.Chests;
 using Game.State.Root;
 using MVVM.CMD;
 using Newtonsoft.Json;
@@ -35,6 +39,25 @@ namespace Scripts.Game.GameRoot
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void AutostartGame()
         {
+/*
+            var d = new MapRewardSetting();
+            var l = new List<RewardItem>();
+            l.Add(new RewardItem
+            {
+                ConfigId = "Tower01",
+                Type = InventoryType.TowerCard,
+                Amount = 1,
+            });
+            l.Add(new RewardItem
+            {
+                ConfigId = "",
+                Type = InventoryType.SoftCurrency,
+                Amount = 9999,
+            });
+            //d.RewardOnWave.Add(10, l);
+            d.RewardChest.Add(TypeChest.Legend, l);
+            Debug.Log(JsonConvert.SerializeObject(d, Formatting.Indented));
+            */
             /**
              * Системные настройки
              * FPS и др.

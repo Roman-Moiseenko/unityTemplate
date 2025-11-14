@@ -1,5 +1,8 @@
-﻿using Game.MainMenu.View.ScreenPlay.Chests;
+﻿using System.Collections.Generic;
+using Game.MainMenu.View.ScreenPlay.Chests;
+using Game.MainMenu.View.ScreenPlay.MapsGo;
 using MVVM.UI;
+using R3;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -9,27 +12,53 @@ namespace Game.MainMenu.View.ScreenPlay
     public class ScreenPlayBinder : WindowBinder<ScreenPlayViewModel>
     {
         [SerializeField] private Button btnInfinityBattle;
-        [SerializeField] private Button _btnResumeGame;
+      //  [SerializeField] private Button _btnResumeGame;
         [SerializeField] private ChestsBinder chests;
+        [SerializeField] private MapCardContainerBinder mapCards;
 
-
+        private readonly Subject<int> _startLevelGame = new();
+        
+        private readonly Dictionary<int, MapCardBinder> _createdMapCardMap = new();
+        
         protected override void OnBind(ScreenPlayViewModel viewModel)
         {
             base.OnBind(viewModel);
             chests.Bind(viewModel.ChestsViewModel);
+
+            mapCards.Bind();
+            //Создаем все карточки карт в меню
+            foreach (var mapViewModel in viewModel.MapCards)
+            {
+                CreateMapCard(mapViewModel);
+            }
+
+            _startLevelGame
+                .Where(x => x > 0)
+                .Subscribe(mapId => ViewModel.RequestBattleGame(mapId));
             
         }
 
+        private void CreateMapCard(MapCardViewModel viewModel)
+        {
+            var prefabMapCardPath =
+                $"Prefabs/UI/MainMenu/ScreenPlay/MapCard";
+            var mapPrefab = Resources.Load<MapCardBinder>(prefabMapCardPath);
+            var createdMap = Instantiate(mapPrefab, mapCards.content.GetComponent<Transform>());
+            createdMap.Bind(viewModel, _startLevelGame);
+            _createdMapCardMap[viewModel.MapId] = createdMap;
+        }
+        
+        
         private void OnEnable()
         {
             btnInfinityBattle.onClick.AddListener(OnResumeInfinityBattleClicked);
-            _btnResumeGame.onClick.AddListener(OnResumeGameButtonClicked);
+        //    _btnResumeGame.onClick.AddListener(OnResumeGameButtonClicked);
         }
 
         private void OnDisable()
         {
             btnInfinityBattle.onClick.RemoveListener(OnResumeInfinityBattleClicked);
-            _btnResumeGame.onClick.RemoveListener(OnResumeGameButtonClicked);
+        //    _btnResumeGame.onClick.RemoveListener(OnResumeGameButtonClicked);
         }
 
         private void OnBeginGameButtonClicked()
@@ -49,8 +78,6 @@ namespace Game.MainMenu.View.ScreenPlay
             {
                 //TODO Попап с ошибкой . Не назначены карты, скилы или герой, или не потратили что то еще
             }
-
-            
         }
     }
 }

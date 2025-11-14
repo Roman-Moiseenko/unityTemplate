@@ -69,8 +69,6 @@ namespace Game.MainMenu.Root
 
             cmd.RegisterHandler(new CommandTowerPlanAddHandler(gameState));
             cmd.RegisterHandler(new CommandTowerPlanSpendHandler(gameState));
-
-            
             
             //
             container.RegisterFactory(_ => new InventoryService(cmd, gameState, chestService)).AsSingle();
@@ -95,6 +93,15 @@ namespace Game.MainMenu.Root
                 //Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.BattleDeck, Formatting.Indented));
             }
             //TODO Загружаем настройки и другое с сервера. Либо перенести в GameRoot 
+            
+            //Сервисы для play screen
+            var mapService = new MapCardService(
+                gameState,
+                gameSettings.MapsSettings,
+                cmd,
+                container
+                );
+            container.RegisterInstance(mapService);
 
             //Сервисы карточек
 
@@ -105,6 +112,7 @@ namespace Game.MainMenu.Root
                 container
             );
             container.RegisterInstance(towerCardService);
+            
             //TODO Запускаем первоначальные проверки
             chestService.StartOpeningChests(); //Проверка на открывающиеся и открытые сундуки, меняем TimerLeft
             

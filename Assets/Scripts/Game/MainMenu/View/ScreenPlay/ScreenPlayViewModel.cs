@@ -4,8 +4,10 @@ using Game.GamePlay.Root;
 using Game.MainMenu.Root;
 using Game.MainMenu.Services;
 using Game.MainMenu.View.ScreenPlay.Chests;
+using Game.MainMenu.View.ScreenPlay.MapsGo;
 using Game.State;
 using MVVM.UI;
+using ObservableCollections;
 using R3;
 
 namespace Game.MainMenu.View.ScreenPlay
@@ -24,6 +26,9 @@ namespace Game.MainMenu.View.ScreenPlay
         public override string Id => "ScreenPlay";
         public override string Path => "MainMenu/ScreenPlay/";
         
+        public IObservableCollection<MapCardViewModel> MapCards;
+        
+        
         public ScreenPlayViewModel(
             MainMenuUIManager uiManager, 
             Subject<MainMenuExitParams> exitSceneRequest,
@@ -35,8 +40,10 @@ namespace Game.MainMenu.View.ScreenPlay
             _exitSceneRequest = exitSceneRequest;
             _exitParamsService = exitParamsService;
             _container = container;
+            var mapCardService = container.Resolve<MapCardService>();
             var gameState = container.Resolve<IGameStateProvider>().GameState;
             ChestsViewModel = new ChestsViewModel(gameState, container);
+            MapCards = mapCardService.AllMaps;
 
         }
 
@@ -75,6 +82,15 @@ namespace Game.MainMenu.View.ScreenPlay
            // mainMenuExitParams.TargetSceneEnterParams.As<GameplayEnterParams>().HasSessionGameplay = true;
 
             _exitSceneRequest.OnNext(mainMenuExitParams);
+        }
+
+        public void RequestBattleGame(int mapId)
+        {
+            var mainMenuExitParams = _exitParamsService.GetExitParams(TypeGameplay.Levels, mapId);
+            //TODO проверка на колоду return false;
+            _container.Resolve<IGameStateProvider>().ResetGameplayState();
+            _exitSceneRequest.OnNext(mainMenuExitParams);
+            
         }
     }
 }

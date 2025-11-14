@@ -205,8 +205,8 @@ namespace Game.MainMenu.Services
             var levelChest = lastWave / 100 + 1;
             var epic = lastWave switch
             {
-                100 => TypeChest.Diamond,
-                > 60 => TypeChest.Ruby,
+                100 => TypeChest.Legend,
+                > 60 => TypeChest.Epic,
                 > 30 => TypeChest.Gold,
                 _ => TypeChest.Silver
             };

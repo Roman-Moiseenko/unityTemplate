@@ -46,6 +46,8 @@ namespace Game.MainMenu.Root
                 if (enterParams.TypeGameplay == TypeGameplay.Infinity) inventory.InfinityRewardGamePlay(enterParams);
                 //enterParams сохраняет дополнительные данные, для передачи в popup
 
+                if (enterParams.TypeGameplay == TypeGameplay.Levels) inventory.LevelsRewardGamePlay(enterParams);
+                    
                 
                 //Сохраняем параметры/настройки для следующих геймплеев
                 var gameProvider = mainMenuContainer.Resolve<IGameStateProvider>();

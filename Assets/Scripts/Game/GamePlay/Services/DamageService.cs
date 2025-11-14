@@ -239,7 +239,7 @@ namespace Game.GamePlay.Services
                     //towerEntity.IsShot.Value = true;
                     //TODO Запускаем поворот Передать вектор моба
                     towerEntity.PrepareShot.OnNext(mobPosition); //
-                    Debug.Log("Выстрел " + towerEntity.UniqueId);
+//                      Debug.Log("Выстрел " + towerEntity.UniqueId);
                     towerEntity.IsShot.Value = true;
                     cacheMobEntity = mobEntity;
                     break;

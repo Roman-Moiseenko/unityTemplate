@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Game.GamePlay.Services;
 using Game.GameRoot.Services;
 using Game.Settings;
-using Game.Settings.Gameplay;
+using Game.Settings.Gameplay.Maps;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Waves;
 using Game.State.Root;
@@ -17,9 +16,6 @@ namespace Game.GamePlay.Commands.WaveCommands
         private readonly GameplayStateProxy _gameplayState;
         private readonly GenerateService _generateService;
         private readonly InfinitySetting _infinitySetting;
-
-        //  private readonly GenerateService _generateService;
-        // private readonly ICommandProcessor _cmd;
 
         public CommandCreateWaveHandler(GameSettings gameSettings, GameplayStateProxy gameplayState,
             GenerateService generateService)
