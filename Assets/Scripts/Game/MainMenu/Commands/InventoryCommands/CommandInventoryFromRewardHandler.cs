@@ -1,4 +1,5 @@
-﻿using Game.MainMenu.Commands.SoftCurrency;
+﻿using Game.GameRoot.Commands.HardCurrency;
+using Game.MainMenu.Commands.SoftCurrency;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.State.Inventory;
 using Game.State.Root;
@@ -22,7 +23,9 @@ namespace Game.MainMenu.Commands.InventoryCommands
         {
             switch (command.InventoryType)
             {
-                case InventoryType.Other when command.ConfigId == "Currency":
+                
+                
+                case InventoryType.SoftCurrency:
                 {
                     var commandReward = new CommandSoftCurrencyAdd()
                     {
@@ -32,6 +35,17 @@ namespace Game.MainMenu.Commands.InventoryCommands
                     _cmd.Process(commandReward);
                     return true;
                 }
+                case InventoryType.HardCurrency:
+                {
+                    var commandReward = new CommandAddHardCurrency()
+                    {
+                        Value = command.Amount
+                    };
+
+                    _cmd.Process(commandReward);
+                    return true;
+                }
+                
                 case InventoryType.TowerPlan:
                 {
                     var commandReward = new CommandTowerPlanAdd()

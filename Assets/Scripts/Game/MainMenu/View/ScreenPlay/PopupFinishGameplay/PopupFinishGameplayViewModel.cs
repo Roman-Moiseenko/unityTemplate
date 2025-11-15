@@ -30,7 +30,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
             var gold = new Dictionary<string, long>();
             gold.Add("Currency", enterParams.SoftCurrency);
             
-            _rewards.Add(InventoryType.Other, gold);
+            _rewards.Add(InventoryType.SoftCurrency, gold);
             
             foreach (var rewardCard in enterParams.RewardCards)
             {

@@ -126,20 +126,55 @@ namespace Game.GamePlay.Services
         public void Lose() //private
         {
             var menuParams = GetMainMenuParams(false);
-            menuParams.TypeChest = GetTypeChestLose();
+            menuParams.TypeChest = GetTypeChestLose(menuParams.LastWave, out var rewardChest);
+            menuParams.LastRewardChest = rewardChest;
 
             var exitParams = new GameplayExitParams(menuParams);
             _exitSceneRequest.OnNext(exitParams);
         }
 
-        private TypeChest? GetTypeChestLose()
+        private TypeChest? GetTypeChestLose(int lastWave, out TypeChest lastRewardChest)
         {
-            throw new NotImplementedException();
+            lastRewardChest = TypeChest.Silver;
+            if (_gameState.MapStates.Maps.TryGetValue(_gameplayState.MapId.CurrentValue, out var mapState))
+            {
+                var mapFinished = mapState.Finished.CurrentValue;
+                lastRewardChest = mapState.RewardChest.CurrentValue;
+                if (mapFinished) return TypeChest.Silver;
+            }
+
+            var map = _mapsSettings.Maps[_gameplayState.MapId.CurrentValue];
+            var rewardChests = map.MapRewardSetting.RewardChest;
+            var maxWave = map.InitialStateSettings.Waves.Count;
+ 
+            var coef = lastWave * 1.0f / maxWave;
+            
+            if (rewardChests.Count == 3 && coef > 0.5f && lastRewardChest == TypeChest.Silver)
+            {
+                lastRewardChest = TypeChest.Gold;
+                return TypeChest.Gold;
+            }
+
+            if (rewardChests.Count == 4)
+            {
+                if (coef is > 0.33f and < 0.66f && lastRewardChest == TypeChest.Silver)
+                {
+                    lastRewardChest = TypeChest.Gold;
+                    return TypeChest.Gold;
+                }
+                
+                if (coef >= 0.66f && lastRewardChest != TypeChest.Epic)
+                {
+                    lastRewardChest = TypeChest.Epic;
+                    return TypeChest.Epic;
+                }
+            }
+            return TypeChest.Silver;
         }
 
         private TypeChest GetTypeChestWin(out TypeChest? lastRewardChest)
         {
-            lastRewardChest = null;
+          //  lastRewardChest = null;
             var rewardChests = _mapsSettings.Maps[_gameplayState.MapId.CurrentValue].MapRewardSetting.RewardChest;
             var maxChest = TypeChest.Silver;
             var maxValueRandom = 0;

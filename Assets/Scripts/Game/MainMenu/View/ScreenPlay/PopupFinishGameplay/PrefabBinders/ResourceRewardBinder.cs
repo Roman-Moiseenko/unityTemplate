@@ -28,13 +28,17 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders
                 imageBack.sprite = imageManager.GetOther("InventoryBackTower");
                 imageCard.sprite = imageManager.GetTowerPlan(viewModel.ConfigId);
             }
-
-            if (viewModel.InventoryType == InventoryType.Other)
+            
+            if (viewModel.InventoryType == InventoryType.SoftCurrency)
             {
                 imageBack.sprite = imageManager.GetOther("InventoryBackOther");
-                imageCard.sprite = imageManager.GetOther(viewModel.ConfigId);
+                imageCard.sprite = imageManager.GetOther("Currency");
             }
-
+            if (viewModel.InventoryType == InventoryType.HardCurrency)
+            {
+                imageBack.sprite = imageManager.GetOther("InventoryBackOther");
+                imageCard.sprite = imageManager.GetOther("Crystal");
+            }
             textAmount.text = $"x{Func.CurrencyToStr(viewModel.Amount)}";
 
         }

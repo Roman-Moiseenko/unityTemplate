@@ -203,6 +203,8 @@ namespace Scripts.Game.GameRoot
             //Регистрируем общие команды и сервисы, зависимые от gameStateProvider
             _rootContainer.Resolve<ICommandProcessor>()
                 .RegisterHandler(new CommandSpendHardCurrencyHandler(provider.GameState));
+            _rootContainer.Resolve<ICommandProcessor>()
+                .RegisterHandler(new CommandAddHardCurrencyHandler(provider.GameState));
             
             //Применяем настройки пользователя к игре
             _uiRoot.TextLoadingFirst("Регистрируем настройки");

@@ -112,18 +112,24 @@ namespace Game.MainMenu.Services
         /**
          * Предварительный список возможных наград из Сундука
          */
+        
+        //TODO Переделать список наград из Сундука
         public Dictionary<InventoryType, Dictionary<string, int>> GetListRewards(Chest chest)
         {
+            
+            
+            
+            
             var list = new Dictionary<InventoryType, Dictionary<string, int>>();
             //TODO Награды
             const int baseGoldRatio = 1000;
             //1 Gold
-            var goldAmount = chest.Level * chest.TypeChest.GetIndex() * baseGoldRatio;
+            var goldAmount = chest.Level * chest.TypeChest.GetRatioReward() * baseGoldRatio;
             var gold = new Dictionary<string, int>();
             gold.Add("Currency", goldAmount);
-            list.Add(InventoryType.Other, gold);
+            list.Add(InventoryType.SoftCurrency, gold);
             //Чертежи Башен
-            var towerPlanAmount = chest.Level * chest.TypeChest.GetIndex();
+            var towerPlanAmount = chest.Level * chest.TypeChest.GetRatioReward();
             var towerPlan = new Dictionary<string, int>();
             towerPlan.Add("UnKnow", towerPlanAmount);
             list.Add(InventoryType.TowerPlan, towerPlan);
@@ -140,12 +146,12 @@ namespace Game.MainMenu.Services
             //TODO Запускаем команды сохранения наград
             const int baseGoldRatio = 1000;
             //1 Gold
-            var goldAmount = chest.Level * chest.TypeChest.GetIndex() * baseGoldRatio;
+            var goldAmount = chest.Level * chest.TypeChest.GetRatioReward() * baseGoldRatio;
             var gold = new Dictionary<string, int>();
             gold.Add("Currency", goldAmount);
-            list.Add(InventoryType.Other, gold);
+            list.Add(InventoryType.SoftCurrency, gold);
             //Чертежи Башен
-            var towerPlanAmount = chest.Level * chest.TypeChest.GetIndex();
+            var towerPlanAmount = chest.Level * chest.TypeChest.GetRatioReward();
             //TODO Берем из доступных чертежей все Конфиги, распределяем случайное кол-во наград
 
             var listConfig = new List<string>();

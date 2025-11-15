@@ -50,12 +50,17 @@ namespace Game.MainMenu.Root
             cmd.RegisterHandler(new CommandChestAddHandler(gameState));
             cmd.RegisterHandler(new CommandChestOpenedHandler(gameState));
             cmd.RegisterHandler(new CommandChestOpenHandler(gameState, cmd));
-            cmd.RegisterHandler(new CommandInventoryFromRewardHandler(cmd));
+            
+            
+            
             cmd.RegisterHandler(new CommandChestForcedHandler(gameState));
             //INVENTORY
             cmd.RegisterHandler(new CommandCreateInventoryHandler(gameState, gameSettings, cmd));
             cmd.RegisterHandler(new CommandInventoryItemAddHandler(gameState));
             cmd.RegisterHandler(new CommandInventoryItemSpendHandler(gameState));
+            cmd.RegisterHandler(new CommandInventoryFromRewardHandler(cmd));
+           // cmd.RegisterHandler(new CommandInventoryAddRewardHandler(gameState, cmd));
+            
             //RESOURCE
             cmd.RegisterHandler(new CommandResourcesAddHandler(gameState));
             cmd.RegisterHandler(new CommandResourcesSpendHandler(gameState));

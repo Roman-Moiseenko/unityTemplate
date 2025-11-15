@@ -1,6 +1,7 @@
 ﻿using System;
 using DI;
 using Game.GamePlay.Classes;
+using Game.MainMenu.Commands.InventoryCommands;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.Root;
 using Game.State.Inventory;
@@ -31,7 +32,7 @@ namespace Game.MainMenu.Services
          */
         public void InfinityRewardGamePlay(MainMenuEnterParams enterParams)
         {
-            Debug.Log(" MainMenuEnterParams " + JsonConvert.SerializeObject(enterParams, Formatting.Indented));
+           // Debug.Log(" MainMenuEnterParams " + JsonConvert.SerializeObject(enterParams, Formatting.Indented));
             //Монетки
             _gameState.SoftCurrency.Value += enterParams.SoftCurrency;
             //Карты и чертежи (итемсы)
@@ -42,34 +43,21 @@ namespace Game.MainMenu.Services
 
         public void LevelsRewardGamePlay(MainMenuEnterParams enterParams)
         {
-            //TODO 
+            _gameState.SoftCurrency.Value += enterParams.SoftCurrency;
+            enterParams.RewardCards.ForEach(RewardToItem);
+            enterParams.RewardOnWave.ForEach(RewardToItem);
         }
         
         public void RewardToItem(RewardEntityData rewardEntityData)
         {
-            switch (rewardEntityData.RewardType)
+            var command = new CommandInventoryFromReward()
             {
-                case InventoryType.TowerCard:
-                    var commandTowerCard = new CommandTowerCardAdd
-                    {
-                        ConfigId = rewardEntityData.ConfigId,
-                        Level = 1,
-                        EpicLevel = TypeEpicCard.Normal
-                    };
-                    _cmd.Process(commandTowerCard);
-                    break;
-                case InventoryType.TowerPlan:
-                    var commandTowerPlan = new CommandTowerPlanAdd
-                    {
-                        ConfigId = rewardEntityData.ConfigId,
-                        Amount = 1,
+                InventoryType = rewardEntityData.RewardType,
+                ConfigId = rewardEntityData.ConfigId,
+                Amount = rewardEntityData.Amount
+            };
+            _cmd.Process(command);
 
-                    };
-                    _cmd.Process(commandTowerPlan);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
         }
         
         //TODO Сервис работы с инвентарем

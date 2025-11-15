@@ -29,7 +29,7 @@ namespace Game.State.Inventory.Chests
             };
         }
         
-        public static int GetIndex(this TypeChest type)
+        public static int GetRatioReward(this TypeChest type)
         {
             return type switch
             {
@@ -40,7 +40,17 @@ namespace Game.State.Inventory.Chests
                 _ => 0
             };
         }
-        
+        public static int GetIndex(this TypeChest type)
+        {
+            return type switch
+            {
+                TypeChest.Silver => 1,
+                TypeChest.Gold => 2,
+                TypeChest.Epic => 3,
+                TypeChest.Legend => 4,
+                _ => 0
+            };
+        }
         public static int GetRandom(this TypeChest type)
         {
             return type switch
