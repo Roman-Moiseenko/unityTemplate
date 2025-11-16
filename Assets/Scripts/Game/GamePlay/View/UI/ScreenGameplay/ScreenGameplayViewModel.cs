@@ -33,7 +33,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         public readonly ReactiveProperty<int> ProgressData = new();
         public readonly ReactiveProperty<int> ProgressLevel = new();
         public readonly ReactiveProperty<long> SoftCurrency = new();
-        public readonly ReactiveProperty<int> HardCurrency;
+        public readonly ReactiveProperty<long> HardCurrency;
         public readonly ReactiveProperty<string> WaveText = new();
         public ObservableList<DamageEntity> AllDamages;
         public ObservableList<RewardCurrencyEntity> AllRewards;

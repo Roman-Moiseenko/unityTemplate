@@ -23,7 +23,7 @@ namespace Game.State.Root
         public InventoryRootData Inventory { get; set; } = new();
         
         public MapStatesData MapStatesData { get; set; } = new();
-        public int HardCurrency { get; set; }
+        public long HardCurrency { get; set; }
         public long SoftCurrency { get; set; }
 
         public ContainerChestsData ContainerChests { get; set; } = new();

@@ -25,6 +25,7 @@ namespace Game.MainMenu.Commands.ChestCommands
                     Status = StatusChest.Close,
                     Cell = i,
                     Wave = command.Wave,
+                    MapId = command.MapId,
                 };
                 _gameState.ContainerChests.Chests.Add(i, new Chest(chest));
                 return true;

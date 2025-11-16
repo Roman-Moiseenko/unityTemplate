@@ -20,8 +20,8 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
         private TowerCardPlanService _service;
         
         public ReadOnlyReactiveProperty<long> SoftCurrency;
-        public ReadOnlyReactiveProperty<int> AmountPlans;
-        public ReactiveProperty<int> CostPlan = new();
+        public ReadOnlyReactiveProperty<long> AmountPlans;
+        public ReactiveProperty<long> CostPlan = new();
         public ReactiveProperty<int> CostCurrency = new();
         
         public PopupTowerCardViewModel(TowerCardViewModel viewModel, DIContainer container)
@@ -32,14 +32,13 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
             SoftCurrency = container.Resolve<IGameStateProvider>().GameState.SoftCurrency;
             
             var plan = _inventory.GetByConfigAndType<TowerPlan>(InventoryType.TowerPlan, viewModel.ConfigId);
-            AmountPlans = plan == null ? new ReactiveProperty<int>(0) : plan.Amount;
+            AmountPlans = plan == null ? new ReactiveProperty<long>(0) : plan.Amount;
             
             viewModel.Level.Subscribe(newLevel =>
             {
                 CostPlan.OnNext(viewModel.TowerCard.GetCostPlanLevelUpTowerCard());
                 CostCurrency.OnNext(viewModel.TowerCard.GetCostCurrencyLevelUpTowerCard());
             });
-
         }
 
         public void LevelUpCard()

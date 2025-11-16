@@ -7,6 +7,7 @@ using Game.Settings;
 using Game.Settings.Gameplay.Enemies;
 using Game.Settings.Gameplay.Maps;
 using MVVM.CMD;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Game.GamePlay.Commands.WaveCommands
@@ -29,6 +30,8 @@ namespace Game.GamePlay.Commands.WaveCommands
 
         public bool Handle(CommandWaveGenerate command)
         {
+            Debug.Log(JsonConvert.SerializeObject(command, Formatting.Indented));
+            
             var commandWave = new CommandCreateWave
             {
                 Index = command.Wave,
@@ -62,14 +65,7 @@ namespace Game.GamePlay.Commands.WaveCommands
 
             var maxCountType = Mathf.Min(mobs.Count, 5);
             var countTypeMob = random.Next(1, maxCountType + 1); //Без верхней границы
-
-            //if (numberWave < 5) countTypeMob = random.Next(1, 3); // 1 или 2
-            //if (numberWave is >= 5 and <= 10 ) countTypeMob = random.Next(2, 4);
-            //if (numberWave > 10) countTypeMob = random.Next(3, 6);            
-
-            
-           // var random = new System.Random();
-            
+     
             for (var i = 0; i < countTypeMob; i++)
             {
                 var index = random.Next(0, mobs.Count);

@@ -5,6 +5,6 @@ namespace Game.MainMenu.Commands.TowerCommands
     public class CommandTowerPlanAdd : ICommand
     {
         public string ConfigId;
-        public int Amount;
+        public long Amount;
     }
 }

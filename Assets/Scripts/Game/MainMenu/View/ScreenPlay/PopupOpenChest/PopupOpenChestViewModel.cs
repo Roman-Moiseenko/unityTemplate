@@ -64,19 +64,15 @@ namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
             
             //Получить предварительный объем награды от типа сундука
             var rewards = _chestService.GetListRewards(chest);
-            
-            foreach (var (type, value) in rewards)
+            foreach (var rewardItem in rewards)
             {
-                foreach (var (config, amount) in value)
+                var viewModel = new ResourceRewardViewModel
                 {
-                    var viewModel = new ResourceRewardViewModel
-                    {
-                        InventoryType = type,
-                        ConfigId = config,
-                        Amount = amount,
-                    };
-                    RewardResources.Add(viewModel);
-                }
+                    InventoryType = rewardItem.RewardType,
+                    ConfigId = rewardItem.ConfigId,
+                    Amount = rewardItem.Amount,
+                };
+                RewardResources.Add(viewModel);
             }
         }
 

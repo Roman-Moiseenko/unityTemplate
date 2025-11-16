@@ -41,8 +41,7 @@ namespace Game.MainMenu.Root
 
             //  var cmd = container.Resolve<ICommandProcessor>();
             var cmd = container.Resolve<ICommandProcessor>();
-            var chestService = new ChestService(gameState, cmd, gameSettings);
-            container.RegisterInstance(chestService);
+
 
             //команды работы с инвентарем
             //CHEST
@@ -76,7 +75,7 @@ namespace Game.MainMenu.Root
             cmd.RegisterHandler(new CommandTowerPlanSpendHandler(gameState));
             
             //
-            container.RegisterFactory(_ => new InventoryService(cmd, gameState, chestService)).AsSingle();
+
 
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
             //container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
@@ -117,6 +116,12 @@ namespace Game.MainMenu.Root
                 container
             );
             container.RegisterInstance(towerCardService);
+            
+            var chestService = new ChestService(gameState, cmd, gameSettings);
+            container.RegisterInstance(chestService);
+            
+            container.RegisterFactory(_ => new InventoryService(cmd, gameState, chestService)).AsSingle();
+            
             
             //TODO Запускаем первоначальные проверки
             chestService.StartOpeningChests(); //Проверка на открывающиеся и открытые сундуки, меняем TimerLeft

@@ -32,8 +32,8 @@ namespace Game.MainMenu.Root
             var mainMenuViewModelsContainer = new DIContainer(mainMenuContainer); //Создаем контейнер для view-моделей
             MainMenuViewModelsRegistrations.Register(mainMenuViewModelsContainer);
 
-
-            var gameState = mainMenuContainer.Resolve<IGameStateProvider>().GameState;
+            var gameProvider = mainMenuContainer.Resolve<IGameStateProvider>();
+            var gameState = gameProvider.GameState;
             //  mainMenuViewModelsContainer.Resolve<UIMainMenuRootViewModel>();
              
             
@@ -46,14 +46,16 @@ namespace Game.MainMenu.Root
                 if (enterParams.TypeGameplay == TypeGameplay.Infinity) inventory.InfinityRewardGamePlay(enterParams);
                 //enterParams сохраняет дополнительные данные, для передачи в popup
                 if (enterParams.TypeGameplay == TypeGameplay.Levels) inventory.LevelsRewardGamePlay(enterParams);
-                    
                 
                 //Сохраняем параметры/настройки для следующих геймплеев
-                var gameProvider = mainMenuContainer.Resolve<IGameStateProvider>();
-                gameProvider.GameState.GameSpeed.Value = enterParams.GameSpeed;
+                
+
+                //var gameState = gameProvider.GameState; 
+                gameState.GameSpeed.Value = enterParams.GameSpeed;
+                //TODO Сохраняем победы, Награды и .... ПЕРЕНЕСТИ В СЕРВИС 
+                
                 
                 gameProvider.SaveGameState();
-
             }
             
             

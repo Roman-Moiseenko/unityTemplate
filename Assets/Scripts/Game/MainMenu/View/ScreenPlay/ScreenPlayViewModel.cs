@@ -9,6 +9,7 @@ using Game.State;
 using MVVM.UI;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenPlay
 {
@@ -87,6 +88,7 @@ namespace Game.MainMenu.View.ScreenPlay
         public void RequestBattleGame(int mapId)
         {
             var mainMenuExitParams = _exitParamsService.GetExitParams(TypeGameplay.Levels, mapId);
+            
             //TODO проверка на колоду return false;
             _container.Resolve<IGameStateProvider>().ResetGameplayState();
             _exitSceneRequest.OnNext(mainMenuExitParams);

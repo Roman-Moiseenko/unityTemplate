@@ -5,6 +5,8 @@ using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders;
 using Game.State;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
+using Game.State.Maps.Rewards;
+using Game.State.Mergeable.ResourcesEntities;
 using MVVM.UI;
 using Newtonsoft.Json;
 using ObservableCollections;
@@ -20,54 +22,56 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
         public override string Id => "PopupFinishGameplay";
         public override string Path => "MainMenu/ScreenPlay/Popups/";
         public List<ResourceRewardViewModel> RewardResources = new();
-        private readonly Dictionary<InventoryType, Dictionary<string, long>> _rewards = new();
+        private readonly List<RewardEntityData> _rewards = new();
 
         public PopupFinishGameplayViewModel(MainMenuEnterParams enterParams, DIContainer container)
         {
             EnterParams = enterParams;
             var gameState = container.Resolve<IGameStateProvider>().GameState;
 
-            var gold = new Dictionary<string, long>();
-            gold.Add("Currency", enterParams.SoftCurrency);
-            
-            _rewards.Add(InventoryType.SoftCurrency, gold);
-            
+            _rewards.Add(new RewardEntityData
+            {
+                RewardType = InventoryType.SoftCurrency,
+                ConfigId = "Currency",
+                Amount = enterParams.SoftCurrency,
+            });
+
             foreach (var rewardCard in enterParams.RewardCards)
             {
-                if (_rewards.TryGetValue(rewardCard.RewardType, out var configCounts))
+                var element = _rewards.Find(v =>
+                    v.RewardType == rewardCard.RewardType &&
+                    v.ConfigId == rewardCard.ConfigId);
+                if (element != null)
                 {
-                    if (configCounts.TryGetValue(rewardCard.ConfigId, out var value))
-                    {
-                        configCounts[rewardCard.ConfigId]++;
-                    }
-                    else
-                    {
-                        configCounts.Add(rewardCard.ConfigId, 1);
-                    }
+                    element.Amount += rewardCard.Amount;
                 }
                 else
                 {
-                    var config = new Dictionary<string, long>();
-                    config.Add(rewardCard.ConfigId, 1);
-                    _rewards.Add(rewardCard.RewardType, config);
+                    _rewards.Add(rewardCard);
                 }
             }
 
-            foreach (var (type, value) in _rewards)
+            foreach (var rewardEntity in enterParams.RewardOnWave)
             {
-                foreach (var (config, amount) in value)
-                {
-                    var viewModel = new ResourceRewardViewModel
-                    {
-                        InventoryType = type,
-                        ConfigId = config,
-                        Amount = amount,
-                    };
-                    RewardResources.Add(viewModel);
-                }
+                _rewards.Add(rewardEntity);
             }
-            
+
+            foreach (var reward in _rewards)
+            {
+                var viewModel = new ResourceRewardViewModel
+                {
+                    InventoryType = reward.RewardType,
+                    ConfigId = reward.ConfigId,
+                    Amount = reward.Amount,
+                };
+                RewardResources.Add(viewModel);
+            }
+
             RewardChest = enterParams.TypeChest;
+        }
+
+        private void RewardLoad(List<RewardEntityData> list)
+        {
         }
     }
 }

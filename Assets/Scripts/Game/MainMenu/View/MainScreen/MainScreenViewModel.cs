@@ -13,7 +13,7 @@ namespace Game.MainMenu.View.MainScreen
         public override string Path => "MainMenu/";
 
         public readonly ReactiveProperty<long> SoftCurrency;
-        public readonly ReactiveProperty<int> HardCurrency;
+        public readonly ReactiveProperty<long> HardCurrency;
         
         public MainScreenViewModel(MainMenuUIManager uiManager, DIContainer container)
         {

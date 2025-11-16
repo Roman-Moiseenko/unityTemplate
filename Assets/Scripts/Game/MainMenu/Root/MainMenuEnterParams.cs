@@ -24,8 +24,8 @@ namespace Game.MainMenu.Root
         /**
          * Награда сундуком, № ячейки, или 0 если нет места
          */
-        public TypeChest? TypeChest { get; set; }
-
+        public TypeChest TypeChest { get; set; }
+        public bool NotCellChest { get; set; } 
         public List<InventoryItemData> Items = new (); 
         public List<RewardEntityData> RewardCards = new (); //Список карт - наград
         public List<RewardEntityData> RewardOnWave = new (); //Список карт - наград

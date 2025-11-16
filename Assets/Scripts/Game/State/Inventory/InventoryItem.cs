@@ -9,12 +9,12 @@ namespace Game.State.Inventory
         public string ConfigId => Origin.ConfigId;
         public int UniqueId => Origin.UniqueId;
         public string Name => Origin.Name;
-        public readonly ReactiveProperty<int> Amount;
+        public readonly ReactiveProperty<long> Amount;
         
         protected InventoryItem(InventoryItemData data)
         {
             Origin = data;
-            Amount = new ReactiveProperty<int>(data.Amount);
+            Amount = new ReactiveProperty<long>(data.Amount);
             Amount.Subscribe(newAmount => data.Amount = newAmount); 
         }
 

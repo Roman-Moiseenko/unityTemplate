@@ -39,7 +39,7 @@ namespace Game.MainMenu.Services
 
         private readonly Dictionary<string, TowerSettings> _towerSettingsMap = new();
         private readonly DeckCard _currentDeck;
-
+        
         public IObservableCollection<TowerCardViewModel> AllTowerCards =>
             _allTowerCards; //Интерфейс менять нельзя, возвращаем через динамический массив
 

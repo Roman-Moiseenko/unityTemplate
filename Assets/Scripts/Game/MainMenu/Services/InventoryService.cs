@@ -5,6 +5,7 @@ using Game.MainMenu.Commands.InventoryCommands;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.Root;
 using Game.State.Inventory;
+using Game.State.Inventory.Chests;
 using Game.State.Maps.Rewards;
 using Game.State.Root;
 using MVVM.CMD;
@@ -38,7 +39,16 @@ namespace Game.MainMenu.Services
             //Карты и чертежи (итемсы)
             enterParams.RewardCards.ForEach(RewardToItem);
             
-            enterParams.TypeChest = _chestService.AddChestInfinity(enterParams.LastWave);
+            var chest = _chestService.AddChestInfinity(enterParams.LastWave);
+            if (chest != null)
+            {
+                enterParams.TypeChest = (TypeChest)_chestService.AddChestInfinity(enterParams.LastWave);
+            }
+            else
+            {
+                enterParams.NotCellChest = true;
+            }
+             
         }
 
         public void LevelsRewardGamePlay(MainMenuEnterParams enterParams)
@@ -46,6 +56,7 @@ namespace Game.MainMenu.Services
             _gameState.SoftCurrency.Value += enterParams.SoftCurrency;
             enterParams.RewardCards.ForEach(RewardToItem);
             enterParams.RewardOnWave.ForEach(RewardToItem);
+            enterParams.NotCellChest = _chestService.AddChestLevel(enterParams);
         }
         
         public void RewardToItem(RewardEntityData rewardEntityData)

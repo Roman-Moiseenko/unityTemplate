@@ -29,7 +29,7 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
         
         //Обновление карты
         public ReadOnlyReactiveProperty<long> SoftCurrency;
-        public ReadOnlyReactiveProperty<int> AmountPlans;
+        public ReadOnlyReactiveProperty<long> AmountPlans;
         public ReactiveProperty<int> CostPlan = new();
         public ReactiveProperty<int> CostCurrency = new();
         public ReactiveProperty<bool> IsCanUpdate = new();
@@ -49,7 +49,7 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
             SoftCurrency = container.Resolve<IGameStateProvider>().GameState.SoftCurrency;
             
             var plan = inventory.GetByConfigAndType<TowerPlan>(InventoryType.TowerPlan, ConfigId);
-            AmountPlans = plan == null ? new ReactiveProperty<int>(0) : plan.Amount;
+            AmountPlans = plan == null ? new ReactiveProperty<long>(0) : plan.Amount;
             Level.Subscribe(newLevel =>
             {
                 CostPlan.OnNext(TowerCard.GetCostPlanLevelUpTowerCard());
@@ -57,9 +57,9 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
             });
 
             Observable.Merge(
-                 AmountPlans, CostCurrency, TowerCard.Level
+                TowerCard.Level, CostCurrency
                 ).Subscribe(_ => IsCanUpdate.OnNext(CardCanUpdate()));
-            
+            AmountPlans.Subscribe(_ => IsCanUpdate.OnNext(CardCanUpdate()));
             SoftCurrency.Subscribe(_ => IsCanUpdate.OnNext(CardCanUpdate()));
             
         }

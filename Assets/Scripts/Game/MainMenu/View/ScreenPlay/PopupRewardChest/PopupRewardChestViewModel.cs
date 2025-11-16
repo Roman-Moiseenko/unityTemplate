@@ -3,6 +3,7 @@ using DI;
 using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
+using Game.State.Maps.Rewards;
 using MVVM.UI;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -15,26 +16,23 @@ namespace Game.MainMenu.View.ScreenPlay.PopupRewardChest
         public override string Path => "MainMenu/ScreenPlay/Popups/";
         public List<ResourceRewardViewModel> RewardResources = new();
         public TypeChest TypeChest;
-        
+
         public PopupRewardChestViewModel(
-            TypeChest typeChest, 
-            Dictionary<InventoryType, Dictionary<string, int>> rewards, 
+            TypeChest typeChest,
+            List<RewardEntityData> rewards,
             DIContainer container)
         {
             TypeChest = typeChest;
-          //  Debug.Log(JsonConvert.SerializeObject(rewards, Formatting.Indented));
-            foreach (var (type, value) in rewards)
+            
+            foreach (var reward in rewards)
             {
-                foreach (var (config, amount) in value)
+                var viewModel = new ResourceRewardViewModel
                 {
-                    var viewModel = new ResourceRewardViewModel
-                    {
-                        InventoryType = type,
-                        ConfigId = config,
-                        Amount = amount,
-                    };
-                    RewardResources.Add(viewModel);
-                }
+                    InventoryType = reward.RewardType,
+                    ConfigId = reward.ConfigId,
+                    Amount = reward.Amount,
+                };
+                RewardResources.Add(viewModel);
             }
         }
     }

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using Game.State.Inventory.Chests;
+using Game.State.Maps.Rewards;
 
 namespace Game.Settings.Gameplay.Maps
 {
     public class MapRewardSetting
     {
-        public Dictionary<int, List<RewardItem>> RewardOnWave = new();
-        public Dictionary<TypeChest, List<RewardItem>> RewardChest = new();
-        public Dictionary<TypeChest, List<RewardItem>> RewardChanceChest = new();
+        public Dictionary<int, List<RewardEntityData>> RewardOnWave = new();
+        public Dictionary<TypeChest, List<RewardEntityData>> RewardChest = new();
+        public Dictionary<TypeChest, List<RewardEntityData>> RewardChanceChest = new();
     }
 }

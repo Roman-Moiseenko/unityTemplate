@@ -51,5 +51,11 @@ namespace Game.GamePlay.View.UI.PopupPause
         {
             _container.Resolve<GameplayService>().ExitSave();
         }
+
+        public void Win()
+        {
+            var gs = _container.Resolve<GameplayService>();
+            gs.Win();
+        }
     }
 }

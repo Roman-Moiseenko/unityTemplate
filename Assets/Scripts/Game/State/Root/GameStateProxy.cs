@@ -20,7 +20,7 @@ namespace Game.State.Root
         //private readonly GameState _gameState;
         public ReactiveProperty<int> CurrentMapId = new();
         public ReactiveProperty<int> GameSpeed;
-        public ReactiveProperty<int> HardCurrency;
+        public ReactiveProperty<long> HardCurrency;
         public ReactiveProperty<long> SoftCurrency;
 
         public InventoryRoot Inventory { get; set; }
@@ -49,7 +49,7 @@ namespace Game.State.Root
                 UpdateDateVersion();
             });
 
-            HardCurrency = new ReactiveProperty<int>(gameState.HardCurrency);
+            HardCurrency = new ReactiveProperty<long>(gameState.HardCurrency);
             HardCurrency.Subscribe(newValue =>
             {
                 gameState.HardCurrency = newValue;

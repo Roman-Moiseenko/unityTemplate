@@ -27,18 +27,18 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> CurrentWave;
         public readonly ReactiveProperty<int> UpdateCards;
         private readonly ReactiveProperty<int> _previousGameSpeed  = new();
-
         public readonly ReactiveProperty<int> KillMobs;
+        public readonly ReactiveProperty<TypeGameplay> TypeGameplay;
+        
+        //Для отслеживания за игровой процесс
+       // public readonly ReactiveProperty<bool> IsFinishWave = new(false);
 
         public CastleEntity Castle;
-
         
         //public ReactiveProperty<TypeGameplay> TypeGameplay;
         public ObservableList<RewardEntityData> RewardEntities { get; } = new(); 
-        
         public ObservableList<TowerEntity> Towers { get; } = new();
         public ObservableList<GroundEntity> Grounds { get; } = new();
-
         public ObservableList<RoadEntity> Way { get; } = new();
         public ObservableList<RoadEntity> WaySecond { get; } = new();
         public ObservableList<RoadEntity> WayDisabled { get; } = new();
@@ -75,6 +75,9 @@ namespace Game.State.Root
 
             KillMobs = new ReactiveProperty<int>(origin.KillMobs);
             KillMobs.Subscribe(newValue => origin.KillMobs = newValue);
+
+            TypeGameplay = new ReactiveProperty<TypeGameplay>(origin.TypeGameplay);
+            TypeGameplay.Subscribe(newValue => origin.TypeGameplay = newValue);
             
             //Награды
             origin.RewardEntities.ForEach(
@@ -242,7 +245,7 @@ namespace Game.State.Root
 
         public bool IsInfinity()
         {
-            return Origin.TypeGameplay == TypeGameplay.Infinity;
+            return TypeGameplay.CurrentValue == GamePlay.Classes.TypeGameplay.Infinity;
         }
 
         public void SetTypeGameplay(TypeGameplay typeGameplay)

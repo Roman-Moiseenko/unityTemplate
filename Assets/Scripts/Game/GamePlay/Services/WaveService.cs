@@ -38,6 +38,7 @@ namespace Game.GamePlay.Services
         public ReactiveProperty<bool> IsMobsOnWay = new(); //Мобы на дороге
         public ReactiveProperty<bool> FinishWave = new(false); //Волна закончилась
         public ReactiveProperty<bool> StartWave = new(false); //Волна началась
+        public ReactiveProperty<bool> FinishAllWaves = new(false); //Волны закончились
 
         private readonly ObservableList<MobViewModel> _allMobsOnWay = new();
         public IObservableCollection<MobViewModel> AllMobsOnWay => _allMobsOnWay;
@@ -63,7 +64,6 @@ namespace Game.GamePlay.Services
             var roadsService = container.Resolve<RoadsService>();
             _cameraService = container.Resolve<GameplayCamera>();
             GameSpeed = gameplayState.GameSpeed;
-            
             //Подписка на новую волну, при изменении номера волны, запускаем корутин старт волны
             gameplayState.CurrentWave
                 .Skip(1)
@@ -106,6 +106,7 @@ namespace Game.GamePlay.Services
                 if (_allMobsOnWay.Count != 0) return;
                 _fsmWave.Fsm.SetState<FsmStateWaveTimer>();
                 IsMobsOnWay.Value = false;
+                
             });
             
             AllMobsMap.ObserveRemove().Subscribe(e =>
@@ -141,24 +142,20 @@ namespace Game.GamePlay.Services
 
         public void Start()
         {
-//            Debug.Log("Start");
             _fsmWave.Fsm.SetState<FsmStateWaveTimer>(); //Первоначальный запуска таймера
         }
-
         public void StartNextWave()
         {
             _gameplayState.CurrentWave.Value++;
         }
-
         public void StartForcedNewWave()
         {
-            
             _fsmWave.Fsm.SetState<FsmStateWaveBegin>();
         }
 
         private IEnumerator StartNewWave(int numberWave)
         {
-           // Debug.Log("Волна - " + numberWave);
+            //Debug.Log("Волна нач - " + numberWave + " из " + _gameplayState.Waves.Count);
             yield return new WaitUntil(() => _fsmWave.IsBegin()); //Ждем когда разрешиться запуск волны
             while (_fsmGameplay.IsPause()) yield return null;
 
@@ -170,15 +167,27 @@ namespace Game.GamePlay.Services
            // yield return new WaitForSeconds(TimeEndWave);
             yield return new WaitForSeconds(0.5f); 
             _fsmWave.Fsm.SetState<FsmStateWaveWait>();
-
-            _gameplayState.CurrentWave.Value++;
+            
+            //TODO Проверка на кол-во волн на Карта
+            if (_gameplayState.Waves.Count == _gameplayState.CurrentWave.Value && !_gameplayState.IsInfinity())
+            {
+              //  _gameplayState.IsFinishWave.OnNext(true);
+                FinishAllWaves.OnNext(true);
+            }
+            else
+            {
+                _gameplayState.CurrentWave.Value++;    
+            }
+            
         }
 
         private IEnumerator GenerateMob(int numberWave)
         {
+            
 //            Debug.Log("Генерация мобов. Волна - " + numberWave);
             if (!_gameplayState.Waves.TryGetValue(numberWave, out var waveEntity)) yield break; //Волны закончились
-            
+            //Debug.Log("Волна " + waveEntity.Number);
+           // Debug.Log("Мобов " + waveEntity.Mobs.Count);
             foreach (var entityMob in waveEntity.Mobs)
             {
                 while (_fsmGameplay.IsPause()) yield return null;

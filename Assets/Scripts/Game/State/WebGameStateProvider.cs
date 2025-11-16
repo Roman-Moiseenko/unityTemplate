@@ -34,7 +34,7 @@ namespace Game.State
         {
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
             // _webService = new WebService();
-            WebAvailable.Subscribe(v => Debug.Log("Web = " + v));
+//            WebAvailable.Subscribe(v => Debug.Log("Web = " + v));
         }
 
         public Observable<LoadingState> CheckWebAvailable()

@@ -75,10 +75,10 @@ namespace Game.GamePlay.Services
             _mapsSettings = mapsSettings;
 
             //TODO Переделать на другой параметр
-            waveService.IsMobsOnWay.Where(flag => flag == false).Subscribe(_ =>
+            waveService.IsMobsOnWay.Where(x => !x).Subscribe(_ =>
                 {
                     //Мобы на дороге закончились, проверяем закончились ли волны. 
-                    if (_gameplayState.IsFinishWaves()) Win();
+                    if (waveService.FinishAllWaves.Value) Win();
                 }
             ).AddTo(ref d);
 
@@ -111,15 +111,17 @@ namespace Game.GamePlay.Services
             //gameplayState.Castle.IsDead.Subscribe(h => Lose()).AddTo(ref d);
             _disposable = d.Build();
         }
-
-        //TODO Расчитать награду - сундук и др
+        
         public void Win() //private
         {
+            Debug.Log("Победа");
             var menuParams = GetMainMenuParams(true);
             menuParams.TypeChest = GetTypeChestWin(out var rewardChest);
             menuParams.LastRewardChest = rewardChest;
-            
+
             var exitParams = new GameplayExitParams(menuParams);
+            Debug.Log(JsonConvert.SerializeObject(exitParams, Formatting.Indented));
+
             _exitSceneRequest.OnNext(exitParams);
         }
 
@@ -133,7 +135,7 @@ namespace Game.GamePlay.Services
             _exitSceneRequest.OnNext(exitParams);
         }
 
-        private TypeChest? GetTypeChestLose(int lastWave, out TypeChest lastRewardChest)
+        private TypeChest GetTypeChestLose(int lastWave, out TypeChest lastRewardChest)
         {
             lastRewardChest = TypeChest.Silver;
             if (_gameState.MapStates.Maps.TryGetValue(_gameplayState.MapId.CurrentValue, out var mapState))
@@ -143,12 +145,12 @@ namespace Game.GamePlay.Services
                 if (mapFinished) return TypeChest.Silver;
             }
 
-            var map = _mapsSettings.Maps[_gameplayState.MapId.CurrentValue];
+            var map = _mapsSettings.Maps.Find(v => v.MapId == _gameplayState.MapId.CurrentValue);
             var rewardChests = map.MapRewardSetting.RewardChest;
             var maxWave = map.InitialStateSettings.Waves.Count;
- 
+
             var coef = lastWave * 1.0f / maxWave;
-            
+
             if (rewardChests.Count == 3 && coef > 0.5f && lastRewardChest == TypeChest.Silver)
             {
                 lastRewardChest = TypeChest.Gold;
@@ -162,24 +164,29 @@ namespace Game.GamePlay.Services
                     lastRewardChest = TypeChest.Gold;
                     return TypeChest.Gold;
                 }
-                
+
                 if (coef >= 0.66f && lastRewardChest != TypeChest.Epic)
                 {
                     lastRewardChest = TypeChest.Epic;
                     return TypeChest.Epic;
                 }
             }
+
             return TypeChest.Silver;
         }
 
         private TypeChest GetTypeChestWin(out TypeChest? lastRewardChest)
         {
-          //  lastRewardChest = null;
-            var rewardChests = _mapsSettings.Maps[_gameplayState.MapId.CurrentValue].MapRewardSetting.RewardChest;
+            //  lastRewardChest = null;
+            var map = _mapsSettings.Maps.Find(v => v.MapId == _gameplayState.MapId.CurrentValue);
+            var rewardChests = map.MapRewardSetting.RewardChest;
+            Debug.Log(map.MapId);
             var maxChest = TypeChest.Silver;
             var maxValueRandom = 0;
+            Debug.Log(rewardChests.Count + " " + _gameplayState.MapId.CurrentValue);
             foreach (var (type, rewardItems) in rewardChests)
             {
+//                Debug.Log(type + " " + type.GetIndex() + " " + maxChest.GetIndex());
                 if (type.GetIndex() > maxChest.GetIndex())
                 {
                     maxChest = type;
@@ -187,6 +194,8 @@ namespace Game.GamePlay.Services
                 }
             }
 
+            Debug.Log(maxChest + " " + maxValueRandom);
+            
             lastRewardChest = maxChest;
             if (_gameState.MapStates.Maps.TryGetValue(_gameplayState.MapId.CurrentValue, out var mapState))
             {
@@ -199,7 +208,6 @@ namespace Game.GamePlay.Services
                         keyRandom -= type.GetRandom();
                         if (keyRandom <= 0) return type;
                     }
-                    
                 }
             }
 
@@ -208,24 +216,29 @@ namespace Game.GamePlay.Services
 
         private List<RewardEntityData> GetRewardOnWave(bool completedLevel, out int lastRewardOnWave)
         {
+            //Награды в настройках
+            var rewardSettings = _mapsSettings.Maps.Find(v => v.MapId == _gameplayState.MapId.CurrentValue);
+
             var result = new List<RewardEntityData>();
             lastRewardOnWave = 0;
 
             var completedWave = completedLevel
-                ? _gameplayState.CurrentWave.CurrentValue
+                ? rewardSettings.InitialStateSettings.Waves.Count()
                 : _gameplayState.CurrentWave.CurrentValue - 1;
+
+            // Debug.Log(completedLevel +" == " + completedWave);
             var rewardWave = 0; //Последняя полученная награда за волну По-умолчанию
             if (_gameState.MapStates.Maps.TryGetValue(_gameplayState.MapId.CurrentValue, out var mapState))
             {
+                Debug.Log(JsonConvert.SerializeObject(mapState));
                 //Уже получали награды
                 rewardWave = mapState.RewardOnWave.CurrentValue;
                 lastRewardOnWave = rewardWave;
                 if (completedWave < rewardWave) return null; //Наград больше нет, все получено ранее 
             }
 
-            //Награды в настройках
-            var rewardSettings = _mapsSettings.Maps.Find(v => v.MapId == _gameplayState.MapId.CurrentValue);
-            if (rewardSettings == null) return null;
+            //Debug.Log(JsonConvert.SerializeObject(rewardSettings.MapRewardSetting, Formatting.Indented));
+            //if (rewardSettings == null) return null;
 
             foreach (var (wave, list) in rewardSettings.MapRewardSetting.RewardOnWave)
             {
@@ -237,7 +250,7 @@ namespace Game.GamePlay.Services
                     foreach (var rewardItem in list)
                     {
                         var rewardInResult = result
-                            .Find(v => v.RewardType == rewardItem.Type && v.ConfigId == rewardItem.ConfigId);
+                            .Find(v => v.RewardType == rewardItem.RewardType && v.ConfigId == rewardItem.ConfigId);
                         if (rewardInResult != null)
                         {
                             rewardInResult.Amount += rewardItem.Amount;
@@ -247,7 +260,7 @@ namespace Game.GamePlay.Services
                             result.Add(new RewardEntityData
                             {
                                 ConfigId = rewardItem.ConfigId,
-                                RewardType = rewardItem.Type,
+                                RewardType = rewardItem.RewardType,
                                 Amount = rewardItem.Amount
                             });
                         }
@@ -255,6 +268,7 @@ namespace Game.GamePlay.Services
                 }
             }
 
+            // Debug.Log(JsonConvert.SerializeObject(result, Formatting.Indented));
             return result;
         }
 
@@ -274,9 +288,8 @@ namespace Game.GamePlay.Services
             menuParams.KillsMob = _gameplayState.KillMobs.CurrentValue;
             menuParams.TypeGameplay = _gameplayState.Origin.TypeGameplay;
 
-            menuParams.RewardOnWave = GetRewardOnWave(false, out var lastRewardOnWave);
+            menuParams.RewardOnWave = GetRewardOnWave(completedLevel, out var lastRewardOnWave);
             menuParams.LastRewardOnWave = lastRewardOnWave;
-
 
             return menuParams;
         }

@@ -18,19 +18,17 @@ namespace Game.MainMenu.Commands.ChestCommands
         {
             var chest = _gameState.ContainerChests.Chests[command.Cell];
             //Сохраняем награды
-            foreach (var (typeReward, configCount) in command.Rewards)
+            foreach (var reward in command.Rewards)
             {
-                foreach (var (configId, amount) in configCount)
-                {
-
+                
                     var commandReward = new CommandInventoryFromReward()
                     {
-                        InventoryType = typeReward,
-                        ConfigId = configId,
-                        Amount = amount
+                        InventoryType = reward.RewardType,
+                        ConfigId = reward.ConfigId,
+                        Amount = reward.Amount
                     };
                     _cmd.Process(commandReward);
-                }
+                
             }
 
             //Сундук удаляем

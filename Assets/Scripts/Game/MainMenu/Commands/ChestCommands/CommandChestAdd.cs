@@ -10,5 +10,6 @@ namespace Game.MainMenu.Commands.ChestCommands
         public TypeChest TypeChest;
         public TypeGameplay Gameplay;
         public int Wave;
+        public int MapId;
     }
 }

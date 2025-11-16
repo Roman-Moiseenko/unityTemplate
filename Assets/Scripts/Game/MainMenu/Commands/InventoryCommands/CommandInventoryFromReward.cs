@@ -7,6 +7,6 @@ namespace Game.MainMenu.Commands.InventoryCommands
     {
         public InventoryType InventoryType;
         public string ConfigId;
-        public int Amount;
+        public long Amount;
     }
 }

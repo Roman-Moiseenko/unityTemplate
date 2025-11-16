@@ -20,6 +20,8 @@ namespace Game.State.Inventory.Chests
         public ReactiveProperty<StatusChest> Status;
         public int Level => Origin.Level;
 
+        public int MapId => Origin.MapId;
+
         public Chest(ChestEntityData chestEntityData)
         {
             Origin = chestEntityData;

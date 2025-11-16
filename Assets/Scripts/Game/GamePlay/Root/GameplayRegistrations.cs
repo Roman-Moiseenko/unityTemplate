@@ -41,19 +41,22 @@ namespace Game.GamePlay.Root
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
             var gameState = gameStateProvider.GameState; //TODO Получим кристалы для изменения
 
+            
             var gameplayState = gameStateProvider.GameplayState;
+            gameplayState.MapId.OnNext(gameplayEnterParams.MapId);
+            gameplayState.TypeGameplay.OnNext(gameplayEnterParams.TypeGameplay);
+            
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
             
-
+            //Debug.Log(JsonConvert.SerializeObject(gameplayState.Origin, Formatting.Indented));
             //Регистрируем машину состояния
             var fsmGameplay = new FsmGameplay(container);
             container.RegisterInstance(fsmGameplay);
             var fsmWave = new FsmWave(container);
             container.RegisterInstance(fsmWave);
-
-
-            switch (gameplayEnterParams.TypeGameplay)
+            
+            switch (gameplayState.TypeGameplay.CurrentValue)
             {
                 case TypeGameplay.Infinity:
                 {
@@ -67,7 +70,9 @@ namespace Game.GamePlay.Root
                 case TypeGameplay.Levels:
                 {
                     var newMapSettings =
-                        gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
+                        gameSettings.MapsSettings.Maps.Find(m => m.MapId == gameplayEnterParams.MapId);
+                    if (newMapSettings == null)
+                        throw new Exception("Нет настроек для карты " + gameplayEnterParams.MapId);
                     defaultGroundConfigId = newMapSettings.InitialStateSettings.groundDefault;
                     defaultRoadConfigId = newMapSettings.InitialStateSettings.roadDefault;
                     break;
@@ -94,8 +99,6 @@ namespace Game.GamePlay.Root
 
             gameplayState.GameSpeed.Value =
                 gameplayEnterParams.GameSpeed; //Получаем скорость игры из настроек GameState
-
-
             cmd.RegisterHandler(new CommandCreateGroundHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState, gameSettings.TowersSettings));
             cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
@@ -119,11 +122,7 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandDeleteTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceRoadHandler(gameplayState));
-
-
             //var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
-
-
             var wayService = new WayService(); //Сервис обсчета дороги
             container.RegisterInstance(wayService);
 
@@ -226,6 +225,7 @@ namespace Game.GamePlay.Root
                 if (!success) throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
                 fsmGameplay.Fsm.SetState<FsmStateBuildBegin>(); //Устанавливаем начальный режим строительства
             }
+            //Debug.Log(JsonConvert.SerializeObject(gameplayState.Waves, Formatting.Indented));
         }
     }
 }

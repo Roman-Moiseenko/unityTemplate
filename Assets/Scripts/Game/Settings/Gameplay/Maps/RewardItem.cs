@@ -2,6 +2,8 @@
 
 namespace Game.Settings.Gameplay.Maps
 {
+    
+    //TODO Заменить на RewardEntityData и на Web-сервере
     public class RewardItem
     {
         public string ConfigId = "";

@@ -7,6 +7,7 @@ using Game.MainMenu.View.ScreenPlay.PopupProfile;
 using Game.MainMenu.View.ScreenPlay.PopupRewardChest;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
+using Game.State.Maps.Rewards;
 using MVVM.UI;
 using R3;
 
@@ -43,7 +44,7 @@ namespace Game.MainMenu.View.ScreenPlay
             return b;
         }
 
-        public PopupRewardChestViewModel OpenPopupRewardChest(TypeChest typeChest, Dictionary<InventoryType, Dictionary<string, int>> rewards)
+        public PopupRewardChestViewModel OpenPopupRewardChest(TypeChest typeChest, List<RewardEntityData> rewards)
         {
             //TODO
             

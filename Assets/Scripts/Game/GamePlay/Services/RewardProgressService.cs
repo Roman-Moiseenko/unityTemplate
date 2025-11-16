@@ -138,7 +138,8 @@ namespace Game.GamePlay.Services
             };
 
             reward.ConfigId = listConfig[random.Next(0, listConfig.Count)];
-            //TODO Добавляем награду карточку
+            reward.Amount = 1;
+            //Добавляем награду карточку
             var rewardEntity = new RewardEntity(reward)
             {
                 Position = position

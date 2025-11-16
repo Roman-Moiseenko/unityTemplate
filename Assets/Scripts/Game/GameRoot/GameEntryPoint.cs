@@ -171,7 +171,7 @@ namespace Scripts.Game.GameRoot
                 _uiRoot.TextLoadingFirst(loadedSettings.TextState.CurrentValue);
                 yield return null;
             }
-            Debug.Log("Check Available");
+         //   Debug.Log("Check Available");
             
             provider.LoadSettingsState().Subscribe(v => loadedSettings = v);
             while (!loadedSettings.Loaded)
@@ -179,7 +179,7 @@ namespace Scripts.Game.GameRoot
                 _uiRoot.TextLoadingFirst(loadedSettings.TextState.CurrentValue);
                 yield return null;
             }
-            Debug.Log("Settings Load");
+         //   Debug.Log("Settings Load");
 
             loadedSettings.Clear();
             provider.LoadGameState().Subscribe(v => loadedSettings = v);
@@ -188,7 +188,7 @@ namespace Scripts.Game.GameRoot
                 _uiRoot.TextLoadingFirst(loadedSettings.TextState.CurrentValue);
                 yield return null;
             }
-            Debug.Log("GameState Load");
+         //   Debug.Log("GameState Load");
             //Загружаем данные по игре
             var settings = _rootContainer.Resolve<ISettingsProvider>();
             loadedSettings.Clear();

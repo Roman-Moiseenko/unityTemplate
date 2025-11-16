@@ -12,7 +12,7 @@ namespace Game.MainMenu.View.ScreenInventory.TowerPlans
         public TowerPlan TowerPlan => _towerPlanEntity;
         public int IdTowerPlan => _towerPlanEntity.UniqueId;
         public string ConfigId => _towerPlanEntity.ConfigId;
-        public ReadOnlyReactiveProperty<int> Amount => _towerPlanEntity.Amount;
+        public ReadOnlyReactiveProperty<long> Amount => _towerPlanEntity.Amount;
         public readonly TowerSettings TowerSettings;
 
         private readonly DIContainer _container;
