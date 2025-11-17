@@ -40,7 +40,7 @@ namespace Game.State.Root
             {
                 gameState.GameSpeed = newValue;
                 UpdateDateVersion();
-                Debug.Log($"Сохраняем скорость игры в GameState = {newValue}");
+               // Debug.Log($"Сохраняем скорость игры в GameState = {newValue}");
             });
             SoftCurrency = new ReactiveProperty<long>(gameState.SoftCurrency);
             SoftCurrency.Subscribe(newValue =>

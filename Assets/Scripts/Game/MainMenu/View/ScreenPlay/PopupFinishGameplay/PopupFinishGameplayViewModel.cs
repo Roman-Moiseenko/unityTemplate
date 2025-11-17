@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DI;
 using Game.MainMenu.Root;
 using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders;
@@ -61,7 +62,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
                 var viewModel = new ResourceRewardViewModel
                 {
                     InventoryType = reward.RewardType,
-                    ConfigId = reward.ConfigId,
+                    ConfigId = (reward.ConfigId == "") ? "UnKnow" : reward.ConfigId,
                     Amount = reward.Amount,
                 };
                 RewardResources.Add(viewModel);

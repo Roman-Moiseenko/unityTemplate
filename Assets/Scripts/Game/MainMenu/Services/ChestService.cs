@@ -292,7 +292,7 @@ namespace Game.MainMenu.Services
         /**
          * Добавляем сундук из Бесконечного боя
          */
-        public TypeChest? AddChestInfinity(int lastWave)
+        public TypeChest AddChestInfinity(int lastWave)
         {
             var levelChest = lastWave / 100 + 1;
             var epic = lastWave switch
@@ -310,7 +310,7 @@ namespace Game.MainMenu.Services
                 LevelChest = levelChest,
                 Wave = lastWave,
             };
-            return _cmd.Process(command) ? epic : null;
+            return _cmd.Process(command) ? epic : TypeChest.None;
         }
         
         

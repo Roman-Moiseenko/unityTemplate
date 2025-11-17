@@ -7,6 +7,7 @@ using Game.State;
 using Game.State.Inventory.Chests;
 using Game.State.Root;
 using MVVM.UI;
+using Newtonsoft.Json;
 using R3;
 using UnityEngine;
 
@@ -64,12 +65,13 @@ namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
             
             //Получить предварительный объем награды от типа сундука
             var rewards = _chestService.GetListRewards(chest);
+          //  Debug.Log(JsonConvert.SerializeObject(rewards, Formatting.Indented));
             foreach (var rewardItem in rewards)
             {
                 var viewModel = new ResourceRewardViewModel
                 {
                     InventoryType = rewardItem.RewardType,
-                    ConfigId = rewardItem.ConfigId,
+                    ConfigId = rewardItem.ConfigId == "" ? "UnKnow" : rewardItem.ConfigId,
                     Amount = rewardItem.Amount,
                 };
                 RewardResources.Add(viewModel);

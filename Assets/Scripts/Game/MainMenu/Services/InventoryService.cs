@@ -39,16 +39,7 @@ namespace Game.MainMenu.Services
             //Карты и чертежи (итемсы)
             enterParams.RewardCards.ForEach(RewardToItem);
             
-            var chest = _chestService.AddChestInfinity(enterParams.LastWave);
-            if (chest != null)
-            {
-                enterParams.TypeChest = (TypeChest)_chestService.AddChestInfinity(enterParams.LastWave);
-            }
-            else
-            {
-                enterParams.NotCellChest = true;
-            }
-             
+            enterParams.TypeChest = _chestService.AddChestInfinity(enterParams.LastWave);
         }
 
         public void LevelsRewardGamePlay(MainMenuEnterParams enterParams)

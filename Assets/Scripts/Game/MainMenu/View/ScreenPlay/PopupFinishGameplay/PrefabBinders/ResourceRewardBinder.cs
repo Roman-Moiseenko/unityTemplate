@@ -17,6 +17,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders
         {
             var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
 
+//            Debug.Log(viewModel.InventoryType + "  " + viewModel.ConfigId);
             if (viewModel.InventoryType == InventoryType.TowerCard)
             {
                 imageBack.sprite = imageManager.GetOther("InventoryBackOther");

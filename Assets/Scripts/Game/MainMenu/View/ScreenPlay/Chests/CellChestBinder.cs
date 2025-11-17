@@ -81,7 +81,7 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
                                 });
                                 
                                 timeChest.text = $"{chest.TypeChest.FullHourOpening()}ч";
-                                levelChest.text = $"Уровень {chest.Level}";
+                                levelChest.text = $"Глава {chest.MapId}";
                                 statusClose.gameObject.SetActive(true);
                                 break;
                             case StatusChest.Opening:

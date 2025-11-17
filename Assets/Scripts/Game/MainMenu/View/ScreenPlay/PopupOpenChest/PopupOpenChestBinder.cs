@@ -36,6 +36,8 @@ namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
         [SerializeField] private Button buttonCurrentOpened;
         [SerializeField] private Button buttonCurrentSpeed;
 
+        [SerializeField] private InfoRewardBinder infoRewardBinder;
+
         private readonly List<ResourceRewardBinder> _createdRewardMap = new();
         private IDisposable _disposable;
         
@@ -44,9 +46,11 @@ namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
             var d = Disposable.CreateBuilder();
             base.OnBind(viewModel);
             
+            //TODO Создать InfoRewardViewModel и передать награды из шанса
+            infoRewardBinder.Bind(new InfoRewardViewModel());
             var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
             imageChest.sprite = imageManager.GetChest(ViewModel.Chest.TypeChest);
-            textLevel.text = $"Уровень {ViewModel.Chest.Level}";
+            textLevel.text = $"Глава {ViewModel.Chest.MapId}";
             
             TypeChest? typeChest= ViewModel.Chest.TypeChest;
             textChest.text = typeChest.GetString();
@@ -79,6 +83,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
 
         private void CreateResourceCard(ResourceRewardViewModel viewModel)
         {
+            
             const string prefabReward = "Prefabs/UI/MainMenu/ScreenPlay/Popups/ResourceReward";
             var rewardPrefab = Resources.Load<ResourceRewardBinder>(prefabReward);
             var createdReward = Instantiate(rewardPrefab, containerResources);
