@@ -18,35 +18,27 @@ namespace Game.MainMenu.View.ScreenPlay
 
         private readonly Subject<int> _startLevelGame = new();
         
-        private readonly Dictionary<int, MapCardBinder> _createdMapCardMap = new();
+        
         
         protected override void OnBind(ScreenPlayViewModel viewModel)
         {
             base.OnBind(viewModel);
             chests.Bind(viewModel.ChestsViewModel);
-
-            mapCards.Bind();
+            
+            mapCards.Bind(viewModel.MapCardContainerViewModel, _startLevelGame);
+            
             //Создаем все карточки карт в меню
-            foreach (var mapViewModel in viewModel.MapCards)
+  /*          foreach (var mapViewModel in viewModel.MapCards)
             {
                 CreateMapCard(mapViewModel);
             }
-
+*/
             _startLevelGame
                 .Where(x => x > 0)
                 .Subscribe(mapId => ViewModel.RequestBattleGame(mapId));
             
         }
 
-        private void CreateMapCard(MapCardViewModel viewModel)
-        {
-            var prefabMapCardPath =
-                $"Prefabs/UI/MainMenu/ScreenPlay/MapCard";
-            var mapPrefab = Resources.Load<MapCardBinder>(prefabMapCardPath);
-            var createdMap = Instantiate(mapPrefab, mapCards.content.GetComponent<Transform>());
-            createdMap.Bind(viewModel, _startLevelGame);
-            _createdMapCardMap[viewModel.MapId] = createdMap;
-        }
         
         
         private void OnEnable()

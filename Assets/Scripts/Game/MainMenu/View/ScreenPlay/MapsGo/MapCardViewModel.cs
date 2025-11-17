@@ -1,5 +1,6 @@
 ﻿using Game.Settings.Gameplay.Maps;
 using Game.State.GameStates;
+using R3;
 
 namespace Game.MainMenu.View.ScreenPlay.MapsGo
 {
@@ -11,12 +12,13 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
         public int LastWave = 0;
         public bool Enabled;
         
-        public MapCardViewModel(MapSettings settingsMap, bool enabled, MapState mapState = null)
+        public MapCardViewModel(MapSettings settingsMap, MapState mapState = null)
         {
+            Enabled = false;
             //Получаем данные из настроек для отображения
             MapId = settingsMap.MapId;
             Title = $"{settingsMap.MapId}. {settingsMap.InitialStateSettings.TitleLid}";
-            Enabled = enabled;
+            
             //Загружаем данные игрока
             if (mapState != null)
             {
@@ -25,13 +27,13 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
                 //TODO Стата о пройденных эатапах 
             }
             
-            
             //
         }
 
-    /*    public void OnResumeBattleClicked()
+
+        public void EnabledMapCard()
         {
-            
-        }*/
+            Enabled = true;
+        }
     }
 }

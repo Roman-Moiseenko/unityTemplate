@@ -4,8 +4,8 @@ namespace Game.State.GameStates
 {
     public class ResultRewards
     {
-        public int SoftCurrency = 0;
-        public Dictionary<string, int> TowerCards = new();
-        public Dictionary<string, int> TowerPlans = new();
+        public long SoftCurrency = 0;
+        public Dictionary<string, long> TowerCards = new();
+        public Dictionary<string, long> TowerPlans = new();
     }
 }

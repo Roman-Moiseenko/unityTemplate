@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
@@ -11,7 +13,9 @@ using Game.MainMenu.View.MainScreen;
 using Game.MainMenu.View.ScreenPlay;
 using Game.State;
 using Game.State.GameResources;
+using Game.State.GameStates;
 using Game.State.Inventory;
+using Game.State.Inventory.Chests;
 using Game.State.Inventory.TowerCards;
 using MVVM.CMD;
 using Newtonsoft.Json;
@@ -32,10 +36,9 @@ namespace Game.MainMenu.Root
             var mainMenuViewModelsContainer = new DIContainer(mainMenuContainer); //Создаем контейнер для view-моделей
             MainMenuViewModelsRegistrations.Register(mainMenuViewModelsContainer);
 
-            var gameProvider = mainMenuContainer.Resolve<IGameStateProvider>();
-            var gameState = gameProvider.GameState;
+          //  var gameProvider = mainMenuContainer.Resolve<IGameStateProvider>();
+          //  var gameState = gameProvider.GameState;
             //  mainMenuViewModelsContainer.Resolve<UIMainMenuRootViewModel>();
-             
             
             InitUI(mainMenuViewModelsContainer);
             
@@ -43,21 +46,18 @@ namespace Game.MainMenu.Root
             {
                 //Сервис обработки наград после геймплея
                 var inventory = mainMenuContainer.Resolve<InventoryService>();
-                if (enterParams.TypeGameplay == TypeGameplay.Infinity) inventory.InfinityRewardGamePlay(enterParams);
-                //enterParams сохраняет дополнительные данные, для передачи в popup
-                if (enterParams.TypeGameplay == TypeGameplay.Levels) inventory.LevelsRewardGamePlay(enterParams);
-                
-                //Сохраняем параметры/настройки для следующих геймплеев
-                
-
-                //var gameState = gameProvider.GameState; 
-                gameState.GameSpeed.Value = enterParams.GameSpeed;
-                //TODO Сохраняем победы, Награды и .... ПЕРЕНЕСТИ В СЕРВИС 
-                
-                
-                gameProvider.SaveGameState();
+                switch (enterParams.TypeGameplay)
+                {
+                    case TypeGameplay.Infinity:
+                        inventory.InfinityRewardGamePlay(enterParams);
+                        break;
+                    case TypeGameplay.Levels:
+                        inventory.LevelsRewardGamePlay(enterParams);
+                        break;
+                }
+                //Сохраняем результат игры
+                SaveResultGameplay(mainMenuContainer, enterParams);
             }
-            
             
             InitPopupPlay(mainMenuViewModelsContainer, enterParams);
             
@@ -78,6 +78,89 @@ namespace Game.MainMenu.Root
             //exitToGameplaySceneSignal.
             //  Debug.Log(JsonConvert.SerializeObject(mainMenuExitParams, Formatting.Indented));
             //return exitSceneRequest; //exitToGameplaySceneSignal;
+        }
+
+        private void SaveResultGameplay(DIContainer container, MainMenuEnterParams enterParams)
+        {
+            var gameProvider = container.Resolve<IGameStateProvider>();
+            var gameState = gameProvider.GameState;
+            gameState.GameSpeed.Value = enterParams.GameSpeed;
+            if (enterParams.FinishedMap)
+            { //Если уровень завершен, проверяем MapId и если новый, записываем
+                var oldMapId = gameState.MapStates.LastMap.CurrentValue;
+                var newMapId = enterParams.MapId;
+                if (oldMapId < newMapId)
+                    gameState.MapStates.LastMap.OnNext(newMapId);
+                
+            }
+            //Результат Игры
+            var resultMap = new ResultMap
+            {
+                Finished = enterParams.FinishedMap,
+                DatePays = DateTime.Now,
+                LastWave = enterParams.LastWave,
+                Reward = new ResultRewards(),
+            };
+            resultMap.Reward.SoftCurrency = enterParams.SoftCurrency;
+            foreach (var rewardEntityData in enterParams.RewardCards)
+            {
+                if (rewardEntityData.RewardType == InventoryType.TowerCard)
+                {
+                    if (resultMap.Reward.TowerCards.TryGetValue(rewardEntityData.ConfigId, out var value))
+                    {
+                        resultMap.Reward.TowerCards[rewardEntityData.ConfigId] += rewardEntityData.Amount;
+                    }
+                    else
+                    {
+                        resultMap.Reward.TowerCards.Add(rewardEntityData.ConfigId, rewardEntityData.Amount);
+                    }
+                }
+                if (rewardEntityData.RewardType == InventoryType.TowerPlan)
+                {
+                    if (resultMap.Reward.TowerPlans.TryGetValue(rewardEntityData.ConfigId, out var value))
+                    {
+                        resultMap.Reward.TowerPlans[rewardEntityData.ConfigId] += rewardEntityData.Amount;
+                    }
+                    else
+                    {
+                        resultMap.Reward.TowerPlans.Add(rewardEntityData.ConfigId, rewardEntityData.Amount);
+                    }
+                }
+                //TODO Добавить остальные награды Навыки
+            }
+
+            
+            if (gameState.MapStates.Maps.TryGetValue(enterParams.MapId, out var mapState))
+            {
+                //Проверка полученных наград
+                if (enterParams.LastRewardChest.GetIndex() > mapState.RewardChest.Value.GetIndex())
+                {
+                    mapState.RewardChest.OnNext(enterParams.LastRewardChest);
+                }
+
+                if (enterParams.LastRewardOnWave > mapState.RewardOnWave.Value)
+                {
+                    mapState.RewardOnWave.OnNext(enterParams.LastRewardOnWave);
+                }
+                mapState.Results.Add(resultMap);
+                mapState.Finished.Value = mapState.Finished.CurrentValue || enterParams.FinishedMap;
+            }
+            else
+            {
+                var mapStateData = new MapStateData
+                {
+                    MapId = enterParams.MapId,
+                    Finished = enterParams.FinishedMap,
+                    RewardChest = enterParams.LastRewardChest,
+                    RewardOnWave = enterParams.LastRewardOnWave,
+                    Results = new List<ResultMap> { resultMap },
+                };
+                gameState.MapStates.Maps.Add(enterParams.MapId, new MapState(mapStateData));
+            }
+            
+            
+            gameProvider.SaveGameState();
+            
         }
 
         private void InitUI(DIContainer container)

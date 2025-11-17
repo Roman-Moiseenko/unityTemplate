@@ -12,7 +12,7 @@ namespace Game.MainMenu.Root
         public long SoftCurrency { get; set; }
         
         public int LastWave { get; set; } //Последняя волна, при проигрыше
-        public bool CompletedLevel { get; set; } //Уровень выйгран
+        public bool FinishedMap { get; set; } //Уровень выйгран
         
         public int GameSpeed { get; set; }
         public int MapId { get; set; }
@@ -20,7 +20,7 @@ namespace Game.MainMenu.Root
         public TypeGameplay TypeGameplay { get; set; }
 
         public int LastRewardOnWave { get; set; }
-        public TypeChest? LastRewardChest { get; set; }
+        public TypeChest LastRewardChest { get; set; }
         /**
          * Награда сундуком, № ячейки, или 0 если нет места
          */

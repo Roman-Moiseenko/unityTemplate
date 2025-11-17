@@ -18,6 +18,7 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
         [SerializeField] private Button btnInfoMap;
         private MapCardViewModel _viewModel;
         private Subject<int> _startLevelGame;
+
         public void Bind(MapCardViewModel viewModel, Subject<int> startLevelGame)
         {
             _viewModel = viewModel;
@@ -27,15 +28,23 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
             imageDisabled.gameObject.SetActive(!viewModel.Enabled);
             _startLevelGame = startLevelGame;
             //TODO ... Вывод всех данных
-
         }
-        
+        public void SetEnabled()
+        {
+            btnPlay.gameObject.SetActive(true);
+            imageDisabled.gameObject.SetActive(false);
+        }
+
+        public void SetFinished()
+        {
+            finished.gameObject.SetActive(true);
+        }
         private void OnEnable()
         {
             btnPlay.onClick.AddListener(OnResumeBattleClicked);
             //    _btnResumeGame.onClick.AddListener(OnResumeGameButtonClicked);
         }
-        
+
         private void OnDisable()
         {
             btnPlay.onClick.RemoveListener(OnResumeBattleClicked);
@@ -47,8 +56,8 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
             _startLevelGame.OnNext(_viewModel.MapId);
             //_viewModel.OnResumeBattleClicked();
         }
-        
+
         //TODO Кнопки по нажатию наведению (ИНФО о ВОЛНЕ) Запуск Волны
-        
+
     }
 }

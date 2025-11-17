@@ -44,11 +44,10 @@ namespace Game.MainMenu.Services
         private void CreateMapViewModel(MapSettings settingsMap)
         {
             MapState mapState;
-            var lastMap = _gameState.MapStates.LastMap.CurrentValue;
-            var enabled = lastMap + 1 >= settingsMap.MapId;
+
             _gameState.MapStates.Maps.TryGetValue(settingsMap.MapId, out mapState);
             
-            var mapViewModel = new MapCardViewModel(settingsMap, enabled, mapState);
+            var mapViewModel = new MapCardViewModel(settingsMap, mapState);
             _allMaps.Add(mapViewModel);
         }
     }

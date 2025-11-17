@@ -33,8 +33,8 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
             var d = Disposable.CreateBuilder();
             var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
             base.OnBind(viewModel);
-            winTitle.gameObject.SetActive(ViewModel.EnterParams.CompletedLevel);
-            loseTitle.gameObject.SetActive(!ViewModel.EnterParams.CompletedLevel);
+            winTitle.gameObject.SetActive(ViewModel.EnterParams.FinishedMap);
+            loseTitle.gameObject.SetActive(!ViewModel.EnterParams.FinishedMap);
             textKillAmount.text = ViewModel.EnterParams.KillsMob.ToString();
             textLastWave.text = ViewModel.EnterParams.LastWave.ToString();
 

@@ -114,7 +114,7 @@ namespace Game.GamePlay.Services
         
         public void Win() //private
         {
-            Debug.Log("Победа");
+            //Debug.Log("Победа");
             var menuParams = GetMainMenuParams(true);
             menuParams.TypeChest = GetTypeChestWin(out var rewardChest);
             menuParams.LastRewardChest = rewardChest;
@@ -175,18 +175,16 @@ namespace Game.GamePlay.Services
             return TypeChest.Silver;
         }
 
-        private TypeChest GetTypeChestWin(out TypeChest? lastRewardChest)
+        private TypeChest GetTypeChestWin(out TypeChest lastRewardChest)
         {
             //  lastRewardChest = null;
             var map = _mapsSettings.Maps.Find(v => v.MapId == _gameplayState.MapId.CurrentValue);
             var rewardChests = map.MapRewardSetting.RewardChest;
-            Debug.Log(map.MapId);
             var maxChest = TypeChest.Silver;
             var maxValueRandom = 0;
-            Debug.Log(rewardChests.Count + " " + _gameplayState.MapId.CurrentValue);
+            
             foreach (var (type, rewardItems) in rewardChests)
             {
-//                Debug.Log(type + " " + type.GetIndex() + " " + maxChest.GetIndex());
                 if (type.GetIndex() > maxChest.GetIndex())
                 {
                     maxChest = type;
@@ -194,8 +192,6 @@ namespace Game.GamePlay.Services
                 }
             }
 
-            Debug.Log(maxChest + " " + maxValueRandom);
-            
             lastRewardChest = maxChest;
             if (_gameState.MapStates.Maps.TryGetValue(_gameplayState.MapId.CurrentValue, out var mapState))
             {
@@ -280,7 +276,7 @@ namespace Game.GamePlay.Services
             menuParams.SoftCurrency = _gameplayState.SoftCurrency.CurrentValue;
             menuParams.MapId = _gameplayState.MapId.CurrentValue;
             menuParams.RewardCards = _gameplayState.Origin.RewardEntities;
-            menuParams.CompletedLevel = completedLevel;
+            menuParams.FinishedMap = completedLevel;
             menuParams.LastWave = completedLevel
                 ? _gameplayState.CurrentWave.CurrentValue
                 : _gameplayState.CurrentWave.CurrentValue - 1;

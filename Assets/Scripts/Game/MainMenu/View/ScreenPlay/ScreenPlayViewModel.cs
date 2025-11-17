@@ -9,7 +9,6 @@ using Game.State;
 using MVVM.UI;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenPlay
 {
@@ -19,16 +18,12 @@ namespace Game.MainMenu.View.ScreenPlay
         private readonly Subject<MainMenuExitParams> _exitSceneRequest;
         private readonly MainMenuExitParamsService _exitParamsService;
         private readonly DIContainer _container;
-
         public ChestsViewModel ChestsViewModel;
-
+        public MapCardContainerViewModel MapCardContainerViewModel;
 
         //  private readonly Subject<MainMenuExitParams> _exitSceneRequest2 = new();
         public override string Id => "ScreenPlay";
         public override string Path => "MainMenu/ScreenPlay/";
-        
-        public IObservableCollection<MapCardViewModel> MapCards;
-        
         
         public ScreenPlayViewModel(
             MainMenuUIManager uiManager, 
@@ -41,11 +36,11 @@ namespace Game.MainMenu.View.ScreenPlay
             _exitSceneRequest = exitSceneRequest;
             _exitParamsService = exitParamsService;
             _container = container;
-            var mapCardService = container.Resolve<MapCardService>();
+            
             var gameState = container.Resolve<IGameStateProvider>().GameState;
             ChestsViewModel = new ChestsViewModel(gameState, container);
-            MapCards = mapCardService.AllMaps;
-
+            MapCardContainerViewModel = new MapCardContainerViewModel(gameState, container);
+            
         }
 
         

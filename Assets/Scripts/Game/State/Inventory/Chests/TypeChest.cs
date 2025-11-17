@@ -5,6 +5,7 @@
         Silver,
         Gold,
         Epic,
-        Legend
+        Legend,
+        None
     }
 }
