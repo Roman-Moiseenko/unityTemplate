@@ -9,6 +9,7 @@
         public const string WEB_SETTINGS_TEST = "https://td-infinity.ru/api/settings-test";
         public const string WEB_USER_SETTINGS = "https://td-infinity.ru/api/user/settings";
         public const string WEB_CHECK = "https://td-infinity.ru/api/check"; //
+        public const string WEB_SETTINGS_VERSION = "https://td-infinity.ru/api/settings-version"; //
 
         public const string WEB_USER_GAMEDATA = "https://td-infinity.ru/api/user/gamedata";
     }

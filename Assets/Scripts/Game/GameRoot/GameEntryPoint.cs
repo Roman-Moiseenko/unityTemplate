@@ -67,7 +67,7 @@ namespace Scripts.Game.GameRoot
 
 
             _instance = new GameEntryPoint();
-            
+
             // _instance.LoadState();
             _instance.RunGame();
         }
@@ -114,13 +114,13 @@ namespace Scripts.Game.GameRoot
             //var gameStateProvider = new PlayerPrefsGameStateProvider(); //Заменить конструктор на другой - из облака
             var gameStateProvider = new WebGameStateProvider();
             // gameStateProvider.LoadSettingsState(); //Загрузили настройки игры  
-            
+
             //Настройки приложения
             var settingsProvider = new SettingsProviderWeb();
             _rootContainer.RegisterInstance<ISettingsProvider>(settingsProvider);
-            
 
-           // gameStateProvider.LoadGameState(); //Загружаем данные игрока.
+
+            // gameStateProvider.LoadGameState(); //Загружаем данные игрока.
 
             var cmd = new CommandProcessor(gameStateProvider); //Создаем обработчик команд
             _rootContainer.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
@@ -145,8 +145,8 @@ namespace Scripts.Game.GameRoot
 
         private void RegisterService()
         {
-            
         }
+
         private void RunGame() //Нестатичный вызов.
         {
             _coroutines.StartCoroutine(LoadFirstBoot());
@@ -162,7 +162,7 @@ namespace Scripts.Game.GameRoot
 
             //Загружаем пользователя
             var provider = _rootContainer.Resolve<IGameStateProvider>();
-            
+
             var loadedSettings = new LoadingState();
 
             provider.CheckWebAvailable().Subscribe(v => loadedSettings = v);
@@ -171,15 +171,15 @@ namespace Scripts.Game.GameRoot
                 _uiRoot.TextLoadingFirst(loadedSettings.TextState.CurrentValue);
                 yield return null;
             }
-         //   Debug.Log("Check Available");
-            
+            //   Debug.Log("Check Available");
+
             provider.LoadSettingsState().Subscribe(v => loadedSettings = v);
             while (!loadedSettings.Loaded)
             {
                 _uiRoot.TextLoadingFirst(loadedSettings.TextState.CurrentValue);
                 yield return null;
             }
-         //   Debug.Log("Settings Load");
+            //   Debug.Log("Settings Load");
 
             loadedSettings.Clear();
             provider.LoadGameState().Subscribe(v => loadedSettings = v);
@@ -188,7 +188,8 @@ namespace Scripts.Game.GameRoot
                 _uiRoot.TextLoadingFirst(loadedSettings.TextState.CurrentValue);
                 yield return null;
             }
-         //   Debug.Log("GameState Load");
+
+            //   Debug.Log("GameState Load");
             //Загружаем данные по игре
             var settings = _rootContainer.Resolve<ISettingsProvider>();
             loadedSettings.Clear();
@@ -199,13 +200,13 @@ namespace Scripts.Game.GameRoot
                 yield return null;
             }
             //Загружаем новые ресурсы ...
-            
+
             //Регистрируем общие команды и сервисы, зависимые от gameStateProvider
             _rootContainer.Resolve<ICommandProcessor>()
                 .RegisterHandler(new CommandSpendHardCurrencyHandler(provider.GameState));
             _rootContainer.Resolve<ICommandProcessor>()
                 .RegisterHandler(new CommandAddHardCurrencyHandler(provider.GameState));
-            
+
             //Применяем настройки пользователя к игре
             _uiRoot.TextLoadingFirst("Регистрируем настройки");
             yield return null;
@@ -224,6 +225,7 @@ namespace Scripts.Game.GameRoot
             });
             _uiRoot.HideLoadingFirstScreen();
         }
+
         private IEnumerator LoadAndStartGameplay(GameplayEnterParams enterParams)
         {
             _uiRoot.ShowLoadingScreen();
@@ -257,7 +259,7 @@ namespace Scripts.Game.GameRoot
                             .ResetGameplayState(); //При выходе сбрасываем данные
                 }
             });
-            
+
             _uiRoot.HideLoadingScreen();
         }
 
@@ -268,7 +270,7 @@ namespace Scripts.Game.GameRoot
             yield return LoadScene(Scenes.BOOT);
             yield return LoadScene(Scenes.MAINMENU);
 
-            
+
             //   yield return new WaitForSeconds(1);
 
             //Контейнер
