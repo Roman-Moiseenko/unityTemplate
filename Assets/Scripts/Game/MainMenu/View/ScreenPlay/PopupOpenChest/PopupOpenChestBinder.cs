@@ -36,6 +36,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
         [SerializeField] private Button buttonCurrentOpened;
         [SerializeField] private Button buttonCurrentSpeed;
 
+        [SerializeField] private Transform blockChanceRewards;
         [SerializeField] private InfoRewardBinder infoRewardBinder;
 
         private readonly List<ResourceRewardBinder> _createdRewardMap = new();
@@ -46,8 +47,17 @@ namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
             var d = Disposable.CreateBuilder();
             base.OnBind(viewModel);
             
-            //TODO Создать InfoRewardViewModel и передать награды из шанса
-            infoRewardBinder.Bind(new InfoRewardViewModel());
+            //награды из шанса
+            if (viewModel.InfoRewardViewModel.ItemsInfoRewardViewModel.Count > 0)
+            {
+                infoRewardBinder.Bind(viewModel.InfoRewardViewModel);
+                blockChanceRewards.gameObject.SetActive(true);
+            }
+            else
+            {
+                blockChanceRewards.gameObject.SetActive(false);
+            }
+            
             var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
             imageChest.sprite = imageManager.GetChest(ViewModel.Chest.TypeChest);
             textLevel.text = $"Глава {ViewModel.Chest.MapId}";

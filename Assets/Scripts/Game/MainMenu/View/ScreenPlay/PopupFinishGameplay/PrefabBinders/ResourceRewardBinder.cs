@@ -13,8 +13,10 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders
         [SerializeField] private Image imageCard;
         [SerializeField] private TMP_Text textAmount;
         
-        public void Bind(ResourceRewardViewModel viewModel)
+        public void Bind(ResourceRewardViewModel viewModel, int square = 170)
         {
+            //gameObject.GetComponent<RectTransform>().sizeDelta = new Vector2(square, square);
+            
             var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
 
 //            Debug.Log(viewModel.InventoryType + "  " + viewModel.ConfigId);

@@ -8,7 +8,7 @@ namespace MVVM.UI
     {
         
         [SerializeField] private Button btnToggle;
-        [SerializeField] protected RectTransform container;
+        [SerializeField] protected Transform container;
         
         protected T ViewModel;
         protected Vector2 Point1;

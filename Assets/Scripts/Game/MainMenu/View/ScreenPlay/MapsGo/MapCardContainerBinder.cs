@@ -16,6 +16,9 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
         [SerializeField] private RectTransform viewPort;
         [SerializeField] public RectTransform content;
         [SerializeField] private HorizontalLayoutGroup hlg;
+
+        [SerializeField] private Button btnLeft;
+        [SerializeField] private Button btnRight;
         
         private readonly Dictionary<int, MapCardBinder> _createdMapCardMap = new();
         private Subject<int> _startLevelGame;
@@ -51,7 +54,29 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
             createdMap.Bind(viewModel, _startLevelGame);
             _createdMapCardMap[viewModel.MapId] = createdMap;
         }
-        
+
+        private void OnEnable()
+        {
+            btnLeft.onClick.AddListener(OnScrollLeft);
+            btnRight.onClick.AddListener(OnScrollRight);
+        }
+
+        private void OnScrollRight()
+        {
+            
+        }
+
+        private void OnScrollLeft()
+        {
+            
+        }
+
+        private void OnDisable()
+        {
+            btnLeft.onClick.RemoveListener(OnScrollLeft);
+            btnRight.onClick.RemoveListener(OnScrollRight);
+        }
+
         private void Start()
         {
             //screenView.OnScroll();

@@ -59,12 +59,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
 
             foreach (var reward in _rewards)
             {
-                var viewModel = new ResourceRewardViewModel
-                {
-                    InventoryType = reward.RewardType,
-                    ConfigId = (reward.ConfigId == "") ? "UnKnow" : reward.ConfigId,
-                    Amount = reward.Amount,
-                };
+                var viewModel = new ResourceRewardViewModel(reward);
                 RewardResources.Add(viewModel);
             }
 

@@ -240,6 +240,8 @@ MonoBehaviour:
   viewPort: {fileID: 872683935088691935}
   content: {fileID: 5517826742566306789}
   hlg: {fileID: 4673803470052521070}
+  btnLeft: {fileID: 8853069231769563353}
+  btnRight: {fileID: 5682538473656582262}
 --- !u!1 &2788356400066414439
 GameObject:
   m_ObjectHideFlags: 0
@@ -940,6 +942,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventTrigger
   m_Delegates:
   - eventID: 14
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 7361211550174862304}
+          m_TargetAssemblyTypeName: Game.MainMenu.View.ScreenPlay.MapsGo.MapsGoBinder,
+            Assembly-CSharp
+          m_MethodName: OnScroll
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 13
     callback:
       m_PersistentCalls:
         m_Calls:

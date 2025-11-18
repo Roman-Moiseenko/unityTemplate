@@ -26,12 +26,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupRewardChest
             
             foreach (var reward in rewards)
             {
-                var viewModel = new ResourceRewardViewModel
-                {
-                    InventoryType = reward.RewardType,
-                    ConfigId = reward.ConfigId,
-                    Amount = reward.Amount,
-                };
+                var viewModel = new ResourceRewardViewModel(reward);
                 RewardResources.Add(viewModel);
             }
         }
