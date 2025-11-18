@@ -49,14 +49,16 @@ namespace MVVM.UI
         public abstract void CloseDropdown();
         protected virtual void OnToggle()
         {
-            if (container.gameObject.activeSelf)
+            OpenDropdown();
+            
+          /*  if (container.gameObject.activeSelf)
             {
                 CloseDropdown();
             }
             else
             {
                 OpenDropdown();
-            }
+            }*/
         }
 
         protected abstract void OnBind(T viewModel);

@@ -59,7 +59,7 @@ namespace Game.MainMenu.Services
             {
                 if (cell > 0)
                 {
-                    Debug.Log("Запуск открытия сундука = " + cell);
+                    //Debug.Log("Запуск открытия сундука = " + cell);
                     _opening = _coroutines.StartCoroutine(ChestOpening());
                 }
                 else

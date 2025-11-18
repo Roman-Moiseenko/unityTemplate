@@ -42,19 +42,25 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
         private void OnEnable()
         {
             btnPlay.onClick.AddListener(OnResumeBattleClicked);
+            btnInfoMap.onClick.AddListener(OnInfoMapPopup);
             //    _btnResumeGame.onClick.AddListener(OnResumeGameButtonClicked);
         }
 
         private void OnDisable()
         {
             btnPlay.onClick.RemoveListener(OnResumeBattleClicked);
+            btnInfoMap.onClick.RemoveListener(OnInfoMapPopup);
             //    _btnResumeGame.onClick.RemoveListener(OnResumeGameButtonClicked);
+        }
+
+        private void OnInfoMapPopup()
+        {
+            _viewModel.ResumeInfoMapPopup();
         }
 
         private void OnResumeBattleClicked()
         {
             _startLevelGame.OnNext(_viewModel.MapId);
-            //_viewModel.OnResumeBattleClicked();
         }
 
         //TODO Кнопки по нажатию наведению (ИНФО о ВОЛНЕ) Запуск Волны

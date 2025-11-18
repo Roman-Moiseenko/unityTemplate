@@ -23,7 +23,14 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
         private readonly Dictionary<int, MapCardBinder> _createdMapCardMap = new();
         private Subject<int> _startLevelGame;
         private MapCardContainerViewModel _viewModel;
+        private float _deltaScroll;
         IDisposable disposable;
+        
+        private bool _isScrolling = false;
+        private float _targetScroll;
+        private ReactiveProperty<int> _numberShow = new(1);
+        private float startScroll = 0f;
+        
         public void Bind(MapCardContainerViewModel viewModel, Subject<int> startLevelGame)
         {
             var d = Disposable.CreateBuilder();
@@ -40,8 +47,15 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
                 if (v != 0) _createdMapCardMap[v].SetFinished();
                 _createdMapCardMap[v + 1].SetEnabled();
             }).AddTo(ref d);
-            disposable = d.Build();
 
+            _deltaScroll = 1f / (_createdMapCardMap.Count - 1);
+            _numberShow.Skip(1).Subscribe(v =>
+            {
+                _isScrolling = true;
+                _targetScroll = _deltaScroll * (v - 1);
+            }).AddTo(ref d);
+            
+            disposable = d.Build();
         }
         
         
@@ -61,14 +75,31 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
             btnRight.onClick.AddListener(OnScrollRight);
         }
 
+        private void Update()
+        {
+            if (_isScrolling)
+            {
+                //Движение 
+                screenView.horizontalNormalizedPosition = Mathf.Lerp(
+                    screenView.horizontalNormalizedPosition, _targetScroll, 1 / 10f);
+                if (Mathf.Abs(screenView.horizontalNormalizedPosition - _targetScroll) < 0.0001)
+                {
+                    //Debug.Log("STOP SCROLL");
+                    _isScrolling = false;
+                }
+                
+
+            }
+        }
+        
         private void OnScrollRight()
         {
-            
+            if (_numberShow.CurrentValue < _createdMapCardMap.Count) _numberShow.Value++;
         }
 
         private void OnScrollLeft()
         {
-            
+            if (_numberShow.CurrentValue > 1) _numberShow.Value--;
         }
 
         private void OnDisable()
@@ -82,13 +113,22 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
             //screenView.OnScroll();
         }
 
-        private void Update()
+        public void OnScrollBegin(BaseEventData eventData)
         {
-
+            startScroll = content.localPosition.x;
         }
-        public void OnScroll2()
+        public void OnScrollEnd(BaseEventData eventData)
         {
-            Debug.Log("*****");
+            var endScroll = content.localPosition.x;
+//            Debug.Log(startScroll + " > " + endScroll);
+            if (startScroll - endScroll > 0)
+            {
+                OnScrollRight();
+            }
+            else
+            {
+                OnScrollLeft();
+            }
         }
         public void OnScroll(BaseEventData eventData)
         {

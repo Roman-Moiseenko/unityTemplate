@@ -26,7 +26,7 @@ namespace Game.MainMenu.Root.View
             container.RegisterInstance(inventoryUIManager);
             var playUIManager = new PlayUIManager(container);
             container.RegisterInstance(playUIManager);
-
+            
           //  container.RegisterFactory(c => new UIMainMenuRootViewModel(container.Resolve<SomeMainMenuService>())).AsSingle();
         }
     }

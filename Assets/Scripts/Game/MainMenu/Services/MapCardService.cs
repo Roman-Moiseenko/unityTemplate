@@ -31,24 +31,25 @@ namespace Game.MainMenu.Services
             _settings = settings;
             _gameState = gameState;
 //            Debug.Log(_gameState.MapStates.LastMap.CurrentValue);
-
+/*
             foreach (var settingsMap in _settings.Maps)
             {
 //                Debug.Log(settingsMap.MapId);
                 CreateMapViewModel(settingsMap);
             }
-            
+            */
             //TODO Отслеживание прогресса игрока, 
         }
-
+/*
         private void CreateMapViewModel(MapSettings settingsMap)
         {
             MapState mapState;
 
             _gameState.MapStates.Maps.TryGetValue(settingsMap.MapId, out mapState);
             
-            var mapViewModel = new MapCardViewModel(settingsMap, mapState);
+            var mapViewModel = new MapCardViewModel(settingsMap, _container, mapState);
             _allMaps.Add(mapViewModel);
         }
+        */
     }
 }

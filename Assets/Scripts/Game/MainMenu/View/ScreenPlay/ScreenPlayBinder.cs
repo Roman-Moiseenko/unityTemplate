@@ -43,13 +43,13 @@ namespace Game.MainMenu.View.ScreenPlay
         
         private void OnEnable()
         {
-            btnInfinityBattle.onClick.AddListener(OnResumeInfinityBattleClicked);
+        //    btnInfinityBattle.onClick.AddListener(OnResumeInfinityBattleClicked);
         //    _btnResumeGame.onClick.AddListener(OnResumeGameButtonClicked);
         }
 
         private void OnDisable()
         {
-            btnInfinityBattle.onClick.RemoveListener(OnResumeInfinityBattleClicked);
+            //btnInfinityBattle.onClick.RemoveListener(OnResumeInfinityBattleClicked);
         //    _btnResumeGame.onClick.RemoveListener(OnResumeGameButtonClicked);
         }
 

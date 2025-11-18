@@ -1,50 +1,43 @@
 ﻿using DI;
-using Game.MainMenu.Services;
+using Game.Settings;
+using Game.Settings.Gameplay.Maps;
 using Game.State;
+using Game.State.GameStates;
 using Game.State.Root;
 using ObservableCollections;
 using R3;
-using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenPlay.MapsGo
 {
     public class MapCardContainerViewModel
     {
         private readonly DIContainer _container;
+        private readonly GameStateProxy _gameState;
 
-        public IObservableCollection<MapCardViewModel> AllMapsViewModels;
+        public ObservableList<MapCardViewModel> AllMapsViewModels = new();
         public ReactiveProperty<int> LastMapId;
         public MapCardContainerViewModel(GameStateProxy gameState, DIContainer container)
         {
             _container = container;
-            var mapCardService = container.Resolve<MapCardService>();
-            AllMapsViewModels = mapCardService.AllMaps;
+            _gameState = gameState;
             LastMapId = gameState.MapStates.LastMap;
-            
             var lastMap = gameState.MapStates.LastMap.CurrentValue;
-            
-            foreach (var mapCardViewModel in AllMapsViewModels)
+            var settings = container.Resolve<ISettingsProvider>().GameSettings.MapsSettings;
+            foreach (var settingsMap in settings.Maps)
             {
-                if (lastMap + 1 >= mapCardViewModel.MapId) mapCardViewModel.EnabledMapCard();
+                var enabled = lastMap + 1 > settingsMap.MapId;
+                CreateMapViewModel(settingsMap, enabled);
             }
             
-/*
-            gameState.MapStates.LastMap.Skip(1).Subscribe(newMapId =>
-            {
-                Debug.Log("newMapId = " + newMapId);
-                
-                foreach (var mapsViewModel in AllMapsViewModels)
-                {
-                    if (newMapId + 1 != mapsViewModel.MapId) continue;
-                    mapsViewModel.EnabledMapCard();
-                    break;
-                } 
-            });
-            */
-            //Загружаем список карт из настроек
-            //Создаем ViewModel карты и в список
-
-            //Загружаем прогресс Игрока (текущую карту)
         }
+        
+        private void CreateMapViewModel(MapSettings settingsMap, bool enabled)
+        {
+            _gameState.MapStates.Maps.TryGetValue(settingsMap.MapId, out var mapState);
+            var mapViewModel = new MapCardViewModel(settingsMap, _container, mapState);
+            mapViewModel.Enabled = enabled;
+            AllMapsViewModels.Add(mapViewModel);
+        }
+        
     }
 }

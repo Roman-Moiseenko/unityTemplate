@@ -2,6 +2,7 @@
 using DI;
 using Game.MainMenu.Root;
 using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay;
+using Game.MainMenu.View.ScreenPlay.PopupInfoMap;
 using Game.MainMenu.View.ScreenPlay.PopupOpenChest;
 using Game.MainMenu.View.ScreenPlay.PopupProfile;
 using Game.MainMenu.View.ScreenPlay.PopupRewardChest;
@@ -19,6 +20,17 @@ namespace Game.MainMenu.View.ScreenPlay
         {
         }
 
+        public PopupInfoMapViewModel OpenPopupInfoMap(int mapId)
+        {
+            var b = new PopupInfoMapViewModel(mapId, Container);
+            var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
+            
+            b.CloseRequested.Subscribe(e =>
+            {
+            });
+            rootUI.OpenPopup(b);
+            return b;
+        }
 
         public PopupFinishGameplayViewModel OpenPopupFinishGameplay(MainMenuEnterParams enterParams)
         {

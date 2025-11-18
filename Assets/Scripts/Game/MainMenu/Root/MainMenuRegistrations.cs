@@ -9,6 +9,7 @@ using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.Services;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenInventory.TowerPlans;
+using Game.MainMenu.View.ScreenPlay;
 using Game.Settings;
 using Game.State;
 using MVVM.CMD;
@@ -30,6 +31,7 @@ namespace Game.MainMenu.Root
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
 
+            //container.RegisterInstance(new PlayUIManager(container));
             //HРЕГИСТРИРУЕМ СОБЫТИЯ
             var subjectExitParams = new Subject<MainMenuExitParams>();
             container.RegisterFactory(_ => new Subject<TowerCardViewModel>()).AsSingle();
@@ -99,14 +101,14 @@ namespace Game.MainMenu.Root
             //TODO Загружаем настройки и другое с сервера. Либо перенести в GameRoot 
             
             //Сервисы для play screen
-            var mapService = new MapCardService(
+       /*     var mapService = new MapCardService(
                 gameState,
                 gameSettings.MapsSettings,
                 cmd,
                 container
                 );
             container.RegisterInstance(mapService);
-
+*/
             //Сервисы карточек
 
             var towerCardService = new TowerCardPlanService(
