@@ -206,9 +206,7 @@ namespace Game.State
                     WebConstants.WEB_AUTH,
                     WebConstants.BASE_TOKEN,
                     userId));
-
                 userToken = JsonConvert.DeserializeObject<string>(_response.CurrentValue);
-                //userToken = jsonString;
                 PlayerPrefs.SetString(AppConstants.USER_TOKEN, userToken);
                 state.Set("Пользователь зарегистрирован");
                 yield return null;

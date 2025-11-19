@@ -1,6 +1,7 @@
 ﻿using DI;
 using Game.Settings.Gameplay.Maps;
 using Game.State.GameStates;
+using MVVM.Storage;
 using R3;
 
 namespace Game.MainMenu.View.ScreenPlay.MapsGo
@@ -12,14 +13,16 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
         public bool Finished = false;
         public int LastWave = 0;
         public bool Enabled;
+        public string UrlImage;
         private readonly PlayUIManager _uiManager;
-
+        
         public MapCardViewModel(MapSettings settingsMap, DIContainer container, MapState mapState)
         {
             Enabled = false;
             //Получаем данные из настроек для отображения
             MapId = settingsMap.MapId;
             Title = $"{settingsMap.MapId}. {settingsMap.InitialStateSettings.TitleLid}";
+            UrlImage = settingsMap.InitialStateSettings.UrlImage;
             
             //Загружаем данные игрока
             if (mapState != null)
@@ -28,10 +31,11 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
                 LastWave = mapState.LastWave;
                 //TODO Стата о пройденных эатапах 
             }
-            
+
             _uiManager = container.Resolve<PlayUIManager>();
         }
-        
+
+
         public void ResumeInfoMapPopup()
         {
             //TODO Стата о пройденных эатапах 

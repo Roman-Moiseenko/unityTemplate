@@ -1,4 +1,5 @@
 ﻿using Game.Settings.Gameplay.Maps;
+using MVVM.Storage;
 using R3;
 using TMPro;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
         private MapCardViewModel _viewModel;
         private Subject<int> _startLevelGame;
 
-        public void Bind(MapCardViewModel viewModel, Subject<int> startLevelGame)
+        public void Bind(MapCardViewModel viewModel, Subject<int> startLevelGame, StorageManager storageManager)
         {
             _viewModel = viewModel;
             txtTitle.text = viewModel.Title;
@@ -27,6 +28,13 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
             btnPlay.gameObject.SetActive(viewModel.Enabled);
             imageDisabled.gameObject.SetActive(!viewModel.Enabled);
             _startLevelGame = startLevelGame;
+            var texture = storageManager.GetTextureFromCache(viewModel.UrlImage);
+//            Debug.Log(texture);
+            /*imageMap.sprite = Sprite.Create(storageManager.GetTextureFromCache(viewModel.UrlImage),
+                imageMap.GetComponent<RectTransform>().rect, new Vector2(1,1)); */
+            imageMap.sprite = Sprite.Create(texture,
+                new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+
             //TODO ... Вывод всех данных
         }
         public void SetEnabled()

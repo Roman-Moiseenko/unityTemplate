@@ -25,7 +25,7 @@ namespace Game.MainMenu.View.ScreenPlay
             base.OnBind(viewModel);
             chests.Bind(viewModel.ChestsViewModel);
             
-            mapCards.Bind(viewModel.MapCardContainerViewModel, _startLevelGame);
+            mapCards.Bind(viewModel.MapCardContainerViewModel, _startLevelGame, viewModel.StorageManager);
             
             //Создаем все карточки карт в меню
   /*          foreach (var mapViewModel in viewModel.MapCards)

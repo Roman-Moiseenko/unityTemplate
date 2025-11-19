@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MVVM.Storage;
 using Newtonsoft.Json;
 using R3;
 using UnityEngine;
@@ -30,12 +31,16 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
         private float _targetScroll;
         private ReactiveProperty<int> _numberShow = new(1);
         private float startScroll = 0f;
-        
-        public void Bind(MapCardContainerViewModel viewModel, Subject<int> startLevelGame)
+        private StorageManager _storageManager;
+
+        public void Bind(MapCardContainerViewModel viewModel, 
+            Subject<int> startLevelGame, 
+            StorageManager storageManager)
         {
             var d = Disposable.CreateBuilder();
             _startLevelGame = startLevelGame;
             _viewModel = viewModel;
+            _storageManager = storageManager;
             
             foreach (var mapViewModel in viewModel.AllMapsViewModels)
             {
@@ -65,7 +70,7 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
                 $"Prefabs/UI/MainMenu/ScreenPlay/MapCard";
             var mapPrefab = Resources.Load<MapCardBinder>(prefabMapCardPath);
             var createdMap = Instantiate(mapPrefab, content.GetComponent<Transform>());
-            createdMap.Bind(viewModel, _startLevelGame);
+            createdMap.Bind(viewModel, _startLevelGame, _storageManager);
             _createdMapCardMap[viewModel.MapId] = createdMap;
         }
 

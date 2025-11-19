@@ -18,6 +18,7 @@ using Game.State.Inventory;
 using Game.State.Inventory.Chests;
 using Game.State.Root;
 using MVVM.CMD;
+using MVVM.Storage;
 using Newtonsoft.Json;
 using R3;
 using Scripts.Utils;
@@ -91,6 +92,8 @@ namespace Scripts.Game.GameRoot
             _imageManager.gameObject.name = AppConstants.IMAGE_MANAGER;
             Object.DontDestroyOnLoad(_imageManager.gameObject);
 
+            var storageManager = new StorageManager();
+            _rootContainer.RegisterInstance(storageManager);
 
             /*
                 string userId;
@@ -116,7 +119,7 @@ namespace Scripts.Game.GameRoot
             // gameStateProvider.LoadSettingsState(); //Загрузили настройки игры  
 
             //Настройки приложения
-            var settingsProvider = new SettingsProviderWeb();
+            var settingsProvider = new SettingsProviderWeb(storageManager);
             _rootContainer.RegisterInstance<ISettingsProvider>(settingsProvider);
 
 

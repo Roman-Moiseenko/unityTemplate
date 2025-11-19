@@ -3,6 +3,8 @@
     public static class WebConstants
     {
         //https://td-infinity.ru   http://127.0.0.1:8000
+        public const string WEB = "https://td-infinity.ru/"; //
+
         public const string BASE_TOKEN = "ZnHunQ5yBFIz/r75hyJEYRT0jbHatQ/DkjVwVXNqFcUd7gs=QG/IT9Qh7u3RoeDY";
         public const string WEB_AUTH = "https://td-infinity.ru/api/auth"; //
         public const string WEB_SETTINGS = "https://td-infinity.ru/api/settings";

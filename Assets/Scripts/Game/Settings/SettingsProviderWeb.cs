@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using System.Threading.Tasks;
 using Game.Common;
 using Game.GameRoot.Services;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Maps.Towers;
 using Game.State.Root;
+using MVVM.Storage;
 using Newtonsoft.Json;
 using R3;
 using Scripts.Utils;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -16,6 +19,7 @@ namespace Game.Settings
 {
     public class SettingsProviderWeb : ISettingsProvider
     {
+        private readonly StorageManager _storageManager;
         private const string GAME_SETTINGS_KEY = nameof(GAME_SETTINGS_KEY);
         private const string GAME_SETTINGS_VERSION = nameof(GAME_SETTINGS_VERSION);
 
@@ -28,8 +32,9 @@ namespace Game.Settings
         public ReactiveProperty<bool> WebAvailable = new(false);
         private DateTime webDate;
 
-        public SettingsProviderWeb()
+        public SettingsProviderWeb(StorageManager storageManager)
         {
+            _storageManager = storageManager;
             ApplicationSettings = Resources.Load<ApplicationSettings>("ApplicationSettings");
             _webService = new WebService();
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
@@ -64,31 +69,40 @@ namespace Game.Settings
             var userToken = PlayerPrefs.GetString(AppConstants.USER_TOKEN);
             yield return null;
 
-            yield return CheckWeb(state); //Запускаем корутину Которая проверяет соединение,
+            
+            //TODO Тест
+          //  if (false)
+          //  {
 
-            if (!WebAvailable.CurrentValue) //Связи нет
-            {
-                if (!PlayerPrefs.HasKey(GAME_SETTINGS_KEY))
+
+                yield return CheckWeb(state); //Запускаем корутину Которая проверяет соединение,
+
+                if (!WebAvailable.CurrentValue) //Связи нет
                 {
-                    state.Set("Нет данных по настройкам. Зайдите позже");
-                    throw new Exception("Нет данных по настройкам");
-                }
-                yield return LoadLocalSettings(state);
-                yield break;
-            }
+                    if (!PlayerPrefs.HasKey(GAME_SETTINGS_KEY))
+                    {
+                        state.Set("Нет данных по настройкам. Зайдите позже");
+                        throw new Exception("Нет данных по настройкам");
+                    }
 
-            yield return SettingsVersion(state); //Загружаем с сервера номер версии настроек
-
-            if (PlayerPrefs.HasKey(GAME_SETTINGS_VERSION)) //Локальная версия сохранена
-            {
-                var localDate = JsonConvert
-                    .DeserializeObject<DateTime>(PlayerPrefs.GetString(GAME_SETTINGS_VERSION));
-                if (DateTime.Compare(webDate, localDate) <= 0) //Версия не обновилась
-                {
                     yield return LoadLocalSettings(state);
                     yield break;
                 }
-            }
+
+                yield return SettingsVersion(state); //Загружаем с сервера номер версии настроек
+
+                if (PlayerPrefs.HasKey(GAME_SETTINGS_VERSION)) //Локальная версия сохранена
+                {
+                    var localDate = JsonConvert
+                        .DeserializeObject<DateTime>(PlayerPrefs.GetString(GAME_SETTINGS_VERSION));
+                    if (DateTime.Compare(webDate, localDate) <= 0) //Версия не обновилась
+                    {
+                        yield return LoadLocalSettings(state);
+                        yield break;
+                    }
+                }
+         //   }
+
             //Настройки не загружены или версия не совпадает
             state.Set("Загружаем настройки с сервера");
             yield return LoadTextFromServer(WebConstants.WEB_SETTINGS, userToken, userId);
@@ -100,11 +114,9 @@ namespace Game.Settings
             PlayerPrefs.SetString(GAME_SETTINGS_VERSION, JsonConvert.SerializeObject(webDate));
             yield return null;
             //TODO После загрузки с сервера создаем список изображений
-            //yield return LoadImageFromSettings(state);
+            yield return LoadImageFromSettings(state);
             state.Loaded = true;
             
-
-
             //yield return LoadTextFromServer(WebConstants.WEB_SETTINGS, userToken, userId);
         }
         
@@ -116,9 +128,18 @@ namespace Game.Settings
             _gameSettings = JsonConvert.DeserializeObject<GameSettings>(json);
             state.Loaded = true;
         }
-        private IEnumerator LoadSettingsFromWeb(LoadingState state)
+        private IEnumerator LoadImageFromSettings(LoadingState state)
         {
-            yield return null;
+            foreach (var mapsSetting in _gameSettings.MapsSettings.Maps)
+            {
+                yield return null;
+               // Debug.Log(mapsSetting.InitialStateSettings.UrlImage);
+                yield return LoadTextureFromServer(mapsSetting.InitialStateSettings.UrlImage);
+            }
+
+            
+            
+            
         }
 
         private IEnumerator LoadTextFromServer(string url, string token, string userId)
@@ -149,24 +170,7 @@ namespace Game.Settings
 
             request.Dispose();
         }
-
-        private IEnumerator SaveDataToServer(string url, WWWForm formData)
-        {
-            var userId = PlayerPrefs.GetString(AppConstants.USER_ID);
-            var userToken = PlayerPrefs.GetString(AppConstants.USER_TOKEN);
-            yield return null;
-
-            formData.AddField("user_id", userId);
-            var request = UnityWebRequest.Post(url, formData);
-            request.SetRequestHeader("authorization", $"Bearer {userToken}");
-            yield return request.SendWebRequest();
-            if (request.result != UnityWebRequest.Result.Success)
-                Debug.Log("web ERROR = " + request.downloadHandler.text);
-
-
-            request.Dispose();
-        }
-
+        
         private IEnumerator CheckWeb(LoadingState state)
         {
             state.Set("Проверяем соединение с сервером");
@@ -214,6 +218,24 @@ namespace Game.Settings
             }
 
             yield return null;
+            request.Dispose();
+        }
+        
+        private IEnumerator LoadTextureFromServer(string url)
+        {
+            var request = UnityWebRequestTexture.GetTexture(WebConstants.WEB + url);
+            yield return request.SendWebRequest();
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                //TODO Сохраняем ресурс 
+                var contentImage = DownloadHandlerTexture.GetContent(request);
+                _storageManager.CacheTexture(url, contentImage.EncodeToJPG());
+            }
+            else
+            {
+                Debug.LogErrorFormat("error request [{0}, {1}]", url, request.error);
+            }
+
             request.Dispose();
         }
     }

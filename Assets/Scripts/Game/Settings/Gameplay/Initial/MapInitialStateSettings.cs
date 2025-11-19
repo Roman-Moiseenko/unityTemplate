@@ -17,5 +17,6 @@ namespace Game.Settings.Gameplay.Initial
         public int collapse = 0; //Степень провалов на начальной карте
         public string roadDefault = "Road";
         public string TitleLid = "По-умолчанию";
+        public string UrlImage = "";
     }
 }

@@ -6,6 +6,7 @@ using Game.MainMenu.Services;
 using Game.MainMenu.View.ScreenPlay.Chests;
 using Game.MainMenu.View.ScreenPlay.MapsGo;
 using Game.State;
+using MVVM.Storage;
 using MVVM.UI;
 using ObservableCollections;
 using R3;
@@ -20,7 +21,8 @@ namespace Game.MainMenu.View.ScreenPlay
         private readonly DIContainer _container;
         public ChestsViewModel ChestsViewModel;
         public MapCardContainerViewModel MapCardContainerViewModel;
-
+        public StorageManager StorageManager { get; set; }
+        
         //  private readonly Subject<MainMenuExitParams> _exitSceneRequest2 = new();
         public override string Id => "ScreenPlay";
         public override string Path => "MainMenu/ScreenPlay/";
@@ -36,14 +38,15 @@ namespace Game.MainMenu.View.ScreenPlay
             _exitSceneRequest = exitSceneRequest;
             _exitParamsService = exitParamsService;
             _container = container;
-            
+            StorageManager = container.Resolve<StorageManager>();
             var gameState = container.Resolve<IGameStateProvider>().GameState;
             ChestsViewModel = new ChestsViewModel(gameState, container);
             MapCardContainerViewModel = new MapCardContainerViewModel(gameState, container);
-            
         }
 
         
+
+
         //TODO Получаем список карт по уровню, доступные и номер последней. Остальные  для просмотра
         //TODO При выборе, сохраняем его уровень - MapId
         //TODO в RequestBeginGame его передаем или берем из стека
