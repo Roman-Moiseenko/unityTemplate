@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using DI;
-using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders;
-using Game.State.Inventory;
+using Game.GameRoot.View.ResourceReward;
 using Game.State.Inventory.Chests;
 using Game.State.Maps.Rewards;
 using MVVM.UI;
-using Newtonsoft.Json;
-using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenPlay.PopupRewardChest
 {

@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GameRoot.ImageManager;
-using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders;
+using Game.GameRoot.View.ResourceReward;
 using MVVM.UI;
-using ObservableCollections;
 using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
+namespace Game.GamePlay.View.UI.PopupFinishGameplay
 {
     public class PopupFinishGameplayBinder : PopupBinder<PopupFinishGameplayViewModel>
     {
@@ -54,7 +53,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
 
         private void CreateResourceCard(ResourceRewardViewModel viewModel)
         {
-            const string prefabReward = "Prefabs/UI/MainMenu/ScreenPlay/Popups/ResourceReward";
+            const string prefabReward = "Prefabs/UI/Common/ResourceReward";
             var rewardPrefab = Resources.Load<ResourceRewardBinder>(prefabReward);
             var createdReward = Instantiate(rewardPrefab, containerResources);
             createdReward.Bind(viewModel);

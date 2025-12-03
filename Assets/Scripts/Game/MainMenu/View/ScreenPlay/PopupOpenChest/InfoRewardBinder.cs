@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders;
+﻿using System.Collections.Generic;
 using MVVM.UI;
-using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
 {

@@ -1,43 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using DI;
+﻿using System.Collections.Generic;
+using Game.GamePlay.Root;
+using Game.GameRoot.View.ResourceReward;
 using Game.MainMenu.Root;
-using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders;
-using Game.State;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
 using Game.State.Maps.Rewards;
-using Game.State.Mergeable.ResourcesEntities;
 using MVVM.UI;
-using Newtonsoft.Json;
-using ObservableCollections;
+using R3;
 using UnityEngine;
 
-namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
+namespace Game.GamePlay.View.UI.PopupFinishGameplay
 {
     public class PopupFinishGameplayViewModel : WindowViewModel
     {
         public readonly MainMenuEnterParams EnterParams;
 
-        public TypeChest? RewardChest;
+        public TypeChest RewardChest;
         public override string Id => "PopupFinishGameplay";
-        public override string Path => "MainMenu/ScreenPlay/Popups/";
+        public override string Path => "Gameplay/Popups/";
         public List<ResourceRewardViewModel> RewardResources = new();
         private readonly List<RewardEntityData> _rewards = new();
+        private readonly GameplayExitParams _exitParams;
+        private readonly Subject<GameplayExitParams> _exitSceneRequest;
 
-        public PopupFinishGameplayViewModel(MainMenuEnterParams enterParams, DIContainer container)
+        public PopupFinishGameplayViewModel(GameplayExitParams exitParams, Subject<GameplayExitParams> exitSceneRequest)
         {
-            EnterParams = enterParams;
-            var gameState = container.Resolve<IGameStateProvider>().GameState;
+            
+            EnterParams = exitParams.MainMenuEnterParams;
+            _exitParams = exitParams;
+            _exitSceneRequest = exitSceneRequest;
+           // var gameState = container.Resolve<IGameStateProvider>().GameState;
 
             _rewards.Add(new RewardEntityData
             {
                 RewardType = InventoryType.SoftCurrency,
                 ConfigId = "Currency",
-                Amount = enterParams.SoftCurrency,
+                Amount = EnterParams.SoftCurrency,
             });
 
-            foreach (var rewardCard in enterParams.RewardCards)
+            foreach (var rewardCard in EnterParams.RewardCards)
             {
                 var element = _rewards.Find(v =>
                     v.RewardType == rewardCard.RewardType &&
@@ -52,7 +53,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
                 }
             }
 
-            foreach (var rewardEntity in enterParams.RewardOnWave)
+            foreach (var rewardEntity in EnterParams.RewardOnWave)
             {
                 _rewards.Add(rewardEntity);
             }
@@ -62,10 +63,15 @@ namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay
                 var viewModel = new ResourceRewardViewModel(reward);
                 RewardResources.Add(viewModel);
             }
-
-            RewardChest = enterParams.TypeChest;
+            
+            RewardChest = EnterParams.TypeChest;
         }
-
+        public override void RequestClose()
+        {
+            base.RequestClose();
+            _exitSceneRequest.OnNext(_exitParams);
+        }
+        
         private void RewardLoad(List<RewardEntityData> list)
         {
         }

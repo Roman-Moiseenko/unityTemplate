@@ -250,3 +250,5 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 4cdac8c8ed207764ebe764f5a6cba296, type: 3}
   - TypeChest: 3
     Sprite: {fileID: 21300000, guid: 4cf48802d84fefe4bb1dd519fcf1e90d, type: 3}
+  - TypeChest: 4
+    Sprite: {fileID: 21300000, guid: a970457df5dff814a9d940f0f4a81126, type: 3}

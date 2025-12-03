@@ -4,7 +4,7 @@ namespace Game.State.Inventory.Chests
 {
     internal static class TypeChestMethods
     {
-        public static string GetString(this TypeChest? type)
+        public static string GetString(this TypeChest type)
         {
             return type switch
             {
@@ -12,7 +12,7 @@ namespace Game.State.Inventory.Chests
                 TypeChest.Gold => "Золотой сундук",
                 TypeChest.Epic => "Рубиновый сундук",
                 TypeChest.Legend => "Алмазный сундук",
-                null => "Нет места под сундук",
+                TypeChest.None => "Нет места под сундук",
                 _ => ""
             };
         }

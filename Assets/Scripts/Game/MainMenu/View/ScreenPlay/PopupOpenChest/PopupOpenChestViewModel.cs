@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using DI;
 using Game.Common;
+using Game.GameRoot.View.ResourceReward;
 using Game.MainMenu.Services;
-using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders;
 using Game.State;
 using Game.State.Inventory.Chests;
 using Game.State.Root;
 using MVVM.UI;
-using Newtonsoft.Json;
 using R3;
-using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
 {

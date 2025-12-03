@@ -3,11 +3,13 @@ using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Root;
+using Game.GamePlay.Services;
 using Game.GamePlay.View.UI.PanelActions;
 using Game.GamePlay.View.UI.PanelBuild;
 using Game.GamePlay.View.UI.PanelConfirmation;
 using Game.GamePlay.View.UI.PanelGateWave;
 using Game.GamePlay.View.UI.PopupB;
+using Game.GamePlay.View.UI.PopupFinishGameplay;
 using Game.GamePlay.View.UI.PopupLose;
 using Game.GamePlay.View.UI.PopupPause;
 using Game.GamePlay.View.UI.ScreenGameplay;
@@ -23,6 +25,7 @@ namespace Game.GamePlay.View.UI
     {
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
         private readonly FsmGameplay _fsmGameplay;
+        private ScreenGameplayViewModel _screenGameplayViewModel; //Кешируем главный экран геймплея - решение не очень, переделать
 
         public GameplayUIManager(DIContainer container) : base(container)
         {
@@ -35,7 +38,7 @@ namespace Game.GamePlay.View.UI
             //Создаем панели, необходимые для Геймплея           
             rootUI.AddPanel(new PanelGateWaveViewModel(this, container));
             rootUI.AddPanel(new PanelBuildViewModel(container));
-           rootUI.AddPanel(new PanelActionsViewModel(this, container));
+            rootUI.AddPanel(new PanelActionsViewModel(this, container));
             rootUI.AddPanel(new PanelConfirmationViewModel(this, container));
             
             
@@ -63,6 +66,15 @@ namespace Game.GamePlay.View.UI
                     rootUI.ShowPanel<PanelActionsViewModel>();
                 }
             });
+            
+            var gameService = container.Resolve<GameplayService>();
+            gameService.GameOver
+                .Where(x => x != null)
+                .Subscribe(exitParams =>
+                    {
+                        OpenFinishPopup(exitParams);
+                    }
+                );
         }
 
         public ScreenGameplayViewModel OpenScreenGameplay()
@@ -70,6 +82,7 @@ namespace Game.GamePlay.View.UI
             var viewModel = new ScreenGameplayViewModel(this, _exitSceneRequest, Container);
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
             rootUI.OpenScreen(viewModel);
+            _screenGameplayViewModel = viewModel;
             return viewModel;
         }
 
@@ -122,6 +135,20 @@ namespace Game.GamePlay.View.UI
             
         }
 
+        public PopupFinishGameplayViewModel OpenFinishPopup(GameplayExitParams exitParams)
+        {
+            //TODO Закрыть все другие попап
+            //TODO Закрыть все панели
+            
+            var finish = new PopupFinishGameplayViewModel(exitParams, _exitSceneRequest);
+            var rootUI = Container.Resolve<UIGameplayRootViewModel>();
+            rootUI.CloseAllPopupHandler.OnNext(true);
+            rootUI.HideAllPanelHandler.OnNext(true);
+            _screenGameplayViewModel?.ShowTopMenu.OnNext(false);
+            rootUI.OpenPopup(finish);
+            
+            return finish;
+        }
 
         public PopupLoseViewModel OpenPopupLose()
         {

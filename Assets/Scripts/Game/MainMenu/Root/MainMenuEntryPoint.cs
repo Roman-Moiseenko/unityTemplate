@@ -190,7 +190,7 @@ namespace Game.MainMenu.Root
             
             if (enterParams != null)
             {
-                uiManager.OpenPopupFinishGameplay(enterParams);    
+                //uiManager.OpenPopupFinishGameplay(enterParams);    
             }
             
             

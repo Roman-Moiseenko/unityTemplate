@@ -1,12 +1,8 @@
 ﻿using System.Collections.Generic;
 using DI;
-using Game.MainMenu.Root;
-using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay;
 using Game.MainMenu.View.ScreenPlay.PopupInfoMap;
 using Game.MainMenu.View.ScreenPlay.PopupOpenChest;
-using Game.MainMenu.View.ScreenPlay.PopupProfile;
 using Game.MainMenu.View.ScreenPlay.PopupRewardChest;
-using Game.State.Inventory;
 using Game.State.Inventory.Chests;
 using Game.State.Maps.Rewards;
 using MVVM.UI;
@@ -23,18 +19,6 @@ namespace Game.MainMenu.View.ScreenPlay
         public PopupInfoMapViewModel OpenPopupInfoMap(int mapId)
         {
             var b = new PopupInfoMapViewModel(mapId, Container);
-            var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
-            
-            b.CloseRequested.Subscribe(e =>
-            {
-            });
-            rootUI.OpenPopup(b);
-            return b;
-        }
-
-        public PopupFinishGameplayViewModel OpenPopupFinishGameplay(MainMenuEnterParams enterParams)
-        {
-            var b = new PopupFinishGameplayViewModel(enterParams, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             
             b.CloseRequested.Subscribe(e =>

@@ -80,5 +80,23 @@ namespace MVVM.UI
             var categoryName = viewModel.Path ?? "";
             return $"Prefabs/UI/{categoryName}{viewModel.Id}";
         }
+
+        public void CloseAllPopup()
+        {
+            foreach (var (model, binder) in _openedPopupBinders)
+            {
+                binder?.Close();
+                _openedPopupBinders.Remove(model);
+            }
+        }
+
+        public void HideAllPanel()
+        {
+            foreach (var (model, binder) in _openedPanelBinders)
+            {
+                binder?.Close();
+                //_openedPanelBinders.Remove(model);
+            }
+        }
     }
 }

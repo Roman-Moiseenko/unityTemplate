@@ -50,6 +50,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         public override string Path => "Gameplay/ScreenGameplay/";
         private IDisposable _disposable;
 
+        public ReactiveProperty<bool> ShowTopMenu = new(true);
 
         public ScreenGameplayViewModel(
             GameplayUIManager uiManager,
@@ -78,6 +79,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             RepairBuffer = _castleService.RepairBuffer;
             PositionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
 
+            
+            
             _gameplayState.CurrentWave
                 .Subscribe(n =>
                 {

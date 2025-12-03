@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using DI;
 using Game.Common;
-using Game.GamePlay.Classes;
 using Game.GamePlay.Commands.WaveCommands;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
@@ -12,24 +10,19 @@ using Game.GamePlay.Root;
 using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.Settings.Gameplay.Maps;
-using Game.State;
-using Game.State.GameStates;
-using Game.State.Inventory;
 using Game.State.Inventory.Chests;
-using Game.State.Maps.Mobs;
 using Game.State.Maps.Rewards;
 using Game.State.Root;
 using MVVM.CMD;
 using Newtonsoft.Json;
 using R3;
-using Scripts.Game.GameRoot.Entity;
-using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Random = System.Random;
 
 namespace Game.GamePlay.Services
 {
     /**
+     * Сервис отслеживающий события приводящие к концу игры, и высчитывающий выходные данные (награду)
      * Сервис для подписок на события которые необходимо сохранить.
      */
     public class GameplayService : IDisposable
@@ -46,7 +39,7 @@ namespace Game.GamePlay.Services
         private readonly MapsSettings _mapsSettings;
 
         public int CountRepair;
-
+        public ReactiveProperty<GameplayExitParams> GameOver = new(null);
         private IDisposable _disposable;
         // public ReactiveProperty<float> CastleHealth;
 
@@ -111,27 +104,45 @@ namespace Game.GamePlay.Services
             //gameplayState.Castle.IsDead.Subscribe(h => Lose()).AddTo(ref d);
             _disposable = d.Build();
         }
-        
+
         public void Win() //private
         {
             //Debug.Log("Победа");
             var menuParams = GetMainMenuParams(true);
-            menuParams.TypeChest = GetTypeChestWin(out var rewardChest);
-            menuParams.LastRewardChest = rewardChest;
+            if (_gameState.ContainerChests.IsFreeCell())
+            {
+                menuParams.TypeChest = GetTypeChestWin(out var rewardChest);
+                menuParams.LastRewardChest = rewardChest;
+            }
+            else
+            {
+                menuParams.TypeChest = TypeChest.None;
+            }
 
             var exitParams = new GameplayExitParams(menuParams);
-            Debug.Log(JsonConvert.SerializeObject(exitParams, Formatting.Indented));
+            //Debug.Log(JsonConvert.SerializeObject(exitParams, Formatting.Indented));
 
-            _exitSceneRequest.OnNext(exitParams);
+            GameOver.OnNext(exitParams);
+            //TODO Показать окно окончания игры без сохранения
+            // _exitSceneRequest.OnNext(exitParams); //TODO перенести в окно Finish
         }
 
         public void Lose() //private
         {
             var menuParams = GetMainMenuParams(false);
-            menuParams.TypeChest = GetTypeChestLose(menuParams.LastWave, out var rewardChest);
-            menuParams.LastRewardChest = rewardChest;
+            if (_gameState.ContainerChests.IsFreeCell())
+            {
+                menuParams.TypeChest = GetTypeChestLose(menuParams.LastWave, out var rewardChest);
+                menuParams.LastRewardChest = rewardChest;
+            }
+            else
+            {
+                menuParams.TypeChest = TypeChest.None;
+            }
 
             var exitParams = new GameplayExitParams(menuParams);
+            GameOver.OnNext(exitParams);
+            //TODO Показать окно окончания игры
             _exitSceneRequest.OnNext(exitParams);
         }
 
@@ -182,7 +193,7 @@ namespace Game.GamePlay.Services
             var rewardChests = map.MapRewardSetting.RewardChest;
             var maxChest = TypeChest.Silver;
             var maxValueRandom = 0;
-            
+
             foreach (var (type, rewardItems) in rewardChests)
             {
                 if (type.GetIndex() > maxChest.GetIndex())
@@ -226,7 +237,7 @@ namespace Game.GamePlay.Services
             var rewardWave = 0; //Последняя полученная награда за волну По-умолчанию
             if (_gameState.MapStates.Maps.TryGetValue(_gameplayState.MapId.CurrentValue, out var mapState))
             {
-                Debug.Log(JsonConvert.SerializeObject(mapState));
+                //Debug.Log(JsonConvert.SerializeObject(mapState));
                 //Уже получали награды
                 rewardWave = mapState.RewardOnWave.CurrentValue;
                 lastRewardOnWave = rewardWave;
@@ -296,6 +307,7 @@ namespace Game.GamePlay.Services
         public void Abort()
         {
             var exitParams = new GameplayExitParams(null);
+            GameOver.OnNext(exitParams);
             _exitSceneRequest.OnNext(exitParams);
         }
 
@@ -307,6 +319,7 @@ namespace Game.GamePlay.Services
             var menuParams = GetMainMenuParams(false);
             var exitParams = new GameplayExitParams(menuParams);
             exitParams.SaveGameplay = true;
+            GameOver.OnNext(exitParams);
             _exitSceneRequest.OnNext(exitParams);
         }
 

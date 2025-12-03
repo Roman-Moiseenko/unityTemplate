@@ -1,4 +1,4 @@
-﻿using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders;
+﻿using Game.GameRoot.View.ResourceReward;
 using TMPro;
 using UnityEngine;
 

@@ -29,6 +29,10 @@ namespace MVVM.UI
         public ReactiveProperty<WindowViewModel> ShowedPanel = new();
         public ReactiveProperty<WindowViewModel> HidedPanel = new();
 
+        public ReactiveProperty<bool> CloseAllPopupHandler = new(false);
+        public ReactiveProperty<bool> HideAllPanelHandler = new(false);
+        
+        
         public UIRootViewModel(DIContainer container)
         {
             Container = container;
@@ -37,7 +41,7 @@ namespace MVVM.UI
         {
             CloseAllPopups();
             _openedScreen.Value?.Dispose();
-            CloseAllPanels();
+            DisposeAllPanels();
         }
 
         public void AddPanel(WindowViewModel panelViewModel)
@@ -51,8 +55,7 @@ namespace MVVM.UI
             _openedScreen.Value?.Dispose(); //Если текущий экран существует/открыт, то закрываем
             _openedScreen.Value = screenViewModel;
         }
-
-
+        
         public void ShowPanel<T>()
         {
             var type = typeof(T);
@@ -106,7 +109,7 @@ namespace MVVM.UI
             ClosePopup(openedPopupViewModal);
         }
 
-        public void CloseAllPopups()
+        private void CloseAllPopups()
         {
             foreach (var openedPopup in _openedPopups)
             {
@@ -114,9 +117,9 @@ namespace MVVM.UI
             }
         }
         
-        private void CloseAllPanels()
+        private void DisposeAllPanels()
         {
-            foreach (var openedPanel in _openedPanels)
+            foreach (var openedPanel in _openedPanels.ToList())
             {
                 _openedPanels.Remove(openedPanel);
                 openedPanel.Dispose();

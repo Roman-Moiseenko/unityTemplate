@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders;
+using Game.GameRoot.View.ResourceReward;
 using Game.State.Inventory;
 using Game.State.Maps.Rewards;
 using MVVM.UI;

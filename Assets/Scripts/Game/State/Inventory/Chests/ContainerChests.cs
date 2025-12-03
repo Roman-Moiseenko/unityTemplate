@@ -56,6 +56,12 @@ namespace Game.State.Inventory.Chests
                 });
         }
 
+        public bool IsFreeCell()
+        {
+            return Chests.Count < MaxChest;
+        }
+        
+        
         public Chest OpeningChest()
         {
             return CellOpening.CurrentValue == 0 ? null : Chests[CellOpening.CurrentValue];

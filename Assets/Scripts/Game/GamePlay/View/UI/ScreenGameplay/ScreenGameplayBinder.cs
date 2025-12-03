@@ -38,6 +38,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         [SerializeField] private Transform startWave;
         [SerializeField] private Transform finishWave;
 
+        [SerializeField] private Transform topMenu;
+        
         private TMP_Text _levelProgress;
         private Slider _progress;
         private IDisposable _disposable;
@@ -143,6 +145,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 finishWave.gameObject.SetActive(true);
                 ViewModel.ShowFinishWave.Value = false;
             }).AddTo(ref d);
+
+            ViewModel.ShowTopMenu.Subscribe(v => topMenu.gameObject.SetActive(v)).AddTo(ref d);
             _disposable = d.Build();
         }
 

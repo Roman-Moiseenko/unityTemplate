@@ -83,11 +83,11 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 if (_viewModel.Defence != null)
                 {
                     imageDefence.sprite = _imageManager.GetDefence(_viewModel.Defence);
-                    imageDefence.gameObject.SetActive(true);
+                    imageDefence?.gameObject.SetActive(true);
                 }
                 else
                 {
-                    imageDefence.gameObject.SetActive(false);
+                    imageDefence?.gameObject.SetActive(false);
                 }
 
                 imageBack.sprite = _viewModel.RewardType switch

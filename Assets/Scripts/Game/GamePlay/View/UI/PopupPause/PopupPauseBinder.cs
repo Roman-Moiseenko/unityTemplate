@@ -37,6 +37,7 @@ namespace Game.GamePlay.View.UI.PopupPause
 
         private void OnWin()
         {
+            ViewModel.RequestClose();
             ViewModel.Win();
         }
 

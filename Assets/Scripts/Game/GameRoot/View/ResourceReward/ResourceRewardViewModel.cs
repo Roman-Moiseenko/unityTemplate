@@ -1,8 +1,7 @@
 ﻿using Game.State.Inventory;
 using Game.State.Maps.Rewards;
-using UnityEngine;
 
-namespace Game.MainMenu.View.ScreenPlay.PopupFinishGameplay.PrefabBinders
+namespace Game.GameRoot.View.ResourceReward
 {
     public class ResourceRewardViewModel
     {
