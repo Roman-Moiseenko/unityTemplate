@@ -39,7 +39,7 @@ namespace MVVM.UI
         public void HidePanel(WindowViewModel viewModel)
         {
             var binder = _openedPanelBinders[viewModel];
-            binder.Hide();
+            binder?.Hide();
         }
         
         /**

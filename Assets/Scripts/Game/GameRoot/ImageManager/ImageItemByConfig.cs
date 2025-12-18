@@ -8,5 +8,6 @@ namespace Game.GameRoot.ImageManager
     {
         public string ConfigId;
         public Sprite Sprite;
+        public Texture Texture;
     }
 }

@@ -19,6 +19,7 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByConfig> otherSprite;
         [SerializeField] private List<ImageItemByConfig> roads;
         [SerializeField] private List<ImageItemByChest> chests;
+        [SerializeField] private List<ImageItemByConfig> grounds;
 
 
         public Sprite GetEpicLevel(TypeEpicCard typeEpicCard)
@@ -73,6 +74,11 @@ namespace Game.GameRoot.ImageManager
         public Sprite GetRoad(string configId)
         {
             return roads.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
+        }
+        
+        public Texture GetGround(string configId)
+        {
+            return grounds.FirstOrDefault(t => t.ConfigId == configId)!.Texture;
         }
     }
 }

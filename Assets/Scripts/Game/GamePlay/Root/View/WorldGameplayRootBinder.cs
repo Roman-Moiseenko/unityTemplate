@@ -25,6 +25,7 @@ namespace Game.GamePlay.Root.View
         //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
         private readonly Dictionary<int, TowerBinder> _createTowersMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
+        private readonly Dictionary<int, BoardBinder> _createBoardsMap = new();
         private FrameBlockBinder _frameBlockBinder;
         private readonly Dictionary<int, RoadBinder> _createdRoadsMap = new();
         private readonly Dictionary<int, MobBinder> _createMobsMap = new();
@@ -60,7 +61,20 @@ namespace Game.GamePlay.Root.View
             viewModel.AllGrounds.ObserveRemove()
                 .Subscribe(e => DestroyGround(e.Value))
                 .AddTo(ref d);
-            
+            //Границы
+            foreach (var boardViewModel in viewModel.AllBoards) CreateBoard(boardViewModel);
+
+            viewModel.AllBoards.ObserveAdd()
+                .Subscribe(e =>
+                {
+                    //Debug.Log("e.Value.BoardEntityId = " + e.Value.BoardEntityId);
+                    CreateBoard(e.Value);
+                    
+                })
+                .AddTo(ref d);
+            viewModel.AllBoards.ObserveRemove()
+                .Subscribe(e => DestroyBoard(e.Value))
+                .AddTo(ref d);
             //Башни
             foreach (var towerViewModel in viewModel.AllTowers) CreateTower(towerViewModel);
             viewModel.AllTowers.ObserveAdd().Subscribe(e =>
@@ -277,15 +291,22 @@ namespace Game.GamePlay.Root.View
 
         private void CreateGround(GroundViewModel groundViewModel)
         {
-            var groundType = groundViewModel.ConfigId;
-            var odd = Math.Abs((groundViewModel.Position.CurrentValue.x + groundViewModel.Position.CurrentValue.y) % 2);
-            var prefabGroundPath = $"Prefabs/Gameplay/Grounds/{groundType}"; //Перенести в настройки уровня
+            var prefabGroundPath = $"Prefabs/Gameplay/Grounds/Ground"; //Перенести в настройки уровня {groundType}
             var groundPrefab = Resources.Load<GroundBinder>(prefabGroundPath);
             var createdGround = Instantiate(groundPrefab, transform);
-            createdGround.Bind(groundViewModel, odd);
+            createdGround.Bind(groundViewModel);
             _createGroundsMap[groundViewModel.GroundEntityId] = createdGround;
         }
 
+        private void CreateBoard(BoardViewModel boardViewModel)
+        {
+            var prefabBoardPath = $"Prefabs/Gameplay/Grounds/Board"; //Перенести в настройки уровня {groundType}
+            var boardPrefab = Resources.Load<BoardBinder>(prefabBoardPath);
+            var createdBoard = Instantiate(boardPrefab, transform);
+            createdBoard.Bind(boardViewModel);
+            _createBoardsMap[boardViewModel.BoardEntityId] = createdBoard;
+        }
+        
         private void CreateFrameBlock(FrameBlockViewModel frameBlockViewModel)
         {
             var prefabFrame = $"Prefabs/Gameplay/Frames/block_{frameBlockViewModel.GetCountFrames()}";
@@ -386,13 +407,20 @@ namespace Game.GamePlay.Root.View
                 // Destroy(mobViewModel);
             }
         }
-
         private void DestroyGround(GroundViewModel groundViewModel)
         {
             if (_createGroundsMap.TryGetValue(groundViewModel.GroundEntityId, out var groundBinder))
             {
                 Destroy(groundBinder.gameObject);
                 _createGroundsMap.Remove(groundViewModel.GroundEntityId);
+            }
+        }
+        private void DestroyBoard(BoardViewModel boardViewModel)
+        {
+            if (_createBoardsMap.TryGetValue(boardViewModel.BoardEntityId, out var boardBinder))
+            {
+                Destroy(boardBinder.gameObject);
+                _createBoardsMap.Remove(boardViewModel.BoardEntityId);
             }
         }
 

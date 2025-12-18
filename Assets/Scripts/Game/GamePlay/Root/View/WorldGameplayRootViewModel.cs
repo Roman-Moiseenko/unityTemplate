@@ -42,6 +42,7 @@ namespace Game.GamePlay.Root.View
         public readonly IObservableCollection<TowerViewModel> AllTowers;
         public readonly IObservableCollection<MobViewModel> AllMobs;
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
+        public readonly IObservableCollection<BoardViewModel> AllBoards;
         public readonly IObservableCollection<RoadViewModel> AllRoads;
         public readonly IObservableCollection<ShotViewModel> AllShots;
 
@@ -89,6 +90,7 @@ namespace Game.GamePlay.Root.View
 
             AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
+            AllBoards = groundsService.AllBoards;
             AllTowers = towersService.AllTowers;
             AllMobs = waveService.AllMobsOnWay;
             AllShots = shotService.AllShots;

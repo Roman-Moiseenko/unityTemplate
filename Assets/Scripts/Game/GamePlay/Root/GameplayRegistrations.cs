@@ -142,7 +142,8 @@ namespace Game.GamePlay.Root
             container.RegisterFactory(_ => new GroundsService(
                     gameplayState.Grounds,
                     defaultGroundConfigId,
-                    cmd
+                    cmd,
+                    gameplayState
                 )
             ).AsSingle();
 

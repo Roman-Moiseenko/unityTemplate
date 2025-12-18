@@ -1,6 +1,7 @@
 ﻿using DI;
 using Game.Common;
 using Game.GamePlay.Controllers;
+using Newtonsoft.Json;
 using R3;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace Game.GamePlay.Classes
     {
         public Camera Camera;
         public Transform CameraSystem;
-        
+
         public float MoveSpeed = 4f;
         public float Sensitivity = 0.5f;
         public float SensTouch = 0.1f;
@@ -18,38 +19,39 @@ namespace Game.GamePlay.Classes
         private const int speed = 10;
         private const float smoothTime = 0.2f;
         private Vector3 _velocity;
-        
-        
+
+
         private float _tempSens;
         private bool _isDragging = false, _isMoving = false;
         private Vector2 _tempCenter, _targetDirection, _tempMousePos;
 
         private bool _autoMoving = false;
         private Vector3 _targetAutoMoving;
-        
-        private readonly RectBorder _border;//, _cameraBorder;
+
+        private readonly RectBorder _border; //, _cameraBorder;
         private readonly Subject<Unit> _subjectCameraMoving;
-        
-        
+
+
         public GameplayCamera(DIContainer container)
         {
             _subjectCameraMoving = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
             CameraSystem = GameObject.Find("CameraSystem").GetComponent<Transform>();
             Camera = GameObject.Find("Main Camera").GetComponent<Camera>();
 
-            int _centreX = 0; //Размеры игрового мира
-            int _centreY = 0;
-            int width = 8;
-            int height = 8;
+            int _centreX = 2; //Размеры игрового мира
+            int _centreY = 2;
+            int width = 10;
+            int height = 10;
 
             _border = new RectBorder(_centreX, _centreY, width, height);
-            
+            Debug.Log(JsonConvert.SerializeObject(_border, Formatting.Indented));
+
             float _newPosX = Mathf.Clamp(_centreX, _border.BottomX, _border.TopX);
             float _newPosY = Mathf.Clamp(_centreY, _border.BottomY, _border.TopY);
             CameraSystem.transform.position = new Vector3(_newPosX, CameraSystem.transform.position.y, _newPosY);
             _subjectCameraMoving.OnNext(Unit.Default);
         }
-        
+
         public void OnPointDown(Vector2 mousePosition)
         {
             _tempCenter = GetWorldPoint(mousePosition);
@@ -71,6 +73,7 @@ namespace Game.GamePlay.Classes
                     {
                         _targetDirection = RotateTarget((_tempMousePos - mousePosition).normalized);
                     }
+
                     _tempMousePos = mousePosition;
                 }
             }
@@ -94,7 +97,7 @@ namespace Game.GamePlay.Classes
             float sqrDst = (_tempCenter - point).sqrMagnitude;
             if (sqrDst <= SensTouch) _isMoving = false;
         }
-        
+
         public void UpdateMoving()
         {
             if (!_isMoving) return;
@@ -110,34 +113,37 @@ namespace Game.GamePlay.Classes
             }
 
             if (_tempSens <= SensTouch) _isMoving = false;
-            Vector3 newPosition = CameraSystem.transform.position + new Vector3(_targetDirection.x, 0, _targetDirection.y) * _tempSens;
+            Vector3 newPosition = CameraSystem.transform.position +
+                                  new Vector3(_targetDirection.x, 0, _targetDirection.y) * _tempSens;
             newPosition.x = Mathf.Clamp(newPosition.x, _border.BottomX, _border.TopX);
             newPosition.z = Mathf.Clamp(newPosition.z, _border.BottomY, _border.TopY);
-            
+
             CameraSystem.transform.position = Vector3.Lerp(CameraSystem.transform.position, newPosition, speed);
             _subjectCameraMoving.OnNext(Unit.Default); //Камера сдвинулась, оповещаем
         }
-        
+
         public Vector2 GetWorldPoint(Vector2 mousePosition)
         {
-            var ray  = Camera.main.ScreenPointToRay(new Vector3(mousePosition.x, mousePosition.y,0));
+            var ray = Camera.main.ScreenPointToRay(new Vector3(mousePosition.x, mousePosition.y, 0));
             Vector3 normal = Vector3.up;
             Vector3 position = Vector3.zero;
             Plane plane = new Plane(normal, position);
-            
+
             if (plane.Raycast(ray, out var distance))
             {
                 var point = ray.GetPoint(distance);
                 return new Vector2(point.x, point.z);
             }
+
             return new Vector2(0, 0);
         }
 
         public void AutoMoving()
         {
             if (!_autoMoving) return;
-         
-            CameraSystem.transform.position = Vector3.SmoothDamp(CameraSystem.transform.position, _targetAutoMoving, ref _velocity, smoothTime, speed );
+
+            CameraSystem.transform.position = Vector3.SmoothDamp(CameraSystem.transform.position, _targetAutoMoving,
+                ref _velocity, smoothTime, speed);
             _subjectCameraMoving.OnNext(Unit.Default); //Камера сдвинулась, оповещаем
             if (_velocity.magnitude < 0.0005)
             {
@@ -145,11 +151,16 @@ namespace Game.GamePlay.Classes
                 CameraSystem.transform.position = _targetAutoMoving;
             }
         }
-        
+
         public void MoveCamera(Vector2Int position)
         {
             _autoMoving = true;
-            _targetAutoMoving = new Vector3(position.x, CameraSystem.transform.position.y, position.y);
+            var t = 2;
+            _targetAutoMoving = new Vector3(
+                position.x + t,
+                CameraSystem.transform.position.y,
+                position.y + t
+            );
         }
     }
 }
