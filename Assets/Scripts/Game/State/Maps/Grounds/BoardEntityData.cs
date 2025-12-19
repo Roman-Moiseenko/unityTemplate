@@ -13,11 +13,16 @@ namespace Game.State.Maps.Grounds
         public bool TopSide { get; set; }
         public bool BottomSide { get; set; }
         
-        public bool LeftAngle { get; set; } // -1, 0, 1
-        public bool RightAngle { get; set; } // -1, 0, 1
-        public bool TopAngle { get; set; } // -1, 0, 1
-        public bool BottomAngle { get; set; } // -1, 0, 1
+        public bool LeftInAngle { get; set; } // -1, 0, 1
+        public bool RightInAngle { get; set; } // -1, 0, 1
+        public bool TopInAngle { get; set; } // -1, 0, 1
+        public bool BottomInAngle { get; set; } // -1, 0, 1
         
+        
+        public bool LeftOutAngle { get; set; } // -1, 0, 1
+        public bool RightOutAngle { get; set; } // -1, 0, 1
+        public bool TopOutAngle { get; set; } // -1, 0, 1
+        public bool BottomOutAngle { get; set; } // -1, 0, 1
         //public int Side = 0;
     }
 }

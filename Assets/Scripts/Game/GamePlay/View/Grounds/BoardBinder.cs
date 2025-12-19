@@ -37,10 +37,15 @@ namespace Game.GamePlay.View.Grounds
             matBlock.SetInt("_RightSide", viewModel.BoardEntity.Origin.RightSide ? 1 : 0);
             matBlock.SetInt("_BottomSide", viewModel.BoardEntity.Origin.BottomSide ? 1 : 0);
             
-            matBlock.SetInt("_LeftAngle", viewModel.BoardEntity.Origin.LeftAngle ? 1 : 0);
-            matBlock.SetInt("_TopAngle", viewModel.BoardEntity.Origin.TopAngle ? 1 : 0);
-            matBlock.SetInt("_RightAngle", viewModel.BoardEntity.Origin.RightAngle ? 1 : 0);
-            matBlock.SetInt("_BottomAngle", viewModel.BoardEntity.Origin.BottomAngle ? 1 : 0);
+            matBlock.SetInt("_LeftOutAngle", viewModel.BoardEntity.Origin.LeftOutAngle ? 1 : 0);
+            matBlock.SetInt("_TopOutAngle", viewModel.BoardEntity.Origin.TopOutAngle ? 1 : 0);
+            matBlock.SetInt("_RightOutAngle", viewModel.BoardEntity.Origin.RightOutAngle ? 1 : 0);
+            matBlock.SetInt("_BottomOutAngle", viewModel.BoardEntity.Origin.BottomOutAngle ? 1 : 0);
+            
+            matBlock.SetInt("_LeftInAngle", viewModel.BoardEntity.Origin.LeftInAngle ? 1 : 0);
+            matBlock.SetInt("_TopInAngle", viewModel.BoardEntity.Origin.TopInAngle ? 1 : 0);
+            matBlock.SetInt("_RightInAngle", viewModel.BoardEntity.Origin.RightInAngle ? 1 : 0);
+            matBlock.SetInt("_BottomInAngle", viewModel.BoardEntity.Origin.BottomInAngle ? 1 : 0);
             
             meshRenderer.SetPropertyBlock(matBlock);
             transform.position = new Vector3(
@@ -62,7 +67,7 @@ namespace Game.GamePlay.View.Grounds
         private void CreateBoard(BoardWallViewModel viewModel)
         {
             var type = "Side";
-            var prefabWallPath = $"Prefabs/Gameplay/Grounds/Boards/{type}"; //Перенести в настройки уровня {groundType}
+            var prefabWallPath = $"Prefabs/Gameplay/Grounds/Boards/{viewModel.ConfigId}"; //Перенести в настройки уровня {groundType}
             var wallPrefab = Resources.Load<BoardWallBinder>(prefabWallPath);
             var createdWall = Instantiate(wallPrefab, container.transform);
             createdWall.Bind(viewModel);

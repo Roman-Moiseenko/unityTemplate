@@ -29,7 +29,7 @@ namespace Game.GamePlay.Services
         private readonly Dictionary<int, BoardViewModel> _boardsMap = new();
 
         private List<BoardEntityData> _listBoardEntityData = new();
-        
+
         //     private readonly Dictionary<string, GroundSettings> _groundSettingsMap = new();
 
         public IObservableCollection<GroundViewModel> AllGrounds =>
@@ -112,7 +112,8 @@ namespace Game.GamePlay.Services
             //Debug.Log("CreateBoardViewModels = " + _allBoards.Count);
             foreach (var boardViewModel in _allBoards.ToList())
             {
-                var boardEntityData = _listBoardEntityData.Find(e => e.Position == boardViewModel.Position.CurrentValue);
+                var boardEntityData =
+                    _listBoardEntityData.Find(e => e.Position == boardViewModel.Position.CurrentValue);
                 if (boardEntityData == null)
                 {
                     _allBoards.Remove(boardViewModel);
@@ -129,8 +130,8 @@ namespace Game.GamePlay.Services
 
                     _listBoardEntityData.Remove(boardEntityData);
                 }
-
             }
+
             //Debug.Log("_listBoardEntityData = " + _listBoardEntityData.Count);
             foreach (var boardEntityData in _listBoardEntityData)
             {
@@ -138,8 +139,7 @@ namespace Game.GamePlay.Services
                 _allBoards.Add(model);
             }
         }
-        
-        
+
 
         /**
          * Удаляем объект из списка моделей и из кеша
@@ -156,53 +156,79 @@ namespace Game.GamePlay.Services
         private void GenerateBoardsList()
         {
             _listBoardEntityData.Clear();
-            
+
+            //Сначала создаем стороны обходя землю, если с краю нет, то создаем границу 
             foreach (var groundViewModel in _allGrounds)
             {
                 var p = groundViewModel.Position.CurrentValue;
-
                 
-                
-                if (!IsGround(new Vector2Int(p.x - 1, p.y - 1))) //Верхний правый угол
-                {
-                    var board = CreateBoard(new Vector2Int(p.x - 1, p.y - 1));
-                    board.BottomAngle = true;
-                }
                 if (!IsGround(new Vector2Int(p.x - 1, p.y))) //Правая сторона
                 {
                     var board = CreateBoard(new Vector2Int(p.x - 1, p.y));
                     board.LeftSide = true;
-                }
-                if (!IsGround(new Vector2Int(p.x - 1, p.y + 1))) //Нижний правый угол
-                {
-                    var board = CreateBoard(new Vector2Int(p.x - 1, p.y + 1));
-                    board.LeftAngle = true;
                 }
                 if (!IsGround(new Vector2Int(p.x, p.y + 1))) //Нижняя сторона
                 {
                     var board = CreateBoard(new Vector2Int(p.x, p.y + 1));
                     board.TopSide = true;
                 }
-                if (!IsGround(new Vector2Int(p.x + 1, p.y + 1))) //Нижний левый угол
-                {
-                    var board = CreateBoard(new Vector2Int(p.x + 1, p.y + 1));
-                    board.TopAngle = true;
-                }
                 if (!IsGround(new Vector2Int(p.x + 1, p.y))) //Левая сторона
                 {
                     var board = CreateBoard(new Vector2Int(p.x + 1, p.y));
                     board.RightSide = true;
-                }
-                if (!IsGround(new Vector2Int(p.x + 1, p.y - 1))) //Верхний левый угол
-                {
-                    var board = CreateBoard(new Vector2Int(p.x + 1, p.y - 1));
-                    board.RightAngle = true;
                 }
                 if (!IsGround(new Vector2Int(p.x, p.y - 1))) //Верхняя сторона
                 {
                     var board = CreateBoard(new Vector2Int(p.x, p.y - 1));
                     board.BottomSide = true;
                 }
+            }
+
+            //Обходим все стороны границ, и создаем между ними углы
+            foreach (var boardData in _listBoardEntityData.ToList())
+            {
+                //Проверяем внутренние углы
+                if (boardData.LeftSide && boardData.TopSide) boardData.LeftInAngle = true;
+                if (boardData.LeftSide && boardData.BottomSide) boardData.BottomInAngle = true;
+                if (boardData.RightSide && boardData.TopSide) boardData.TopInAngle = true;
+                if (boardData.RightSide && boardData.BottomSide) boardData.RightInAngle = true;
+                
+                var p = boardData.Position;
+                //Проверяем по диагонали, есть ли сторона
+                //Проверяем только для паралелей, Top и Bottom
+                if (boardData.TopSide)
+                {
+                    
+                    if (IsBoard(new Vector2Int(p.x + 1, p.y - 1))) //Верхний левый угол
+                    {
+                        var board = CreateBoard(new Vector2Int(p.x + 1, p.y));
+                        board.TopOutAngle = true;
+                    }
+                    if (IsBoard(new Vector2Int(p.x - 1, p.y - 1))) //Верхний правый угол
+                    {
+                        var board = CreateBoard(new Vector2Int(p.x - 1, p.y));
+                        board.LeftOutAngle = true;
+                    }
+                }
+
+                if (boardData.BottomSide)
+                {
+                    if (IsBoard(new Vector2Int(p.x - 1, p.y + 1))) //Нижний правый угол
+                    {
+                        var board = CreateBoard(new Vector2Int(p.x - 1, p.y));
+                        board.BottomOutAngle = true;
+                    }
+
+                    if (IsBoard(new Vector2Int(p.x + 1, p.y + 1))) //Нижний левый угол
+                    {
+                        var board = CreateBoard(new Vector2Int(p.x + 1, p.y));
+                        board.RightOutAngle = true;
+                    }
+                }
+
+  
+
+                //Если есть, то со
             }
         }
 
@@ -211,12 +237,13 @@ namespace Game.GamePlay.Services
             return _allGrounds.Any(ground => ground.Position.CurrentValue == position);
         }
 
+        private bool IsBoard(Vector2Int position)
+        {
+            return _listBoardEntityData.Any(board => board.Position == position);
+        }
+
         private BoardEntityData CreateBoard(Vector2Int position)
         {
-            if (position == new Vector2Int(-1, 2))
-            {
-                Debug.Log(" * ** * *");
-            }
             //Проверяем есть ли по этим координатам боковина
             foreach (var boardData in _listBoardEntityData)
             {
