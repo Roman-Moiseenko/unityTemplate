@@ -6,6 +6,7 @@ using Game.GamePlay.View.AttackAreas;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
+using Game.GamePlay.View.Map;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Shots;
@@ -21,6 +22,7 @@ namespace Game.GamePlay.Root.View
 {
     public class WorldGameplayRootBinder : MonoBehaviour
     {
+        [SerializeField] private MapFogBinder mapFog;
         //      [SerializeField] private BuildingBinder _prefabBuilding;
         //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
         private readonly Dictionary<int, TowerBinder> _createTowersMap = new();
@@ -147,6 +149,10 @@ namespace Game.GamePlay.Root.View
             CreateGateWave(_viewModel.GateWaveViewModelSecond);
             CreateAttackArea(_viewModel.AreaViewModel);
 
+            //Создаем Туман Войны
+            mapFog.Bind(_viewModel.MapFogViewModel);
+            
+            //FogViewModel
             //Запускаем следующую волну
             _viewModel.StartGameplayServices();
             _disposable = d.Build();
@@ -165,7 +171,6 @@ namespace Game.GamePlay.Root.View
         }
 
         //CREATE 
-
 
         private void CreateGateWave(GateWaveViewModel viewModel)
         {
@@ -343,6 +348,7 @@ namespace Game.GamePlay.Root.View
             var prefabGroundFramePath = $"Prefabs/Gameplay/Grounds/Frame"; //Перенести в настройки уровня
             var groundFramePrefab = Resources.Load<GroundFrameBinder>(prefabGroundFramePath);
             var createdGroundFrame = Instantiate(groundFramePrefab, parentTransform);
+            
             createdGroundFrame.Bind(groundFrameViewModel);
         }
 

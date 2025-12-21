@@ -33,5 +33,8 @@
 
         public const string IMAGE_MANAGER = "[IMAGEMANAGER]";
         public const string COROUTINES = "[COROUTINES]";
+
+        public const int WIDTH_MAP = 10;
+        public const int HIGHT_MAP = 10;
     }
 }

@@ -8,10 +8,7 @@ namespace Game.GamePlay.View.AttackAreas
 {
     public class AttackAreaViewModel : IDisposable
     {
-
-        public ReactiveProperty<float> RadiusArea;
-        public ReactiveProperty<float> RadiusDisabled;
-        public ReactiveProperty<float> RadiusExpansion;
+        public ReactiveProperty<Vector3> Radius;
         public ReactiveProperty<Vector2Int> Position;
         private Vector3 _memoryRadius;
         public bool Moving;
@@ -22,9 +19,7 @@ namespace Game.GamePlay.View.AttackAreas
         {
             var d = Disposable.CreateBuilder();
             Position = new ReactiveProperty<Vector2Int>(Vector2Int.zero);
-            RadiusArea = new ReactiveProperty<float>(0);
-            RadiusDisabled = new ReactiveProperty<float>(0);
-            RadiusExpansion = new ReactiveProperty<float>(0);
+            Radius = new ReactiveProperty<Vector3>(Vector3.zero);
             _disposable = towerClickSubject.Subscribe(towerViewModel =>
             {
                 if (_towerPrevious == towerViewModel.Position.CurrentValue)
@@ -42,24 +37,18 @@ namespace Game.GamePlay.View.AttackAreas
 
         public void Hide()
         {
-            RadiusArea.Value = 0;
-            RadiusDisabled.Value = 0;
-            RadiusExpansion.Value = 0;
+            Radius.Value = Vector3.zero;
         }
 
         public void Restore()
         {
-            RadiusArea.OnNext(_memoryRadius.x);
-            RadiusDisabled.OnNext(_memoryRadius.y);
-            RadiusExpansion.OnNext(_memoryRadius.z);
+            Radius.OnNext(_memoryRadius);
         }
 
         public void SetRadius(Vector3 radius)
         {
             _memoryRadius = radius;
-            RadiusArea.OnNext(radius.x);
-            RadiusDisabled.OnNext(radius.y);
-            RadiusExpansion.OnNext(radius.z);
+            Radius.OnNext(radius);
         }
 
         /**

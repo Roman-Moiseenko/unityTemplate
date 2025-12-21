@@ -66,7 +66,6 @@ namespace Game.GamePlay.View.Grounds
         
         private void CreateBoard(BoardWallViewModel viewModel)
         {
-            var type = "Side";
             var prefabWallPath = $"Prefabs/Gameplay/Grounds/Boards/{viewModel.ConfigId}"; //Перенести в настройки уровня {groundType}
             var wallPrefab = Resources.Load<BoardWallBinder>(prefabWallPath);
             var createdWall = Instantiate(wallPrefab, container.transform);

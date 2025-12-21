@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Game.Common;
 using Game.GamePlay.Commands.GroundCommands;
 using Game.GamePlay.View.Grounds;
-using Game.Settings.Gameplay.Grounds;
-using Game.State.Entities;
 using Game.State.Maps.Grounds;
 using Game.State.Root;
 using MVVM.CMD;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -19,6 +17,8 @@ namespace Game.GamePlay.Services
         private readonly string _configIdDefault;
         private readonly ICommandProcessor _cmd;
         private readonly GameplayStateProxy _gameplayState;
+
+        public ObservableList<Vector2Int> MapFogs = new(); 
 
         private readonly ObservableList<GroundViewModel> _allGrounds = new();
         private readonly Dictionary<int, GroundViewModel> _groundsMap = new();
@@ -50,9 +50,18 @@ namespace Game.GamePlay.Services
             _gameplayState = gameplayState;
 
 
+            for (var i = -AppConstants.WIDTH_MAP - 10; i <= AppConstants.WIDTH_MAP + 10; i++)
+            {
+                for (var j = -AppConstants.HIGHT_MAP - 10; j <= AppConstants.HIGHT_MAP + 10; j++)
+                {
+                    MapFogs.Add(new Vector2Int(i, j));
+                }
+            }
+            
             foreach (var ground in grounds)
             {
                 CreateGroundViewModel(ground);
+                ClearFogAroundGround(ground.Position.CurrentValue);
             }
 
             GenerateBoardsList();
@@ -66,6 +75,7 @@ namespace Game.GamePlay.Services
                 CreateGroundViewModel(e.Value);
                 GenerateBoardsList();
                 CreateBoardViewModels();
+                ClearFogAroundGround(e.Value.Position.CurrentValue);
                 //Debug.Log(JsonConvert.SerializeObject(_listBoardEntityData, Formatting.Indented));
                 //TODO Переобсчет Границ
             });
@@ -77,6 +87,19 @@ namespace Game.GamePlay.Services
                 CreateBoardViewModels();
                 //TODO Переобсчет Границ
             });
+        }
+
+        private void ClearFogAroundGround(Vector2Int position)
+        {
+            const int areaFog = 4;
+            for (var i = position.x - areaFog; i <= position.x + areaFog; i++)
+            {
+                for (var j = -position.y - areaFog; j <= position.y + areaFog; j++)
+                {
+                    MapFogs.Remove(new Vector2Int(i, j));
+                }
+            }
+            
         }
 
         public bool PlaceGround(Vector2Int position)

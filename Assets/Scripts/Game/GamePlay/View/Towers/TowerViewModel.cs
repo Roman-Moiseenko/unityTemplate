@@ -113,7 +113,7 @@ namespace Game.GamePlay.View.Towers
                 radius.x = parameter.Value;
             }
             
-            //TODO Если к башне применен параметр Высота (+дистанции) то вычисляем radius.z = radius.x + %%
+            //TODO Если к башне применен параметр Высота (+дистанции) то вычисляем radius.z = %% от radius.x
 
             return radius;
         }

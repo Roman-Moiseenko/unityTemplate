@@ -35,14 +35,34 @@ namespace Game.GamePlay.View.AttackAreas
                     transform.position = new Vector3(newPosition.x, 0, newPosition.y);
                 }
             }).AddTo(ref d);
-            _viewModel.RadiusArea.Subscribe(r => _area.transform.localScale = GetDimensions(r)).AddTo(ref d);
-            _viewModel.RadiusDisabled.Subscribe(r => _areaDisabled.transform.localScale = GetDimensions(r))
-                .AddTo(ref d);
-            _viewModel.RadiusExpansion.Subscribe(r => _areaExpansion.transform.localScale = GetDimensions(r))
-                .AddTo(ref d);
+            
+            //TODO Размер поверхности =  GetDimensions(_viewModel.RadiusExpansion.Value + _viewModel.RadiusArea.Value)
+            //TODO В шейдер передаем %% e = RadiusExpansion / RadiusArea и d =  RadiusDisabled / RadiusArea
+            var meshRenderer = _area.GetComponent<MeshRenderer>();
+            var matBlock = new MaterialPropertyBlock();
+            meshRenderer.GetPropertyBlock(matBlock);
+
+
+            _viewModel.Radius.Subscribe(r =>
+            {
+                var radiusVector = GetDimensions(r.x + r.x * r.z);
+                _area.transform.localScale = radiusVector;
+
+                var _d = GetDimensions(r.y).x;
+                var _e = GetDimensions(r.z).x;
+                meshRenderer.GetPropertyBlock(matBlock);
+                matBlock.SetFloat("_Disabled", _d / radiusVector.x);
+                matBlock.SetFloat("_Expansion", _e / radiusVector.x);
+                matBlock.SetFloat("_Thickness", 0.04f / radiusVector.x); //Ободок
+                meshRenderer.SetPropertyBlock(matBlock);
+                
+            }).AddTo(ref d);
+
             _disposable = d.Build();
         }
 
+        
+        
 
         private void Update()
         {

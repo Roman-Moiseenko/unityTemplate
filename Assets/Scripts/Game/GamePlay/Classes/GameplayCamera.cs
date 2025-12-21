@@ -40,11 +40,11 @@ namespace Game.GamePlay.Classes
 
             int _centreX = 2; //Размеры игрового мира
             int _centreY = 2;
-            int width = 10;
-            int height = 10;
+            int width = AppConstants.WIDTH_MAP;
+            int height = AppConstants.HIGHT_MAP;
 
             _border = new RectBorder(_centreX, _centreY, width, height);
-            Debug.Log(JsonConvert.SerializeObject(_border, Formatting.Indented));
+//            Debug.Log(JsonConvert.SerializeObject(_border, Formatting.Indented));
 
             float _newPosX = Mathf.Clamp(_centreX, _border.BottomX, _border.TopX);
             float _newPosY = Mathf.Clamp(_centreY, _border.BottomY, _border.TopY);
