@@ -13,6 +13,9 @@ namespace Game.GamePlay.View.Frames
     public class FrameBlockViewModel : IDisposable
     {
         public ReactiveProperty<Vector2Int> Position { get; set; }
+        public ReactiveProperty<bool> StartRemoveFlag = new(false);
+        public ReactiveProperty<bool> FinishRemoveFlag = new(false);
+
         public ReactiveProperty<bool> Enable;
         public List<IMovingEntityViewModel> EntityViewModels = new();
         public ReactiveProperty<int> Rotate;
@@ -88,7 +91,7 @@ namespace Game.GamePlay.View.Frames
             return EntityViewModels.Select(entityViewModel => entityViewModel.GetPosition()).ToList();
         }
 
-        public void Selected(bool value = true)
+        public void Selected(bool value)
         {
             IsSelected.Value = value;
         }
@@ -104,6 +107,19 @@ namespace Game.GamePlay.View.Frames
         public int GetCountFrames()
         {
             return IsGround() ? 1 : EntityViewModels.Count;
+        }
+
+        public ReactiveProperty<bool> StartRemove()
+        {
+            FinishRemoveFlag.Value = false;
+            StartRemoveFlag.OnNext(true);
+            /*var Result = false;
+            FinishRemoveFlag.Subscribe(e =>
+            {
+                Debug.Log("FinishRemoveFlag " + e);
+                Result = FinishRemoveFlag.Value;
+            });*/
+            return FinishRemoveFlag;
         }
     }
 }

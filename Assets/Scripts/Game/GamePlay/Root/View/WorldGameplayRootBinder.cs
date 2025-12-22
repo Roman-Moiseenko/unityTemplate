@@ -78,10 +78,13 @@ namespace Game.GamePlay.Root.View
                 .Subscribe(e => DestroyBoard(e.Value))
                 .AddTo(ref d);
             //Башни
+            //TODO - размещение башен сразу без анимции
             foreach (var towerViewModel in viewModel.AllTowers) CreateTower(towerViewModel);
+            
             viewModel.AllTowers.ObserveAdd().Subscribe(e =>
             {
                 // Debug.Log("Башня добавилась в список " + e.Value.ConfigId + e.Value.TowerEntityId);
+                //TODO Размещение башен с анимацией
                 CreateTower(e.Value);
             }).AddTo(ref d);
             viewModel.AllTowers.ObserveRemove()
@@ -261,7 +264,7 @@ namespace Game.GamePlay.Root.View
 
         private void CreateAttackArea(AttackAreaViewModel attackAreaViewModel)
         {
-            var prefabPath = "Prefabs/Gameplay/AttackArea"; //Перенести в настройки уровня
+            var prefabPath = "Prefabs/Gameplay/AttackArea/AttackArea"; //Перенести в настройки уровня 
             var areaPrefab = Resources.Load<AttackAreaBinder>(prefabPath);
             var createdArea = Instantiate(areaPrefab, transform);
             createdArea.Bind(attackAreaViewModel);
@@ -322,14 +325,14 @@ namespace Game.GamePlay.Root.View
 
             if (frameBlockViewModel.IsTower())
             {
-                CreateTower((TowerViewModel)frameBlockViewModel.EntityViewModels[0], createdFrame.transform);
+                CreateTower((TowerViewModel)frameBlockViewModel.EntityViewModels[0], createdFrame.Element.transform);
             }
 
             if (frameBlockViewModel.IsRoad())
             {
                 foreach (var roadViewModel in frameBlockViewModel.EntityViewModels.Cast<RoadViewModel>().ToList())
                 {
-                    CreateRoad(roadViewModel, createdFrame.transform);
+                    CreateRoad(roadViewModel, createdFrame.Element.transform);
                 }
             }
 
@@ -338,7 +341,7 @@ namespace Game.GamePlay.Root.View
                 foreach (var groundFrameViewModel in frameBlockViewModel.EntityViewModels.Cast<GroundFrameViewModel>()
                              .ToList())
                 {
-                    CreateGroundFrame(groundFrameViewModel, createdFrame.transform);
+                    CreateGroundFrame(groundFrameViewModel, createdFrame.Element.transform);
                 }
             }
         }

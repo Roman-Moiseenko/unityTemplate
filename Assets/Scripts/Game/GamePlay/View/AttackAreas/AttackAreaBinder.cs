@@ -10,17 +10,19 @@ namespace Game.GamePlay.View.AttackAreas
         [SerializeField] private Transform _areaDisabled;
         [SerializeField] private Transform _areaExpansion;
         private AttackAreaViewModel _viewModel;
-
+        //private Animator _animator;
         private Vector3 _targetPosition;
         private bool _isMoving = false;
+        private bool _isHiding = false;
         private const int speed = 20;
         private const float smoothTime = 0.2f;
         private Vector3 _velocity;
         private IDisposable _disposable;
-
+        
         public void Bind(AttackAreaViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
+            //_animator = gameObject.GetComponent<Animator>();
             _viewModel = viewModel;
             transform.position = new Vector3(viewModel.Position.CurrentValue.x, 0, viewModel.Position.CurrentValue.y);
             _viewModel.Position.Subscribe(newPosition =>
@@ -36,18 +38,18 @@ namespace Game.GamePlay.View.AttackAreas
                 }
             }).AddTo(ref d);
             
-            //TODO Размер поверхности =  GetDimensions(_viewModel.RadiusExpansion.Value + _viewModel.RadiusArea.Value)
-            //TODO В шейдер передаем %% e = RadiusExpansion / RadiusArea и d =  RadiusDisabled / RadiusArea
+            //Размер поверхности =  GetDimensions(_viewModel.RadiusExpansion.Value + _viewModel.RadiusArea.Value)
+            //В шейдер передаем %% e = RadiusExpansion / RadiusArea и d =  RadiusDisabled / RadiusArea
             var meshRenderer = _area.GetComponent<MeshRenderer>();
             var matBlock = new MaterialPropertyBlock();
             meshRenderer.GetPropertyBlock(matBlock);
-
-
+            
             _viewModel.Radius.Subscribe(r =>
             {
+                //Debug.Log(r);
                 var radiusVector = GetDimensions(r.x + r.x * r.z);
                 _area.transform.localScale = radiusVector;
-
+                //Debug.Log(_area.transform.localScale);
                 var _d = GetDimensions(r.y).x;
                 var _e = GetDimensions(r.z).x;
                 meshRenderer.GetPropertyBlock(matBlock);
@@ -58,26 +60,40 @@ namespace Game.GamePlay.View.AttackAreas
                 
             }).AddTo(ref d);
 
+            //Debug.Log(viewModel.Radius.CurrentValue);
+            _viewModel.StartAnimationHide.Where(x => x).Subscribe(_ =>
+            {
+                _isHiding = true;
+                //Debug.Log("dddddd");
+                //_animator.Play("hide_area_attack");
+            }).AddTo(ref d);
             _disposable = d.Build();
         }
-
         
-        
-
         private void Update()
         {
-            if (!_isMoving) return;
-            
-            transform.position =
-                Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, smoothTime, speed);
-            if (_velocity.magnitude < 0.0005)
+            if (_isMoving)
             {
-                _isMoving = false;
-                transform.position = _targetPosition;
+                transform.position =
+                    Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, smoothTime, speed);
+                if (_velocity.magnitude < 0.0005)
+                {
+                    _isMoving = false;
+                    transform.position = _targetPosition;
+                }
+            }
+
+            if (_isHiding)
+            {
+                _area.transform.localScale = Vector3.Lerp(_area.transform.localScale, Vector3.zero, 0.20f);
+                if (_area.transform.localScale.x < 0.3)
+                {
+                    _isHiding = false;
+                    FinishAnimationHide();
+                }
             }
         }
-
-
+        
         private Vector3 GetDimensions(float radius)
         {
             var r = radius == 0 ? 0 : 1f + 2 * radius;
@@ -87,6 +103,12 @@ namespace Game.GamePlay.View.AttackAreas
         private void OnDestroy()
         {
             _disposable.Dispose();
+        }
+
+        public void FinishAnimationHide()
+        {
+            _viewModel.Radius.Value = Vector3.zero;
+            _viewModel.StartAnimationHide.Value = false;
         }
     }
 }

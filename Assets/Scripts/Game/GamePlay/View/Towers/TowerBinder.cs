@@ -30,23 +30,26 @@ namespace Game.GamePlay.View.Towers
            // animator?.StopPlayback();
         }
 
+        
         public void Bind(TowerViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
             viewModel.Position.Subscribe(newPosition =>
             {
-                _targetPosition = new Vector3(newPosition.x, 0, newPosition.y);
+                _targetPosition = new Vector3(newPosition.x, transform.position.y, newPosition.y);
                 _isMoving = true;
             }).AddTo(ref d);
             
             transform.position = new Vector3(
                 viewModel.Position.CurrentValue.x,
-                0,
+                transform.position.y,
                 viewModel.Position.CurrentValue.y
             );
+           
             viewModel.Direction.Skip(1).Subscribe(newValue =>
             {
+                //Вращение башни
                 if (rotateBlock != null)
                 {
                     var fromDirection = new Vector3(viewModel.Position.Value.x, 0, viewModel.Position.Value.y);
@@ -102,7 +105,6 @@ namespace Game.GamePlay.View.Towers
                     _isMoving = false;
                     transform.position = _targetPosition;
                 }
-            
             }
 
             if (_isDirection)

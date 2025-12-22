@@ -16,7 +16,7 @@ namespace Game.GameRoot.Services
 
         public WebService()
         {
-            _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
+            _coroutines = GameObject.Find(AppConstants.COROUTINES).GetComponent<Coroutines>();
         }
 
         public IEnumerator CheckWeb(Action<bool> callback)

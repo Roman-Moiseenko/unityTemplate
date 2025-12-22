@@ -354,7 +354,7 @@ namespace Game.State
             }
             else
             {
-                Debug.Log("web ERROR = " + request.downloadHandler.text);
+                Debug.Log("web ERROR = " + request.downloadHandler.text + " " + userId);
             }
 
             request.Dispose();

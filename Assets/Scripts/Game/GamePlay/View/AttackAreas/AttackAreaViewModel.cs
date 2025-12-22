@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
+using Game.Common;
 using Game.GamePlay.View.Towers;
 using R3;
+using Scripts.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -14,7 +17,8 @@ namespace Game.GamePlay.View.AttackAreas
         public bool Moving;
         private IDisposable _disposable;
         private Vector2Int _towerPrevious = Vector2Int.zero;
-        
+        public ReactiveProperty<bool> StartAnimationHide = new(false);
+
         public AttackAreaViewModel(Subject<TowerViewModel> towerClickSubject)
         {
             var d = Disposable.CreateBuilder();
@@ -26,7 +30,8 @@ namespace Game.GamePlay.View.AttackAreas
                 {
                     Hide();
                     _towerPrevious = Vector2Int.zero;
-                } else
+                }
+                else
                 {
                     _towerPrevious = towerViewModel.Position.CurrentValue;
                     SetStartPosition(towerViewModel.Position.Value);
@@ -73,5 +78,24 @@ namespace Game.GamePlay.View.AttackAreas
         {
             _disposable.Dispose();
         }
+
+        public void HideAnimation()
+        {
+            StartAnimationHide.OnNext(true);
+            //var coroutines = GameObject.Find(AppConstants.COROUTINES).GetComponent<Coroutines>();
+            //coroutines.StartCoroutine(HideArea());
+            //TODO Запуск анимации сжатия до Vector3.zero 
+        }
+/*
+        private IEnumerator HideArea()
+        {
+            //yield return null;
+            while (Radius.Value.x > 0.5)
+            {
+                Radius.Value = Vector3.Lerp(Radius.Value, Vector3.zero, 0.1f);
+                yield return new WaitForSeconds(0.05f);
+            }
+            Radius.Value = Vector3.zero;
+        }*/
     }
 }

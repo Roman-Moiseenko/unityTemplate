@@ -148,26 +148,34 @@ namespace Game.GamePlay.Root.View
                     switch (card.RewardType)
                     {
                         case RewardType.Tower: 
-                            towersService.PlaceTower(card.ConfigId, position); 
-                            frameService.RemoveFrame();
-                            break; 
-                        case RewardType.Ground: 
-                            foreach (var groundPosition in frameService.GetGrounds())
+                            //Как только завершится удаления фрейма, размещаем элементы
+                            frameService.RemoveFrame().Where(x => x).Subscribe(_ =>
                             {
-                                groundsService.PlaceGround(groundPosition);
-                            }
-                            groundsService.PlaceGround(position);
-                            frameService.RemoveFrame();
+                                towersService.PlaceTower(card.ConfigId, position); 
+                            });
+                            break; 
+                        case RewardType.Ground:
+                            frameService.RemoveFrame().Where(x => x).Subscribe(_ =>
+                            {
+                                foreach (var groundPosition in frameService.GetGrounds())
+                                {
+                                    groundsService.PlaceGround(groundPosition);
+                                }
+                                groundsService.PlaceGround(position);
+                            });
                             break;
                         case RewardType.Road:
-                            
-                            var isMainPath = frameService.IsMainPath();
-                            foreach (var road in frameService.GetRoadsForBuild())
+                            frameService.RemoveFrame().Where(x => x).Subscribe(_ =>
                             {
-                                roadsService.PlaceRoad(road.Position, road.IsTurn, road.Rotate, isMainPath);
-                                groundsService.PlaceGround(road.Position);
-                            }
-                            frameService.RemoveFrame();
+                                var isMainPath = frameService.IsMainPath();
+                                foreach (var road in frameService.GetRoadsForBuild())
+                                {
+                                    roadsService.PlaceRoad(road.Position, road.IsTurn, road.Rotate, isMainPath);
+                                    groundsService.PlaceGround(road.Position);
+                                }
+                            });
+
+                            //frameService.RemoveFrame();
                             
                             break;
                         case RewardType.TowerLevelUp: towersService.LevelUpTower(card.ConfigId); break;

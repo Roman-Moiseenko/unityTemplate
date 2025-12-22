@@ -13,14 +13,19 @@ namespace Game.GamePlay.View.Frames
         [SerializeField] private Material forbidden;
         [SerializeField] private Material forbiddenSelected;
         [SerializeField] private GameObject frame;
-        
+        [SerializeField] public Transform Element;
+        [SerializeField] private Transform cloudDust;
+        [SerializeField] private ParticleSystem cloud;
         private Vector3 _targetPosition;
+        private Vector3 _targetPositionElement;
         private bool _isMoving = false;
         private const int speed = 20;
         private const float smoothTime = 0.2f;
         private Vector3 _velocity;
         private IDisposable _disposable;
 
+        private bool downElement = false;
+        private bool showCloudDust = false;
         
         public void Bind(FrameBlockViewModel viewModel)
         {
@@ -32,7 +37,7 @@ namespace Game.GamePlay.View.Frames
             }).AddTo(ref d);
             viewModel.Position.Subscribe(newPosition =>
             {
-                _targetPosition = new Vector3(newPosition.x, 0, newPosition.y);
+                _targetPosition = new Vector3(newPosition.x, transform.position.y, newPosition.y);
                 _isMoving = true;
             }).AddTo(ref d);
 
@@ -43,9 +48,17 @@ namespace Game.GamePlay.View.Frames
             
             transform.position = new Vector3(
                 viewModel.Position.CurrentValue.x,
-                0,
+                transform.position.y,
                 viewModel.Position.CurrentValue.y
             );
+
+            viewModel.StartRemoveFlag.Where(x => x).Subscribe(_ =>
+            {
+                frame.SetActive(false);
+                downElement = true;
+                _targetPositionElement = Vector3.zero;
+            }).AddTo(ref d);
+            
             _disposable = d.Build();
         }
         
@@ -59,6 +72,22 @@ namespace Game.GamePlay.View.Frames
                     _isMoving = false;
                     transform.position = _targetPosition;
                 }
+            }
+
+            if (downElement) //Опускаем Элементы
+            {
+                Element.localPosition = Vector3.Lerp(Element.localPosition, _targetPositionElement, 0.15f);
+                if (Element.localPosition.y < 0.01)
+                {
+                    downElement = false;
+                    showCloudDust = true; //Запуск пыли
+                    cloud.Play();
+                }
+            }
+            if (showCloudDust && !cloud.isPlaying)
+            {
+                showCloudDust = false;
+                _viewModel.FinishRemoveFlag.OnNext(true);
             }
         }
         

@@ -26,13 +26,13 @@ namespace Game.GamePlay.Services
         private readonly PlacementService _placementService;
         private readonly TowersService _towerService;
         private readonly RoadsService _roadsService;
-        
+
         private FrameBlockViewModel _viewModel;
         private readonly ObservableList<FrameBlockViewModel> _viewModels = new();
         public IObservableCollection<FrameBlockViewModel> ViewModels => _viewModels;
         private Dictionary<string, bool> _towerOnRoadMap = new();
         private Dictionary<string, bool> _towerParametersMap = new();
-        
+
         private Dictionary<int, Vector2Int> matrixRoads = new();
         private AttackAreaViewModel _areaViewModel;
 
@@ -42,7 +42,7 @@ namespace Game.GamePlay.Services
             TowersService towerService,
             RoadsService roadsService,
             TowersSettings towersSettings
-            )
+        )
         {
             _gameplayState = gameplayState;
             _placementService = placementService;
@@ -62,7 +62,6 @@ namespace Game.GamePlay.Services
         public void MoveFrame(Vector2Int position)
         {
             _viewModel.MoveFrame(position);
-
             if (_viewModel.IsTower())
             {
                 _viewModel.Enable.Value = _placementService.CheckPlacementTower(position,
@@ -78,7 +77,7 @@ namespace Game.GamePlay.Services
                     {
                         _areaViewModel.Restore();
                     }
-                };
+                }
             }
 
             if (_viewModel.IsRoad())
@@ -86,14 +85,16 @@ namespace Game.GamePlay.Services
 
             if (_viewModel.IsGround())
             {
-                var centerFrame = _viewModel.EntityViewModels.Cast<GroundFrameViewModel>().ToList()[0]; 
-                if (!_placementService.CheckPlacementFrameGround(centerFrame.GetPosition() + _viewModel.Position.CurrentValue))
-                {  //Центральный фрейм не на земле
+                var centerFrame = _viewModel.EntityViewModels.Cast<GroundFrameViewModel>().ToList()[0];
+                if (!_placementService.CheckPlacementFrameGround(centerFrame.GetPosition() +
+                                                                 _viewModel.Position.CurrentValue))
+                {
+                    //Центральный фрейм не на земле
                     foreach (var item in _viewModel.EntityViewModels.Cast<GroundFrameViewModel>())
                     {
                         item.Enabled.Value = false;
                     }
-                        
+
                     _viewModel.Enable.Value = false;
                 }
                 else
@@ -101,9 +102,12 @@ namespace Game.GamePlay.Services
                     var enableItems = false;
                     foreach (var item in _viewModel.EntityViewModels.Cast<GroundFrameViewModel>())
                     {
-                        item.Enabled.Value = !_placementService.CheckPlacementFrameGround(item.GetPosition() + _viewModel.Position.CurrentValue);
+                        item.Enabled.Value =
+                            !_placementService.CheckPlacementFrameGround(item.GetPosition() +
+                                                                         _viewModel.Position.CurrentValue);
                         if (item.Enabled.Value) enableItems = true;
                     }
+
                     _viewModel.Enable.Value = enableItems;
                 }
             }
@@ -113,18 +117,17 @@ namespace Game.GamePlay.Services
         {
             _viewModel.Selected(true);
         }
-        
+
         public void UnSelectedFrame()
         {
             _viewModel.Selected(false);
         }
+
         public void RotateFrame()
         {
-            if (_viewModel.IsRoad())
-            {
-                _viewModel.RotateFrame();
-                _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());    
-            }
+            if (!_viewModel.IsRoad()) return;
+            _viewModel.RotateFrame();
+            _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());
         }
 
         public void CreateFrameTower(Vector2Int position, int level, string configId, AttackAreaViewModel areaViewModel)
@@ -143,28 +146,40 @@ namespace Game.GamePlay.Services
             _areaViewModel = areaViewModel;
             _areaViewModel.SetStartPosition(towerEntity.Position.Value);
             _areaViewModel.SetRadius(towerViewModel.GetRadius());
-            
+
             _viewModel = new FrameBlockViewModel(position);
             _viewModel.AddItem(towerViewModel);
             _viewModels.Add(_viewModel);
-            _viewModel.Enable.Value = _placementService.CheckPlacementTower(position, towerEntityId, towerEntity.IsOnRoad);
+            _viewModel.Enable.Value =
+                _placementService.CheckPlacementTower(position, towerEntityId, towerEntity.IsOnRoad);
         }
 
-        public void RemoveFrame()
+        public ReactiveProperty<bool> RemoveFrame()
         {
-            if (_areaViewModel != null)
-            {
-                _areaViewModel.Hide();
-                _areaViewModel = null;
-            }
-            _viewModels.Remove(_viewModel);
-            _viewModel?.Dispose();
+            var frameIsRemoveFull = new ReactiveProperty<bool>(false);
+            //Запуск всех анимаций удаления
+
+            _viewModel.StartRemove().Where(x => x).Subscribe(e =>
+                {
+                    if (_areaViewModel != null)
+                    {
+                        _areaViewModel.HideAnimation(); 
+                        _areaViewModel = null;
+                    }
+
+                    _viewModels.Remove(_viewModel);
+                    _viewModel?.Dispose();
+                    frameIsRemoveFull.Value = true;
+                }
+            );
+            //Подписка на их завершение, затем:
+            return frameIsRemoveFull;
         }
 
         public bool IsPosition(Vector2Int position)
         {
             if (_viewModel == null) return false;
-            
+
             if (_viewModel.IsTower() || _viewModel.IsGround())
                 return _viewModel.Position.CurrentValue == position;
             if (_viewModel.IsRoad())
@@ -176,6 +191,7 @@ namespace Game.GamePlay.Services
                     if (position == entityViewModel.GetPosition() + realPosition) return true;
                 }
             }
+
             return false;
         }
 
@@ -186,7 +202,7 @@ namespace Game.GamePlay.Services
         {
             _viewModel = new FrameBlockViewModel(position);
 
-            
+
             var v_d = position - direction;
             switch (configId)
             {
@@ -227,10 +243,10 @@ namespace Game.GamePlay.Services
                 case "8":
                     _viewModel.AddItem(TemplateCreateRoad(false, 1)); //                |   *
                     _viewModel.AddItem(TemplateCreateRoad(true, 2, 1)); //      _|
-                    _viewModel.AddItem(TemplateCreateRoad(false,  2, 2)); // --
+                    _viewModel.AddItem(TemplateCreateRoad(false, 2, 2)); // --
                     break;
             }
-   
+
             if (v_d == Vector2Int.left)
             {
                 _viewModel.RotateFrame(3);
@@ -239,19 +255,20 @@ namespace Game.GamePlay.Services
             if (v_d == Vector2Int.right)
             {
                 _viewModel.RotateFrame();
-
             }
+
             if (v_d == Vector2Int.down)
             {
-               _viewModel.RotateFrame(2);
+                _viewModel.RotateFrame(2);
             }
+
             if (v_d == Vector2Int.up)
             {
                 // _viewModel.RotateFrame(3);
             }
+
             _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());
             _viewModels.Add(_viewModel);
-            
         }
 
         /**
@@ -265,7 +282,7 @@ namespace Game.GamePlay.Services
             var i = 0;
             var rotateIndex = _viewModel.GetRotateValue();
             var realPosition = _viewModel.Position.CurrentValue - matrixRoads[rotateIndex];
-            
+
             foreach (var road in roads)
             {
                 result.Add(new RoadEntityData
@@ -278,13 +295,13 @@ namespace Game.GamePlay.Services
                 });
                 i++;
             }
-            
+
             return result;
         }
 
         /**
          * Список дорог для передачи в строительство,
-         * при присоединении к последнему road, делаем реверс 
+         * при присоединении к последнему road, делаем реверс
          */
         public List<RoadEntityData> GetRoadsForBuild()
         {
@@ -293,8 +310,10 @@ namespace Game.GamePlay.Services
             {
                 list.Reverse();
             }
+
             return list;
         }
+
         /**
          * Создаем RoadViewModel по шаблону, для генерации видов блоков дорог
          */
@@ -308,9 +327,8 @@ namespace Game.GamePlay.Services
                 Rotate = rotate,
                 IsTurn = isTurn,
             });
-            
+
             return new RoadViewModel(roadEntity, _roadsService);
-            
         }
 
         /**
@@ -324,7 +342,7 @@ namespace Game.GamePlay.Services
 
         public void CreateFrameGround(Vector2Int position)
         {
-           // Debug.Log("CreateFrameGround " + position);
+            // Debug.Log("CreateFrameGround " + position);
             _viewModel = new FrameBlockViewModel(position);
             //_viewModel.AddItem(towerViewModel);
             _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, 0)));
@@ -340,16 +358,14 @@ namespace Game.GamePlay.Services
             _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(-2, 0)));
             _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, 2)));
             _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, -2)));
-            
+
             _viewModels.Add(_viewModel);
         }
 
         public IEnumerable<Vector2Int> GetGrounds()
         {
-            return _viewModel.
-                EntityViewModels.
-                Select(item => item.GetPosition() + _viewModel.Position.CurrentValue).
-                ToList();
+            return _viewModel.EntityViewModels.Select(item => item.GetPosition() + _viewModel.Position.CurrentValue)
+                .ToList();
         }
     }
 }
