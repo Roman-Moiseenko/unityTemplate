@@ -45,8 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49cd58c7c7a8417e8a7d0292248ffa59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  odd: {fileID: 2100000, guid: 04e6c470df4c4ea43bff07276dd6041a, type: 2}
-  even: {fileID: 2100000, guid: 319bd98d2d48fcf4eb20949695279230, type: 2}
   place: {fileID: 2872377993391732391}
 --- !u!1 &2872377993391732391
 GameObject:
@@ -114,7 +112,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 4e5d87de27950ed43a0ec51b438f14e2, type: 3}
+  - {fileID: 2100000, guid: 1a39f8b7b068ec148970da60a18a999a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

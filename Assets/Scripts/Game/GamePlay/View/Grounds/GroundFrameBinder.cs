@@ -21,16 +21,22 @@ namespace Game.GamePlay.View.Grounds
                 0,
                 viewModel.GetPosition().y);
 
+            var meshRenderer = frame.GetComponent<MeshRenderer>();
+            var matBlock = new MaterialPropertyBlock();
+            
             viewModel.Enabled.Subscribe(newValue =>
             {
-                if (newValue)
+                meshRenderer.GetPropertyBlock(matBlock);
+                matBlock.SetInt("_Allowed", newValue ? 1 : 0);
+                meshRenderer.SetPropertyBlock(matBlock);
+            /*    if (newValue)
                 {
                     frame.GetComponent<MeshRenderer>().material = allowed;
                 } 
                 else
                 {
                     frame.GetComponent<MeshRenderer>().material = forbidden;
-                }
+                }*/
             }).AddTo(ref d);
             _disposable = d.Build();
         }

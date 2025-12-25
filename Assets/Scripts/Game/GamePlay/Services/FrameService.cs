@@ -154,19 +154,20 @@ namespace Game.GamePlay.Services
                 _placementService.CheckPlacementTower(position, towerEntityId, towerEntity.IsOnRoad);
         }
 
-        public ReactiveProperty<bool> RemoveFrame()
+        /**
+         * Удаление фрейма с анимацией
+         */
+        public ReactiveProperty<bool> RemoveFrameAnimation()
         {
             var frameIsRemoveFull = new ReactiveProperty<bool>(false);
             //Запуск всех анимаций удаления
-
             _viewModel.StartRemove().Where(x => x).Subscribe(e =>
                 {
                     if (_areaViewModel != null)
                     {
-                        _areaViewModel.HideAnimation(); 
+                        _areaViewModel.HideAnimation();
                         _areaViewModel = null;
                     }
-
                     _viewModels.Remove(_viewModel);
                     _viewModel?.Dispose();
                     frameIsRemoveFull.Value = true;
@@ -174,6 +175,20 @@ namespace Game.GamePlay.Services
             );
             //Подписка на их завершение, затем:
             return frameIsRemoveFull;
+        }
+
+        /**
+         * Удаление фрейма без анимации
+         */
+        public void RemoveFrame()
+        {
+            if (_areaViewModel != null)
+            {
+                _areaViewModel.Hide();
+                _areaViewModel = null;
+            }
+            _viewModels.Remove(_viewModel);
+            _viewModel?.Dispose();
         }
 
         public bool IsPosition(Vector2Int position)

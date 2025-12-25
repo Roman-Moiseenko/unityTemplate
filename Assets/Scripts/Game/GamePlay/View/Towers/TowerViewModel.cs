@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Frames;
 using Game.Settings.Gameplay.Entities.Tower;
@@ -13,7 +14,7 @@ namespace Game.GamePlay.View.Towers
     {
         private readonly TowerEntity _towerEntity;
         public Dictionary<TowerParameterType, TowerParameterData> Parameters => _towerEntity.Parameters;
-        private readonly List<TowerLevelSettings> _towerLevelSettings;
+        private List<TowerLevelSettings> _towerLevelSettings;
         private readonly TowersService _towerService;
         
         private readonly Dictionary<int, TowerLevelSettings> _towerLevelSettingsMap = new();
@@ -30,21 +31,28 @@ namespace Game.GamePlay.View.Towers
 
         public ReactiveProperty<Vector2> Direction;
         public ReactiveProperty<float> SpeedFire;
-        
-        
+        public bool IsUpdate = false;
+        public ReactiveProperty<int> NumberModel = new(0);
         public TowerViewModel(
             TowerEntity towerEntity,
             List<TowerLevelSettings> towerLevelSettings,
             TowersService towerService
         )
         {
-            _towerEntity = towerEntity;
-            IsShot = towerEntity.IsShot;
-            _towerLevelSettings = towerLevelSettings;
+            
             _towerService = towerService;
+            IsShot = towerEntity.IsShot;
             TowerEntityId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
+            Direction = towerEntity.PrepareShot;
+            Position = towerEntity.Position;
+            SpeedFire = new ReactiveProperty<float>();   
+            
+            _towerEntity = towerEntity;
+            //UpdateParameters(towerLevelSettings);
+            
+            _towerLevelSettings = towerLevelSettings;
             if (towerLevelSettings != null)
             {
                 foreach (var towerLevelSetting in towerLevelSettings)
@@ -52,10 +60,6 @@ namespace Game.GamePlay.View.Towers
                     _towerLevelSettingsMap[towerLevelSetting.Level] = towerLevelSetting;
                 }
             }
-
-            Direction = towerEntity.PrepareShot;
-            Position = towerEntity.Position;
-            SpeedFire = new ReactiveProperty<float>();
             if (towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
             {
                 towerService.GameSpeed.Where(x => x != 0).Subscribe(v =>
@@ -67,8 +71,43 @@ namespace Game.GamePlay.View.Towers
             {
                 SpeedFire.Value = 0;
             }
+            Level.Subscribe(level =>
+            {
+                //TODO Смена модели и/или материал
+                NumberModel.Value = level switch
+                {
+                    1 or 2 => 1,
+                    3 or 4 => 2,
+                    5 or 6 => 3,
+                    _ => throw new Exception("Неизвестный уровень")
+                };
+                
+            });
+            
         }
 
+        public void UpdateParameters(List<TowerLevelSettings> towerLevelSettings)
+        {
+            _towerLevelSettings = towerLevelSettings;
+            if (towerLevelSettings != null)
+            {
+                foreach (var towerLevelSetting in towerLevelSettings)
+                {
+                    _towerLevelSettingsMap[towerLevelSetting.Level] = towerLevelSetting;
+                }
+            }
+            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
+            {
+                _towerService.GameSpeed.Where(x => x != 0).Subscribe(v =>
+                {
+                    SpeedFire.Value = towerSpeed.Value / v; 
+                });
+            }
+            else
+            {
+                SpeedFire.Value = 0;
+            }
+        }
         public TowerLevelSettings GetLevelSettings(int level)
         {
             return _towerLevelSettingsMap[level];
@@ -116,6 +155,17 @@ namespace Game.GamePlay.View.Towers
             //TODO Если к башне применен параметр Высота (+дистанции) то вычисляем radius.z = %% от radius.x
 
             return radius;
+        }
+
+        public string GetNameModel()
+        {
+            return Level.CurrentValue switch
+            {
+                1 or 2 => "Base",
+                3 or 4 => "Upgrade",
+                5 or 6 => "Finish",
+                _ => throw new Exception("Неизвестный уровень")
+            };
         }
     }
 }

@@ -14,7 +14,6 @@ namespace Game.GamePlay.View.Frames
         [SerializeField] private Material forbiddenSelected;
         [SerializeField] private GameObject frame;
         [SerializeField] public Transform Element;
-        [SerializeField] private Transform cloudDust;
         [SerializeField] private ParticleSystem cloud;
         private Vector3 _targetPosition;
         private Vector3 _targetPositionElement;
@@ -31,9 +30,18 @@ namespace Game.GamePlay.View.Frames
         {
             var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
+            var meshRenderer = frame.GetComponent<MeshRenderer>();
+            var matBlock = new MaterialPropertyBlock();
+            
             Observable.Merge(viewModel.Enable, viewModel.IsSelected).Subscribe(v =>
             {
-                SetMaterial();
+                //SetMaterial();
+                
+                meshRenderer.GetPropertyBlock(matBlock);
+                matBlock.SetInt("_Enabled", viewModel.Enable.CurrentValue ? 1 : 0);
+                matBlock.SetInt("_Selected", viewModel.IsSelected.CurrentValue ? 1 : 0);
+                meshRenderer.SetPropertyBlock(matBlock);
+                
             }).AddTo(ref d);
             viewModel.Position.Subscribe(newPosition =>
             {

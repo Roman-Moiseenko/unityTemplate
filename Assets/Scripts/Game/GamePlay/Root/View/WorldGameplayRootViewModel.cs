@@ -149,13 +149,13 @@ namespace Game.GamePlay.Root.View
                     {
                         case RewardType.Tower: 
                             //Как только завершится удаления фрейма, размещаем элементы
-                            frameService.RemoveFrame().Where(x => x).Subscribe(_ =>
+                            frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
                             {
                                 towersService.PlaceTower(card.ConfigId, position); 
                             });
                             break; 
                         case RewardType.Ground:
-                            frameService.RemoveFrame().Where(x => x).Subscribe(_ =>
+                            frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
                             {
                                 foreach (var groundPosition in frameService.GetGrounds())
                                 {
@@ -165,7 +165,7 @@ namespace Game.GamePlay.Root.View
                             });
                             break;
                         case RewardType.Road:
-                            frameService.RemoveFrame().Where(x => x).Subscribe(_ =>
+                            frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
                             {
                                 var isMainPath = frameService.IsMainPath();
                                 foreach (var road in frameService.GetRoadsForBuild())

@@ -23,6 +23,7 @@ namespace Game.GamePlay.Root.View
     public class WorldGameplayRootBinder : MonoBehaviour
     {
         [SerializeField] private MapFogBinder mapFog;
+
         //      [SerializeField] private BuildingBinder _prefabBuilding;
         //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
         private readonly Dictionary<int, TowerBinder> _createTowersMap = new();
@@ -40,7 +41,6 @@ namespace Game.GamePlay.Root.View
         private bool _clickCoroutines = false;
         private bool _isMouseDown;
         private IDisposable _disposable;
-
 
         private Dictionary<string, List<MobBinder>> _mobsPull = new(); //Пул мобов
         private Dictionary<string, List<ShotBinder>> _shotsPull = new(); //Пул выстрелов
@@ -63,42 +63,38 @@ namespace Game.GamePlay.Root.View
             viewModel.AllGrounds.ObserveRemove()
                 .Subscribe(e => DestroyGround(e.Value))
                 .AddTo(ref d);
+            
             //Границы
             foreach (var boardViewModel in viewModel.AllBoards) CreateBoard(boardViewModel);
-
             viewModel.AllBoards.ObserveAdd()
-                .Subscribe(e =>
-                {
-                    //Debug.Log("e.Value.BoardEntityId = " + e.Value.BoardEntityId);
-                    CreateBoard(e.Value);
-                    
-                })
+                .Subscribe(e => CreateBoard(e.Value))
                 .AddTo(ref d);
             viewModel.AllBoards.ObserveRemove()
                 .Subscribe(e => DestroyBoard(e.Value))
                 .AddTo(ref d);
-            //Башни
-            //TODO - размещение башен сразу без анимции
-            foreach (var towerViewModel in viewModel.AllTowers) CreateTower(towerViewModel);
             
+            //Башни
+            foreach (var towerViewModel in viewModel.AllTowers)
+            {
+                TowerSubscribeCreate(towerViewModel);  //Подписка на модель - При изменении Модели необходимо сменить префаб с анимацией
+                CreateTower(towerViewModel);
+            }
+
             viewModel.AllTowers.ObserveAdd().Subscribe(e =>
             {
-                // Debug.Log("Башня добавилась в список " + e.Value.ConfigId + e.Value.TowerEntityId);
-                //TODO Размещение башен с анимацией
+                TowerSubscribeCreate(e.Value); //Подписка на модель
                 CreateTower(e.Value);
             }).AddTo(ref d);
             viewModel.AllTowers.ObserveRemove()
                 .Subscribe(e => DestroyTower(e.Value))
                 .AddTo(ref d);
-            
+
             //Мобы
             foreach (var mobViewModel in viewModel.AllMobs) CreateMob(mobViewModel);
             viewModel.AllMobs
                 .ObserveAdd()
                 .Subscribe(e => FindFreeOrCreateMob(e.Value))
                 .AddTo(ref d);
-
-
             viewModel.AllMobs
                 .ObserveRemove()
                 .Subscribe(e =>
@@ -118,7 +114,8 @@ namespace Game.GamePlay.Root.View
                 .Subscribe(e => FindFreeOrCreateShot(e.Value))
                 .AddTo(ref d);
             viewModel.AllShots.ObserveRemove()
-                .Subscribe(e => {
+                .Subscribe(e =>
+                {
                     if (_shotsPull.TryGetValue(e.Value.ConfigId, out var listShots))
                     {
                         var shotBinder = listShots.Find(m => m._viewModel.ShotEntityId == e.Value.ShotEntityId);
@@ -129,9 +126,9 @@ namespace Game.GamePlay.Root.View
 
             //Замок
             CreateCastle(viewModel.CastleViewModel);
+            
             //Дорога
             foreach (var roadViewModel in viewModel.AllRoads) CreateRoad(roadViewModel);
-
             viewModel.AllRoads.ObserveAdd()
                 .Subscribe(e => CreateRoad(e.Value))
                 .AddTo(ref d);
@@ -154,13 +151,12 @@ namespace Game.GamePlay.Root.View
 
             //Создаем Туман Войны
             mapFog.Bind(_viewModel.MapFogViewModel);
-            
+
             //FogViewModel
             //Запускаем следующую волну
             _viewModel.StartGameplayServices();
             _disposable = d.Build();
         }
-
 
         private void OnDestroy()
         {
@@ -168,13 +164,12 @@ namespace Game.GamePlay.Root.View
 
             if (_attackAreaBinder != null) Destroy(_attackAreaBinder.gameObject);
 
-          //  _disposables.Dispose();
+            //  _disposables.Dispose();
             _disposable?.Dispose();
             _createGateMap.ForEach(item => Destroy(item.gameObject));
         }
 
         //CREATE 
-
         private void CreateGateWave(GateWaveViewModel viewModel)
         {
             if (viewModel == null) return;
@@ -204,7 +199,7 @@ namespace Game.GamePlay.Root.View
                 _shotsPull.Add(shotViewModel.ConfigId, listBinder);
             }
         }
-        
+
         private void FindFreeOrCreateShot(ShotViewModel shotViewModel)
         {
             if (_shotsPull.TryGetValue(shotViewModel.ConfigId, out var listBinders))
@@ -215,15 +210,16 @@ namespace Game.GamePlay.Root.View
                     return;
                 }
             }
+
             CreateShot(shotViewModel);
         }
-        
+
         private void CreateMob(MobViewModel mobViewModel)
         {
             var prefabPath = $"Prefabs/Gameplay/Mobs/{mobViewModel.ConfigId}"; //Перенести в настройки уровня
             var mobPrefab = Resources.Load<MobBinder>(prefabPath);
             var createdMob = Instantiate(mobPrefab, transform);
-            
+
             _createMobsMap[mobViewModel.MobEntityId] = createdMob;
             //Добавляем моба в пул
             if (_mobsPull.TryGetValue(mobViewModel.ConfigId, out var listBinders))
@@ -235,7 +231,7 @@ namespace Game.GamePlay.Root.View
                 var listBinder = new List<MobBinder> { createdMob };
                 _mobsPull.Add(mobViewModel.ConfigId, listBinder);
             }
-            
+
             createdMob.Bind(mobViewModel);
             //return createdMob;
         }
@@ -250,6 +246,7 @@ namespace Game.GamePlay.Root.View
                     return;
                 }
             }
+
             CreateMob(mobViewModel);
         }
 
@@ -271,16 +268,36 @@ namespace Game.GamePlay.Root.View
             _attackAreaBinder = createdArea;
         }
 
+        private IDisposable TowerSubscribeCreate(TowerViewModel towerViewModel)
+        {
+            return towerViewModel.NumberModel.Skip(1).Subscribe(number =>
+            {
+                //Если Префаб уже был, то запускаем анимацию
+                if (_createTowersMap.TryGetValue(towerViewModel.TowerEntityId, out var towerBinder))
+                {
+                    //После анимации пересоздаем модель с параметром анимации
+                    towerBinder.RemoveTowerAnimation().Where(x => x).Subscribe(_ =>
+                    {
+                        DestroyTower(towerViewModel);
+                        towerViewModel.IsUpdate = true;
+                        CreateTower(towerViewModel);
+                    });
+                }
+            });
+        }
         private void CreateTower(TowerViewModel towerViewModel, Transform parentTransform = null)
         {
-            var towerLevel = towerViewModel.Level;
+            var towerNumber = towerViewModel.NumberModel;
             var towerType = towerViewModel.ConfigId;
 
             var prefabTowerLevelPath =
-                $"Prefabs/Gameplay/Towers/{towerType}/Level_{towerLevel}"; //Перенести в настройки уровня
+                $"Prefabs/Gameplay/Towers/{towerType}/{towerType}-{towerNumber}"; //Перенести в настройки уровня
+            //var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/{towerType}/{towerViewModel.GetNameModel()}";
+
             var towerPrefab = Resources.Load<TowerBinder>(prefabTowerLevelPath);
             var createdTower = Instantiate(towerPrefab, parentTransform ?? transform);
             createdTower.Bind(towerViewModel);
+            
             _createTowersMap[towerViewModel.TowerEntityId] = createdTower;
         }
 
@@ -314,7 +331,7 @@ namespace Game.GamePlay.Root.View
             createdBoard.Bind(boardViewModel);
             _createBoardsMap[boardViewModel.BoardEntityId] = createdBoard;
         }
-        
+
         private void CreateFrameBlock(FrameBlockViewModel frameBlockViewModel)
         {
             var prefabFrame = $"Prefabs/Gameplay/Frames/block_{frameBlockViewModel.GetCountFrames()}";
@@ -351,7 +368,7 @@ namespace Game.GamePlay.Root.View
             var prefabGroundFramePath = $"Prefabs/Gameplay/Grounds/Frame"; //Перенести в настройки уровня
             var groundFramePrefab = Resources.Load<GroundFrameBinder>(prefabGroundFramePath);
             var createdGroundFrame = Instantiate(groundFramePrefab, parentTransform);
-            
+
             createdGroundFrame.Bind(groundFrameViewModel);
         }
 
@@ -416,6 +433,7 @@ namespace Game.GamePlay.Root.View
                 // Destroy(mobViewModel);
             }
         }
+
         private void DestroyGround(GroundViewModel groundViewModel)
         {
             if (_createGroundsMap.TryGetValue(groundViewModel.GroundEntityId, out var groundBinder))
@@ -424,6 +442,7 @@ namespace Game.GamePlay.Root.View
                 _createGroundsMap.Remove(groundViewModel.GroundEntityId);
             }
         }
+
         private void DestroyBoard(BoardViewModel boardViewModel)
         {
             if (_createBoardsMap.TryGetValue(boardViewModel.BoardEntityId, out var boardBinder))

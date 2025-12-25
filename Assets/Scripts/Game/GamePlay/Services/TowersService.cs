@@ -115,13 +115,12 @@ namespace Game.GamePlay.Services
                 foreach (var towerEntity in _towerEntities)
                 {
                     if (towerEntity.ConfigId != configId) continue;
-                 //   Debug.Log(JsonConvert.SerializeObject(towerEntity.Parameters, Formatting.Indented));
-                    RemoveTowerViewModel(towerEntity); //Удаляем все модели viewModel.ConfigId == x.NewItem.Key
-                    CreateTowerViewModel(towerEntity); //Создаем модели Заново
+                    towerEntity.Level.OnNext(newLevel);
+                    
+                   // RemoveTowerViewModel(towerEntity); //Удаляем все модели viewModel.ConfigId == x.NewItem.Key
+                   // CreateTowerViewModel(towerEntity); //Создаем модели Заново
                 }
             });
-
-       //     Debug.Log(JsonConvert.SerializeObject(TowerParametersMap, Formatting.Indented));
         }
 
         private void UpdateParams(string configId, int level)
@@ -133,9 +132,9 @@ namespace Game.GamePlay.Services
 
             foreach (var settingsParameter in levelSettings.Parameters)
             {
-                if (parameters.TryGetValue(settingsParameter.ParameterType, out var _parameter))
+                if (parameters.TryGetValue(settingsParameter.ParameterType, out var parameter))
                 {
-                    _parameter.Value *= 1 + settingsParameter.Value / 100;
+                    parameter.Value *= 1 + settingsParameter.Value / 100;
                 }
             }
         }
