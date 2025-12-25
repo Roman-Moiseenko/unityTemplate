@@ -1,4 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Game.GamePlay.View.Grounds;
+using Game.GamePlay.View.Roads;
+using Game.GamePlay.View.Towers;
 using R3;
 using UnityEngine;
 
@@ -25,22 +30,19 @@ namespace Game.GamePlay.View.Frames
 
         private bool downElement = false;
         private bool showCloudDust = false;
+
+        private List<MonoBehaviour> elements = new(); 
         
         public void Bind(FrameBlockViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
-            var meshRenderer = frame.GetComponent<MeshRenderer>();
-            var matBlock = new MaterialPropertyBlock();
+            var material = frame.GetComponent<Renderer>().material;
             
             Observable.Merge(viewModel.Enable, viewModel.IsSelected).Subscribe(v =>
             {
-                //SetMaterial();
-                
-                meshRenderer.GetPropertyBlock(matBlock);
-                matBlock.SetInt("_Enabled", viewModel.Enable.CurrentValue ? 1 : 0);
-                matBlock.SetInt("_Selected", viewModel.IsSelected.CurrentValue ? 1 : 0);
-                meshRenderer.SetPropertyBlock(matBlock);
+                material.SetInt("_Enabled", viewModel.Enable.CurrentValue ? 1 : 0);
+                material.SetInt("_Selected", viewModel.IsSelected.CurrentValue ? 1 : 0);
                 
             }).AddTo(ref d);
             viewModel.Position.Subscribe(newPosition =>
@@ -66,6 +68,24 @@ namespace Game.GamePlay.View.Frames
                 downElement = true;
                 _targetPositionElement = Vector3.zero;
             }).AddTo(ref d);
+
+            switch (viewModel.TypeElements)
+            {
+                case FrameType.Tower:
+                    CreateTower((TowerViewModel)viewModel.EntityViewModels[0]);
+                    break;
+                case FrameType.Road:
+                    foreach (var roadViewModel in viewModel.EntityViewModels.Cast<RoadViewModel>().ToList())
+                        CreateRoad(roadViewModel);
+                    
+                    break;
+                case FrameType.Ground:
+                    foreach (var groundFrameViewModel in viewModel.EntityViewModels.Cast<GroundFrameViewModel>().ToList())
+                        CreateGroundFrame(groundFrameViewModel);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             
             _disposable = d.Build();
         }
@@ -99,30 +119,43 @@ namespace Game.GamePlay.View.Frames
             }
         }
         
-        private void SetMaterial()
+        private void CreateTower(TowerViewModel towerViewModel)
         {
-            var _e = _viewModel.Enable.CurrentValue;
-            var _s = _viewModel.IsSelected.CurrentValue;
-            if (_e && _s)
-            {
-                frame.GetComponent<MeshRenderer>().material = allowedSelected; 
-            }
-            if (_e && !_s)
-            {
-                frame.GetComponent<MeshRenderer>().material = allowed; 
-            }
-            if (!_e && _s)
-            {
-                frame.GetComponent<MeshRenderer>().material = forbiddenSelected; 
-            }
-            if (!_e && !_s)
-            {
-                frame.GetComponent<MeshRenderer>().material = forbidden; 
-            }
+            var towerNumber = towerViewModel.NumberModel;
+            var towerType = towerViewModel.ConfigId;
+            var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/{towerType}/{towerType}-{towerNumber}"; //Перенести в настройки уровня
+            var towerPrefab = Resources.Load<TowerBinder>(prefabTowerLevelPath);
+            var createdTower = Instantiate(towerPrefab, Element.transform);
+            createdTower.Bind(towerViewModel);
+            elements.Add(createdTower);
         }
+        private void CreateGroundFrame(GroundFrameViewModel groundFrameViewModel)
+        {
+            var prefabGroundFramePath = $"Prefabs/Gameplay/Grounds/Frame"; //Перенести в настройки уровня
+            var groundFramePrefab = Resources.Load<GroundFrameBinder>(prefabGroundFramePath);
+            var createdGroundFrame = Instantiate(groundFramePrefab, Element.transform);
+            createdGroundFrame.Bind(groundFrameViewModel);
+            elements.Add(createdGroundFrame);
+        }
+        private void CreateRoad(RoadViewModel roadViewModel)
+        {
+            var roadConfig = roadViewModel.ConfigId;
+            var direction = roadViewModel.IsTurn ? "Turn" : "Line";
+            var prefabRoadLevelPath = $"Prefabs/Gameplay/Roads/{roadConfig}{direction}";
+            var roadPrefab = Resources.Load<RoadBinder>(prefabRoadLevelPath);
+            var createdRoad = Instantiate(roadPrefab, Element.transform);
+            createdRoad.Bind(roadViewModel);
+            elements.Add(createdRoad);
+        }
+        
         private void OnDestroy()
         {
             _disposable.Dispose();
+            foreach (var element in elements)
+            {
+                Destroy(element.gameObject);
+                Destroy(element);
+            }
         }
     }
 }

@@ -23,17 +23,6 @@ namespace Game.GamePlay.View.Towers
         private Quaternion _targetRotation;
         private float _timeElapsed;
         private float _lerpDuration;
-        private readonly Vector3 _baseScale = new Vector3(0.7f, 0.7f, 0.7f);
-
-        private Vector3 _targetScaled;
-        private bool _isScaled = false;
-        
-        private ReactiveProperty<bool> ResultRemoveAnimation = new(false);
-        private void Awake()
-        {
-           // animator?.StopPlayback();
-        }
-
         
         public void Bind(TowerViewModel viewModel)
         {
@@ -45,23 +34,7 @@ namespace Game.GamePlay.View.Towers
                 _isMoving = true;
             }).AddTo(ref d);
 
-            Debug.Log("animator " + animator);
-            if (viewModel.IsUpdate)
-            {
-                transform.localScale = Vector3.zero;
-                _targetScaled = _baseScale;
-                _isScaled = true;
-                Debug.Log("Запускаем анимацию появления башни");
-                //TODO Запускаем анимацию увеличения
-                //TODO и включаем шейдер levelUp
-                viewModel.IsUpdate = false; // На всякий случай
-            }
-            transform.position = new Vector3(
-                viewModel.Position.CurrentValue.x,
-                transform.position.y,
-                viewModel.Position.CurrentValue.y
-            );
-           
+            
             viewModel.Direction.Skip(1).Subscribe(newValue =>
             {
                 if (rotateBlock != null) //Вращение башни
@@ -124,35 +97,14 @@ namespace Game.GamePlay.View.Towers
                     _timeElapsed = 0;
                 }
             }
-
-            if (_isScaled)
-            {
-                transform.localScale = Vector3.Lerp(transform.localScale, _targetScaled, 0.20f);
-                if (Math.Abs(transform.localScale.x - _targetScaled.x) < 0.1 )
-                {
-                    transform.localScale = _targetScaled;
-                    _isScaled = false;
-                    ResultRemoveAnimation.OnNext(true); //Анимация уменьшения закончена - удаляем модель
-                }
-            }
+            
         }
         
         private void OnDestroy()
         {
             _disposable?.Dispose();
         }
-
-        public ReactiveProperty<bool> RemoveTowerAnimation()
-        {
-            Debug.Log("TowerBinder -  Запустили анимацию ");
-            //TODO Запуск анимации исчезания
-            _isScaled = true;
-            _targetScaled = Vector3.zero;
-            
-            //TODO Запуск шейдера исчезания
-            
-            return ResultRemoveAnimation;
-        }
+        
     }
     
     

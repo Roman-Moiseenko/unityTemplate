@@ -40,24 +40,18 @@ namespace Game.GamePlay.View.AttackAreas
             
             //Размер поверхности =  GetDimensions(_viewModel.RadiusExpansion.Value + _viewModel.RadiusArea.Value)
             //В шейдер передаем %% e = RadiusExpansion / RadiusArea и d =  RadiusDisabled / RadiusArea
-            var meshRenderer = _area.GetComponent<MeshRenderer>();
-            var matBlock = new MaterialPropertyBlock();
-            meshRenderer.GetPropertyBlock(matBlock);
-            
+
+            var material = _area.GetComponent<Renderer>().material;
             _viewModel.Radius.Subscribe(r =>
             {
-                //Debug.Log(r);
                 var radiusVector = GetDimensions(r.x + r.x * r.z);
                 _area.transform.localScale = radiusVector;
-                //Debug.Log(_area.transform.localScale);
                 var _d = GetDimensions(r.y).x;
                 var _e = GetDimensions(r.z).x;
-                meshRenderer.GetPropertyBlock(matBlock);
-                matBlock.SetFloat("_Disabled", _d / radiusVector.x);
-                matBlock.SetFloat("_Expansion", _e / radiusVector.x);
-                matBlock.SetFloat("_Thickness", 0.04f / radiusVector.x); //Ободок
-                meshRenderer.SetPropertyBlock(matBlock);
-                
+  
+                material.SetFloat("_Disabled", _d / radiusVector.x);
+                material.SetFloat("_Expansion", _e / radiusVector.x);
+                material.SetFloat("_Thickness", 0.04f / radiusVector.x); //Ободок
             }).AddTo(ref d);
 
             //Debug.Log(viewModel.Radius.CurrentValue);

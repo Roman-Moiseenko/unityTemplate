@@ -13,15 +13,11 @@ namespace Game.GamePlay.View.Grounds
         {
             var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
             var position = Math.Abs((viewModel.Position.CurrentValue.x + viewModel.Position.CurrentValue.y) % 2);
-
-            var meshRenderer = place.GetComponent<MeshRenderer>();
-            var matBlock = new MaterialPropertyBlock();
-            meshRenderer.GetPropertyBlock(matBlock);
+            var material = place.GetComponent<Renderer>().material;
             
-            matBlock.SetTexture("_Plane", imageManager.GetGround(viewModel.ConfigId)); //viewModel.ConfigId
-            matBlock.SetInt("_Odd", position);
+            material.SetTexture("_Plane", imageManager.GetGround(viewModel.ConfigId)); //viewModel.ConfigId
+            material.SetInt("_Odd", position);
             
-            meshRenderer.SetPropertyBlock(matBlock);
             transform.position = new Vector3(
                 viewModel.Position.CurrentValue.x,
                 -1,

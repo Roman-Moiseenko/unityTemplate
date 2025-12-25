@@ -26,7 +26,7 @@ namespace Game.GamePlay.Root.View
 
         //      [SerializeField] private BuildingBinder _prefabBuilding;
         //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
-        private readonly Dictionary<int, TowerBinder> _createTowersMap = new();
+        private readonly Dictionary<int, TowerBaseBinder> _createTowersMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
         private readonly Dictionary<int, BoardBinder> _createBoardsMap = new();
         private FrameBlockBinder _frameBlockBinder;
@@ -36,16 +36,14 @@ namespace Game.GamePlay.Root.View
         private readonly List<GateWaveBinder> _createGateMap = new();
         private CastleBinder _castleBinder;
         private AttackAreaBinder _attackAreaBinder;
-        //private readonly CompositeDisposable _disposables = new();
-
+        
         private bool _clickCoroutines = false;
         private bool _isMouseDown;
         private IDisposable _disposable;
 
         private Dictionary<string, List<MobBinder>> _mobsPull = new(); //Пул мобов
         private Dictionary<string, List<ShotBinder>> _shotsPull = new(); //Пул выстрелов
-
-        //private GameplayCamera _gameplayCamera;
+        
         private WorldGameplayRootViewModel _viewModel;
 
         public void Bind(WorldGameplayRootViewModel viewModel)
@@ -76,14 +74,14 @@ namespace Game.GamePlay.Root.View
             //Башни
             foreach (var towerViewModel in viewModel.AllTowers)
             {
-                TowerSubscribeCreate(towerViewModel);  //Подписка на модель - При изменении Модели необходимо сменить префаб с анимацией
-                CreateTower(towerViewModel);
+               // TowerSubscribeCreate(towerViewModel);  //Подписка на модель - При изменении Модели необходимо сменить префаб с анимацией
+                CreateTowerBase(towerViewModel);
             }
 
             viewModel.AllTowers.ObserveAdd().Subscribe(e =>
             {
-                TowerSubscribeCreate(e.Value); //Подписка на модель
-                CreateTower(e.Value);
+                //TowerSubscribeCreate(e.Value); //Подписка на модель
+                CreateTowerBase(e.Value);
             }).AddTo(ref d);
             viewModel.AllTowers.ObserveRemove()
                 .Subscribe(e => DestroyTower(e.Value))
@@ -161,10 +159,8 @@ namespace Game.GamePlay.Root.View
         private void OnDestroy()
         {
             if (_castleBinder != null) Destroy(_castleBinder.gameObject);
-
             if (_attackAreaBinder != null) Destroy(_attackAreaBinder.gameObject);
-
-            //  _disposables.Dispose();
+            
             _disposable?.Dispose();
             _createGateMap.ForEach(item => Destroy(item.gameObject));
         }
@@ -233,7 +229,6 @@ namespace Game.GamePlay.Root.View
             }
 
             createdMob.Bind(mobViewModel);
-            //return createdMob;
         }
 
         private void FindFreeOrCreateMob(MobViewModel mobViewModel)
@@ -246,7 +241,6 @@ namespace Game.GamePlay.Root.View
                     return;
                 }
             }
-
             CreateMob(mobViewModel);
         }
 
@@ -268,45 +262,21 @@ namespace Game.GamePlay.Root.View
             _attackAreaBinder = createdArea;
         }
 
-        private IDisposable TowerSubscribeCreate(TowerViewModel towerViewModel)
+        private void CreateTowerBase(TowerViewModel towerViewModel)
         {
-            return towerViewModel.NumberModel.Skip(1).Subscribe(number =>
-            {
-                //Если Префаб уже был, то запускаем анимацию
-                if (_createTowersMap.TryGetValue(towerViewModel.TowerEntityId, out var towerBinder))
-                {
-                    //После анимации пересоздаем модель с параметром анимации
-                    towerBinder.RemoveTowerAnimation().Where(x => x).Subscribe(_ =>
-                    {
-                        DestroyTower(towerViewModel);
-                        towerViewModel.IsUpdate = true;
-                        CreateTower(towerViewModel);
-                    });
-                }
-            });
-        }
-        private void CreateTower(TowerViewModel towerViewModel, Transform parentTransform = null)
-        {
-            var towerNumber = towerViewModel.NumberModel;
-            var towerType = towerViewModel.ConfigId;
-
-            var prefabTowerLevelPath =
-                $"Prefabs/Gameplay/Towers/{towerType}/{towerType}-{towerNumber}"; //Перенести в настройки уровня
-            //var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/{towerType}/{towerViewModel.GetNameModel()}";
-
-            var towerPrefab = Resources.Load<TowerBinder>(prefabTowerLevelPath);
-            var createdTower = Instantiate(towerPrefab, parentTransform ?? transform);
+            var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/TowerBase"; //Перенести в настройки уровня
+            var towerPrefab = Resources.Load<TowerBaseBinder>(prefabTowerLevelPath);
+            var createdTower = Instantiate(towerPrefab, transform);
             createdTower.Bind(towerViewModel);
-            
             _createTowersMap[towerViewModel.TowerEntityId] = createdTower;
         }
+        
 
         private void CreateRoad(RoadViewModel roadViewModel, Transform parentTransform = null)
         {
             var roadConfig = roadViewModel.ConfigId;
             var direction = roadViewModel.IsTurn ? "Turn" : "Line";
-            var prefabRoadLevelPath =
-                $"Prefabs/Gameplay/Roads/{roadConfig}{direction}";
+            var prefabRoadLevelPath = $"Prefabs/Gameplay/Roads/{roadConfig}{direction}";
             var roadPrefab = Resources.Load<RoadBinder>(prefabRoadLevelPath);
             var createdRoad = Instantiate(roadPrefab, parentTransform ?? transform);
 
@@ -339,41 +309,9 @@ namespace Game.GamePlay.Root.View
             var createdFrame = Instantiate(framePrefab, transform);
             createdFrame.Bind(frameBlockViewModel);
             _frameBlockBinder = createdFrame;
-
-            if (frameBlockViewModel.IsTower())
-            {
-                CreateTower((TowerViewModel)frameBlockViewModel.EntityViewModels[0], createdFrame.Element.transform);
-            }
-
-            if (frameBlockViewModel.IsRoad())
-            {
-                foreach (var roadViewModel in frameBlockViewModel.EntityViewModels.Cast<RoadViewModel>().ToList())
-                {
-                    CreateRoad(roadViewModel, createdFrame.Element.transform);
-                }
-            }
-
-            if (frameBlockViewModel.IsGround())
-            {
-                foreach (var groundFrameViewModel in frameBlockViewModel.EntityViewModels.Cast<GroundFrameViewModel>()
-                             .ToList())
-                {
-                    CreateGroundFrame(groundFrameViewModel, createdFrame.Element.transform);
-                }
-            }
         }
-
-        private void CreateGroundFrame(GroundFrameViewModel groundFrameViewModel, Transform parentTransform)
-        {
-            var prefabGroundFramePath = $"Prefabs/Gameplay/Grounds/Frame"; //Перенести в настройки уровня
-            var groundFramePrefab = Resources.Load<GroundFrameBinder>(prefabGroundFramePath);
-            var createdGroundFrame = Instantiate(groundFramePrefab, parentTransform);
-
-            createdGroundFrame.Bind(groundFrameViewModel);
-        }
-
+        
         //DESTROY
-
         private void DestroyRoad(RoadViewModel roadViewModel)
         {
             if (_createdRoadsMap.TryGetValue(roadViewModel.RoadEntityId, out var roadBinder))
@@ -385,19 +323,6 @@ namespace Game.GamePlay.Root.View
 
         private void DestroyFrameBlock(FrameBlockViewModel frameBlockViewModel)
         {
-            if (frameBlockViewModel.IsTower())
-            {
-                DestroyTower((TowerViewModel)frameBlockViewModel.EntityViewModels[0]);
-            }
-
-            if (frameBlockViewModel.IsRoad())
-            {
-                foreach (var roadViewModel in frameBlockViewModel.EntityViewModels.Cast<RoadViewModel>().ToList())
-                {
-                    DestroyRoad(roadViewModel);
-                }
-            }
-
             Destroy(_frameBlockBinder.gameObject);
             Destroy(_frameBlockBinder);
         }

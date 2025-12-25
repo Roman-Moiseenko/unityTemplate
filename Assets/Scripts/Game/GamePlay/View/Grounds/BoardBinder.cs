@@ -24,30 +24,27 @@ namespace Game.GamePlay.View.Grounds
             var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
             var position = Math.Abs((viewModel.Position.CurrentValue.x + viewModel.Position.CurrentValue.y) % 2);
 
-            var meshRenderer = place.GetComponent<MeshRenderer>();
-            var matBlock = new MaterialPropertyBlock();
-            meshRenderer.GetPropertyBlock(matBlock);
+            var material = place.GetComponent<Renderer>().material;
             
-            matBlock.SetTexture("_Plane", imageManager.GetGround(viewModel.ConfigId)); //viewModel.ConfigId
-            matBlock.SetInt("_Odd", position);
-            matBlock.SetInt("_IsBoard", 1);
+            material.SetTexture("_Plane", imageManager.GetGround(viewModel.ConfigId)); //viewModel.ConfigId
+            material.SetInt("_Odd", position);
+            material.SetInt("_IsBoard", 1);
             
-            matBlock.SetInt("_LeftSide", viewModel.BoardEntity.Origin.LeftSide ? 1 : 0);
-            matBlock.SetInt("_TopSide", viewModel.BoardEntity.Origin.TopSide ? 1 : 0);
-            matBlock.SetInt("_RightSide", viewModel.BoardEntity.Origin.RightSide ? 1 : 0);
-            matBlock.SetInt("_BottomSide", viewModel.BoardEntity.Origin.BottomSide ? 1 : 0);
+            material.SetInt("_LeftSide", viewModel.BoardEntity.Origin.LeftSide ? 1 : 0);
+            material.SetInt("_TopSide", viewModel.BoardEntity.Origin.TopSide ? 1 : 0);
+            material.SetInt("_RightSide", viewModel.BoardEntity.Origin.RightSide ? 1 : 0);
+            material.SetInt("_BottomSide", viewModel.BoardEntity.Origin.BottomSide ? 1 : 0);
             
-            matBlock.SetInt("_LeftOutAngle", viewModel.BoardEntity.Origin.LeftOutAngle ? 1 : 0);
-            matBlock.SetInt("_TopOutAngle", viewModel.BoardEntity.Origin.TopOutAngle ? 1 : 0);
-            matBlock.SetInt("_RightOutAngle", viewModel.BoardEntity.Origin.RightOutAngle ? 1 : 0);
-            matBlock.SetInt("_BottomOutAngle", viewModel.BoardEntity.Origin.BottomOutAngle ? 1 : 0);
+            material.SetInt("_LeftOutAngle", viewModel.BoardEntity.Origin.LeftOutAngle ? 1 : 0);
+            material.SetInt("_TopOutAngle", viewModel.BoardEntity.Origin.TopOutAngle ? 1 : 0);
+            material.SetInt("_RightOutAngle", viewModel.BoardEntity.Origin.RightOutAngle ? 1 : 0);
+            material.SetInt("_BottomOutAngle", viewModel.BoardEntity.Origin.BottomOutAngle ? 1 : 0);
             
-            matBlock.SetInt("_LeftInAngle", viewModel.BoardEntity.Origin.LeftInAngle ? 1 : 0);
-            matBlock.SetInt("_TopInAngle", viewModel.BoardEntity.Origin.TopInAngle ? 1 : 0);
-            matBlock.SetInt("_RightInAngle", viewModel.BoardEntity.Origin.RightInAngle ? 1 : 0);
-            matBlock.SetInt("_BottomInAngle", viewModel.BoardEntity.Origin.BottomInAngle ? 1 : 0);
+            material.SetInt("_LeftInAngle", viewModel.BoardEntity.Origin.LeftInAngle ? 1 : 0);
+            material.SetInt("_TopInAngle", viewModel.BoardEntity.Origin.TopInAngle ? 1 : 0);
+            material.SetInt("_RightInAngle", viewModel.BoardEntity.Origin.RightInAngle ? 1 : 0);
+            material.SetInt("_BottomInAngle", viewModel.BoardEntity.Origin.BottomInAngle ? 1 : 0);
             
-            meshRenderer.SetPropertyBlock(matBlock);
             transform.position = new Vector3(
                 viewModel.Position.CurrentValue.x,
                 -1,

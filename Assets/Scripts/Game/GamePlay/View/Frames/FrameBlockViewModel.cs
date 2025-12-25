@@ -19,7 +19,7 @@ namespace Game.GamePlay.View.Frames
         public ReactiveProperty<bool> Enable;
         public List<IMovingEntityViewModel> EntityViewModels = new();
         public ReactiveProperty<int> Rotate;
-        private FrameType _type;
+        public FrameType TypeElements;
         public ReactiveProperty<bool> IsSelected;
 
         public FrameBlockViewModel(Vector2Int position)
@@ -33,9 +33,9 @@ namespace Game.GamePlay.View.Frames
         public void AddItem(IMovingEntityViewModel entityViewModel)
         {
             EntityViewModels.Add(entityViewModel);
-            if (entityViewModel is TowerViewModel) _type = FrameType.Tower;
-            if (entityViewModel is RoadViewModel) _type = FrameType.Road;
-            if (entityViewModel is GroundFrameViewModel) _type = FrameType.Ground;
+            if (entityViewModel is TowerViewModel) TypeElements = FrameType.Tower;
+            if (entityViewModel is RoadViewModel) TypeElements = FrameType.Road;
+            if (entityViewModel is GroundFrameViewModel) TypeElements = FrameType.Ground;
         }
 
         public void MoveFrame(Vector2Int position)
@@ -64,16 +64,16 @@ namespace Game.GamePlay.View.Frames
 
         public bool IsTower()
         {
-            return _type == FrameType.Tower;
+            return TypeElements == FrameType.Tower;
         }
         
         public bool IsRoad()
         {
-            return _type == FrameType.Road;
+            return TypeElements == FrameType.Road;
         }
         public bool IsGround()
         {
-            return _type == FrameType.Ground;
+            return TypeElements == FrameType.Ground;
         }
 
         public TowerViewModel GetTower()
