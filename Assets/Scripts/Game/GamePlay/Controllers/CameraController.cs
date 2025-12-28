@@ -86,7 +86,7 @@ namespace Game.GamePlay.Controllers
 
         private void UpdateInput()
         {
-#if UNITY_EDITOR
+            /*
             if (!EventSystem.current.IsPointerOverGameObject())
             {
                 Vector2 mousePosition = Input.mousePosition;
@@ -94,39 +94,7 @@ namespace Game.GamePlay.Controllers
                 else if (Input.GetMouseButtonUp(0)) OnPointUp(mousePosition);
                 else if (Input.GetMouseButton(0)) OnPointMove(mousePosition);
             }
-
-#elif UNITY_IOS || UNITY_ANDROID
-        Touch _touch = Input.GetTouch(0);
-        if (!IsPointerOverUIObject()) {
-            if (Input.touchCount > 0)
-            {
-                
-                Vector2 touchPosition = _touch.position;
-                if (_touch.phase == TouchPhase.Began) OnPointDown(touchPosition);
-                if (_touch.phase == TouchPhase.Moved) OnPointMove(touchPosition);
-                if (_touch.phase == TouchPhase.Ended) OnPointUp(touchPosition);
-                if (_touch.phase == TouchPhase.Stationary) isDragging = false;
-                
-                var hit = new RaycastHit();
-                for (var i = 0; i < Input.touchCount; ++i) {
-                    if (Input.GetTouch(i).phase == TouchPhase.Began) {
-                        var ray = camera.ScreenPointToRay(Input.GetTouch(i).position);
-                        if (Physics.Raycast(ray, out hit)) {
-                            hit.transform.gameObject.SendMessage("OnMouseDown");
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (BlockPanel != TypeBlockPanelUI.None && _touch.phase == TouchPhase.Ended)
-            {
-                Messenger<TypeBlockPanelUI>.Broadcast(Events.TOUCH_SCREEN, BlockPanel);
-                BlockPanel = TypeBlockPanelUI.None;
-            }
-        }
-#endif
+            */
         }
 
         private bool IsPointerOverUIObject() //Проверка для Андроид - EventSystem.current.IsPointerOverGameObject()

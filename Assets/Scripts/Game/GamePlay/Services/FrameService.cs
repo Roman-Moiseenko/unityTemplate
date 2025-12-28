@@ -120,7 +120,7 @@ namespace Game.GamePlay.Services
 
         public void UnSelectedFrame()
         {
-            _viewModel.Selected(false);
+            _viewModel?.Selected(false);
         }
 
         public void RotateFrame()
@@ -170,6 +170,7 @@ namespace Game.GamePlay.Services
                     }
                     _viewModels.Remove(_viewModel);
                     _viewModel?.Dispose();
+                    //_viewModel = null;
                     frameIsRemoveFull.Value = true;
                 }
             );
@@ -189,11 +190,12 @@ namespace Game.GamePlay.Services
             }
             _viewModels.Remove(_viewModel);
             _viewModel?.Dispose();
+           // _viewModel = null;
         }
 
         public bool IsPosition(Vector2Int position)
         {
-            if (_viewModel == null) return false;
+            if (_viewModels.Count == 0) return false;
 
             if (_viewModel.IsTower() || _viewModel.IsGround())
                 return _viewModel.Position.CurrentValue == position;

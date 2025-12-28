@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game.GamePlay.Classes;
 using Game.GamePlay.View.AttackAreas;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
@@ -23,6 +24,7 @@ namespace Game.GamePlay.Root.View
     public class WorldGameplayRootBinder : MonoBehaviour
     {
         [SerializeField] private MapFogBinder mapFog;
+        //[SerializeField] private InputManager inputManager;
 
         //      [SerializeField] private BuildingBinder _prefabBuilding;
         //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
@@ -37,15 +39,14 @@ namespace Game.GamePlay.Root.View
         private CastleBinder _castleBinder;
         private AttackAreaBinder _attackAreaBinder;
         
-        private bool _clickCoroutines = false;
-        private bool _isMouseDown;
+        //private bool _clickCoroutines = false;
+        //private bool _isMouseDown;
         private IDisposable _disposable;
 
-        private Dictionary<string, List<MobBinder>> _mobsPull = new(); //Пул мобов
-        private Dictionary<string, List<ShotBinder>> _shotsPull = new(); //Пул выстрелов
-        
+        private readonly Dictionary<string, List<MobBinder>> _mobsPull = new(); //Пул мобов
+        private readonly Dictionary<string, List<ShotBinder>> _shotsPull = new(); //Пул выстрелов
         private WorldGameplayRootViewModel _viewModel;
-
+        
         public void Bind(WorldGameplayRootViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
@@ -271,7 +272,6 @@ namespace Game.GamePlay.Root.View
             _createTowersMap[towerViewModel.TowerEntityId] = createdTower;
         }
         
-
         private void CreateRoad(RoadViewModel roadViewModel, Transform parentTransform = null)
         {
             var roadConfig = roadViewModel.ConfigId;
@@ -379,7 +379,9 @@ namespace Game.GamePlay.Root.View
 
         private void Update()
         {
-            //TODO Добавить обработку Input.GetTouch(0)
+            /*
+             Предыдущая версия Input удалить потом
+             
             if (!EventSystem.current.IsPointerOverGameObject())
             {
                 Vector2 mousePosition = Input.mousePosition;
@@ -407,7 +409,7 @@ namespace Game.GamePlay.Root.View
                     if (_clickCoroutines) //  Это был "Клик"
                     {
                         _clickCoroutines = false;
-                        _viewModel.ClickEntity(mousePosition);
+                        //_viewModel.ClickEntity(mousePosition);
                     }
                     else
                     {
@@ -416,14 +418,13 @@ namespace Game.GamePlay.Root.View
                 }
             }
 
+            */
             _viewModel?.Update();
-
-
+            
             //  _gameplayCamera?.UpdateMoving(); //Движение камеры
             //  _gameplayCamera?.AutoMoving();
-
-
-            // UpdateInput();
+            
+             //UpdateInput();
 
             /*    var position = Input.mousePosition;
 
@@ -448,47 +449,49 @@ namespace Game.GamePlay.Root.View
                 */
         }
 
-        private void UpdateInput()
-        {
-#if UNITY_EDITOR
-            if (!EventSystem.current.IsPointerOverGameObject())
-            {
-            }
-
-#elif UNITY_IOS || UNITY_ANDROID
-        Touch _touch = Input.GetTouch(0);
-        if (!IsPointerOverUIObject()) {
-            if (Input.touchCount > 0)
-            {
                 
-                Vector2 touchPosition = _touch.position;
-                if (_touch.phase == TouchPhase.Began) OnPointDown(touchPosition);
-                if (_touch.phase == TouchPhase.Moved) OnPointMove(touchPosition);
-                if (_touch.phase == TouchPhase.Ended) OnPointUp(touchPosition);
-                if (_touch.phase == TouchPhase.Stationary) isDragging = false;
-                
-                var hit = new RaycastHit();
-                for (var i = 0; i < Input.touchCount; ++i) {
-                    if (Input.GetTouch(i).phase == TouchPhase.Began) {
-                        var ray = camera.ScreenPointToRay(Input.GetTouch(i).position);
-                        if (Physics.Raycast(ray, out hit)) {
-                            hit.transform.gameObject.SendMessage("OnMouseDown");
-                        }
-                    }
-                }
-            }
-        }
-      /*  else
+        /**
+         * Функции для отловли событий на Input
+         */
+        
+        private void HandleTap(Vector2 screenPosition)
         {
-            if (BlockPanel != TypeBlockPanelUI.None && _touch.phase == TouchPhase.Ended)
-            {
-                Messenger<TypeBlockPanelUI>.Broadcast(Events.TOUCH_SCREEN, BlockPanel);
-                BlockPanel = TypeBlockPanelUI.None;
-            }
-        }*/
-#endif
+            //Debug.Log("HandleTap + " + screenPosition);
+            _viewModel.ClickEntity(screenPosition);
         }
 
+        private void HandlePointerDown(Vector2 screenPosition)
+        {
+            _viewModel.StartMoving(screenPosition);
+        }
+
+        private void HandlePointerUp(Vector2 screenPosition)
+        {
+            _viewModel.FinishMoving(screenPosition);
+        }
+
+        private void HandlePointerDrag(Vector2 startPosition, Vector2 currentPosition)
+        {
+            _viewModel.ProcessMoving(currentPosition);
+        }
+        
+        private void OnEnable()
+        {
+            InputManager.OnTapPerformed += HandleTap;
+            InputManager.OnPointerDown += HandlePointerDown;
+            InputManager.OnPointerUp += HandlePointerUp;
+            InputManager.OnPointerDrag += HandlePointerDrag;
+        }
+
+        private void OnDisable()
+        {
+            InputManager.OnTapPerformed -= HandleTap;
+            InputManager.OnPointerDown -= HandlePointerDown;
+            InputManager.OnPointerUp -= HandlePointerUp;
+            InputManager.OnPointerDrag -= HandlePointerDrag;
+        }
+
+/*
         private bool IsPointerOverUIObject() //Проверка для Андроид - EventSystem.current.IsPointerOverGameObject()
         {
             if (Input.touchCount > 0)
@@ -504,6 +507,7 @@ namespace Game.GamePlay.Root.View
             return false;
         }
 
+        
         private IEnumerator IsClick()
         {
             _isMouseDown = false;
@@ -514,6 +518,6 @@ namespace Game.GamePlay.Root.View
                 _isMouseDown = true;
                 _clickCoroutines = false;
             }
-        }
+        }*/
     }
 }

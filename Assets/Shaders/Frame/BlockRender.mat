@@ -112,7 +112,7 @@ Material:
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 10
-    - _DstBlendAlpha: 0
+    - _DstBlendAlpha: 10
     - _Enabled: 0
     - _Enambled: 0
     - _EnvironmentReflections: 1

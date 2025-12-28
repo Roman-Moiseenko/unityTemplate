@@ -82,7 +82,7 @@ namespace Game.GamePlay.View.Towers
 
         public void AnimationFinish()
         {
-            Debug.Log("Конец анимации");
+            //Debug.Log("Конец анимации");
         }
     }
 }

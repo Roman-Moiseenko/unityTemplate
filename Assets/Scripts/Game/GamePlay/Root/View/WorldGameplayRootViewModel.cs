@@ -222,6 +222,7 @@ namespace Game.GamePlay.Root.View
 
         public void ClickEntity(Vector2 mousePosition)
         {
+            //Debug.Log(" *** **** ");
             var position = _cameraService.GetWorldPoint(mousePosition);
             _entityClick.OnNext(Unit.Default);
             if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
@@ -282,7 +283,6 @@ namespace Game.GamePlay.Root.View
         public void StartGameplayServices()
         {
             _waveService.StartNextWave();
-            
         }
 
         public void Update()
