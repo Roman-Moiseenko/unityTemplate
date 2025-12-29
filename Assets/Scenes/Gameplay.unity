@@ -492,7 +492,6 @@ GameObject:
   - component: {fileID: 890021234}
   - component: {fileID: 890021237}
   - component: {fileID: 890021236}
-  - component: {fileID: 890021235}
   m_Layer: 0
   m_Name: Water
   m_TagString: Untagged
@@ -515,28 +514,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1255062484}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &890021235
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 890021233}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &890021236
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -562,7 +539,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f03984abc3cd6514090e899256626328, type: 2}
+  - {fileID: 2100000, guid: 6c3e04a3d383d2343ae1159b4eddf69b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1446,7 +1423,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
-    m_Type: 2
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
