@@ -39,7 +39,7 @@ namespace Game.GamePlay.Controllers
 #elif UNITY_IOS || UNITY_ANDROID
         moveSpeed = 4f;
         sensitivity = 1.7f;
-        sens_touch = 0.4f;
+        _sensTouch = 0.4f;
 #endif
             //Определяем границы хода камеры
             float _centreX = 4;
