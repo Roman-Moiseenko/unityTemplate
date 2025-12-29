@@ -1093,12 +1093,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Click"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Button"",
                     ""id"": ""60851cd9-e3cd-4b6c-8e37-cb569b57e4f3"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 },
                 {
                     ""name"": ""Move"",
@@ -1111,9 +1111,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Down"",
-                    ""type"": ""PassThrough"",
+                    ""type"": ""Button"",
                     ""id"": ""199b9036-1a80-4a6c-8e2f-1ae47d59b4c7"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -1144,9 +1144,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""58c58ca0-ab00-45af-850f-b3c1421dbbc9"",
-                    ""path"": ""<Touchscreen>/primaryTouch/tap"",
-                    ""interactions"": """",
+                    ""id"": ""b023c949-cf88-4c91-8b96-9a79caf39c4d"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": "";Touch"",
                     ""action"": ""Click"",
@@ -1177,22 +1177,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""9c24f709-2e8d-4f86-a5a5-2a6ad5ddba99"",
-                    ""path"": ""<Touchscreen>/Press"",
+                    ""id"": ""184280d9-72b7-48ce-ae7a-ca076f0f5ab0"",
+                    ""path"": ""<Touchscreen>/primaryTouch/tap"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": "";Touch"",
-                    ""action"": ""Down"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""46784805-fcb0-4fbf-8fdb-246bd8370d6e"",
-                    ""path"": ""<Mouse>/leftButton"",
-                    ""interactions"": ""Press"",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
+                    ""groups"": """",
                     ""action"": ""Down"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

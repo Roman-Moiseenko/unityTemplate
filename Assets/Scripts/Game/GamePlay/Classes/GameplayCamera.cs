@@ -13,8 +13,8 @@ namespace Game.GamePlay.Classes
         public Transform CameraSystem;
 
         public float MoveSpeed = 4f;
-        public float Sensitivity = 0.5f;
-        public float SensTouch = 0.1f;
+        public float Sensitivity = 1.7f;
+        public float SensTouch = 0.4f;
 
         private const int speed = 10;
         private const float smoothTime = 0.2f;
