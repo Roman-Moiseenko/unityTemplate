@@ -222,7 +222,7 @@ namespace Game.GamePlay.Root.View
 
         public void ClickEntity(Vector2 mousePosition)
         {
-          //  Debug.Log(" ClickEntity "+ mousePosition);
+            Debug.Log(" ClickEntity "+ mousePosition);
 
             var position = _cameraService.GetWorldPoint(mousePosition);
             _entityClick.OnNext(Unit.Default);
@@ -278,7 +278,7 @@ namespace Game.GamePlay.Root.View
             }
             else
             {
-            //    Debug.Log(" StartMoving "+ mousePosition);
+                Debug.Log(" StartMoving "+ mousePosition);
                 _cameraService.OnPointDown(mousePosition);
             }
         }
@@ -303,7 +303,7 @@ namespace Game.GamePlay.Root.View
             }
             else
             {
-             //   Debug.Log(" FinishMoving "+ mousePosition);
+                Debug.Log(" FinishMoving "+ mousePosition);
 
                 _cameraService.OnPointUp(mousePosition);//Завершаем движение камеры
             }
@@ -317,7 +317,7 @@ namespace Game.GamePlay.Root.View
             }
             else //Двигаем камеру
             {
-//                Debug.Log(" ProcessMoving "+ mousePosition);
+                Debug.Log(" ProcessMoving "+ mousePosition);
 
                 _cameraService.OnPointMove(mousePosition);
             }
