@@ -48,12 +48,17 @@ namespace Game.GamePlay.Classes
             if (_isPointerDown)
             {
                 Vector2 delta = _currentPointerPosition - _tapStartPosition;
+               // Debug.Log("ReadPointerPosition " + delta);
+                
                 // Можно реализовать OnPointerDrag здесь или в Update,
                 // в зависимости от того, как часто вам нужны обновления.
                 // Для smooth drag лучше в Update или как отдельное событие.
                 // Пока просто выведем в консоль для демонстрации
                 // Debug.Log($"Dragging. Current pos: {currentPointerPosition}");
-                OnPointerDrag?.Invoke(_tapStartPosition, _currentPointerPosition);
+                if (delta.magnitude > TapThresholdDistance)
+                {
+                    OnPointerDrag?.Invoke(_tapStartPosition, _currentPointerPosition);
+                }
             }
         }
 

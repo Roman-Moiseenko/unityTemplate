@@ -222,7 +222,8 @@ namespace Game.GamePlay.Root.View
 
         public void ClickEntity(Vector2 mousePosition)
         {
-            //Debug.Log(" *** **** ");
+          //  Debug.Log(" ClickEntity "+ mousePosition);
+
             var position = _cameraService.GetWorldPoint(mousePosition);
             _entityClick.OnNext(Unit.Default);
             if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
@@ -269,6 +270,7 @@ namespace Game.GamePlay.Root.View
                 Mathf.FloorToInt(position.x + 0.5f),
                 Mathf.FloorToInt(position.y + 0.5f)
             );
+            //TODO Проверить при повторном перемещении
             _isFrameDownClick = _frameService.IsPosition(vectorInt);
             if (_isFrameDownClick)
             {
@@ -276,6 +278,7 @@ namespace Game.GamePlay.Root.View
             }
             else
             {
+            //    Debug.Log(" StartMoving "+ mousePosition);
                 _cameraService.OnPointDown(mousePosition);
             }
         }
@@ -300,6 +303,8 @@ namespace Game.GamePlay.Root.View
             }
             else
             {
+             //   Debug.Log(" FinishMoving "+ mousePosition);
+
                 _cameraService.OnPointUp(mousePosition);//Завершаем движение камеры
             }
         }
@@ -312,6 +317,8 @@ namespace Game.GamePlay.Root.View
             }
             else //Двигаем камеру
             {
+//                Debug.Log(" ProcessMoving "+ mousePosition);
+
                 _cameraService.OnPointMove(mousePosition);
             }
         }
