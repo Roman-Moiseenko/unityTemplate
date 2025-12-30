@@ -1,6 +1,6 @@
 ﻿using DI;
 using Game.Common;
-using Game.GamePlay.Controllers;
+
 using Newtonsoft.Json;
 using R3;
 using UnityEngine;
@@ -12,11 +12,11 @@ namespace Game.GamePlay.Classes
         public Camera Camera;
         public Transform CameraSystem;
 
-        public float MoveSpeed = 4f;
+        public float MoveSpeed = 2f;
         public float Sensitivity = 1.7f;
         public float SensTouch = 0.4f;
 
-        private const int speed = 10;
+        private const int speed = 8;
         private const float smoothTime = 0.2f;
         private Vector3 _velocity;
 

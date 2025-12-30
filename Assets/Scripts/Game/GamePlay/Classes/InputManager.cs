@@ -12,8 +12,8 @@ namespace Game.GamePlay.Classes
         private Vector2 _currentPointerPosition; // Текущая позиция указателя (мышь или касание)
         private Vector2 _tapStartPosition;       // Позиция, где началось касание
         private bool _isPointerDown;             // Флаг, указывающий, нажат ли указатель
-        private float _tapHoldThreshold = 0.2f;  // Время в секундах, после которого нажатие считается "долгим"
-        private float _tapThresholdDistance = 10f; // Расстояние в пикселях, после которого нажатие считается "драгом"
+        private const float TapHoldThreshold = 0.2f; // Время в секундах, после которого нажатие считается "долгим"
+        private const float TapThresholdDistance = 20f; // Расстояние в пикселях, после которого нажатие считается "драгом"
         public static event System.Action<Vector2> OnTapPerformed;        // Одинарный клик/короткое касание
         public static event System.Action<Vector2> OnPointerDown;         // Начало нажатия
         public static event System.Action<Vector2> OnPointerUp;           // Отпускание нажатия
@@ -69,12 +69,12 @@ namespace Game.GamePlay.Classes
             OnPointerUp?.Invoke(releasePosition);
             
             // Если нажатие было коротким и без значительного перемещения, считаем это "тапом"
-            if (tapDuration < _tapHoldThreshold && movedDistance < _tapThresholdDistance)
+            if (tapDuration < TapHoldThreshold && movedDistance < TapThresholdDistance)
             {
                 //Debug.Log($"--> This was a TAP at screen position: {releasePosition}");
                 OnTapPerformed?.Invoke(releasePosition);
             }
-            else if (movedDistance >= _tapThresholdDistance)
+            else if (movedDistance >= TapThresholdDistance)
             {
                 //Debug.Log($"--> This was a DRAG from {_tapStartPosition} to {releasePosition}");
                 // Событие OnPointerDrag будет вызываться каждый кадр, пока нажато
