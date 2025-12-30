@@ -288,7 +288,7 @@ namespace Game.GamePlay.Root.View
         public void Update()
         {
             _cameraService?.UpdateMoving(); //Движение камеры
-            _cameraService?.AutoMoving();
+            //_cameraService?.AutoMoving();
             _damageService.Update();
         }
         
