@@ -100,7 +100,8 @@ namespace Game.GamePlay.Classes
 
         public void UpdateMoving()
         {
-            if (!_isMoving) return;
+            if (!_isDragging) return;
+                //if (!_isMoving) return;
 
             float speed = Time.deltaTime * MoveSpeed;
             if (_isDragging)
