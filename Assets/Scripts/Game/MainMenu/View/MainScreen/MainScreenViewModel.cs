@@ -15,7 +15,8 @@ namespace Game.MainMenu.View.MainScreen
         public readonly ReactiveProperty<long> SoftCurrency;
         public readonly ReactiveProperty<long> HardCurrency;
         
-        public MainScreenViewModel(MainMenuUIManager uiManager, DIContainer container)
+        //public
+        public MainScreenViewModel(MainMenuUIManager uiManager, DIContainer container) : base(container)
         {
             _uiManager = uiManager;
             _container = container;

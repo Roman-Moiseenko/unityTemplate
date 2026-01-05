@@ -15,7 +15,6 @@ namespace Game.GamePlay.View.UI.PanelActions
         public override string Path => "Gameplay/Panels/";
         
         public readonly GameplayUIManager _uiManager;
-        private readonly DIContainer _container;
         
         public readonly ReactiveProperty<int> CurrentSpeed;
         private readonly GameplayStateProxy _gameplayStateProxy;
@@ -25,12 +24,10 @@ namespace Game.GamePlay.View.UI.PanelActions
         public PanelActionsViewModel(
             GameplayUIManager uiManager, 
             DIContainer container
-        )
+        ) : base(container)
         {
             var d = Disposable.CreateBuilder();
             _uiManager = uiManager;
-            _container = container;
-
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
   
             CurrentSpeed = _gameplayStateProxy.GameSpeed;
@@ -43,7 +40,7 @@ namespace Game.GamePlay.View.UI.PanelActions
 
         public void RequestToProgressAdd()
         {
-            var cmd = _container.Resolve<ICommandProcessor>();
+            var cmd = Container.Resolve<ICommandProcessor>();
             var command = new CommandRewardKillMob(25, 1);
             cmd.Process(command);
         }

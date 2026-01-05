@@ -19,9 +19,7 @@ namespace Game.MainMenu.View.ScreenInventory
     public class ScreenInventoryViewModel : WindowViewModel
     {
         private readonly MainMenuUIManager _uiManager;
-
-        private readonly DIContainer _container;
-
+        
         // private readonly Subject<Unit> _exitSceneRequest;
         public override string Id => "ScreenInventory";
         public override string Path => "MainMenu/ScreenInventory/";
@@ -34,10 +32,9 @@ namespace Game.MainMenu.View.ScreenInventory
         private readonly TowerCardPlanService _towerCardPlanService;
         private readonly InventoryUIManager _inventoryUIManager;
 
-        public ScreenInventoryViewModel(MainMenuUIManager uiManager, DIContainer container)
+        public ScreenInventoryViewModel(MainMenuUIManager uiManager, DIContainer container) : base(container)
         {
             _uiManager = uiManager;
-            _container = container;
             GameState = container.Resolve<IGameStateProvider>().GameState;
             _towerCardPlanService = container.Resolve<TowerCardPlanService>();
             TowerCards = _towerCardPlanService.AllTowerCards;

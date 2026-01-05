@@ -18,7 +18,6 @@ namespace Game.MainMenu.View.ScreenPlay
         private readonly MainMenuUIManager _uiManager;
         private readonly Subject<MainMenuExitParams> _exitSceneRequest;
         private readonly MainMenuExitParamsService _exitParamsService;
-        private readonly DIContainer _container;
         public ChestsViewModel ChestsViewModel;
         public MapCardContainerViewModel MapCardContainerViewModel;
         public StorageManager StorageManager { get; set; }
@@ -32,12 +31,11 @@ namespace Game.MainMenu.View.ScreenPlay
             Subject<MainMenuExitParams> exitSceneRequest,
             MainMenuExitParamsService exitParamsService,
             DIContainer container
-            )
+            ) : base(container)
         {
             _uiManager = uiManager;
             _exitSceneRequest = exitSceneRequest;
             _exitParamsService = exitParamsService;
-            _container = container;
             StorageManager = container.Resolve<StorageManager>();
             var gameState = container.Resolve<IGameStateProvider>().GameState;
             ChestsViewModel = new ChestsViewModel(gameState, container);
@@ -57,7 +55,7 @@ namespace Game.MainMenu.View.ScreenPlay
             //Грузим данные для игры - бустеры, колоду и другое
             var mainMenuExitParams = _exitParamsService.GetExitParams(TypeGameplay.Levels, 0);
             //TODO Если осталась сессия, то сброс ее ... Перенести в сервис
-            _container.Resolve<IGameStateProvider>().ResetGameplayState();
+            Container.Resolve<IGameStateProvider>().ResetGameplayState();
             _exitSceneRequest.OnNext(mainMenuExitParams);
         }
 
@@ -65,7 +63,7 @@ namespace Game.MainMenu.View.ScreenPlay
         {
             var mainMenuExitParams = _exitParamsService.GetExitParams(TypeGameplay.Infinity, 0);
             //TODO проверка на колоду return false;
-            _container.Resolve<IGameStateProvider>().ResetGameplayState();
+            Container.Resolve<IGameStateProvider>().ResetGameplayState();
             _exitSceneRequest.OnNext(mainMenuExitParams);
             return true;
 
@@ -88,7 +86,7 @@ namespace Game.MainMenu.View.ScreenPlay
             var mainMenuExitParams = _exitParamsService.GetExitParams(TypeGameplay.Levels, mapId);
             
             //TODO проверка на колоду return false;
-            _container.Resolve<IGameStateProvider>().ResetGameplayState();
+            Container.Resolve<IGameStateProvider>().ResetGameplayState();
             _exitSceneRequest.OnNext(mainMenuExitParams);
             
         }

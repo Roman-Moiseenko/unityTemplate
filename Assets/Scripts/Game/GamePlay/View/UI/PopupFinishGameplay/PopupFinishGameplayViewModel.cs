@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DI;
 using Game.GamePlay.Root;
 using Game.GameRoot.View.ResourceReward;
 using Game.MainMenu.Root;
@@ -23,7 +24,10 @@ namespace Game.GamePlay.View.UI.PopupFinishGameplay
         private readonly GameplayExitParams _exitParams;
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
 
-        public PopupFinishGameplayViewModel(GameplayExitParams exitParams, Subject<GameplayExitParams> exitSceneRequest)
+        public PopupFinishGameplayViewModel(
+            GameplayExitParams exitParams, 
+            Subject<GameplayExitParams> exitSceneRequest,
+            DIContainer container) : base(container)
         {
             
             EnterParams = exitParams.MainMenuEnterParams;

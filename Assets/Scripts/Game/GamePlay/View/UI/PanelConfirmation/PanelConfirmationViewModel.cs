@@ -22,7 +22,6 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
         public override string Path => "Gameplay/Panels/";
         
         public readonly GameplayUIManager _uiManager;
-        private readonly DIContainer _container;
 
         private readonly GameplayStateProxy _gameplayStateProxy;
         
@@ -39,11 +38,10 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
         public PanelConfirmationViewModel(
             GameplayUIManager uiManager, 
             DIContainer container
-        )
+        ) : base(container)
         {
             var d = Disposable.CreateBuilder();
             _uiManager = uiManager;
-            _container = container;
 
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             _fsmGameplay = container.Resolve<FsmGameplay>();

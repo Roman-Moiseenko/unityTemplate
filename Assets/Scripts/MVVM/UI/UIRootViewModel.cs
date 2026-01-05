@@ -4,6 +4,7 @@ using System.Linq;
 using DI;
 using ObservableCollections;
 using R3;
+using Scripts.Game.GameRoot;
 using UnityEngine;
 
 namespace MVVM.UI
@@ -31,11 +32,14 @@ namespace MVVM.UI
 
         public ReactiveProperty<bool> CloseAllPopupHandler = new(false);
         public ReactiveProperty<bool> HideAllPanelHandler = new(false);
-        
+
+        public Vector3 ScaleUI;
         
         public UIRootViewModel(DIContainer container)
         {
             Container = container;
+            //var uiRoot = container.Resolve<UIRootView>();
+            //ScaleUI = uiRoot.GetScale();
         }
         public void Dispose()
         {
@@ -53,6 +57,7 @@ namespace MVVM.UI
         public void OpenScreen(WindowViewModel screenViewModel)
         {
             _openedScreen.Value?.Dispose(); //Если текущий экран существует/открыт, то закрываем
+            screenViewModel.ScaleUI = ScaleUI;
             _openedScreen.Value = screenViewModel;
         }
         

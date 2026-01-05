@@ -54,7 +54,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         public PanelGateWaveViewModel(
             GameplayUIManager uiManager, 
             DIContainer container
-            )
+            ) : base(container)
         {
             var d = Disposable.CreateBuilder();
             

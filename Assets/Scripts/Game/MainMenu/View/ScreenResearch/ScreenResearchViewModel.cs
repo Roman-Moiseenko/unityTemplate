@@ -11,7 +11,7 @@ namespace Game.MainMenu.View.ScreenResearch
         public override string Id => "ScreenResearch";
         public override string Path => "MainMenu/";
         
-        public ScreenResearchViewModel(MainMenuUIManager uiManager, DIContainer container)
+        public ScreenResearchViewModel(MainMenuUIManager uiManager, DIContainer container) : base(container)
         {
             _uiManager = uiManager;
    //         _exitSceneRequest = exitSceneRequest;

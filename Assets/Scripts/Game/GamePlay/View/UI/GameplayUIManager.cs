@@ -101,7 +101,7 @@ namespace Game.GamePlay.View.UI
         
         public PopupBViewModal OpenPopupB()
         {
-            var b = new PopupBViewModal();
+            var b = new PopupBViewModal(Container);
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
             _fsmGameplay.Fsm.SetState<FsmStateGamePause>(); //Меняем состояние на Пауза
             b.CloseRequested.Subscribe(e =>
@@ -140,7 +140,7 @@ namespace Game.GamePlay.View.UI
             //TODO Закрыть все другие попап
             //TODO Закрыть все панели
             
-            var finish = new PopupFinishGameplayViewModel(exitParams, _exitSceneRequest);
+            var finish = new PopupFinishGameplayViewModel(exitParams, _exitSceneRequest, Container);
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
             rootUI.CloseAllPopupHandler.OnNext(true);
             rootUI.HideAllPanelHandler.OnNext(true);

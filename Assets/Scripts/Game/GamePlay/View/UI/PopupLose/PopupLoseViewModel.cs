@@ -21,7 +21,7 @@ namespace Game.GamePlay.View.UI.PopupLose
         public PopupLoseViewModel(
             GameplayUIManager uiManager, 
             Subject<GameplayExitParams> exitSceneRequest,
-            DIContainer container)
+            DIContainer container) : base(container)
         {
             _exitSceneRequest = exitSceneRequest;
             _gameplayService = container.Resolve<GameplayService>();

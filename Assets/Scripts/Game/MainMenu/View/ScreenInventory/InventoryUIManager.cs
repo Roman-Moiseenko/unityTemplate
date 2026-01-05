@@ -38,7 +38,7 @@ namespace Game.MainMenu.View.ScreenInventory
         
         private PopupTowerPlanViewModel OpenPopupTowerPlan(TowerPlanViewModel viewModel)
         {
-            var b = new PopupTowerPlanViewModel(viewModel);
+            var b = new PopupTowerPlanViewModel(viewModel, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             
             b.CloseRequested.Subscribe(e =>

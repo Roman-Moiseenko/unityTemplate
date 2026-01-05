@@ -1,5 +1,8 @@
 ﻿using System;
+using DI;
 using R3;
+using Scripts.Game.GameRoot;
+using UnityEngine;
 
 namespace MVVM.UI
 {
@@ -9,7 +12,16 @@ namespace MVVM.UI
         public abstract string Id { get; }
         public abstract string Path { get; }
 
+        public Vector3 ScaleUI;
+        public DIContainer Container;
         private readonly Subject<WindowViewModel> _closeRequested = new(); //Создаем событие для закрытия окна
+
+        protected WindowViewModel(DIContainer container)
+        {
+            Container = container;
+            var uiRoot = container.Resolve<UIRootView>();
+            ScaleUI = uiRoot.GetScale();
+        }
 
         /**
          * Отправляем запрос на закрыте, которе будет в менеджере (Binder)

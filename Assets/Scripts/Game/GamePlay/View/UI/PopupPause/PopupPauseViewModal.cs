@@ -18,7 +18,6 @@ namespace Game.GamePlay.View.UI.PopupPause
         public override string Id => "PopupPause";
         public override string Path => "Gameplay/Popups/";
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
-        private readonly DIContainer _container;
 
         private readonly GameplayStateProxy _gameplayState;
         //TODO действия при нажатии на кнопки
@@ -26,10 +25,9 @@ namespace Game.GamePlay.View.UI.PopupPause
         public PopupPauseViewModal(
             GameplayUIManager uiManager, 
             Subject<GameplayExitParams> exitSceneRequest,
-            DIContainer container)
+            DIContainer container) : base(container)
         {
             _exitSceneRequest = exitSceneRequest;
-            _container = container;
 
             _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
         }
@@ -44,17 +42,17 @@ namespace Game.GamePlay.View.UI.PopupPause
         //Покупка восстановления ... отнимаем кристаллы, событие восстановления
         public void RequestGoToMainMenu()
         {
-            _container.Resolve<GameplayService>().Abort();
+            Container.Resolve<GameplayService>().Abort();
         }
 
         public void RequestExitSave()
         {
-            _container.Resolve<GameplayService>().ExitSave();
+            Container.Resolve<GameplayService>().ExitSave();
         }
 
         public void Win()
         {
-            var gs = _container.Resolve<GameplayService>();
+            var gs = Container.Resolve<GameplayService>();
             gs.Win();
         }
     }

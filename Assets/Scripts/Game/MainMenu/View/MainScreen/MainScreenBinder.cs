@@ -43,7 +43,7 @@ namespace Game.MainMenu.View.MainScreen
             //Подписки верхнего меню
             ViewModel.SoftCurrency.Subscribe(v => { softCurrency.text = Func.CurrencyToStr(v); });
             ViewModel.HardCurrency.Subscribe(v => { hardCurrency.text = v.ToString(); });
-
+            ClickUpdateButton("Play");
             _disposable = d.Build();
         }
 
@@ -54,11 +54,11 @@ namespace Game.MainMenu.View.MainScreen
 
         private void ClickUpdateButton(string nameButton)
         {
-            var baseWidth = Mathf.FloorToInt(Screen.width / 5.5f);
+            var baseWidth = Mathf.FloorToInt(Screen.width / 5.5f / ViewModel.ScaleUI.x);
             var i = 0;
             var delta = 0;
             var sizeDelta = new Vector2(0, HeightBottomMenu);
-            var position = new Vector3(0, HeightBottomMenu / 2, 0);
+            var position = new Vector3(0, HeightBottomMenu / 2 * ViewModel.ScaleUI.y, 0);
             foreach (var btnBinder in _buttonBinders.Select(buttonKey => buttonKey.Value))
             {
                 if (!btnBinder.HasName(nameButton))
@@ -75,6 +75,10 @@ namespace Game.MainMenu.View.MainScreen
                     btnBinder.Click();
                 }
 
+                position.x *= ViewModel.ScaleUI.x;
+
+                //btnBinder.GetComponent<RectTransform>().position = position;
+                //btnBinder.GetComponent<RectTransform>().sizeDelta = sizeDelta;
                 btnBinder.Resize(sizeDelta, position);
                 i++;
             }
@@ -82,7 +86,7 @@ namespace Game.MainMenu.View.MainScreen
 
         private void OnEnable()
         {
-            ClickUpdateButton("Play");
+            
         }
 
         public void OnResearch()

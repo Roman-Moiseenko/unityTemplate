@@ -13,7 +13,7 @@ namespace Game.GamePlay.Classes
         private Vector2 _tapStartPosition;       // Позиция, где началось касание
         private bool _isPointerDown;             // Флаг, указывающий, нажат ли указатель
         private const float TapHoldThreshold = 0.2f; // Время в секундах, после которого нажатие считается "долгим"
-        private const float TapThresholdDistance = 290f; // Расстояние в пикселях, после которого нажатие считается "драгом"
+        private float _tapThresholdDistance = 10f; // Расстояние в пикселях, после которого нажатие считается "драгом"
         public static event System.Action<Vector2> OnTapPerformed;        // Одинарный клик/короткое касание
         public static event System.Action<Vector2> OnPointerDown;         // Начало нажатия
         public static event System.Action<Vector2> OnPointerUp;           // Отпускание нажатия
@@ -30,6 +30,14 @@ namespace Game.GamePlay.Classes
             _playerControls.Gameplay.Click.canceled += OnPointerCanceled;
             _playerControls.Gameplay.Move.performed += ReadPointerPosition;
             _playerControls.Gameplay.Move.canceled += ReadPointerPosition;
+
+#if UNITY_EDITOR
+//            Debug.Log("UNITY_EDITOR");
+        _tapThresholdDistance = 20f;    
+#elif UNITY_IOS || UNITY_ANDROID
+         //   Debug.Log("UNITY_ANDROID");
+        _tapThresholdDistance = 290f;
+#endif
         }
 
         private void ReadPointerPosition(InputAction.CallbackContext context)
@@ -55,7 +63,7 @@ namespace Game.GamePlay.Classes
                 // Для smooth drag лучше в Update или как отдельное событие.
                 // Пока просто выведем в консоль для демонстрации
                 // Debug.Log($"Dragging. Current pos: {currentPointerPosition}");
-                if (delta.magnitude > TapThresholdDistance)
+                if (delta.magnitude > _tapThresholdDistance)
                 {
                     OnPointerDrag?.Invoke(_tapStartPosition, _currentPointerPosition);
                 }
@@ -74,12 +82,12 @@ namespace Game.GamePlay.Classes
             OnPointerUp?.Invoke(releasePosition);
             
             // Если нажатие было коротким и без значительного перемещения, считаем это "тапом"
-            if (tapDuration < TapHoldThreshold && movedDistance < TapThresholdDistance)
+            if (tapDuration < TapHoldThreshold && movedDistance < _tapThresholdDistance)
             {
                 //Debug.Log($"--> This was a TAP at screen position: {releasePosition}");
                 OnTapPerformed?.Invoke(releasePosition);
             }
-            else if (movedDistance >= TapThresholdDistance)
+            else if (movedDistance >= _tapThresholdDistance)
             {
                 //Debug.Log($"--> This was a DRAG from {_tapStartPosition} to {releasePosition}");
                 // Событие OnPointerDrag будет вызываться каждый кадр, пока нажато

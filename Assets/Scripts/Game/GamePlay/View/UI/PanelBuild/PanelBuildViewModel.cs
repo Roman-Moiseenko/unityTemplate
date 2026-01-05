@@ -40,7 +40,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
         public readonly ObservableDictionary<string, int> Levels;
         public Dictionary<int, CardViewModel> CardViewModels = new();
         
-        public PanelBuildViewModel(DIContainer container)
+        public PanelBuildViewModel(DIContainer container) : base(container)
         {
             var d = Disposable.CreateBuilder();
             var gameplayState = container.Resolve<IGameStateProvider>().GameplayState;

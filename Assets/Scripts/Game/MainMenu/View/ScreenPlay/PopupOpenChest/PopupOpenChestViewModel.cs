@@ -13,7 +13,6 @@ namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
 {
     public class PopupOpenChestViewModel : WindowViewModel
     {
-        private readonly DIContainer _container;
         private readonly ChestService _chestService;
         public override string Id => "PopupOpenChest";
         public override string Path => "MainMenu/ScreenPlay/Popups/";
@@ -31,10 +30,9 @@ namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
         
         private readonly PlayUIManager _uiManager;
 
-        public PopupOpenChestViewModel(Chest chest, DIContainer container)
+        public PopupOpenChestViewModel(Chest chest, DIContainer container) : base(container)
         {
             Chest = chest;
-            _container = container;
             _uiManager = container.Resolve<PlayUIManager>();
             _chestService = container.Resolve<ChestService>();
             _gameState = container.Resolve<IGameStateProvider>().GameState;

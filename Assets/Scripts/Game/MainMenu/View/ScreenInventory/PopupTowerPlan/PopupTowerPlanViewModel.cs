@@ -1,4 +1,5 @@
-﻿using Game.MainMenu.View.ScreenInventory.TowerPlans;
+﻿using DI;
+using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using MVVM.UI;
 
 namespace Game.MainMenu.View.ScreenInventory.PopupTowerPlan
@@ -10,7 +11,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerPlan
 
         public readonly TowerPlanViewModel PlanViewModel;
 
-        public PopupTowerPlanViewModel(TowerPlanViewModel planViewModel)
+        public PopupTowerPlanViewModel(TowerPlanViewModel planViewModel, DIContainer container) : base(container)
         {
             PlanViewModel = planViewModel;
         }

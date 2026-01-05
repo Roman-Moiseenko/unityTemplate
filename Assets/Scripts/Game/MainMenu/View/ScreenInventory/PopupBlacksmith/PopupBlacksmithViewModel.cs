@@ -29,7 +29,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
 
         public List<TowerCard> BaseListCard = new();
         public ObservableList<TowerCardResourceViewModel> TowerCardMaps = new();
-        private readonly DIContainer _container;
 
         public TowerCardUpgradingViewModel TowerUpgrading = new();
         public TowerCardUpgradingViewModel UpgradingNecessary1 = new();
@@ -39,9 +38,8 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
         public ReactiveProperty<int> MaxLevel = new(1);
         private readonly ICommandProcessor _cmd;
 
-        public PopupBlacksmithViewModel(DIContainer container)
+        public PopupBlacksmithViewModel(DIContainer container) : base(container)
         {
-            _container = container;
             _gameState = container.Resolve<IGameStateProvider>().GameState;
             _towerCardPlanService = container.Resolve<TowerCardPlanService>();
             _cmd = container.Resolve<ICommandProcessor>();
@@ -137,7 +135,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
                         foreach (var uniqueId in uniqueIds)
                         {
                             var towerCard = _gameState.Inventory.Get<TowerCard>(uniqueId);
-                            TowerCardMaps.Add(new TowerCardResourceViewModel(towerCard, _container, LimitSelectedCard));
+                            TowerCardMaps.Add(new TowerCardResourceViewModel(towerCard, Container, LimitSelectedCard));
                         }
                     }
                 }

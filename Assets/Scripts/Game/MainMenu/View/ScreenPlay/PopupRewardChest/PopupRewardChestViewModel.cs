@@ -17,7 +17,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupRewardChest
         public PopupRewardChestViewModel(
             TypeChest typeChest,
             List<RewardEntityData> rewards,
-            DIContainer container)
+            DIContainer container) : base(container)
         {
             TypeChest = typeChest;
             

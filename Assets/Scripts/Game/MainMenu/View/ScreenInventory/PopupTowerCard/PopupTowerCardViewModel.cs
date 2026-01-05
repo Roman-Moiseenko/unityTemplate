@@ -24,7 +24,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
         public ReactiveProperty<long> CostPlan = new();
         public ReactiveProperty<int> CostCurrency = new();
         
-        public PopupTowerCardViewModel(TowerCardViewModel viewModel, DIContainer container)
+        public PopupTowerCardViewModel(TowerCardViewModel viewModel, DIContainer container) : base(container)
         {
             CardViewModel = viewModel;
             _inventory = container.Resolve<IGameStateProvider>().GameState.Inventory;

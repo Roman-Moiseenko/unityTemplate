@@ -56,7 +56,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             GameplayUIManager uiManager,
             Subject<GameplayExitParams> exitSceneRequest,
             DIContainer container
-        )
+        ) : base(container)
         {
             var d = Disposable.CreateBuilder();
             _uiManager = uiManager;

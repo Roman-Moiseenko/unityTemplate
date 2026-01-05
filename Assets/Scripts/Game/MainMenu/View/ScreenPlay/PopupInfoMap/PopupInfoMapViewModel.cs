@@ -11,7 +11,7 @@ namespace Game.MainMenu.View.ScreenPlay.PopupInfoMap
 
         public string TitleMap;
         
-        public PopupInfoMapViewModel(int mapId, DIContainer container)
+        public PopupInfoMapViewModel(int mapId, DIContainer container) : base(container)
         {
             var mapsSettings = container.Resolve<ISettingsProvider>().GameSettings.MapsSettings;
             var map = mapsSettings.Maps.Find(v => v.MapId == mapId);

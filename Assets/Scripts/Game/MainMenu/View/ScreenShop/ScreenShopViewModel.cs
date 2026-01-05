@@ -11,7 +11,7 @@ namespace Game.MainMenu.View.ScreenShop
         public override string Id => "ScreenShop";
         public override string Path => "MainMenu/";
         
-        public ScreenShopViewModel(MainMenuUIManager uiManager, DIContainer container)
+        public ScreenShopViewModel(MainMenuUIManager uiManager, DIContainer container) : base(container)
         {
             _uiManager = uiManager;
      //       _exitSceneRequest = exitSceneRequest;

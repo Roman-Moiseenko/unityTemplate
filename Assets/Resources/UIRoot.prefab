@@ -103,6 +103,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -276,6 +277,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -508,6 +510,7 @@ MonoBehaviour:
   _loadingScreen: {fileID: 1808522199588530027}
   _loadingFirstScreen: {fileID: 5287584999390919391}
   _uiSceneContainer: {fileID: 7543136678103435602}
+  _CanvasScaler: {fileID: 3326101498618790344}
 --- !u!1 &5287584999390919391
 GameObject:
   m_ObjectHideFlags: 0

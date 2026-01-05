@@ -11,7 +11,7 @@ namespace Game.MainMenu.View.ScreenShop
         public override string Id => "ScreenClan";
         public override string Path => "MainMenu/";
         
-        public ScreenClanViewModel(MainMenuUIManager uiManager, DIContainer container)
+        public ScreenClanViewModel(MainMenuUIManager uiManager, DIContainer container) : base(container)
         {
             _uiManager = uiManager;
        //     _exitSceneRequest = exitSceneRequest;

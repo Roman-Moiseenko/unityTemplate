@@ -23,14 +23,17 @@ namespace Game.MainMenu.View
         //   private readonly Subject<Unit> _exitSceneRequestDefault;
         private readonly Subject<MainMenuExitParams> _exitSceneRequest;
         private readonly MainMenuExitParamsService _exitParamsService;
+        private readonly UIMainMenuRootViewModel _rootUI;
 
+       // public Vector3 ScaleUI;
         public MainMenuUIManager(DIContainer container) : base(container)
         {
           //  _container = container;
             //       _exitSceneRequestDefault = container.Resolve<Subject<Unit>>(AppConstants.EXIT_SCENE_REQUEST_TAG);
             _exitSceneRequest = container.Resolve<Subject<MainMenuExitParams>>();
             _exitParamsService = container.Resolve<MainMenuExitParamsService>();
-
+            _rootUI = Container.Resolve<UIMainMenuRootViewModel>();
+           // ScaleUI = _rootUI.ScaleUI;
         }
 /*
         public MainScreenViewModel OpenMainScreen()
@@ -45,7 +48,7 @@ namespace Game.MainMenu.View
         {
             var viewModel = new ScreenShopViewModel(this, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
-            rootUI.OpenScreen(viewModel);
+            _rootUI.OpenScreen(viewModel);
             return viewModel;
         }
 
@@ -54,7 +57,7 @@ namespace Game.MainMenu.View
             //TODO Вытаскиваем 
             var viewModel = new ScreenInventoryViewModel(this, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
-            rootUI.OpenScreen(viewModel);
+            _rootUI.OpenScreen(viewModel);
             return viewModel;
         }
         
@@ -62,21 +65,21 @@ namespace Game.MainMenu.View
         {
             var viewModel = new ScreenClanViewModel(this, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
-            rootUI.OpenScreen(viewModel);
+            _rootUI.OpenScreen(viewModel);
             return viewModel;
         }
         public ScreenPlayViewModel OpenScreenPlay()
         {
             var viewModel = new ScreenPlayViewModel(this, _exitSceneRequest, _exitParamsService, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
-            rootUI.OpenScreen(viewModel);
+            _rootUI.OpenScreen(viewModel);
             return viewModel;
         }
         public ScreenResearchViewModel OpenScreenResearch()
         {
             var viewModel = new ScreenResearchViewModel(this, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
-            rootUI.OpenScreen(viewModel);
+            _rootUI.OpenScreen(viewModel);
             return viewModel;
         }
 
@@ -89,7 +92,7 @@ namespace Game.MainMenu.View
             {
                 //_fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
             });
-            rootUI.OpenPopup(b);
+            _rootUI.OpenPopup(b);
             return b;
         }
         
@@ -109,7 +112,7 @@ namespace Game.MainMenu.View
             b.CloseRequested.Subscribe(e =>
             {
             });
-            rootUI.OpenPopup(b);
+            _rootUI.OpenPopup(b);
             return b;
         }
     }

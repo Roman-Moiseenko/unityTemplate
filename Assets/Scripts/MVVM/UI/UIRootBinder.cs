@@ -68,7 +68,7 @@ namespace MVVM.UI
 
         private void OnDestroy()
         {
-           // _disposable?.Dispose();
+            _disposable?.Dispose();
         }
     }
 }
