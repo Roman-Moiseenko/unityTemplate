@@ -36,5 +36,6 @@
 
         public const int WIDTH_MAP = 10;
         public const int HIGHT_MAP = 10;
+        public const int CENTER_MAP = 2;
     }
 }

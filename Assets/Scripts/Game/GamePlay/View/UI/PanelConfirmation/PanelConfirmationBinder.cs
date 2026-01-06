@@ -28,7 +28,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
                 var vector3 = _btnCancel.transform.localPosition;
                 if (newValue)
                 {
-                    vector3.y = -70;
+                    vector3.y = -110;
                 }
                 else
                 {

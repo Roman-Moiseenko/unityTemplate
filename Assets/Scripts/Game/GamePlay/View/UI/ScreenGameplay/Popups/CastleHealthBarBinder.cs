@@ -21,7 +21,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
             transform.gameObject.SetActive(true);
             _castleFullHealth = castleFullHealth;
             _camera = camera;
-            var position = new Vector3(-1f, 1.5f, 0);
+            var position = new Vector3(-1f, 1.5f , 0);
+            transform.position = _camera.WorldToScreenPoint(position);
             positionCamera.Subscribe(_ =>
             {
                 transform.position = _camera.WorldToScreenPoint(position);
