@@ -26,16 +26,6 @@ namespace Game.MainMenu.View.ScreenPlay.PopupOpenChest
             _createdItemsMap.Add(createdReward);
         }
 
-        public override void OpenDropdown()
-        {
-            container.gameObject.SetActive(true);
-        }
-
-        public override void CloseDropdown()
-        {
-            container.gameObject.SetActive(false);
-        }
-
-
+        
     }
 }

@@ -18,6 +18,7 @@ namespace Game.GamePlay.Classes
         public static event System.Action<Vector2> OnPointerDown;         // Начало нажатия
         public static event System.Action<Vector2> OnPointerUp;           // Отпускание нажатия
         public static event System.Action<Vector2, Vector2> OnPointerDrag; // Перемещение нажатого указателя
+        public static event System.Action<Vector2> OnTapUI;        // Одинарный клик/короткое касание
 
         private Camera mainCamera; // Главная камера для преобразования ScreenToWorldPoint
         
@@ -31,6 +32,9 @@ namespace Game.GamePlay.Classes
             _playerControls.Gameplay.Move.performed += ReadPointerPosition;
             _playerControls.Gameplay.Move.canceled += ReadPointerPosition;
 
+            _playerControls.UI.ClickUI.performed += OnClickUI;
+
+
 #if UNITY_EDITOR
 //            Debug.Log("UNITY_EDITOR");
         _tapThresholdDistance = 20f;    
@@ -39,7 +43,12 @@ namespace Game.GamePlay.Classes
         _tapThresholdDistance = 290f;
 #endif
         }
-
+        private void OnClickUI(InputAction.CallbackContext context)
+        {
+            OnTapUI?.Invoke(_currentPointerPosition);
+          //  var position = context.ReadValue<Vector2>();
+        }
+        
         private void ReadPointerPosition(InputAction.CallbackContext context)
         {
             _currentPointerPosition = context.ReadValue<Vector2>();
@@ -126,9 +135,12 @@ namespace Game.GamePlay.Classes
         {
             _playerControls.Disable(); // Отключаем все Action Maps при деактивации объекта
         }
-        
+
+
         private void OnClick(InputAction.CallbackContext context)
         {
+          //  var position = context.ReadValue<Vector2>();
+          //  Debug.Log("Клик " + position);
             // После отпускания кнопки, мы оцениваем, был ли это "тап" или "драг".
             // Это делается в OnPointerCanceled, чтобы учесть фактическое время и расстояние.
         //    Debug.Log("Клик" );

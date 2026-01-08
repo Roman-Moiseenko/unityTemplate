@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.Serialization;
+﻿using Game.GamePlay.Classes;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace MVVM.UI
@@ -23,42 +23,44 @@ namespace MVVM.UI
             Point1 = new Vector2(worldCorners[0].x, worldCorners[0].y);
             Point2 = new Vector2(worldCorners[2].x, worldCorners[2].y);
         }
-        
+
+        private void OnEnable()
+        {
+            InputManager.OnTapUI += CheckClickOut;
+        }
+
+        private void OnDisable()
+        {
+            InputManager.OnTapUI -= CheckClickOut;
+        }
+
+        private void CheckClickOut(Vector2 position)
+        {
+            if ((position.x < Point1.x || position.x > Point2.x) || 
+                (position.y < Point1.y || position.y > Point2.y)
+               )
+            {
+                CloseDropdown();
+            }
+        }
         protected virtual void Start()
         {
-            btnToggle.onClick.AddListener(OnToggle);
+            btnToggle.onClick.AddListener(OpenDropdown);
         }
 
         protected virtual void OnDestroy()
         {
-            btnToggle.onClick.RemoveListener(OnToggle);
-        }
-        protected void Update()
-        {
-            if (Input.GetMouseButtonDown(0)) {
-                if ((Input.mousePosition.x < Point1.x || Input.mousePosition.x > Point2.x) || 
-                    (Input.mousePosition.y < Point1.y || Input.mousePosition.y > Point2.y)
-                   )
-                {
-                    container.gameObject.SetActive(false);
-                }
-            }
+            btnToggle.onClick.RemoveListener(OpenDropdown);
         }
 
-        public abstract void OpenDropdown();
-        public abstract void CloseDropdown();
-        protected virtual void OnToggle()
+        protected virtual void OpenDropdown()
         {
-            OpenDropdown();
-            
-          /*  if (container.gameObject.activeSelf)
-            {
-                CloseDropdown();
-            }
-            else
-            {
-                OpenDropdown();
-            }*/
+            container.gameObject.SetActive(true);
+        }
+
+        protected virtual void CloseDropdown()
+        {
+            container.gameObject.SetActive(false);
         }
 
         protected abstract void OnBind(T viewModel);

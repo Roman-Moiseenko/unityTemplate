@@ -22,7 +22,7 @@ namespace Game.GamePlay.Classes
 
 
         private float _tempSens;
-        private bool _isDragging = false, _isMoving = false;
+        private bool _isDragging = false; //, _isMoving = false;
         private Vector2 _tempCenter, _targetDirection, _tempMousePos;
 
         private bool _autoMoving = false;
@@ -58,7 +58,7 @@ namespace Game.GamePlay.Classes
             _targetDirection = Vector2.zero;
             _tempMousePos = mousePosition;
             _isDragging = true;
-            _isMoving = true;
+            //_isMoving = true;
         }
 
         public void OnPointMove(Vector2 mousePosition)
@@ -95,7 +95,7 @@ namespace Game.GamePlay.Classes
             _isDragging = false;
             Vector2 point = GetWorldPoint(mousePosition);
             float sqrDst = (_tempCenter - point).sqrMagnitude;
-            if (sqrDst <= SensTouch) _isMoving = false;
+           // if (sqrDst <= SensTouch) _isMoving = false;
         }
 
         public void UpdateMoving()
@@ -113,7 +113,7 @@ namespace Game.GamePlay.Classes
                 _tempSens = Mathf.Lerp(_tempSens, 0f, speed / 5);
             }
 
-            if (_tempSens <= SensTouch) _isMoving = false;
+           // if (_tempSens <= SensTouch) _isMoving = false;
             Vector3 newPosition = CameraSystem.transform.position +
                                   new Vector3(_targetDirection.x, 0, _targetDirection.y) * _tempSens;
             newPosition.x = Mathf.Clamp(newPosition.x, _border.BottomX, _border.TopX);
