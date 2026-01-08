@@ -129,7 +129,7 @@ namespace Game.GamePlay.Services
 
         public void Lose() //private
         {
-            Debug.Log("Lose");
+//            Debug.Log("Lose");
             var menuParams = GetMainMenuParams(false);
             if (_gameState.ContainerChests.IsFreeCell())
             {
