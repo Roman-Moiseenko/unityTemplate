@@ -106,11 +106,14 @@ namespace Game.GamePlay.Classes
             float speed = Time.deltaTime * MoveSpeed;
             if (_isDragging)
             {
+                
                 _tempSens = Sensitivity;
+                Debug.Log("_tempSens 1 " + _tempSens);
             }
             else if (_tempSens > SensTouch)
             {
                 _tempSens = Mathf.Lerp(_tempSens, 0f, speed / 5);
+                Debug.Log("_tempSens 2 " + _tempSens + " " + SensTouch);
             }
 
            // if (_tempSens <= SensTouch) _isMoving = false;

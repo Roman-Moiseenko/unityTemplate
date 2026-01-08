@@ -317,7 +317,7 @@ namespace Game.GamePlay.Root.View
             }
             else //Двигаем камеру
             {
-                //Debug.Log(" ProcessMoving "+ mousePosition);
+                Debug.Log(" ProcessMoving "+ mousePosition);
 
                 _cameraService.OnPointMove(mousePosition);
             }

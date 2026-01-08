@@ -37,7 +37,7 @@ namespace Game.GamePlay.Classes
 
 #if UNITY_EDITOR
 //            Debug.Log("UNITY_EDITOR");
-        _tapThresholdDistance = 20f;    
+        _tapThresholdDistance = 100f;    
 #elif UNITY_IOS || UNITY_ANDROID
          //   Debug.Log("UNITY_ANDROID");
         _tapThresholdDistance = 290f;
@@ -46,6 +46,7 @@ namespace Game.GamePlay.Classes
         private void OnClickUI(InputAction.CallbackContext context)
         {
             OnTapUI?.Invoke(_currentPointerPosition);
+            Debug.Log(_currentPointerPosition);
           //  var position = context.ReadValue<Vector2>();
         }
         
@@ -71,10 +72,10 @@ namespace Game.GamePlay.Classes
                 // в зависимости от того, как часто вам нужны обновления.
                 // Для smooth drag лучше в Update или как отдельное событие.
                 // Пока просто выведем в консоль для демонстрации
-                // Debug.Log($"Dragging. Current pos: {currentPointerPosition}");
                 if (delta.magnitude > _tapThresholdDistance)
                 {
                     OnPointerDrag?.Invoke(_tapStartPosition, _currentPointerPosition);
+                    _tapStartPosition = _currentPointerPosition;
                 }
             }
         }

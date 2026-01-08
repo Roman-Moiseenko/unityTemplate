@@ -1198,7 +1198,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b023c949-cf88-4c91-8b96-9a79caf39c4d"",
-                    ""path"": ""<Touchscreen>/Press"",
+                    ""path"": ""<Touchscreen>/touch*/press"",
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": "";Touch"",

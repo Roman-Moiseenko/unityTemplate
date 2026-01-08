@@ -456,7 +456,7 @@ namespace Game.GamePlay.Root.View
         
         private void HandleTap(Vector2 screenPosition)
         {
-            //Debug.Log("HandleTap + " + screenPosition);
+            
             _viewModel.ClickEntity(screenPosition);
         }
 
