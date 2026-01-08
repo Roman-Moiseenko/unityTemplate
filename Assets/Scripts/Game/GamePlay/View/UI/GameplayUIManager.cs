@@ -16,6 +16,7 @@ using Game.GamePlay.View.UI.ScreenGameplay;
 using Game.State;
 using Game.State.Root;
 using MVVM.UI;
+using Newtonsoft.Json;
 using R3;
 using UnityEngine;
 
@@ -139,6 +140,7 @@ namespace Game.GamePlay.View.UI
         {
             //TODO Закрыть все другие попап
             //TODO Закрыть все панели
+            //Debug.Log(JsonConvert.SerializeObject(exitParams, Formatting.Indented));
             
             var finish = new PopupFinishGameplayViewModel(exitParams, _exitSceneRequest, Container);
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();

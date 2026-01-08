@@ -10,6 +10,8 @@ namespace Game.GamePlay.View.UI.PopupPause
         [SerializeField] private Button _btnExitSave;
         
         [SerializeField] private Button _btnWin;
+
+        [SerializeField] private Button _btnLose;
         //Поля кнопок во всплывающем окне
         //Например при проигрыше - а) выйти, б) посмотреть рекламу и продолжить, в) купить продолжение за кристаллы
         //Переписываем OnBind(), когда надо реализовать свое
@@ -26,6 +28,7 @@ namespace Game.GamePlay.View.UI.PopupPause
             _btnGoToMenu.onClick.AddListener(OnGoToMenuButtonClicked);
             _btnGoToMenu.onClick.AddListener(OnGoToMenuButtonClicked);
             _btnWin.onClick.AddListener(OnWin);
+            _btnLose.onClick.AddListener(OnLose);
         }
 
         private void OnDisable()
@@ -33,6 +36,7 @@ namespace Game.GamePlay.View.UI.PopupPause
             _btnGoToMenu.onClick.RemoveListener(OnGoToMenuButtonClicked);
             _btnExitSave.onClick.RemoveListener(OnExitSaveClicked);
             _btnWin.onClick.RemoveListener(OnWin);
+            _btnLose.onClick.RemoveListener(OnLose);
         }
 
         private void OnWin()
@@ -41,6 +45,12 @@ namespace Game.GamePlay.View.UI.PopupPause
             ViewModel.Win();
         }
 
+        private void OnLose()
+        {
+            ViewModel.RequestClose();
+            ViewModel.Lose();
+        }
+        
         private void OnExitSaveClicked()
         {
             ViewModel.RequestExitSave();

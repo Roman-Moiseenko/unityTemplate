@@ -129,6 +129,7 @@ namespace Game.GamePlay.Services
 
         public void Lose() //private
         {
+            Debug.Log("Lose");
             var menuParams = GetMainMenuParams(false);
             if (_gameState.ContainerChests.IsFreeCell())
             {
@@ -143,7 +144,7 @@ namespace Game.GamePlay.Services
             var exitParams = new GameplayExitParams(menuParams);
             GameOver.OnNext(exitParams);
             //TODO Показать окно окончания игры
-            _exitSceneRequest.OnNext(exitParams);
+            //_exitSceneRequest.OnNext(exitParams);
         }
 
         private TypeChest GetTypeChestLose(int lastWave, out TypeChest lastRewardChest)
@@ -221,6 +222,9 @@ namespace Game.GamePlay.Services
             return maxChest;
         }
 
+        /**
+         * Награда за пройденный уровень. Выдается однажды.
+         */
         private List<RewardEntityData> GetRewardOnWave(bool completedLevel, out int lastRewardOnWave)
         {
             //Награды в настройках
@@ -241,7 +245,7 @@ namespace Game.GamePlay.Services
                 //Уже получали награды
                 rewardWave = mapState.RewardOnWave.CurrentValue;
                 lastRewardOnWave = rewardWave;
-                if (completedWave < rewardWave) return null; //Наград больше нет, все получено ранее 
+                if (completedWave < rewardWave) return result; //Наград больше нет, все получено ранее 
             }
 
             //Debug.Log(JsonConvert.SerializeObject(rewardSettings.MapRewardSetting, Formatting.Indented));
@@ -275,7 +279,7 @@ namespace Game.GamePlay.Services
                 }
             }
 
-            // Debug.Log(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Debug.Log(JsonConvert.SerializeObject(result, Formatting.Indented));
             return result;
         }
 

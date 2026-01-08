@@ -46,7 +46,7 @@ namespace Game.GamePlay.Classes
         private void OnClickUI(InputAction.CallbackContext context)
         {
             OnTapUI?.Invoke(_currentPointerPosition);
-            Debug.Log(_currentPointerPosition);
+//            Debug.Log(_currentPointerPosition);
           //  var position = context.ReadValue<Vector2>();
         }
         
