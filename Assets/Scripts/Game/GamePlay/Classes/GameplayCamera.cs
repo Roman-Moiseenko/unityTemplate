@@ -12,7 +12,7 @@ namespace Game.GamePlay.Classes
         public Transform CameraSystem;
 
         public float MoveSpeed = 2f;
-        public float Sensitivity = 1.7f;
+        public float Sensitivity = 5f;
         public float SensTouch = 0.4f;
 
         private const int speed = 8;
@@ -63,16 +63,12 @@ namespace Game.GamePlay.Classes
 
         public void OnPointMove(Vector2 mousePosition)
         {
-            _autoMoving = false;
-            var point2 = GetWorldPoint(mousePosition);
-//            Debug.Log(point2 + " " + mousePosition);
-            MoveCamera(point2, true);
-            return;
+
             if (_isDragging)
             {
                 Vector2 point = GetWorldPoint(mousePosition);
                 float sqrDst = (_tempCenter - point).sqrMagnitude;
-                Debug.Log("sqrDst = " + sqrDst);
+                //Debug.Log("sqrDst = " + sqrDst);
                 if (sqrDst > SensTouch)
                 {
                     if (_tempMousePos != mousePosition)
@@ -110,7 +106,7 @@ namespace Game.GamePlay.Classes
             if (!_isDragging) return;
             //if (!_isMoving) return;
 
-            float speed = Time.deltaTime * MoveSpeed;
+            var speedMove = Time.deltaTime * MoveSpeed;
             if (_isDragging)
             {
                 _tempSens = Sensitivity;
@@ -118,7 +114,7 @@ namespace Game.GamePlay.Classes
             }
             else if (_tempSens > SensTouch)
             {
-                _tempSens = Mathf.Lerp(_tempSens, 0f, speed / 5);
+                _tempSens = Mathf.Lerp(_tempSens, 0f, speedMove / 5);
                 //   Debug.Log("_tempSens 2 " + _tempSens + " " + SensTouch);
             }
 
@@ -128,8 +124,12 @@ namespace Game.GamePlay.Classes
             newPosition.x = Mathf.Clamp(newPosition.x, _border.BottomX, _border.TopX);
             newPosition.z = Mathf.Clamp(newPosition.z, _border.BottomY, _border.TopY);
 
-            CameraSystem.transform.position = Vector3.Lerp(CameraSystem.transform.position, newPosition, speed);
+            CameraSystem.transform.position = Vector3.Lerp(CameraSystem.transform.position, newPosition, speedMove);
+           // var dist = Vector3.Distance(CameraSystem.transform.position, newPosition);
+            //Debug.Log("DIST = " + dist);
             _subjectCameraMoving.OnNext(Unit.Default); //Камера сдвинулась, оповещаем
+           // if (dist is > 0 and < 1) _isDragging = false;
+            
         }
 
         public Vector2 GetWorldPoint(Vector2 mousePosition)
