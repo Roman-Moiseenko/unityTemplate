@@ -40,7 +40,7 @@ namespace Game.GamePlay.Classes
         _tapThresholdDistance = 100f;    
 #elif UNITY_IOS || UNITY_ANDROID
          //   Debug.Log("UNITY_ANDROID");
-        _tapThresholdDistance = 290f;
+        _tapThresholdDistance = 150f;
 #endif
         }
         private void OnClickUI(InputAction.CallbackContext context)
