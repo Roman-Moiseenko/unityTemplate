@@ -207,7 +207,6 @@ namespace Game.GamePlay.Root.View
                     return;
                 }
             }
-
             CreateShot(shotViewModel);
         }
 

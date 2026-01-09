@@ -1,6 +1,5 @@
 ﻿using DI;
 using Game.Common;
-
 using Newtonsoft.Json;
 using R3;
 using UnityEngine;
@@ -31,6 +30,7 @@ namespace Game.GamePlay.Classes
         private readonly RectBorder _border; //, _cameraBorder;
         private readonly Subject<Unit> _subjectCameraMoving;
 
+        private bool _moveTowards = false;
 
         public GameplayCamera(DIContainer container)
         {
@@ -38,8 +38,8 @@ namespace Game.GamePlay.Classes
             CameraSystem = GameObject.Find("CameraSystem").GetComponent<Transform>();
             Camera = GameObject.Find("Main Camera").GetComponent<Camera>();
 
-            int _centreX = 2; //Размеры игрового мира
-            int _centreY = 2;
+            int _centreX = AppConstants.CENTER_MAP; //Размеры игрового мира
+            int _centreY = AppConstants.CENTER_MAP;
             int width = AppConstants.WIDTH_MAP;
             int height = AppConstants.HIGHT_MAP;
 
@@ -63,10 +63,16 @@ namespace Game.GamePlay.Classes
 
         public void OnPointMove(Vector2 mousePosition)
         {
+            _autoMoving = false;
+            var point2 = GetWorldPoint(mousePosition);
+//            Debug.Log(point2 + " " + mousePosition);
+            MoveCamera(point2, true);
+            return;
             if (_isDragging)
             {
                 Vector2 point = GetWorldPoint(mousePosition);
                 float sqrDst = (_tempCenter - point).sqrMagnitude;
+                Debug.Log("sqrDst = " + sqrDst);
                 if (sqrDst > SensTouch)
                 {
                     if (_tempMousePos != mousePosition)
@@ -93,30 +99,30 @@ namespace Game.GamePlay.Classes
         public void OnPointUp(Vector2 mousePosition)
         {
             _isDragging = false;
+            _autoMoving = false;
             Vector2 point = GetWorldPoint(mousePosition);
             float sqrDst = (_tempCenter - point).sqrMagnitude;
-           // if (sqrDst <= SensTouch) _isMoving = false;
+            // if (sqrDst <= SensTouch) _isMoving = false;
         }
 
         public void UpdateMoving()
         {
             if (!_isDragging) return;
-                //if (!_isMoving) return;
+            //if (!_isMoving) return;
 
             float speed = Time.deltaTime * MoveSpeed;
             if (_isDragging)
             {
-                
                 _tempSens = Sensitivity;
 //                Debug.Log("_tempSens 1 " + _tempSens);
             }
             else if (_tempSens > SensTouch)
             {
                 _tempSens = Mathf.Lerp(_tempSens, 0f, speed / 5);
-             //   Debug.Log("_tempSens 2 " + _tempSens + " " + SensTouch);
+                //   Debug.Log("_tempSens 2 " + _tempSens + " " + SensTouch);
             }
 
-           // if (_tempSens <= SensTouch) _isMoving = false;
+            // if (_tempSens <= SensTouch) _isMoving = false;
             Vector3 newPosition = CameraSystem.transform.position +
                                   new Vector3(_targetDirection.x, 0, _targetDirection.y) * _tempSens;
             newPosition.x = Mathf.Clamp(newPosition.x, _border.BottomX, _border.TopX);
@@ -146,24 +152,43 @@ namespace Game.GamePlay.Classes
         {
             if (!_autoMoving) return;
 
-            CameraSystem.transform.position = Vector3.SmoothDamp(CameraSystem.transform.position, _targetAutoMoving,
-                ref _velocity, smoothTime, speed);
-            _subjectCameraMoving.OnNext(Unit.Default); //Камера сдвинулась, оповещаем
-            if (_velocity.magnitude < 0.0005)
+            if (_moveTowards) //Плавное движение
             {
-                _autoMoving = false;
-                CameraSystem.transform.position = _targetAutoMoving;
+                CameraSystem.transform.position = Vector3.MoveTowards(
+                    CameraSystem.transform.position, 
+                    _targetAutoMoving,
+                    speed * Time.deltaTime / 2.5f);
+                var dist = Vector3.Distance(CameraSystem.transform.position, _targetAutoMoving);
+                if (dist < 0.001)
+                {
+                    _autoMoving = false;
+                    CameraSystem.transform.position = _targetAutoMoving;
+                }
             }
+            else //Рывками
+            {
+                CameraSystem.transform.position = Vector3.SmoothDamp(CameraSystem.transform.position, _targetAutoMoving,
+                    ref _velocity, smoothTime, speed);
+
+                if (_velocity.magnitude < 0.001)
+                {
+                    _autoMoving = false;
+                    CameraSystem.transform.position = _targetAutoMoving;
+                }
+            }
+
+
+            _subjectCameraMoving.OnNext(Unit.Default); //Камера сдвинулась, оповещаем
         }
 
-        public void MoveCamera(Vector2Int position)
+        public void MoveCamera(Vector2 position, bool methods = false)
         {
             _autoMoving = true;
-            var t = 2;
+            _moveTowards = methods;
             _targetAutoMoving = new Vector3(
-                position.x + t,
+                position.x + AppConstants.CENTER_MAP,
                 CameraSystem.transform.position.y,
-                position.y + t
+                position.y + AppConstants.CENTER_MAP
             );
         }
     }

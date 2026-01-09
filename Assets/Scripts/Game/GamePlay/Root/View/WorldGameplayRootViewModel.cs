@@ -291,7 +291,7 @@ namespace Game.GamePlay.Root.View
         public void Update()
         {
             _cameraService?.UpdateMoving(); //Движение камеры
-            //_cameraService?.AutoMoving();
+            _cameraService?.AutoMoving();
             _damageService.Update();
         }
         
@@ -317,7 +317,7 @@ namespace Game.GamePlay.Root.View
             }
             else //Двигаем камеру
             {
-                Debug.Log(" ProcessMoving "+ mousePosition);
+//                Debug.Log(" ProcessMoving "+ mousePosition);
 
                 _cameraService.OnPointMove(mousePosition);
             }
