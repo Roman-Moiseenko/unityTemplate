@@ -31,6 +31,8 @@ namespace Game.GamePlay.Commands.TowerCommand
                 Type = EntityType.Tower,
                 TypeEnemy = towerSettings.TypeEnemy,
                 IsMultiShot = towerSettings.MultiShot,
+                IsSingleTarget = towerSettings.Shot.Single,
+                SpeedShot = towerSettings.Shot.Speed,
                 IsOnRoad = towerSettings.OnRoad,
                 Defence = towerSettings.Defence
             };

@@ -16,7 +16,7 @@ namespace Game.GamePlay.View.Shots
         public readonly Vector3 StartPosition;
         public ReactiveProperty<Vector3> Position;
         private readonly ReactiveProperty<bool> _shotMoving;
-        public ReactiveProperty<Vector3> Direction = new();
+
         public ReactiveProperty<Quaternion> Rotation = new();
         public bool NotPrefab => _shotEntity.NotPrefab;
         
@@ -40,7 +40,7 @@ namespace Game.GamePlay.View.Shots
                 Position.Value = Vector3.MoveTowards(Position.CurrentValue, _shotEntity.FinishPosition.CurrentValue,  Time.deltaTime * speedEntity);
                 var toDirection = _shotEntity.FinishPosition.Value - _shotEntity.StartPosition;
                 var fromDirection = new Vector3(0, 0, 1f);
-                Direction.Value = Vector3.RotateTowards(fromDirection, toDirection, 100, 0);
+
                 Rotation.Value = Quaternion.FromToRotation(fromDirection, toDirection);
                // Debug.Log("Позиция Выстрела " + ShotUniqueId + " " + Position.CurrentValue);
                 if (Position.CurrentValue == _shotEntity.FinishPosition.CurrentValue)

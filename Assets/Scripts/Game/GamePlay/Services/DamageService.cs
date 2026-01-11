@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Game.GamePlay.Fsm;
-using Game.GamePlay.Fsm.GameplayStates;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
@@ -28,6 +28,7 @@ namespace Game.GamePlay.Services
         private readonly RewardProgressService _rewardProgressService;
         public ObservableList<DamageEntity> AllDamages = new();
 
+
         public DamageService(
             FsmGameplay fsmGameplay,
             GameplayStateProxy gameplayState,
@@ -46,53 +47,72 @@ namespace Game.GamePlay.Services
             _shotService = shotService;
             _rewardProgressService = rewardProgressService;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
-            
-            //_gameplayState.Castle.CurrenHealth.Subscribe(h => Debug.Log("h = " + h));
-            
+
             waveService.AllMobsMap.ObserveAdd().Subscribe(e =>
             {
                 var mobEntity = e.Value.Value;
-
-//                Debug.Log(mobEntity.UniqueId + " " + mobEntity.Health.CurrentValue + " " + mobEntity.IsDead.Value);
-                //Проверяем, что моб мертв выдаем награды и другое 
-                mobEntity.IsDead.Skip(1).Subscribe(
-                    v =>
-                    {
-                        if (v)
+                //Проверяем, что моб мертв 
+                mobEntity.IsDead.Skip(1)
+                    .Where(x => x)
+                    .Subscribe(_ =>
                         {
-                            rewardProgressService.RewardKillMob(mobEntity.RewardCurrency, mobEntity.Position.CurrentValue);
-                            
+                            //выдаем награды и другое 
+                            rewardProgressService.RewardKillMob(mobEntity.RewardCurrency,
+                                mobEntity.Position.CurrentValue);
                             waveService.AllMobsMap.Remove(e.Value.Key);
+                            //Ищем башни в целях которых был моб и удаляем
+                            foreach (var towerViewModel in _towersService.AllTowers.ToList())
+                            {
+                                foreach (var target in towerViewModel.Targets.ToList())
+                                {
+                                    if (target.UniqueId == mobEntity.UniqueId)
+                                    {
+                                        Debug.Log("Моб умер - Удаляем из башни цель");
+                                        towerViewModel.RemoveTarget(target);
+                                    }
+                                }
+                            }
+                        }
+                    );
+            });
+
+            _towersService.AllTowers.ObserveAdd().Subscribe(e =>
+            {
+                var towerViewModel = e.Value;
+                towerViewModel.Targets.ObserveRemove().Subscribe(v =>
+                {
+//                    Debug.Log("для башни " + towerViewModel.TowerEntityId + " поражение моба " + v.Value.UniqueId);
+                    var mobEntity = v.Value;
+                    var shot = towerViewModel.GetShotParameters(mobEntity);
+                    if (towerViewModel.IsSingleTarget) //Одиночная цель
+                    {
+                        var damage = new DamageEntity
+                        {
+                            Position = mobEntity.Position.CurrentValue,
+                            Damage = Mathf.FloorToInt(mobEntity.SetDamage(shot.Damage)),
+                            Type = shot.DamageType,
+                        };
+                        AllDamages.Add(damage); //Добавить в список 
+                        if (shot.Debuff != null)
+                        {
+                            mobEntity.SetDebuff(shot.ConfigId, shot.Debuff);
                         }
                     }
-                );
-            });
-
-  /*          fsmGameplay.Fsm.StateCurrent.Subscribe(e =>
-            {
-                if (e.GetType() == typeof(FsmStateGamePlay))
-                {
-                }
-            });
-*/
-            _shotService.Shots.ObserveRemove().Subscribe(e =>
-            {
-                var shot = e.Value;
-                if (_waveService.AllMobsMap.TryGetValue(shot.MobEntityId, out var mobEntity))
-                {
-                    if (!shot.Single)
+                    else
                     {
+                        //Найти всех мобов в радиусе поражения и проверит на совместимость воздух/земля 
+                        //и нанести каждому урон
+                        
                         var position = mobEntity.Position.CurrentValue;
                         var typeDamage = shot.DamageType == DamageType.Normal ? DamageType.MassDamage : shot.DamageType;
                         var mobsUnderAttacks = new List<MobEntity>();
                         //Ищем соучастников урона
                         foreach (var entity in _waveService.AllMobsMap)
                         {
-                          //  var mobEntityUnderAttack = entity.Value;
+                            //  var mobEntityUnderAttack = entity.Value;
                             if (Vector2.Distance(position, entity.Value.GetPosition()) <= 0.5f)
                             {
                                 mobsUnderAttacks.Add(entity.Value);
-
                             }
                         }
 
@@ -107,12 +127,47 @@ namespace Game.GamePlay.Services
                             AllDamages.Add(damage);
                         }
                         
+                    }
+                });
+            });
+/*
+            _shotService.Shots.ObserveRemove().Subscribe(e =>
+            {
+                var shot = e.Value;
+              
+                if (_waveService.AllMobsMap.TryGetValue(shot.MobEntityId, out var mobEntity))
+                {
+                    if (!shot.Single)
+                    {
+                        var position = mobEntity.Position.CurrentValue;
+                        var typeDamage = shot.DamageType == DamageType.Normal ? DamageType.MassDamage : shot.DamageType;
+                        var mobsUnderAttacks = new List<MobEntity>();
+                        //Ищем соучастников урона
+                        foreach (var entity in _waveService.AllMobsMap)
+                        {
+                            //  var mobEntityUnderAttack = entity.Value;
+                            if (Vector2.Distance(position, entity.Value.GetPosition()) <= 0.5f)
+                            {
+                                mobsUnderAttacks.Add(entity.Value);
+                            }
+                        }
+
+                        foreach (var mobUnderAttack in mobsUnderAttacks)
+                        {
+                            var damage = new DamageEntity
+                            {
+                                Position = mobUnderAttack.GetPosition(),
+                                Damage = Mathf.FloorToInt(mobUnderAttack.SetDamage(shot.Damage)),
+                                Type = typeDamage,
+                            };
+                            AllDamages.Add(damage);
+                        }
+
                         //TODO урон по области, то ищем остальных мобов в радиусе 0.5f
-                      
                     }
                     else
                     {
-                       // mobEntity.SetDamage(shot.Damage);
+                        // mobEntity.SetDamage(shot.Damage);
                         var damage = new DamageEntity
                         {
                             Position = mobEntity.Position.CurrentValue,
@@ -130,29 +185,25 @@ namespace Game.GamePlay.Services
                 else
                 {
                     //Ситуация: моб уже уничтожен, а прилетел новый выстрел от другой башни.
-                  //  throw new Exception($"Моб не найден {shot.MobEntityId}");
+                    //  throw new Exception($"Моб не найден {shot.MobEntityId}");
                 }
             });
+*/
+            //TODO Подписываемся на все башни, и на Завершение выстрела
         }
 
         public void Update()
         {
-            // ObservableSystem.DefaultFrameProvider  = new NewThreadSleepFrameProvider();
-            //   Observable.EveryUpdate(UnityFrameProvider.Update).Subscribe(v =>
-            //  {
-
             if (_fsmGameplay.IsGamePause.Value) return;
             if (_waveService.AllMobsMap.Count == 0) return;
-
             
             foreach (var towerEntity in _gameplayState.Towers)
             {
-                if (towerEntity.IsBusy.Value) continue;
-                //Если башня не стреляет, запускаем корутин
+                if (towerEntity.IsBusy.Value) continue; 
                 towerEntity.IsBusy.Value = true;
                 _coroutines.StartCoroutine(TowerFireShot(towerEntity));
             }
-            
+
             if (!_gameplayState.Castle.IsShot.Value) //Стрельба крепости
             {
                 _gameplayState.Castle.IsShot.Value = true;
@@ -198,9 +249,12 @@ namespace Game.GamePlay.Services
         public IEnumerator TowerFireShot(TowerEntity towerEntity)
         {
             yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //На паузе не стреляем
-            towerEntity.IsBusy.Value = true; //Башня занята, обрабатывается выстрел 
-            //Debug.Log("Пушка занята");
+            //У башни нет скорости, пропускаем обработку
+            if (!towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed)) yield break;
             
+            towerEntity.IsBusy.Value = true; //Башня занята, обрабатывается выстрел 
+            yield return TowerOneShot(towerEntity);
+            /*
             if (!towerEntity.IsMultiShot) //Обрабатываем выстрел
             {
                 yield return TowerOneShot(towerEntity);
@@ -209,103 +263,99 @@ namespace Game.GamePlay.Services
             {
                 yield return TowerMultiShot(towerEntity);
             }
-
-            if (!towerEntity.IsShot.Value) //Выстрела не было
+            */
+            yield return null; //Прерывание на кадр
+            
+            if (towerEntity.Targets.Count > 0) //Была добавлена цель(и)
             {
-                towerEntity.IsBusy.OnNext(false);
-                yield break;
+                yield return new WaitForSeconds(towerSpeed.Value / _gameplayState.GameSpeed.Value); //Задержка для следующего выстрела
             }
             
-            yield return null; //Прерывание на кадр
-       //     Debug.Log("Пушка свободна");
-            //yield return new WaitForSeconds(towerSpeed.Value / _gameplayState.GameSpeed.Value); //Поделить на тек. скорость игры
             towerEntity.IsBusy.OnNext(false); //Освобождаем башню для следующего выстрела
-            towerEntity.IsShot.Value = false;
+
         }
 
         private IEnumerator TowerOneShot(TowerEntity towerEntity)
         {
-            var towerPosition = towerEntity.Position.CurrentValue;
-            if (!towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed)) yield break;
+            //Debug.Log("Обрабатываем одиночный выстрел");
+            //var towerPosition = towerEntity.Position.CurrentValue;
+            //if (!towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed)) yield break;
 
-            MobEntity cacheMobEntity = null;
+            //MobEntity cacheMobEntity = null;
             foreach (var (index, mobEntity) in _waveService.AllMobsMap)
             {
-                if (!towerEntity.IsTargetForAttack(mobEntity.IsFly)) continue; //Проверка на совпадение типа врага и башни
+                //if (!towerEntity.IsTargetForAttack(mobEntity.IsFly)) continue; //Проверка на совпадение типа врага и башни
 
-                var mobPosition = mobEntity.Position.CurrentValue;
-                if (!towerEntity.IsShot.Value && MobDistanceShot(mobPosition, towerPosition, towerEntity.Parameters))
+                //var mobPosition = mobEntity.Position.CurrentValue;
+                if (towerEntity.SetTarget(mobEntity) && !towerEntity.IsMultiShot)
                 {
-                    //towerEntity.IsShot.Value = true;
-                    //TODO Запускаем поворот Передать вектор моба
-                    towerEntity.PrepareShot.OnNext(mobPosition); //
-//                      Debug.Log("Выстрел " + towerEntity.UniqueId);
-                    towerEntity.IsShot.Value = true;
-                    cacheMobEntity = mobEntity;
-                    break;
-
-                    
+                    //Debug.Log("Задержка для следующего выстрела с=" + towerSpeed.Value / _gameplayState.GameSpeed.Value);
+                    //yield return new WaitForSeconds(towerSpeed.Value / _gameplayState.GameSpeed.Value);
+                    yield break;
                 }
-            }
 
+                //  if (!towerEntity.IsShot.Value && towerEntity.MobDistanceShot(mobPosition))
+                //   {
+                //towerEntity.IsShot.Value = true;
+                //Запускаем поворот Передать вектор моба
+                //towerEntity.PrepareShot.OnNext(mobPosition); //
+//                      Debug.Log("Выстрел " + towerEntity.UniqueId);
+                //towerEntity.IsShot.Value = true;
+
+                //Задержка перед выстрелом
+
+                //towerEntity.SetTarget(mobEntity);
+
+                //cacheMobEntity = mobEntity;
+
+                //towerEntity.Targets.Add(mobEntity);
+                //    break;
+                //   }
+            }
+//            Debug.Log("Обработка закончилась");
+/*
             if (towerEntity.IsShot.Value && cacheMobEntity != null)
             {
                 yield return new WaitForSeconds(towerSpeed.Value / _gameplayState.GameSpeed.Value);
                 //Выстрел
                 _shotService.CreateShot(towerEntity, cacheMobEntity); //Создать выстрел
             }
-            
+            */
         }
 
         private IEnumerator TowerMultiShot(TowerEntity towerEntity)
         {
-            
-            var towerPosition = towerEntity.Position.CurrentValue;
-            if (!towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed)) yield break;
-            var i = 0;
+           // if (!towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed)) yield break;
+            //var i = 0;
+            // List<MobEntity> modsUnderAttack = new(); 
             foreach (var (index, mobEntity) in _waveService.AllMobsMap)
             {
-                if (!towerEntity.IsTargetForAttack(mobEntity.IsFly))
-                    continue; //Проверка на совпадение типа врага и башни
+                // if (!towerEntity.IsTargetForAttack(mobEntity.IsFly)) continue; //Проверка на совпадение типа врага и башни
 
-                var mobPosition = mobEntity.Position.CurrentValue;
-                if (MobDistanceShot(mobPosition, towerPosition, towerEntity.Parameters))
-                {
-                    i++;
-                    towerEntity.IsShot.Value = true;
-                   // towerEntity.IsShot.Value = true;
-                    _shotService.CreateShot(towerEntity, mobEntity); //Создать выстрел
-                }
+                // var mobPosition = mobEntity.Position.CurrentValue;
+                // if (towerEntity.MobDistanceShot(mobPosition))
+                // {
+                //    modsUnderAttack.Add(mobEntity); //Создаем список мобов которые попали под массовую аттаку
+
+                towerEntity.SetTarget(mobEntity);
+                //towerEntity.IsShot.Value = true;
+                //towerEntity.Targets.Add(mobEntity);
+                //_shotService.CreateShot(towerEntity, mobEntity); //Создать выстрел
+                // }
             }
-
+/*
+            if (towerEntity.Targets.Count > 0) //Список не пуст 
+            {
+                yield return new WaitForSeconds(towerSpeed.Value / _gameplayState.GameSpeed.Value);
+            }
+*/
+            /*
             if (towerEntity.IsShot.Value)
             {
-          //      Debug.Log("Выстрелы " + i);
-                yield return new WaitForSeconds(towerSpeed.Value / _gameplayState.GameSpeed.Value);    
+                yield return new WaitForSeconds(towerSpeed.Value / _gameplayState.GameSpeed.Value);
             }
-            
-        }
-        
-        private bool MobDistanceShot(Vector2 mobPosition, Vector2Int towerPosition,
-            Dictionary<TowerParameterType, TowerParameterData> parameters)
-        {
-            var d = Vector2.Distance(mobPosition, towerPosition) - 0.5f; //Отнимаем радиус башни
-            //У башни мин. и макс. дистанция
-            if (parameters.TryGetValue(TowerParameterType.MinDistance, out var distanceMin) &&
-                parameters.TryGetValue(TowerParameterType.MaxDistance, out var distanceMax))
-                return distanceMin.Value <= d && d <= distanceMax.Value;
-            // у башни стандартная дистанция 
-            if (parameters.TryGetValue(TowerParameterType.Distance, out var distance))
-            {
-                return d <= distance.Value;
-            }
-
-            var start = new Vector3(towerPosition.x, 0.1f, towerPosition.y);
-            var end = new Vector3(towerPosition.x + 0.5f, 0.1f, towerPosition.y);
-            Debug.DrawLine(start, end);
-
-            //Башня на дороге, нет дистанции
-            return Vector2.Distance(mobPosition, towerPosition) <= 0.5f;
+            */
+            yield break;
         }
 
         private bool MobDistanceShotCastle(Vector2 mobPosition)

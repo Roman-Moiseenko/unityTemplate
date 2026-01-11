@@ -372,8 +372,7 @@ namespace Game.State
             yield return request.SendWebRequest();
             callback(request.result == UnityWebRequest.Result.Success);
 
-            if (request.result != UnityWebRequest.Result.Success)
-                Debug.Log("web ERROR = " + request.downloadHandler.text);
+        //    if (request.result != UnityWebRequest.Result.Success) Debug.Log("web ERROR = " + request.downloadHandler.text);
 
             request.Dispose();
         }

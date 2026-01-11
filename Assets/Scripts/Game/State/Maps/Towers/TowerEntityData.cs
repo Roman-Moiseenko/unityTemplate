@@ -20,7 +20,8 @@ namespace Game.State.Maps.Towers
        // public Dictionary<TowerParameterType, TowerParameterData> Parameters = new();
         
         public bool IsMultiShot { get; set; }
-        
+        public bool IsSingleTarget { get; set; }
+        public float SpeedShot { get; set; }
         public MobDefence Defence { get; set; }
         
     }

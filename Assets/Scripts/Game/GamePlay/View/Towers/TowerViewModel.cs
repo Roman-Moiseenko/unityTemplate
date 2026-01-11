@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Frames;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.State.Maps.Mobs;
+using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
 using Newtonsoft.Json;
+using ObservableCollections;
 using R3;
 using UnityEngine;
 
@@ -33,6 +36,12 @@ namespace Game.GamePlay.View.Towers
         public ReactiveProperty<float> SpeedFire;
         public bool IsUpdate = false;
         public ReactiveProperty<int> NumberModel = new(0);
+        public float SpeedShot => _towerEntity.SpeedShot;
+        public ReactiveProperty<int> GameSpeed;
+
+        public bool IsSingleTarget => _towerEntity.IsSingleTarget;
+
+        public IObservableCollection<MobEntity> Targets => _towerEntity.Targets;
         public TowerViewModel(
             TowerEntity towerEntity,
             List<TowerLevelSettings> towerLevelSettings,
@@ -47,8 +56,8 @@ namespace Game.GamePlay.View.Towers
             Level = towerEntity.Level;
             Direction = towerEntity.PrepareShot;
             Position = towerEntity.Position;
-            SpeedFire = new ReactiveProperty<float>();   
-            
+            SpeedFire = new ReactiveProperty<float>();
+            GameSpeed = towerService.GameSpeed;
             _towerEntity = towerEntity;
             //UpdateParameters(towerLevelSettings);
             
@@ -166,6 +175,17 @@ namespace Game.GamePlay.View.Towers
                 5 or 6 => "Finish",
                 _ => throw new Exception("Неизвестный уровень")
             };
+        }
+
+
+        public void RemoveTarget(MobEntity mobEntity)
+        {
+            _towerEntity.RemoveTarget(mobEntity);
+        }
+
+        public ShotEntityData GetShotParameters(MobEntity mobEntity)
+        {
+           return _towerEntity.GetShotParameters(mobEntity);
         }
     }
 }

@@ -222,7 +222,7 @@ namespace Game.GamePlay.Root.View
 
         public void ClickEntity(Vector2 mousePosition)
         {
-            Debug.Log(" ClickEntity "+ mousePosition);
+//            Debug.Log(" ClickEntity "+ mousePosition);
 
             var position = _cameraService.GetWorldPoint(mousePosition);
             _entityClick.OnNext(Unit.Default);

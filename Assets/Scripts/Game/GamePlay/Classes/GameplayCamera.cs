@@ -115,7 +115,7 @@ namespace Game.GamePlay.Classes
             else if (_tempSens > SensTouch)
             {
                 _tempSens = Mathf.Lerp(_tempSens, 0f, speedMove / 5);
-                //   Debug.Log("_tempSens 2 " + _tempSens + " " + SensTouch);
+                Debug.Log("_tempSens 2 " + _tempSens + " " + SensTouch);
             }
 
             // if (_tempSens <= SensTouch) _isMoving = false;
@@ -125,8 +125,8 @@ namespace Game.GamePlay.Classes
             newPosition.z = Mathf.Clamp(newPosition.z, _border.BottomY, _border.TopY);
 
             CameraSystem.transform.position = Vector3.Lerp(CameraSystem.transform.position, newPosition, speedMove);
-           // var dist = Vector3.Distance(CameraSystem.transform.position, newPosition);
-            //Debug.Log("DIST = " + dist);
+            var dist = Vector3.Distance(CameraSystem.transform.position, newPosition);
+//            Debug.Log("DIST = " + dist);
             _subjectCameraMoving.OnNext(Unit.Default); //Камера сдвинулась, оповещаем
            // if (dist is > 0 and < 1) _isDragging = false;
             
