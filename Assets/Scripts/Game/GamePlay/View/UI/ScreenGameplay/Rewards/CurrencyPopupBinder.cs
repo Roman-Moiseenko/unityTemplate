@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using DG.Tweening;
 using R3;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -10,57 +11,20 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
     {
         private Camera _camera;
         public ReactiveProperty<bool> Free;
-        public Animator animator;
-        public ReactiveProperty<CurrencyState> CurrentState;
-        private Vector3 _target;
-        private IDisposable _disposable;
+       // public Animator animator;
 
-        
+        private Vector3 _target;
+        private Vector3 _targetFinish;
+        private Sequence Sequence { get; set; }
+
         public void Bind(Camera camera, Subject<Unit> positionCamera, Vector3 targetFinish)
         {
-            var d = Disposable.CreateBuilder();
             Free = new ReactiveProperty<bool>(true);
-            CurrentState = new ReactiveProperty<CurrencyState>(CurrencyState.Rest);
             transform.gameObject.SetActive(false);
             _camera = camera;
-            animator = gameObject.GetComponent<Animator>();
-            animator.enabled = false;
-
-            CurrentState.Skip(1).Subscribe(state =>
-            {
-                if (state == CurrencyState.Animation)
-                {
-                    animator.enabled = true;
-                }
-
-                if (state == CurrencyState.Ejection)
-                {
-                    animator.enabled = false;
-                    var random = Random.insideUnitSphere;
-                    var target = new Vector3(
-                        transform.position.x + random.x * 100,
-                        transform.position.y + random.y * 100,
-                        transform.position.z
-                        );
-                    StartCoroutine(Ejection(target));
-                }
-
-                if (state == CurrencyState.Delay)
-                {
-                    StartCoroutine(DelayMoving());
-                }
-
-                if (state == CurrencyState.Moving)
-                {
-                    StartCoroutine(Moving(targetFinish));
-                }
-                if (state == CurrencyState.Rest)
-                {
-                    transform.gameObject.SetActive(false);
-                    Free.Value = true;
-                }
-            }).AddTo(ref d);
-            _disposable = d.Build();
+            _targetFinish = targetFinish;
+            //animator = gameObject.GetComponent<Animator>();
+//            animator.enabled = false;
         }
         
         public void StartPopup(Vector3 position)
@@ -68,52 +32,41 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
             transform.position = _camera.WorldToScreenPoint(position);
             transform.gameObject.SetActive(true);
             Free.Value = false;
-            CurrentState.Value = CurrencyState.Animation;
-        }
-        
-        private IEnumerator DelayMoving()
-        {
-            yield return new WaitForSeconds(0.5f);
-            CurrentState.Value = CurrencyState.Moving;
+
+            var random = Random.insideUnitSphere;
+            var targetEjection = new Vector3(
+                transform.position.x + random.x * 100,
+                transform.position.y + random.y * 100,
+                transform.position.z
+            );
+            Sequence = DOTween.Sequence();
+            Sequence
+                .Append(
+                    transform.GetComponent<RectTransform>()
+                        .DOSizeDelta(new Vector2(50, 50), 0.4f)
+                        .From(new Vector2(25, 25))
+                        .SetEase(Ease.OutQuint))
+                .Join(
+                    transform
+                        .DOMove(targetEjection, 0.4f)
+                        .SetEase(Ease.OutQuint))
+                .SetDelay(0.1f)
+                .Append(
+                    transform
+                        .DOMove(_targetFinish, 0.7f)
+                        .SetEase(Ease.InOutCirc))
+                .OnComplete(() =>
+                {
+                    transform.gameObject.SetActive(false);
+                    Free.Value = true;
+                    Sequence.Kill();
+                });
         }
 
-        private IEnumerator Moving(Vector3 target)
-        {
-            float timeElapsed = 0;
-            var duration = 0.7f;
-            var startPosition = transform.position;
-            var fading = false; 
-            
-            while (timeElapsed < duration)
-            {
-                if (timeElapsed > duration / 0.8) fading = true;
-                var delta = !fading ? Time.deltaTime : Time.deltaTime / 2;
-                transform.position = Vector3.Lerp(startPosition, target, timeElapsed / duration);
-                timeElapsed += delta;
-                yield return null;
-            }
-            transform.position = target;
-            CurrentState.Value = CurrencyState.Rest;
-        }
-        
-        private IEnumerator Ejection(Vector3 target)
-        {
-            float timeElapsed = 0;
-            float duration = 0.8f;
-            
-            while (timeElapsed < duration)
-            {
-                transform.position = Vector3.Lerp(transform.position, target, timeElapsed / duration);
-                timeElapsed += Time.deltaTime;
-                yield return null;
-            }
-            transform.position = target;
-            CurrentState.Value = CurrencyState.Delay;
-        }
-        
+
         private void OnDestroy()
         {
-            _disposable.Dispose();
+            Sequence.Kill();
         }
     }
 }

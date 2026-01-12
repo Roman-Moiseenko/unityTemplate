@@ -42,7 +42,7 @@ namespace Game.GameRoot.View.ResourceReward
                 imageBack.sprite = imageManager.GetOther("InventoryBackOther");
                 imageCard.sprite = imageManager.GetOther("Crystal");
             }
-            textAmount.text = $"x{Func.CurrencyToStr(viewModel.Amount)}";
+            textAmount.text = $"x{MyFunc.CurrencyToStr(viewModel.Amount)}";
 
         }
     }

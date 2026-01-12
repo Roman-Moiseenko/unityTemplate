@@ -41,7 +41,7 @@ namespace Game.MainMenu.View.MainScreen
         {
             var d = Disposable.CreateBuilder();
             //Подписки верхнего меню
-            ViewModel.SoftCurrency.Subscribe(v => { softCurrency.text = Func.CurrencyToStr(v); });
+            ViewModel.SoftCurrency.Subscribe(v => { softCurrency.text = MyFunc.CurrencyToStr(v); });
             ViewModel.HardCurrency.Subscribe(v => { hardCurrency.text = v.ToString(); });
             ClickUpdateButton("Play");
             _disposable = d.Build();

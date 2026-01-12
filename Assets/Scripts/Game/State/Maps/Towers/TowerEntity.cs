@@ -204,7 +204,10 @@ namespace Game.State.Maps.Towers
         public void RemoveTarget(MobEntity mobEntity)
         {
             Targets.Remove(mobEntity);
-          //  Debug.Log("Цель удалили " + UniqueId + " Targets = " + Targets.Count);
+            if (Targets.Count != 0) return;
+          //  IsBusy.Value = false;
+          //  IsShot.Value = false;
+            
         }
     }
 }

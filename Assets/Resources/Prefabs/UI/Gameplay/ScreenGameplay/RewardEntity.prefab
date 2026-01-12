@@ -10,8 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2926374687790146294}
   - component: {fileID: 6900926107205067912}
-  - component: {fileID: 7203918477488035311}
-  - component: {fileID: 1609714810737282346}
   m_Layer: 5
   m_Name: RewardEntity
   m_TagString: Untagged
@@ -57,40 +55,6 @@ MonoBehaviour:
   endPoint: {fileID: 6119251376399498264}
   moving: {fileID: 3540666969272948668}
   animator: {fileID: 0}
---- !u!95 &7203918477488035311
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 967022138239345596}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d7549fc983324904cb40ef3fbf45cb45, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &1609714810737282346
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 967022138239345596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa0ae3d23bbb4981a779520c7fae28b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.UI.ScreenGameplay.Rewards.RewardEntityAnimation
 --- !u!1 &2193809825444500452
 GameObject:
   m_ObjectHideFlags: 0

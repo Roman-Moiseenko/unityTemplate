@@ -1,6 +1,6 @@
 ﻿namespace Game.Common
 {
-    public static class Func
+    public static class MyFunc
     {
         
         public static string CurrencyToStr(long value)

@@ -22,8 +22,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         [SerializeField] private TMP_Text _textCrystal;
         [SerializeField] private TMP_Text _textWave;
 
-        [SerializeField] private Canvas _panelPopupMessages;
-        [SerializeField] private Canvas _panelRewardPopup;
+        [SerializeField] private Transform _panelPopupMessages;
+        [SerializeField] private Transform _panelRewardPopup;
         [SerializeField] private List<DamagePopupBinder> _damagePopups;
         [SerializeField] private List<CurrencyPopupBinder> _currencyPopups;
         [SerializeField] private List<CurrencyPopupBinder> _progressPopups;
@@ -213,7 +213,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/DamagePopup";
             var damagePopupPrefab = Resources.Load<DamagePopupBinder>(prefabPath);
-            var createdDamagePopup = Instantiate(damagePopupPrefab, _panelPopupMessages.transform);
+            var createdDamagePopup = Instantiate(damagePopupPrefab, _panelPopupMessages);
             createdDamagePopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera);
             _damagePopups.Add(createdDamagePopup);
             return createdDamagePopup;
@@ -223,7 +223,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/ReduceHealthPopup";
             var reducePopupPrefab = Resources.Load<ReducePopupBinder>(prefabPath);
-            var createdReducePopup = Instantiate(reducePopupPrefab, _panelPopupMessages.transform);
+            var createdReducePopup = Instantiate(reducePopupPrefab, _panelPopupMessages);
             createdReducePopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera);
 
             return createdReducePopup;
@@ -233,7 +233,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/CastleHealthBar";
             var castleHealthPrefab = Resources.Load<CastleHealthBarBinder>(prefabPath);
-            var createdCastleHealth = Instantiate(castleHealthPrefab, _panelPopupMessages.transform);
+            var createdCastleHealth = Instantiate(castleHealthPrefab, _panelPopupMessages);
             createdCastleHealth.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera,
                 ViewModel.CastleFullHealth);
 
@@ -244,7 +244,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/RewardCurrency";
             var currencyPopupPrefab = Resources.Load<CurrencyPopupBinder>(prefabPath);
-            var createdCurrencyPopup = Instantiate(currencyPopupPrefab, _panelRewardPopup.transform);
+            var createdCurrencyPopup = Instantiate(currencyPopupPrefab, _panelRewardPopup);
             createdCurrencyPopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera,
                 _targetCurrency.transform.position);
             _currencyPopups.Add(createdCurrencyPopup);
@@ -255,7 +255,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/RewardProgress";
             var progressPopupPrefab = Resources.Load<CurrencyPopupBinder>(prefabPath);
-            var createdProgressPopup = Instantiate(progressPopupPrefab, _panelRewardPopup.transform);
+            var createdProgressPopup = Instantiate(progressPopupPrefab, _panelRewardPopup);
             createdProgressPopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera,
                 _targetProgress.transform.position);
             _progressPopups.Add(createdProgressPopup);

@@ -84,7 +84,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
 
             ViewModel.SoftCurrency.Subscribe(newValue =>
             {
-                textSoftCurrency.text = Func.CurrencyToStr(newValue);
+                textSoftCurrency.text = MyFunc.CurrencyToStr(newValue);
                // buttonUpgrade.gameObject.SetActive(ViewModel.CardIsUpgrade());
             }).AddTo(ref d);
             ViewModel.CardViewModel.IsCanUpdate

@@ -33,7 +33,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4390508819404862504
 GameObject:
@@ -68,7 +68,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5019716899704907410
 GameObject:
@@ -79,7 +79,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7581759422358462014}
-  - component: {fileID: 3239435016578035473}
+  - component: {fileID: 8792802640427858307}
   m_Layer: 0
   m_Name: Shot-Tower05
   m_TagString: Untagged
@@ -95,7 +95,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5019716899704907410}
   m_LocalRotation: {x: -0, y: 0.021122435, z: -0, w: 0.99977696}
-  m_LocalPosition: {x: 0, y: 0, z: 0.00020073354}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -106,10 +106,10 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 2.421, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.009503092, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3239435016578035473
+--- !u!114 &8792802640427858307
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,9 +118,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 5019716899704907410}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ef5481920b94f2d8de84aaf96ba5e1f, type: 3}
+  m_Script: {fileID: 11500000, guid: a27dddebfbd14e17883b5fb493c661ff, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.Towers.TowerShotBinder
+  m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.Towers.TowerShotThornsBinder
   fire: {fileID: 729334146811936795}
   missile: {fileID: 519175484817383755}
   explosion: {fileID: 3253986630609876060}
@@ -157,5 +157,5 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}

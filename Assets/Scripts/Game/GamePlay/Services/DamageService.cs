@@ -65,17 +65,13 @@ namespace Game.GamePlay.Services
                             {
                                 foreach (var target in towerViewModel.Targets.ToList())
                                 {
-                                    if (target.UniqueId == mobEntity.UniqueId)
-                                    {
-                                        Debug.Log("Моб умер - Удаляем из башни цель");
-                                        towerViewModel.RemoveTarget(target);
-                                    }
+                                    if (target.UniqueId == mobEntity.UniqueId) towerViewModel.RemoveTarget(target); //Моб умер - Удаляем из башни цель
                                 }
                             }
                         }
                     );
             });
-
+            //Подписываемся на все башни, и на Завершение выстрела
             _towersService.AllTowers.ObserveAdd().Subscribe(e =>
             {
                 var towerViewModel = e.Value;
@@ -189,7 +185,7 @@ namespace Game.GamePlay.Services
                 }
             });
 */
-            //TODO Подписываемся на все башни, и на Завершение выстрела
+            
         }
 
         public void Update()
@@ -209,6 +205,7 @@ namespace Game.GamePlay.Services
                 _gameplayState.Castle.IsShot.Value = true;
                 _coroutines.StartCoroutine(CastleFireShot());
             }
+            
             //  });
         }
 
