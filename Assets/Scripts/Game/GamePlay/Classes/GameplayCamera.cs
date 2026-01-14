@@ -11,7 +11,7 @@ namespace Game.GamePlay.Classes
         public Camera Camera;
         public Transform CameraSystem;
 
-        public float MoveSpeed = 2f;
+        public float MoveSpeed = 1f;
         public float Sensitivity = 5f;
         public float SensTouch = 0.4f;
 
