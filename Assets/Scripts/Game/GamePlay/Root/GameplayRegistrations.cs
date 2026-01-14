@@ -184,16 +184,17 @@ namespace Game.GamePlay.Root
                 container.Resolve<ResourceService>(),
                 cmd,
                 gameState,
-                gameSettings.MapsSettings
+                gameSettings.MapsSettings,
+                towersService
             );
             container.RegisterInstance(
                 gameplayService); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             //Сервис создания выстрелов
-            var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, fsmGameplay);
-            container.RegisterInstance(shotService);
+          //  var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, fsmGameplay);
+        //    container.RegisterInstance(shotService);
 
             var damageService = new DamageService(fsmGameplay, gameplayState, gameSettings.TowersSettings, waveService,
-                towersService, shotService, rewardService);
+                towersService, rewardService);
 
             container.RegisterInstance(damageService);
 

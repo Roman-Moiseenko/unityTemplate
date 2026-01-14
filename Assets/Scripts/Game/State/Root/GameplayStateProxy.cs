@@ -35,7 +35,6 @@ namespace Game.State.Root
 
         public CastleEntity Castle;
         
-        //public ReactiveProperty<TypeGameplay> TypeGameplay;
         public ObservableList<RewardEntityData> RewardEntities { get; } = new(); 
         public ObservableList<TowerEntity> Towers { get; } = new();
         public ObservableList<GroundEntity> Grounds { get; } = new();

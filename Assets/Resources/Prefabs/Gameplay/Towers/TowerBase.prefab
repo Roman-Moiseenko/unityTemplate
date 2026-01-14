@@ -4846,7 +4846,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5018650313240646595}
   - component: {fileID: -3051095314549936282}
-  - component: {fileID: 3947794221373742367}
   m_Layer: 0
   m_Name: TowerBase
   m_TagString: Untagged
@@ -4886,32 +4885,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.Towers.TowerBaseBinder
   container: {fileID: 757559111425992802}
-  animator: {fileID: 3947794221373742367}
   finish: {fileID: 8055572625453286887}
   start: {fileID: 1917680698147928229}
   shot: {fileID: 1934856136717088710}
---- !u!95 &3947794221373742367
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6062187088997900947}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e968a29b90a1e57419d52ecc55c92b8e, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7563910765345394484
 GameObject:
   m_ObjectHideFlags: 0

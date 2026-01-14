@@ -139,6 +139,7 @@ namespace Game.GamePlay.View.Towers
         public void StopShot()
         {
             missile.gameObject.SetActive(false);
+            
         }
     }
 }

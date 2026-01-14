@@ -1,5 +1,7 @@
 ﻿using Game.GamePlay;
 using Game.State.Entities;
+using Game.State.Maps.Mobs;
+using ObservableCollections;
 using R3;
 using UnityEngine;
 
@@ -21,10 +23,11 @@ namespace Game.State.Maps.Castle
         public float Speed => Origin.Speed;
         public ReactiveProperty<bool> IsDead; //Для подписок
 
-        public ReactiveProperty<bool> IsShot = new(false);
+        public ReactiveProperty<bool> IsBusy = new(false);
 
         public ReactiveProperty<bool> IsReduceHealth;
         public ReactiveProperty<int> CountResurrection;
+        public ObservableList<MobEntity> Target = new();
         
         public CastleEntity(CastleEntityData castleData)
         {
@@ -79,6 +82,25 @@ namespace Game.State.Maps.Castle
             IsDead.Value = false;
             CountResurrection.Value++;
             return true;
+        }
+
+        public bool SetTarget(MobEntity mobEntity)
+        {
+            if (!MobDistanceShotCastle(mobEntity.Position.CurrentValue)) return false;
+            Target.Add(mobEntity);
+            return true;
+        }
+
+        public void RemoveTarget(MobEntity mobEntity)
+        {
+            Target.Remove(mobEntity);
+        }
+        
+        private bool MobDistanceShotCastle(Vector2 position)
+        {
+            if (position.x > 3) return false;
+            return position.y is <= 1.5f and >= -1.5f;
+            //TODO Сделать проверку на точку пути 
         }
     }
 }

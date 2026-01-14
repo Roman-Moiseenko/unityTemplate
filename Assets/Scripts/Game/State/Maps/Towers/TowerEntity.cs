@@ -209,5 +209,10 @@ namespace Game.State.Maps.Towers
           //  IsShot.Value = false;
             
         }
+
+        public void FreeToFire()
+        {
+            IsBusy.Value = false;
+        }
     }
 }

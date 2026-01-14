@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Game.GamePlay.Classes;
@@ -10,41 +9,30 @@ using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Map;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
-using Game.GamePlay.View.Shots;
 using Game.GamePlay.View.Towers;
 using Game.GamePlay.View.Waves;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Game.GamePlay.Root.View
 {
     public class WorldGameplayRootBinder : MonoBehaviour
     {
         [SerializeField] private MapFogBinder mapFog;
-        //[SerializeField] private InputManager inputManager;
-
-        //      [SerializeField] private BuildingBinder _prefabBuilding;
-        //    private readonly Dictionary<int, BuildingBinder> _createBuildingsMap = new();
+ 
         private readonly Dictionary<int, TowerBaseBinder> _createTowersMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
         private readonly Dictionary<int, BoardBinder> _createBoardsMap = new();
         private FrameBlockBinder _frameBlockBinder;
         private readonly Dictionary<int, RoadBinder> _createdRoadsMap = new();
         private readonly Dictionary<int, MobBinder> _createMobsMap = new();
-        private readonly Dictionary<int, ShotBinder> _createShotsMap = new();
         private readonly List<GateWaveBinder> _createGateMap = new();
         private CastleBinder _castleBinder;
         private AttackAreaBinder _attackAreaBinder;
         
-        //private bool _clickCoroutines = false;
-        //private bool _isMouseDown;
         private IDisposable _disposable;
-
         private readonly Dictionary<string, List<MobBinder>> _mobsPull = new(); //Пул мобов
-        private readonly Dictionary<string, List<ShotBinder>> _shotsPull = new(); //Пул выстрелов
         private WorldGameplayRootViewModel _viewModel;
         
         public void Bind(WorldGameplayRootViewModel viewModel)
@@ -75,17 +63,15 @@ namespace Game.GamePlay.Root.View
             //Башни
             foreach (var towerViewModel in viewModel.AllTowers)
             {
-               // TowerSubscribeCreate(towerViewModel);  //Подписка на модель - При изменении Модели необходимо сменить префаб с анимацией
                 CreateTowerBase(towerViewModel);
             }
 
             viewModel.AllTowers.ObserveAdd().Subscribe(e =>
             {
-                //TowerSubscribeCreate(e.Value); //Подписка на модель
                 CreateTowerBase(e.Value);
             }).AddTo(ref d);
             viewModel.AllTowers.ObserveRemove()
-                .Subscribe(e => DestroyTower(e.Value))
+                .Subscribe(e => DestroyTowerBase(e.Value))
                 .AddTo(ref d);
 
             //Мобы
@@ -102,23 +88,6 @@ namespace Game.GamePlay.Root.View
                     {
                         var mobBinder = listMobs.Find(m => m._viewModel.MobEntityId == e.Value.MobEntityId);
                         mobBinder.FreeUp();
-                    }
-                })
-                .AddTo(ref d);
-
-            //Выстрелы
-            foreach (var shotViewModel in viewModel.AllShots)
-                CreateShot(shotViewModel);
-            viewModel.AllShots.ObserveAdd()
-                .Subscribe(e => FindFreeOrCreateShot(e.Value))
-                .AddTo(ref d);
-            viewModel.AllShots.ObserveRemove()
-                .Subscribe(e =>
-                {
-                    if (_shotsPull.TryGetValue(e.Value.ConfigId, out var listShots))
-                    {
-                        var shotBinder = listShots.Find(m => m._viewModel.ShotEntityId == e.Value.ShotEntityId);
-                        shotBinder.FreeUp();
                     }
                 })
                 .AddTo(ref d);
@@ -151,7 +120,6 @@ namespace Game.GamePlay.Root.View
             //Создаем Туман Войны
             mapFog.Bind(_viewModel.MapFogViewModel);
 
-            //FogViewModel
             //Запускаем следующую волну
             _viewModel.StartGameplayServices();
             _disposable = d.Build();
@@ -175,39 +143,6 @@ namespace Game.GamePlay.Root.View
             var createdGate = Instantiate(gatePrefab, transform);
             createdGate.Bind(viewModel);
             _createGateMap.Add(createdGate);
-        }
-
-        private void CreateShot(ShotViewModel shotViewModel)
-        {
-            if (shotViewModel.NotPrefab) return;
-            var prefabPath = $"Prefabs/Gameplay/Shots/{shotViewModel.ConfigId}"; //Перенести в настройки уровня
-            var shotPrefab = Resources.Load<ShotBinder>(prefabPath);
-            var createdShot = Instantiate(shotPrefab, transform);
-            createdShot.Bind(shotViewModel);
-            _createShotsMap[shotViewModel.ShotEntityId] = createdShot;
-            //Добавляем выстрел в пул
-            if (_shotsPull.TryGetValue(shotViewModel.ConfigId, out var listBinders))
-            {
-                listBinders.Add(createdShot);
-            }
-            else
-            {
-                var listBinder = new List<ShotBinder> { createdShot };
-                _shotsPull.Add(shotViewModel.ConfigId, listBinder);
-            }
-        }
-
-        private void FindFreeOrCreateShot(ShotViewModel shotViewModel)
-        {
-            if (_shotsPull.TryGetValue(shotViewModel.ConfigId, out var listBinders))
-            {
-                foreach (var shotBinder in listBinders.Where(shotBinder => shotBinder.Free.Value))
-                {
-                    shotBinder.Bind(shotViewModel);
-                    return;
-                }
-            }
-            CreateShot(shotViewModel);
         }
 
         private void CreateMob(MobViewModel mobViewModel)
@@ -325,20 +260,8 @@ namespace Game.GamePlay.Root.View
             Destroy(_frameBlockBinder.gameObject);
             Destroy(_frameBlockBinder);
         }
-
-        private void DestroyShot(ShotViewModel shotViewModel)
-        {
-            if (_createShotsMap.TryGetValue(shotViewModel.ShotEntityId, out var shotBinder))
-            {
-                if (shotBinder != null)
-                {
-                    Destroy(shotBinder.gameObject);
-                    _createShotsMap.Remove(shotViewModel.ShotEntityId);
-                }
-            }
-        }
-
-        private void DestroyTower(TowerViewModel towerViewModel)
+        
+        private void DestroyTowerBase(TowerViewModel towerViewModel)
         {
             if (_createTowersMap.TryGetValue(towerViewModel.TowerEntityId, out var towerBinder))
             {
@@ -353,8 +276,6 @@ namespace Game.GamePlay.Root.View
             {
                 Destroy(mobBinder.gameObject);
                 _createMobsMap.Remove(mobViewModel.MobEntityId);
-                mobViewModel = null;
-                // Destroy(mobViewModel);
             }
         }
 
@@ -378,84 +299,14 @@ namespace Game.GamePlay.Root.View
 
         private void Update()
         {
-            /*
-             Предыдущая версия Input удалить потом
-             
-            if (!EventSystem.current.IsPointerOverGameObject())
-            {
-                Vector2 mousePosition = Input.mousePosition;
-
-                if (Input.GetMouseButtonDown(0) && !_clickCoroutines)
-                {
-                    StartCoroutine(IsClick());
-                    return;
-                }
-
-                if (_isMouseDown) //Имитация GetMouseButtonDown
-                {
-                    _isMouseDown = false;
-                    //Проверить куда нажали, если фрейм, перетаскиваем фрейм
-                    _viewModel.StartMoving(mousePosition);
-                }
-
-                if (Input.GetMouseButton(0) && !_clickCoroutines)
-                {
-                    _viewModel.ProcessMoving(mousePosition);
-                }
-
-                if (Input.GetMouseButtonUp(0))
-                {
-                    if (_clickCoroutines) //  Это был "Клик"
-                    {
-                        _clickCoroutines = false;
-                        //_viewModel.ClickEntity(mousePosition);
-                    }
-                    else
-                    {
-                        _viewModel.FinishMoving(mousePosition);
-                    }
-                }
-            }
-
-            */
             _viewModel?.Update();
-            
-            //  _gameplayCamera?.UpdateMoving(); //Движение камеры
-            //  _gameplayCamera?.AutoMoving();
-            
-             //UpdateInput();
-
-            /*    var position = Input.mousePosition;
-
-                //Проверка мышки и состояния
-                if (Input.GetMouseButtonDown(0))
-                {
-                    var cursorPosition = Input.mousePosition;
-                 //   Ray ray = Camera.main.ScreenPointToRay(cursorPosition);
-                 if (Physics.Raycast(Camera.main.ScreenPointToRay(cursorPosition), out RaycastHit hit))
-                 {
-                 //    print(hit.transform.name);
-               //      print(hit.transform.position);
-                 }
-
-               //     Debug.Log(Input.mousePosition.x + ", "+ Input.mousePosition.y + ", " + Input.mousePosition.z);
-
-                }
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    // _viewModel.HandleTestInput();
-                }
-                */
         }
-
-                
+        
         /**
          * Функции для отловли событий на Input
          */
-        
         private void HandleTap(Vector2 screenPosition)
         {
-            
             _viewModel.ClickEntity(screenPosition);
         }
 
@@ -489,34 +340,5 @@ namespace Game.GamePlay.Root.View
             InputManager.OnPointerUp -= HandlePointerUp;
             InputManager.OnPointerDrag -= HandlePointerDrag;
         }
-
-/*
-        private bool IsPointerOverUIObject() //Проверка для Андроид - EventSystem.current.IsPointerOverGameObject()
-        {
-            if (Input.touchCount > 0)
-            {
-                Touch _touch = Input.GetTouch(0);
-                var touchPosition = _touch.position;
-                var eventData = new PointerEventData(EventSystem.current) { position = touchPosition };
-                var results = new List<RaycastResult>();
-                EventSystem.current.RaycastAll(eventData, results);
-                return results.Count > 0;
-            }
-
-            return false;
-        }
-
-        
-        private IEnumerator IsClick()
-        {
-            _isMouseDown = false;
-            _clickCoroutines = true;
-            yield return new WaitForSeconds(0.1f);
-            if (_clickCoroutines)
-            {
-                _isMouseDown = true;
-                _clickCoroutines = false;
-            }
-        }*/
     }
 }

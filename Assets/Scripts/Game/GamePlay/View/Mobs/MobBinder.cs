@@ -77,8 +77,15 @@ namespace Game.GamePlay.View.Mobs
 
         public void Update()
         {
-            if (Free.Value) return;
+        /*    if (Free.Value) return;
             
+            _healthBarBinder.OnUpdate();
+            */
+        }
+
+        public void LateUpdate()
+        {
+            if (Free.Value) return;
             _healthBarBinder.OnUpdate();
         }
 
@@ -93,34 +100,7 @@ namespace Game.GamePlay.View.Mobs
             Free.OnNext(true);
             disposable.Dispose();
         }
-        
-        /*
-        private Vector3 GetTargetPosition()
-        {
-            var newValue = _viewModel.RoadPoints[_currentIndexListPoint].Point;
-            _targetPosition = new Vector3(newValue.x, _mobY, newValue.y);
-            return _targetPosition;
-        }
-        
 
-        private void AlignCamera() {
-            if (_viewModel.CameraService.Camera != null) {
-                var camXform = _viewModel.CameraService.Camera.transform;
-                var forward = _healthBar.transform.position - camXform.position;
-                forward.Normalize();
-                var up = Vector3.Cross(forward, camXform.right);
-                _healthBar.transform.rotation = Quaternion.LookRotation(forward, up);
-            }
-        }
-        
-
-        private void UpdateParams() {
-            meshRenderer.GetPropertyBlock(matBlock);
-            matBlock.SetFloat("_Fill", _viewModel.CurrentHealth.CurrentValue / _viewModel.MaxHealth);
-            meshRenderer.SetPropertyBlock(matBlock);
-        }
-        
-        */
   
     }
 }

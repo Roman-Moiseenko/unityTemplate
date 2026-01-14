@@ -11,7 +11,6 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
     {
         private Camera _camera;
         public ReactiveProperty<bool> Free;
-       // public Animator animator;
 
         private Vector3 _target;
         private Vector3 _targetFinish;

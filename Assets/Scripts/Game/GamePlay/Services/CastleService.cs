@@ -22,7 +22,7 @@ namespace Game.GamePlay.Services
 
         public ObservableList<float> RepairBuffer = new();
         public ReactiveProperty<float> CurrenHealth;
-        private readonly ReactiveProperty<int> _gameSpeed;
+        public readonly ReactiveProperty<int> GameSpeed;
         private readonly FsmGameplay _fsmGameplay;
         
         //  private readonly ObservableList<BuildingViewModel> _allBuildings = new();
@@ -45,7 +45,7 @@ namespace Game.GamePlay.Services
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
             _castleEntity = gameplayState.Castle;
             _fsmGameplay = container.Resolve<FsmGameplay>();
-            _gameSpeed = gameplayState.GameSpeed;
+            GameSpeed = gameplayState.GameSpeed;
             CurrenHealth = castleEntity.CurrenHealth;
             CastleViewModel = new CastleViewModel(castleEntity, this);
 
@@ -78,7 +78,7 @@ namespace Game.GamePlay.Services
             RepairBuffer.Add(_castleEntity.ReduceHealth); //Буфер для отображения в UI
             _castleEntity.Repair();
 
-            yield return new WaitForSeconds(AppConstants.SPEED_REDICE_CASTLE / _gameSpeed.Value);
+            yield return new WaitForSeconds(AppConstants.SPEED_REDICE_CASTLE / GameSpeed.Value);
 
             if (_castleEntity.CurrenHealth.Value < _castleEntity.FullHealth)
             {

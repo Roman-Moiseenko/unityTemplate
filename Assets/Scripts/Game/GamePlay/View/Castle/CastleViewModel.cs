@@ -1,5 +1,7 @@
 ﻿using Game.GamePlay.Services;
 using Game.State.Maps.Castle;
+using Game.State.Maps.Mobs;
+using ObservableCollections;
 using R3;
 using UnityEngine;
 
@@ -7,25 +9,27 @@ namespace Game.GamePlay.View.Castle
 {
     public class CastleViewModel
     {
-        private readonly CastleEntity _castleEntity;
+        public CastleEntity CastleEntity { get; }
+
         private readonly CastleService _castleService;
-        
+        public IObservableCollection<MobEntity> Target => CastleEntity.Target;
 
         public readonly int CastleEntityId;
         public ReadOnlyReactiveProperty<int> Level { get; }
         public readonly string ConfigId;
         
         public Vector2Int Position { get; }
-
+        public readonly ReactiveProperty<int> GameSpeed;
+        
         public CastleViewModel(
             CastleEntity castleEntity,
             CastleService castleService
         )
         {
             ConfigId = castleEntity.ConfigId;
-            _castleEntity = castleEntity;
+            CastleEntity = castleEntity;
             _castleService = castleService;
-            
+            GameSpeed = castleService.GameSpeed;
 
             Position = castleEntity.Position;
         }

@@ -8,11 +8,8 @@ namespace Game.GamePlay.View.Mobs
     {
         [SerializeField] private Transform _health;
         [SerializeField] private Transform _level;
-
         [SerializeField] private List<Texture2D> _sprites;
         
-        //private MaterialPropertyBlock _matBlock;
-       // private MeshRenderer _meshRenderer;
         private Camera _camera;
         private float _maxHealth = 1f;
         private float _currentHealth = 1f;
@@ -23,7 +20,6 @@ namespace Game.GamePlay.View.Mobs
             _maxHealth = maxHealth;
             _currentHealth = maxHealth;
             _material = _health.GetComponent<Renderer>().material;
-            //_meshRenderer = _health.GetComponent<MeshRenderer>(); //
             var matBlock = new MaterialPropertyBlock();
             currentHealth.Subscribe(h => _currentHealth = h);
 
@@ -35,7 +31,6 @@ namespace Game.GamePlay.View.Mobs
             matBlock.SetFloat("_First", first);
             matBlock.SetFloat("_Second", second);
             meshLevel.SetPropertyBlock(matBlock);
-          ///  _level.GetComponent<Renderer>().material.mainTexture = _sprites[level - 1];
         }
 
         public void OnUpdate()
@@ -69,9 +64,7 @@ namespace Game.GamePlay.View.Mobs
          * Обновляем шрейдер
          */
         private void UpdateParams() {
-            //_meshRenderer.GetPropertyBlock(_matBlock);
             _material.SetFloat("_Fill", _currentHealth / _maxHealth);
-            //_meshRenderer.SetPropertyBlock(_matBlock);
         }
         
     }

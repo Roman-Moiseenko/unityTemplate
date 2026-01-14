@@ -37,6 +37,7 @@ namespace Game.GamePlay.Services
         private readonly ICommandProcessor _cmd;
         private readonly GameStateProxy _gameState;
         private readonly MapsSettings _mapsSettings;
+        private readonly TowersService _towersService;
 
         public int CountRepair;
         public ReactiveProperty<GameplayExitParams> GameOver = new(null);
@@ -52,7 +53,8 @@ namespace Game.GamePlay.Services
             ResourceService resourceService,
             ICommandProcessor cmd,
             GameStateProxy gameState,
-            MapsSettings mapsSettings
+            MapsSettings mapsSettings,
+            TowersService towersService
         )
         {
             var d = Disposable.CreateBuilder();
@@ -66,6 +68,7 @@ namespace Game.GamePlay.Services
             _cmd = cmd;
             _gameState = gameState;
             _mapsSettings = mapsSettings;
+            _towersService = towersService;
 
             //TODO Переделать на другой параметр
             waveService.IsMobsOnWay.Where(x => !x).Subscribe(_ =>
@@ -279,7 +282,7 @@ namespace Game.GamePlay.Services
                 }
             }
 
-            Debug.Log(JsonConvert.SerializeObject(result, Formatting.Indented));
+            //Debug.Log(JsonConvert.SerializeObject(result, Formatting.Indented));
             return result;
         }
 
@@ -363,10 +366,18 @@ namespace Game.GamePlay.Services
         {
             if (!_gameplayState.Castle.Resurrection()) return;
 
+            //Наносим урон всем мобам
             foreach (var entity in _waveService.AllMobsMap.ToArray())
             {
                 entity.Value.SetDamage(_gameplayState.Castle.FullHealth);
             }
+
+            //Очищаем атаку на всех башнях
+            foreach (var towerViewModel in _towersService.AllTowers)
+            {
+                towerViewModel.TowerEntity.FreeToFire();
+            }
+            _gameplayState.Castle.IsBusy.Value = false;
         }
     }
 }

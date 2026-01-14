@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Game.Common;
 using Game.State.Maps.Mobs;
 using ObservableCollections;
@@ -14,7 +15,6 @@ namespace Game.GamePlay.View.Towers
     public class TowerBaseBinder : MonoBehaviour
     {
         [SerializeField] private Transform container;
-        [SerializeField] private Animator animator;
         [SerializeField] private ParticleSystem finish;
         [SerializeField] private ParticleSystem start;
         [SerializeField] private Transform shot;
@@ -25,7 +25,8 @@ namespace Game.GamePlay.View.Towers
         private TowerViewModel _viewModel;
         private TowerBinder _towerBinder;
         private TowerShotBinder _towerShotBinder;
-
+        private Sequence Sequence { get; set; }
+        
         public void Bind(TowerViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
@@ -42,6 +43,7 @@ namespace Game.GamePlay.View.Towers
                 //Запускаем анимацию шейдеров и частиц при обновлении уровня башни
                 start.Play();
                 finish.Play();
+                RestartAttack();
             }).AddTo(ref d);
 
             _viewModel.NumberModel.Subscribe(number =>
@@ -49,7 +51,26 @@ namespace Game.GamePlay.View.Towers
                 //Если Префаб уже был, то запускаем анимацию
                 if (_towerBinder != null)
                 {
-                    animator.Play("tower_level_up");
+                    Sequence = DOTween.Sequence();
+                    Sequence
+                        .Append(
+                            container
+                                .DOScale(Vector3.zero, 0.5f)
+                                .From(Vector3.one)
+                                .SetEase(Ease.OutCubic))
+                        .AppendCallback(() =>
+                        {
+                            DestroyTower();
+                            CreateTower();
+                        })
+                        .Append(
+                            container.transform
+                                .DOScale(Vector3.one, 0.5f)
+                                .SetEase(Ease.InCubic))
+                        .OnComplete(() =>
+                        {
+                            Sequence.Kill();
+                        });
                 }
                 else
                 {
@@ -125,26 +146,25 @@ namespace Game.GamePlay.View.Towers
             _towerShotBinder.Bind(_viewModel);
         }
 
+          /**
+           * Перезапуск атаки после обновления башни
+           */
+          private void RestartAttack()
+          {
+              foreach (var mobEntity in _viewModel.Targets.ToList())
+              {
+                  _viewModel.RemoveTarget(mobEntity);
+              }
+              _towerShotBinder.StopShot();
+              _viewModel.TowerEntity.FreeToFire();
+          }      
+        
         private void OnDestroy()
         {
             _disposable?.Dispose();
         }
+        
 
-        public void AnimationChangeModel()
-        {
-            DestroyTower();
-            CreateTower();
-            //Перезапустить атаку по мобам
-            foreach (var mobEntity in _viewModel.Targets.ToList())
-            {
-                _viewModel.RemoveTarget(mobEntity);
-            }
-            _towerShotBinder.StopShot();
-        }
 
-        public void AnimationFinish()
-        {
-            //Debug.Log("Конец анимации");
-        }
     }
 }

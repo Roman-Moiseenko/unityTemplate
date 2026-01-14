@@ -36,6 +36,7 @@ namespace Game.GamePlay.Services
 
         public IObservableCollection<TowerViewModel> AllTowers =>
             _allTowers; //Интерфейс менять нельзя, возвращаем через динамический массив
+        public IObservableCollection<TowerEntity> AllTowerEntities => _towerEntities; 
 
         public readonly ObservableDictionary<string, int> Levels = new(); //Уровни башен по типам ConfigId
 

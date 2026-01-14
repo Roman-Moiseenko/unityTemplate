@@ -13,13 +13,9 @@ using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Map;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
-using Game.GamePlay.View.Shots;
 using Game.GamePlay.View.Towers;
 using Game.GamePlay.View.Waves;
-using Game.MainMenu.Services;
 using Game.State.Gameplay;
-using Game.State.GameResources;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -34,7 +30,6 @@ namespace Game.GamePlay.Root.View
         private readonly WaveService _waveService;
         private readonly GameplayCamera _cameraService;
         private readonly DamageService _damageService;
-        private readonly ShotService _shotService;
         private readonly Subject<Unit> _entityClick;
         private readonly Subject<TowerViewModel> _towerClick;
         // private readonly DIContainer _container;
@@ -45,7 +40,6 @@ namespace Game.GamePlay.Root.View
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
         public readonly IObservableCollection<BoardViewModel> AllBoards;
         public readonly IObservableCollection<RoadViewModel> AllRoads;
-        public readonly IObservableCollection<ShotViewModel> AllShots;
 
         public readonly IObservableCollection<FrameBlockViewModel> FrameBlockViewModels;
         public CastleViewModel CastleViewModel { get; private set; }
@@ -72,7 +66,7 @@ namespace Game.GamePlay.Root.View
             WaveService waveService,
             GameplayCamera cameraService,
             DamageService damageService,
-            ShotService shotService,
+            //ShotService shotService,
             DIContainer container
         )
         {
@@ -82,7 +76,7 @@ namespace Game.GamePlay.Root.View
             _waveService = waveService;
             _cameraService = cameraService;
             _damageService = damageService;
-            _shotService = shotService;
+           // _shotService = shotService;
             //Регистрируем события 
             _entityClick = new Subject<Unit>(); //клик по объектам игрового мира, не UI 
             container.RegisterInstance(AppConstants.CLICK_WORLD_ENTITY, _entityClick);
@@ -96,7 +90,7 @@ namespace Game.GamePlay.Root.View
             AllBoards = groundsService.AllBoards;
             AllTowers = towersService.AllTowers;
             AllMobs = waveService.AllMobsOnWay;
-            AllShots = shotService.AllShots;
+            //AllShots = shotService.AllShots;
             FrameBlockViewModels = frameService.ViewModels;
             CastleViewModel = castleService.CastleViewModel;
             GateWaveViewModel = waveService.GateWaveViewModel;

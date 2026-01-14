@@ -15,8 +15,9 @@ namespace Game.GamePlay.View.Towers
 {
     public class TowerViewModel : IMovingEntityViewModel
     {
-        private readonly TowerEntity _towerEntity;
-        public Dictionary<TowerParameterType, TowerParameterData> Parameters => _towerEntity.Parameters;
+        public TowerEntity TowerEntity { get; }
+
+        public Dictionary<TowerParameterType, TowerParameterData> Parameters => TowerEntity.Parameters;
         private List<TowerLevelSettings> _towerLevelSettings;
         private readonly TowersService _towerService;
         
@@ -29,26 +30,23 @@ namespace Game.GamePlay.View.Towers
         private IMovingEntityViewModel _movingEntityViewModelImplementation;
 
         public ReactiveProperty<Vector2Int> Position { get; set; }
-        public bool IsOnRoad => _towerEntity.IsOnRoad;
+        public bool IsOnRoad => TowerEntity.IsOnRoad;
         public ReactiveProperty<bool> IsShot;
 
         public ReactiveProperty<Vector2> Direction;
         public ReactiveProperty<float> SpeedFire;
-        public bool IsUpdate = false;
+        
         public ReactiveProperty<int> NumberModel = new(0);
-        public float SpeedShot => _towerEntity.SpeedShot;
+        public float SpeedShot => TowerEntity.SpeedShot;
         public ReactiveProperty<int> GameSpeed;
 
-        public bool IsSingleTarget => _towerEntity.IsSingleTarget;
-
-        public IObservableCollection<MobEntity> Targets => _towerEntity.Targets;
+        public IObservableCollection<MobEntity> Targets => TowerEntity.Targets;
         public TowerViewModel(
             TowerEntity towerEntity,
             List<TowerLevelSettings> towerLevelSettings,
             TowersService towerService
         )
         {
-            
             _towerService = towerService;
             IsShot = towerEntity.IsShot;
             TowerEntityId = towerEntity.UniqueId;
@@ -58,8 +56,8 @@ namespace Game.GamePlay.View.Towers
             Position = towerEntity.Position;
             SpeedFire = new ReactiveProperty<float>();
             GameSpeed = towerService.GameSpeed;
-            _towerEntity = towerEntity;
-            //UpdateParameters(towerLevelSettings);
+            TowerEntity = towerEntity;
+            
             
             _towerLevelSettings = towerLevelSettings;
             if (towerLevelSettings != null)
@@ -105,7 +103,7 @@ namespace Game.GamePlay.View.Towers
                     _towerLevelSettingsMap[towerLevelSetting.Level] = towerLevelSetting;
                 }
             }
-            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
+            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
             {
                 _towerService.GameSpeed.Where(x => x != 0).Subscribe(v =>
                 {
@@ -146,17 +144,17 @@ namespace Game.GamePlay.View.Towers
         public Vector3 GetRadius()
         {
             var radius = new Vector3(0, 0, 0);
-            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var min))
+            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var min))
             {
                 radius.y = min.Value;
             }
             
-            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var max))
+            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var max))
             {
                 radius.x = max.Value;
             }
             
-            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.Distance, out var parameter))
+            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Distance, out var parameter))
             {
                 radius.x = parameter.Value;
             }
@@ -180,12 +178,9 @@ namespace Game.GamePlay.View.Towers
 
         public void RemoveTarget(MobEntity mobEntity)
         {
-            _towerEntity.RemoveTarget(mobEntity);
+            TowerEntity.RemoveTarget(mobEntity);
         }
+        
 
-        public ShotEntityData GetShotParameters(MobEntity mobEntity)
-        {
-           return _towerEntity.GetShotParameters(mobEntity);
-        }
     }
 }
