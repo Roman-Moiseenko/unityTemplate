@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using Game.GamePlay.View.Mobs;
 using Game.State.Maps.Mobs;
 using R3;
 using UnityEngine;
@@ -7,50 +9,83 @@ namespace Game.GamePlay.View.Castle
 {
     public class CastleShotBinder : MonoBehaviour
     {
-        private Vector3 _position;
+        private Vector3 _beginPosition;
         private MobEntity _mobEntity;
         private ReactiveProperty<Vector3> _target;
         private bool _isMoving = false;
-        private float _duration;
+        private ReactiveProperty<float> _duration; // = new(1f);
+        private ReactiveProperty<int> _gameSpeed;// = new(1);
         private float _timeElapsed;
-        public void Bind(Vector3 position)
+        public ReactiveProperty<bool> IsShotComplete = new(false);
+
+        public void Bind(ReactiveProperty<float> duration, ReactiveProperty<int> gameSpeed)
         {
-            _position = position;
+            _duration = duration;
+            _gameSpeed = gameSpeed;
+            _beginPosition = transform.localPosition;
+            transform.gameObject.SetActive(false);
+            
+          //  Debug.Log(transform.position + " local = " + transform.localPosition);
         }
+
         public void FirePrepare(MobEntity mobEntity)
         {
+            IsShotComplete.Value = false;
             _target = mobEntity.PositionTarget;
-            transform.position = _position;
-            var particle = transform.GetComponent<ParticleSystem>();
-             if (particle != null) particle.Play(); //Запуск эффекта выстрела
+//            _target.Subscribe(v => Debug.Log("Target = " + v));
+            transform.localPosition = _beginPosition;
+          //  Debug.Log("FirePrepare = " + transform.position + " local = " + transform.localPosition);
         }
-        public void FireStart(float duration)
+
+        public void Fire(MobEntity mobEntity)
         {
-            //Запуск полета снарядов
+//            Debug.Log("PositionTarget =" + mobEntity.PositionTarget.Value);
             transform.gameObject.SetActive(true);
+            _timeElapsed = 0f;
             _isMoving = true;
-            _duration = duration;
-           // yield return null;
         }
+
+        public void FireFinish()
+        {
+            _isMoving = false;
+            _timeElapsed = 0f;
+            transform.gameObject.SetActive(false);
+        }
+
         private void Update()
         {
             if (!_isMoving) return;
-            //TODO движение снаряда и поворот
-            if (_timeElapsed < _duration)
+            if (_gameSpeed.Value == 0) return;
+            
+            //движение снаряда и поворот
+            if (_timeElapsed < _duration.CurrentValue)
             {
-                transform.position = Vector3.Lerp(transform.position, _target.CurrentValue, _timeElapsed / _duration);
+                var direction = _target.CurrentValue - transform.position;
+                var targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = targetRotation;
+                
+                transform.position = Vector3.Lerp(transform.position, _target.CurrentValue,
+                    _timeElapsed / _duration.CurrentValue);
                 _timeElapsed += Time.deltaTime;
             }
             else
             {
-                _isMoving = false;
-                _timeElapsed = 0f;
+                Debug.Log("Принудительное попадание");
+                FireFinish();
+                IsShotComplete.OnNext(true);
             }
         }
-        public void FireFinish()
-        {
-            transform.gameObject.SetActive(false);
-        }
         
+
+        private void OnCollisionEnter(Collision other)
+        {
+            
+            if (other.gameObject.CompareTag("Mob"))
+            {
+                //Debug.Log("OnCollisionEnter = " + other.gameObject.name );
+                FireFinish();
+                IsShotComplete.OnNext(true);
+            }
+        }
     }
 }

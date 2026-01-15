@@ -20,6 +20,8 @@ namespace Game.GamePlay.View.Mobs
 
         private float _mobY;
         private int _currentIndexListPoint;
+
+        public int UnityId;
         
         IDisposable disposable;
         public ReactiveProperty<bool> Free = new(true); //Доступность в пуле
@@ -29,6 +31,7 @@ namespace Game.GamePlay.View.Mobs
             Free.Value = false;
             
             _viewModel = viewModel;
+            UnityId = viewModel.MobEntityId;
             _mobY = _viewModel.IsFly ? 0.9f : 0.0f;
             transform.position = new Vector3(viewModel.StartPosition.x, _mobY, viewModel.StartPosition.y);
 

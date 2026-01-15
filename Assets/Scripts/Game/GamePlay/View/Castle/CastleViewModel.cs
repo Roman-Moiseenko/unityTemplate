@@ -12,7 +12,7 @@ namespace Game.GamePlay.View.Castle
         public CastleEntity CastleEntity { get; }
 
         private readonly CastleService _castleService;
-        public IObservableCollection<MobEntity> Target => CastleEntity.Target;
+        public ObservableList<MobEntity> Target => CastleEntity.Target;
 
         public readonly int CastleEntityId;
         public ReadOnlyReactiveProperty<int> Level { get; }
@@ -46,5 +46,6 @@ namespace Game.GamePlay.View.Castle
                 return true;
             return false;
         }
+        
     }
 }

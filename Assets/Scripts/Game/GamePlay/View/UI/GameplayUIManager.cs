@@ -73,6 +73,7 @@ namespace Game.GamePlay.View.UI
                 .Where(x => x != null)
                 .Subscribe(exitParams =>
                     {
+                        _fsmGameplay.Fsm.SetState<FsmStateGamePause>();
                         OpenFinishPopup(exitParams);
                     }
                 );

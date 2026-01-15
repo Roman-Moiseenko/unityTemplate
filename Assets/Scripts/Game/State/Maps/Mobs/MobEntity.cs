@@ -37,15 +37,14 @@ namespace Game.State.Maps.Mobs
         
         public MobEntity(MobEntityData mobEntityData)
         {
+            var h = mobEntityData.IsFly ? 0.55f : 0.1f;
             Origin = mobEntityData;
             State = new ReactiveProperty<MobState>(mobEntityData.State);
             State.Subscribe(s => mobEntityData.State = s);
             Position = new ReactiveProperty<Vector2>(new Vector2(0,0));
             Position.Subscribe(newValue =>
             {
-                //TODO Менять высоту в зависимости от IsFly ??
-                var vector = new Vector3(newValue.x, 0.5f , newValue.y);
-                PositionTarget.Value = vector;
+                PositionTarget.Value = new Vector3(newValue.x, h , newValue.y);
             });
             
             Direction = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));

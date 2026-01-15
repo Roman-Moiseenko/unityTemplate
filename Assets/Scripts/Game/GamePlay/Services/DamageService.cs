@@ -172,14 +172,10 @@ namespace Game.GamePlay.Services
             //Обходим список мобов
             foreach (var (key, mobEntity) in _waveService.AllMobsMap)
             {
-//                Debug.Log("Mob: " + _castle.Speed);
-                if (_castle.SetTarget(mobEntity))
-                {
-                    yield return
-                        new WaitForSeconds(_castle.Speed / _gameSpeed.Value); //Поделить на тек. скорость игры
-                    break;
-                }
+                if (_castle.SetTarget(mobEntity)) break;
             }
+            if (_castle.Target.Count > 0) //Была добавлена цель(и)
+                yield return new WaitForSeconds(_castle.Speed / _gameSpeed.Value); //Задержка для следующего выстрела
             //Освобождаем крепость для следующего выстрела
             _castle.IsBusy.Value = false;
         }
