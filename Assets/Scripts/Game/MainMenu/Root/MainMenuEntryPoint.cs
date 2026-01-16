@@ -68,7 +68,7 @@ namespace Game.MainMenu.Root
             
             //Debug.Log("Инвентарь " + JsonConvert.SerializeObject(gameState._gameState.InventoryItems, Formatting.Indented));
 
-            
+            Time.timeScale = 1;
             //Загружаем входные параметры
             //   var gameplayEnterParams = new GameplayEnterParams(0); //Имитация выбора уровня 0
             //  var mainMenuExitParams = new MainMenuExitParams(gameplayEnterParams);

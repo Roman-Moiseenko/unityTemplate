@@ -15,21 +15,14 @@ namespace Game.GamePlay.Services
 {
     public class CastleService
     {
-        private readonly GameplayStateProxy _gameplayState;
+        public ObservableList<float> RepairBuffer = new();
+        public ReactiveProperty<float> CurrenHealth;
+        public CastleViewModel CastleViewModel { get; }
+
         private readonly ICommandProcessor _cmd;
         private readonly CastleEntity _castleEntity;
         private readonly Coroutines _coroutines;
-
-        public ObservableList<float> RepairBuffer = new();
-        public ReactiveProperty<float> CurrenHealth;
-        public readonly ReactiveProperty<int> GameSpeed;
         private readonly FsmGameplay _fsmGameplay;
-        
-        //  private readonly ObservableList<BuildingViewModel> _allBuildings = new();
-        //  private readonly Dictionary<int, BuildingViewModel> _buildingsMap = new();
-        //  private readonly Dictionary<string, BuildingSettings> _buildingSettingsMap = new();
-        //  public IObservableCollection<BuildingViewModel> AllBuildings => _allBuildings; //Интерфейс менять нельзя, возвращаем через динамический массив
-        public CastleViewModel CastleViewModel { get; }
 
         /**
            * При загрузке создаем все view-модели из реактивного списка всех строений
@@ -41,13 +34,12 @@ namespace Game.GamePlay.Services
             GameplayStateProxy gameplayState
         )
         {
-            _gameplayState = gameplayState;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
             _castleEntity = gameplayState.Castle;
             _fsmGameplay = container.Resolve<FsmGameplay>();
-            GameSpeed = gameplayState.GameSpeed;
+            //GameSpeed = gameplayState.GameSpeed;
             CurrenHealth = castleEntity.CurrenHealth;
-            CastleViewModel = new CastleViewModel(castleEntity, this);
+            CastleViewModel = new CastleViewModel(castleEntity);
 
             _castleEntity.CurrenHealth.Subscribe(h =>
             {
@@ -67,9 +59,9 @@ namespace Game.GamePlay.Services
                 }
             });
         }
-        
+
         /**
-         * Корутин восстановления здоровья 
+         * Корутин восстановления здоровья
          */
         private IEnumerator RepairHealth()
         {
@@ -78,7 +70,7 @@ namespace Game.GamePlay.Services
             RepairBuffer.Add(_castleEntity.ReduceHealth); //Буфер для отображения в UI
             _castleEntity.Repair();
 
-            yield return new WaitForSeconds(AppConstants.SPEED_REDICE_CASTLE / GameSpeed.Value);
+            yield return new WaitForSeconds(AppConstants.SPEED_REDICE_CASTLE);
 
             if (_castleEntity.CurrenHealth.Value < _castleEntity.FullHealth)
             {

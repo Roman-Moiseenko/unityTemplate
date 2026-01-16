@@ -34,11 +34,11 @@ namespace Game.GamePlay.View.Towers
         public ReactiveProperty<bool> IsShot;
 
         public ReactiveProperty<Vector2> Direction;
-        public ReactiveProperty<float> SpeedFire;
+        public float SpeedFire = 0f;
         
         public ReactiveProperty<int> NumberModel = new(0);
         public float SpeedShot => TowerEntity.SpeedShot;
-        public ReactiveProperty<int> GameSpeed;
+        //public ReactiveProperty<int> GameSpeed;
 
         public IObservableCollection<MobEntity> Targets => TowerEntity.Targets;
         public TowerViewModel(
@@ -54,8 +54,8 @@ namespace Game.GamePlay.View.Towers
             Level = towerEntity.Level;
             Direction = towerEntity.PrepareShot;
             Position = towerEntity.Position;
-            SpeedFire = new ReactiveProperty<float>();
-            GameSpeed = towerService.GameSpeed;
+            //SpeedFire = new ReactiveProperty<float>();
+            //GameSpeed = towerService.GameSpeed;
             TowerEntity = towerEntity;
             
             
@@ -69,15 +69,12 @@ namespace Game.GamePlay.View.Towers
             }
             if (towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
             {
-                towerService.GameSpeed.Where(x => x != 0).Subscribe(v =>
-                {
-                    SpeedFire.Value = towerSpeed.Value / v; 
-                });
+               // towerService.GameSpeed.Where(x => x != 0).Subscribe(v =>
+               // {
+                    SpeedFire = towerSpeed.Value;// / v; 
+                //});
             }
-            else
-            {
-                SpeedFire.Value = 0;
-            }
+
             Level.Subscribe(level =>
             {
                 //TODO Смена модели и/или материал
@@ -105,14 +102,14 @@ namespace Game.GamePlay.View.Towers
             }
             if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
             {
-                _towerService.GameSpeed.Where(x => x != 0).Subscribe(v =>
-                {
-                    SpeedFire.Value = towerSpeed.Value / v; 
-                });
+               // _towerService.GameSpeed.Where(x => x != 0).Subscribe(v =>
+                //{
+                    SpeedFire = towerSpeed.Value;// / v; 
+               // });
             }
             else
             {
-                SpeedFire.Value = 0;
+                SpeedFire = 0;
             }
         }
         public TowerLevelSettings GetLevelSettings(int level)

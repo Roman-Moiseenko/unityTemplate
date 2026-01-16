@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using R3;
 using UnityEngine;
 
@@ -12,17 +13,16 @@ namespace Game.GamePlay.View.AttackAreas
         private AttackAreaViewModel _viewModel;
         //private Animator _animator;
         private Vector3 _targetPosition;
-        private bool _isMoving = false;
+        //private bool _isMoving = false;
         private bool _isHiding = false;
         private const int speed = 20;
-        private const float smoothTime = 0.2f;
+        private const float smoothTime = 0.3f;
         private Vector3 _velocity;
         private IDisposable _disposable;
         
         public void Bind(AttackAreaViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
-            //_animator = gameObject.GetComponent<Animator>();
             _viewModel = viewModel;
             transform.position = new Vector3(viewModel.Position.CurrentValue.x, 0, viewModel.Position.CurrentValue.y);
             _viewModel.Position.Subscribe(newPosition =>
@@ -30,7 +30,7 @@ namespace Game.GamePlay.View.AttackAreas
                 if (_viewModel.Moving)
                 {
                     _targetPosition = new Vector3(newPosition.x, 0, newPosition.y);
-                    _isMoving = true;
+                    transform.DOMove(_targetPosition, smoothTime).SetEase(Ease.OutQuad).SetUpdate(true);
                 }
                 else
                 {
@@ -54,29 +54,15 @@ namespace Game.GamePlay.View.AttackAreas
                 material.SetFloat("_Thickness", 0.04f / radiusVector.x); //Ободок
             }).AddTo(ref d);
 
-            //Debug.Log(viewModel.Radius.CurrentValue);
             _viewModel.StartAnimationHide.Where(x => x).Subscribe(_ =>
             {
                 _isHiding = true;
-                //Debug.Log("dddddd");
-                //_animator.Play("hide_area_attack");
             }).AddTo(ref d);
             _disposable = d.Build();
         }
         
         private void Update()
         {
-            if (_isMoving)
-            {
-                transform.position =
-                    Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, smoothTime, speed);
-                if (_velocity.magnitude < 0.0005)
-                {
-                    _isMoving = false;
-                    transform.position = _targetPosition;
-                }
-            }
-
             if (_isHiding)
             {
                 _area.transform.localScale = Vector3.Lerp(_area.transform.localScale, Vector3.zero, 0.20f);

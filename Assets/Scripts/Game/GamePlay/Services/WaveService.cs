@@ -24,14 +24,12 @@ namespace Game.GamePlay.Services
     public class WaveService
     {
         private const float SpeedGenerateMobs = 0.5f; //Скорость генерации новых мобов
-        private const float TimeEndWave = 1f; //Задержка между волнами
+        private const float TimeEndWave = 0.8f; //Задержка между волнами
         
         private readonly GameplayStateProxy _gameplayState;
         private readonly WayService _wayService;
         private readonly FsmGameplay _fsmGameplay;
         private readonly Coroutines _coroutines;
-
-        public readonly ReactiveProperty<int> GameSpeed;
         
         public ReactiveProperty<float> TimeOutNewWaveValue = new(0f);
         
@@ -55,7 +53,6 @@ namespace Game.GamePlay.Services
             GameplayStateProxy gameplayState
         )
         {
-            //_container = container;
             _gameplayState = gameplayState;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
             _fsmGameplay = container.Resolve<FsmGameplay>();
@@ -63,7 +60,6 @@ namespace Game.GamePlay.Services
             _wayService = container.Resolve<WayService>();
             var roadsService = container.Resolve<RoadsService>();
             _cameraService = container.Resolve<GameplayCamera>();
-            GameSpeed = gameplayState.GameSpeed;
             //Подписка на новую волну, при изменении номера волны, запускаем корутин старт волны
             gameplayState.CurrentWave
                 .Skip(1)
@@ -155,45 +151,33 @@ namespace Game.GamePlay.Services
 
         private IEnumerator StartNewWave(int numberWave)
         {
-            //Debug.Log("Волна нач - " + numberWave + " из " + _gameplayState.Waves.Count);
             yield return new WaitUntil(() => _fsmWave.IsBegin()); //Ждем когда разрешиться запуск волны
             while (_fsmGameplay.IsPause()) yield return null;
-
             yield return new WaitForSeconds(0.8f); //Пауза
             _fsmWave.Fsm.SetState<FsmStateWaveGo>();
-            
-            yield return _coroutines.StartCoroutine(GenerateMob(numberWave)); //Выводим мобов на дорогу
-            
-           // yield return new WaitForSeconds(TimeEndWave);
+            yield return GenerateMob(numberWave); //Выводим мобов на дорогу
             yield return new WaitForSeconds(0.5f); 
             _fsmWave.Fsm.SetState<FsmStateWaveWait>();
             
-            //TODO Проверка на кол-во волн на Карта
             if (_gameplayState.Waves.Count == _gameplayState.CurrentWave.Value && !_gameplayState.IsInfinity())
             {
-              //  _gameplayState.IsFinishWave.OnNext(true);
                 FinishAllWaves.OnNext(true);
             }
             else
             {
                 _gameplayState.CurrentWave.Value++;    
             }
-            
         }
 
         private IEnumerator GenerateMob(int numberWave)
         {
-            
-//            Debug.Log("Генерация мобов. Волна - " + numberWave);
             if (!_gameplayState.Waves.TryGetValue(numberWave, out var waveEntity)) yield break; //Волны закончились
-            //Debug.Log("Волна " + waveEntity.Number);
-           // Debug.Log("Мобов " + waveEntity.Mobs.Count);
             foreach (var entityMob in waveEntity.Mobs)
             {
                 while (_fsmGameplay.IsPause()) yield return null;
                 //Задержка создания нового моба
                 CreateMobViewModel(entityMob, waveEntity.Number);
-                yield return new WaitForSeconds(SpeedGenerateMobs / GameSpeed.CurrentValue);
+                yield return new WaitForSeconds(SpeedGenerateMobs); // / GameSpeed.CurrentValue
             }
             _fsmWave.Fsm.SetState<FsmStateWaveEnd>(); //Все мобы вышли
         }
@@ -214,18 +198,12 @@ namespace Game.GamePlay.Services
 
         private IEnumerator TimerNewWave()
         {
-         //   Debug.Log("Запуск TimerNewWave");
             for (var i = 0; i <= AppConstants.TIME_WAVE_NEW; i++) //Ускоряем при новой скорости
             {
                 if (!_fsmWave.IsTimer()) yield break; //Если во время цикла перешли в др.состояние
-                
-                while (_fsmGameplay.IsPause()) yield return null;
-
-                //Debug.Log($"TimeOutNewWaveValue = {TimeOutNewWaveValue.Value} // i = {i}");
                 TimeOutNewWaveValue.Value = Convert.ToSingle(i) / AppConstants.TIME_WAVE_NEW;
-                yield return new WaitForSeconds(0.04f / GameSpeed.CurrentValue);
+                yield return new WaitForSeconds(AppConstants.TIME_PAUSE_WAVE_NEW);
             }
-            
             _fsmWave.Fsm.SetState<FsmStateWaveBegin>();
         }
 

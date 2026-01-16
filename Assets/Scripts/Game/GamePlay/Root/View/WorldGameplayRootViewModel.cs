@@ -26,15 +26,12 @@ namespace Game.GamePlay.Root.View
     {
         private readonly FsmGameplay _fsmGameplay;
         private readonly FrameService _frameService;
-        private readonly RoadsService _roadsService;
         private readonly WaveService _waveService;
         private readonly GameplayCamera _cameraService;
         private readonly DamageService _damageService;
         private readonly Subject<Unit> _entityClick;
         private readonly Subject<TowerViewModel> _towerClick;
-        // private readonly DIContainer _container;
 
-        //   public readonly IObservableCollection<RoadViewModel> AllRoads;
         public readonly IObservableCollection<TowerViewModel> AllTowers;
         public readonly IObservableCollection<MobViewModel> AllMobs;
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
@@ -48,14 +45,12 @@ namespace Game.GamePlay.Root.View
         public AttackAreaViewModel AreaViewModel { get; }
         
         public MapFogViewModel MapFogViewModel { get;  }
-       // public DamagePopupViewModel DamagePopupViewModel { get; private set; }
         
         public ReactiveProperty<Vector2Int> CameraMove;
 
         private bool _isFrameDownClick = false; //Отслеживаем что перетаскивать Фрейм ил Камеру
         
         public WorldGameplayRootViewModel(
-            //  RoadService roadsService,
             GroundsService groundsService,
             TowersService towersService,
             CastleService castleService,
@@ -66,31 +61,26 @@ namespace Game.GamePlay.Root.View
             WaveService waveService,
             GameplayCamera cameraService,
             DamageService damageService,
-            //ShotService shotService,
             DIContainer container
         )
         {
             _fsmGameplay = fsmGameplay;
             _frameService = frameService;
-            _roadsService = roadsService;
+            //_roadsService = roadsService;
             _waveService = waveService;
             _cameraService = cameraService;
             _damageService = damageService;
-           // _shotService = shotService;
             //Регистрируем события 
             _entityClick = new Subject<Unit>(); //клик по объектам игрового мира, не UI 
             container.RegisterInstance(AppConstants.CLICK_WORLD_ENTITY, _entityClick);
             _towerClick = new Subject<TowerViewModel>();
             container.RegisterInstance(_towerClick);
-            
-            //_container = container;
 
             AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
             AllBoards = groundsService.AllBoards;
             AllTowers = towersService.AllTowers;
             AllMobs = waveService.AllMobsOnWay;
-            //AllShots = shotService.AllShots;
             FrameBlockViewModels = frameService.ViewModels;
             CastleViewModel = castleService.CastleViewModel;
             GateWaveViewModel = waveService.GateWaveViewModel;
@@ -98,7 +88,6 @@ namespace Game.GamePlay.Root.View
 
             AreaViewModel = new AttackAreaViewModel(_towerClick);
             MapFogViewModel = new MapFogViewModel(groundsService);
-            //DamagePopupViewModel = new DamagePopupViewModel(damageService.AllDamages);
             
             CameraMove = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));
             CameraMove.Subscribe(p => _cameraService.MoveCamera(p));
@@ -135,10 +124,9 @@ namespace Game.GamePlay.Root.View
                 //Режим завершения строительства
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
-                    
                     var card = ((FsmStateBuildEnd)newState).GetRewardCard();
                     var position = _fsmGameplay.GetPosition(); 
-                    //Debug.Log("WorldGameplayRootViewModel Режим конца строительства + " + card.RewardType);
+
                     switch (card.RewardType)
                     {
                         case RewardType.Tower: 
@@ -170,7 +158,6 @@ namespace Game.GamePlay.Root.View
                             });
 
                             //frameService.RemoveFrame();
-                            
                             break;
                         case RewardType.TowerLevelUp: towersService.LevelUpTower(card.ConfigId); break;
                         case RewardType.TowerMove: towersService.MoveTower(card.UniqueId, position); break;
@@ -216,8 +203,6 @@ namespace Game.GamePlay.Root.View
 
         public void ClickEntity(Vector2 mousePosition)
         {
-//            Debug.Log(" ClickEntity "+ mousePosition);
-
             var position = _cameraService.GetWorldPoint(mousePosition);
             _entityClick.OnNext(Unit.Default);
             if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
@@ -232,7 +217,6 @@ namespace Game.GamePlay.Root.View
                     }
                 }
 
-
                 if (CastleViewModel.IsPosition(position))
                     Debug.Log(" Это крепость " + CastleViewModel.ConfigId);
                 AreaViewModel.Hide();
@@ -245,13 +229,10 @@ namespace Game.GamePlay.Root.View
                     Mathf.FloorToInt(position.x + 0.5f), 
                     Mathf.FloorToInt(position.y + 0.5f)
                     ));   
-                //_fsmGameplay.Fsm.Position.Value = new Vector2Int(Mathf.FloorToInt(position.x + 0.5f), Mathf.FloorToInt(position.y + 0.5f));
-                
                 var card = (RewardCardData)(_fsmGameplay.Fsm.StateCurrent.Value.Params);
                 card.Position.x = Mathf.FloorToInt(position.x + 0.5f);
                 card.Position.y = Mathf.FloorToInt(position.y + 0.5f);
                 _fsmGameplay.Fsm.StateCurrent.Value.Params = card;
-                
             }
         }
 
@@ -272,7 +253,6 @@ namespace Game.GamePlay.Root.View
             }
             else
             {
-                //Debug.Log(" StartMoving "+ mousePosition);
                 _cameraService.OnPointDown(mousePosition);
             }
         }
@@ -285,7 +265,7 @@ namespace Game.GamePlay.Root.View
         public void Update()
         {
             _cameraService?.UpdateMoving(); //Движение камеры
-            _cameraService?.AutoMoving();
+            //_cameraService?.AutoMoving();
             _damageService.Update();
         }
         
@@ -297,8 +277,6 @@ namespace Game.GamePlay.Root.View
             }
             else
             {
-              //  Debug.Log(" FinishMoving "+ mousePosition);
-
                 _cameraService.OnPointUp(mousePosition);//Завершаем движение камеры
             }
         }
@@ -311,8 +289,6 @@ namespace Game.GamePlay.Root.View
             }
             else //Двигаем камеру
             {
-//                Debug.Log(" ProcessMoving "+ mousePosition);
-
                 _cameraService.OnPointMove(mousePosition);
             }
         }

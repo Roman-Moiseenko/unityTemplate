@@ -18,7 +18,7 @@ namespace Game.State.Root
       //  public bool HasSessionGame { get; set; }
         public int GlobalInventoryId { get; set; }
         public int CurrentMapId { get; set; } = 0;
-        public int GameSpeed { get; set; } //При выходе из Gameplay сохранять
+        public float GameSpeed { get; set; } //При выходе из Gameplay сохранять
      //   public List<ResourceData> Resources { get; set; } = new();
         public InventoryRootData Inventory { get; set; } = new();
         

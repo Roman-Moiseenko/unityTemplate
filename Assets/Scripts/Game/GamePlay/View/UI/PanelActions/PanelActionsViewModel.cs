@@ -1,6 +1,7 @@
 ﻿using System;
 using DI;
 using Game.GamePlay.Commands.RewardCommand;
+using Game.GamePlay.Fsm;
 using Game.State;
 using Game.State.Root;
 using MVVM.CMD;
@@ -16,7 +17,7 @@ namespace Game.GamePlay.View.UI.PanelActions
         
         public readonly GameplayUIManager _uiManager;
         
-        public readonly ReactiveProperty<int> CurrentSpeed;
+        //public readonly ReactiveProperty<int> CurrentSpeed;
         private readonly GameplayStateProxy _gameplayStateProxy;
         
         private IDisposable _disposable;
@@ -29,8 +30,9 @@ namespace Game.GamePlay.View.UI.PanelActions
             var d = Disposable.CreateBuilder();
             _uiManager = uiManager;
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
-  
-            CurrentSpeed = _gameplayStateProxy.GameSpeed;
+            var fsmGameplay = container.Resolve<FsmGameplay>();
+            fsmGameplay.Fsm.StateCurrent.Subscribe();
+           // CurrentSpeed = _gameplayStateProxy.GameSpeed;
             _disposable = d.Build();
         }
         public void RequestGameSpeed()
@@ -48,6 +50,11 @@ namespace Game.GamePlay.View.UI.PanelActions
         public override void Dispose()
         {
             _disposable.Dispose();
+        }
+
+        public float GetCurrentSpeed()
+        {
+            return _gameplayStateProxy.GetCurrentSpeed();
         }
     }
 }

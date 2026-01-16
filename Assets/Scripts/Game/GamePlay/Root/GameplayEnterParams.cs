@@ -9,7 +9,7 @@ namespace Game.GamePlay.Root
     public class GameplayEnterParams :SceneEnterParams
     {
         public int MapId { get; }
-        public int GameSpeed { get; set; }
+        public float GameSpeed { get; set; }
 
         public TypeGameplay TypeGameplay { get; }
         //public bool HasSessionGameplay { get; set; }

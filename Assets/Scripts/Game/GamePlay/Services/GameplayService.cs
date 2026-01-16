@@ -105,6 +105,7 @@ namespace Game.GamePlay.Services
 
             //Здоровье крепости меньше 0 => Проигрыш
             //gameplayState.Castle.IsDead.Subscribe(h => Lose()).AddTo(ref d);
+//            _fsmGameplay.Fsm.StateCurrent.Subscribe(e => Debug.Log(e));
             _disposable = d.Build();
         }
 
@@ -343,10 +344,12 @@ namespace Game.GamePlay.Services
 
         public void RepairAd()
         {
-            //TODO 
-
-            var ad = _adService.ShowAdGoogle();
+            Repair();
+            //TODO Отработать сервис показа рекламы
+            /*
             _fsmGameplay.Fsm.SetState<FsmStateGamePause>();
+            var ad = _adService.ShowAdGoogle();
+            
 
             ad.CloseShow.Subscribe(v =>
             {
@@ -360,6 +363,7 @@ namespace Game.GamePlay.Services
                     Lose();
                 }
             });
+            */
         }
 
         private void Repair()

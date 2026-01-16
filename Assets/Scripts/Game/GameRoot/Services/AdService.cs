@@ -25,18 +25,11 @@ namespace Game.GameRoot.Services
             //TODO Запускаем рекламу
             var ad = new AdGoogle();
             
-            //TODO подключаем коллбеки на результат, для теста корутин на 1 с
-
-
-            _coroutines.StartCoroutine(ShowAdTemp(ad));
+            //TODO подключаем коллбеки на результат
+            //Игра на паузе. Ожидаем удачного показа рекламы
+            ad.SuccessShow();
             return ad;
             
-        }
-
-        private IEnumerator ShowAdTemp(AdGoogle ad)
-        {
-            yield return new WaitForSeconds(1f);
-            ad.SuccessShow();
         }
     }
 }

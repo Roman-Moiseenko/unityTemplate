@@ -12,19 +12,13 @@ namespace Game.GamePlay.View.Castle
         [SerializeField] private Transform barrel;
         [SerializeField] private ParticleSystem fireEffect;
         [SerializeField] private CastleShotBinder shot;
-        private ReactiveProperty<float> _duration;
         public ReactiveProperty<bool> IsShotComplete => shot.IsShotComplete;
         private Sequence Sequence { get; set; }
 
         public void Bind(CastleViewModel viewModel)
         {
-            _duration = new ReactiveProperty<float>(viewModel.CastleEntity.Speed);
-            shot.Bind(_duration, viewModel.GameSpeed);
+            shot.Bind(viewModel);
             //Запуск полета снарядов
-            viewModel.GameSpeed.Where(x => x > 0).Subscribe(v =>
-            {
-                _duration.Value = viewModel.CastleEntity.Speed / viewModel.GameSpeed.CurrentValue;
-            });
         }
         
         public void Fire(MobEntity mobEntity)

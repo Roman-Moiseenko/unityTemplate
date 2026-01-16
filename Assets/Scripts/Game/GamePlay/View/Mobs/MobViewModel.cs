@@ -27,7 +27,7 @@ namespace Game.GamePlay.View.Mobs
 
         public ReactiveProperty<Vector2> Position => _mobEntity.Position;
         public ReactiveProperty<Vector2Int> Direction;
-        public readonly ReactiveProperty<int> GameSpeed;
+        //public readonly ReactiveProperty<int> GameSpeed;
         
         public Vector2 StartPosition;
         public Vector2Int StartDirection;
@@ -54,7 +54,7 @@ namespace Game.GamePlay.View.Mobs
             CameraService = cameraService;
             StartPosition = mobEntity.Position.CurrentValue;
             StartDirection = mobEntity.Direction.CurrentValue;
-            GameSpeed = waveService.GameSpeed;
+            //GameSpeed = waveService.GameSpeed;
             CurrentHealth = mobEntity.Health;
             MaxHealth = mobEntity.Health.CurrentValue;
 
@@ -114,7 +114,7 @@ namespace Game.GamePlay.View.Mobs
                     _targetPosition = GetTargetPosition();
                 }
                 
-                var speedMob = GameSpeed.CurrentValue * AppConstants.MOB_BASE_SPEED * _mobEntity.Speed();
+                var speedMob = AppConstants.MOB_BASE_SPEED * _mobEntity.Speed();
                 Position.Value = Vector2.MoveTowards(
                     Position.CurrentValue, 
                     _targetPosition,  

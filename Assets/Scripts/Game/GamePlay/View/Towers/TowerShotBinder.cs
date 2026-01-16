@@ -55,14 +55,13 @@ namespace Game.GamePlay.View.Towers
         {
             missile.gameObject.SetActive(true);
             _isMoving.OnNext(true);
-//            Debug.Log(_viewModel.TowerEntityId + " Выстрел");
             yield return null;
-        //    Debug.DrawLine(missile.transform.position, _target.CurrentValue);
+
             while (_isMoving.Value)
             {
-                var speedEntity = _viewModel.GameSpeed.CurrentValue * _viewModel.SpeedShot * AppConstants.SHOT_BASE_SPEED;
+                var speedEntity = _viewModel.SpeedShot * AppConstants.SHOT_BASE_SPEED;
                 yield return null;
-                yield return new WaitUntil(() => speedEntity != 0); //На паузе не стреляем
+                //yield return new WaitUntil(() => speedEntity != 0); //На паузе не стреляем
                 //TODO Расчет координат полета от типа снаряда
                 
                 missile.transform.position = Vector3.MoveTowards(missile.transform.position, _target.CurrentValue,  Time.deltaTime * speedEntity);
@@ -127,19 +126,15 @@ namespace Game.GamePlay.View.Towers
                 yield return null;
             }
         }
-
         
         private void OnDestroy()
         {
             _disposable?.Dispose();
         }
 
-
-
         public void StopShot()
         {
             missile.gameObject.SetActive(false);
-            
         }
     }
 }

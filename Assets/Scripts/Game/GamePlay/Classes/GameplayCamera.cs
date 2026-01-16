@@ -1,4 +1,5 @@
-﻿using DI;
+﻿using DG.Tweening;
+using DI;
 using Game.Common;
 using Newtonsoft.Json;
 using R3;
@@ -16,7 +17,7 @@ namespace Game.GamePlay.Classes
         public float SensTouch = 0.4f;
 
         private const int speed = 8;
-        private const float smoothTime = 0.2f;
+        private const float smoothTime = 0.5f;
         private Vector3 _velocity;
 
 
@@ -24,13 +25,13 @@ namespace Game.GamePlay.Classes
         private bool _isDragging = false; //, _isMoving = false;
         private Vector2 _tempCenter, _targetDirection, _tempMousePos;
 
-        private bool _autoMoving = false;
+        //private bool _autoMoving = false;
         private Vector3 _targetAutoMoving;
 
         private readonly RectBorder _border; //, _cameraBorder;
         private readonly Subject<Unit> _subjectCameraMoving;
 
-        private bool _moveTowards = false;
+        //private bool _moveTowards = false;
 
         public GameplayCamera(DIContainer container)
         {
@@ -95,7 +96,7 @@ namespace Game.GamePlay.Classes
         public void OnPointUp(Vector2 mousePosition)
         {
             _isDragging = false;
-            _autoMoving = false;
+            //_autoMoving = false;
             Vector2 point = GetWorldPoint(mousePosition);
             float sqrDst = (_tempCenter - point).sqrMagnitude;
             // if (sqrDst <= SensTouch) _isMoving = false;
@@ -106,7 +107,7 @@ namespace Game.GamePlay.Classes
             if (!_isDragging) return;
             //if (!_isMoving) return;
 
-            var speedMove = Time.deltaTime * MoveSpeed;
+            var speedMove = Time.unscaledDeltaTime * MoveSpeed;
             if (_isDragging)
             {
                 _tempSens = Sensitivity;
@@ -150,14 +151,16 @@ namespace Game.GamePlay.Classes
 
         public void AutoMoving()
         {
-            if (!_autoMoving) return;
+           
+            /*if (!_autoMoving) return;
 
             if (_moveTowards) //Плавное движение
             {
+                Debug.Log("AutoMoving 1");
                 CameraSystem.transform.position = Vector3.MoveTowards(
                     CameraSystem.transform.position, 
                     _targetAutoMoving,
-                    speed * Time.deltaTime / 2.5f);
+                    speed * Time.unscaledDeltaTime / 2.5f);
                 var dist = Vector3.Distance(CameraSystem.transform.position, _targetAutoMoving);
                 if (dist < 0.001)
                 {
@@ -167,6 +170,7 @@ namespace Game.GamePlay.Classes
             }
             else //Рывками
             {
+                Debug.Log("AutoMoving 2");
                 CameraSystem.transform.position = Vector3.SmoothDamp(CameraSystem.transform.position, _targetAutoMoving,
                     ref _velocity, smoothTime, speed);
 
@@ -176,20 +180,26 @@ namespace Game.GamePlay.Classes
                     CameraSystem.transform.position = _targetAutoMoving;
                 }
             }
-
-
             _subjectCameraMoving.OnNext(Unit.Default); //Камера сдвинулась, оповещаем
+            */
         }
 
-        public void MoveCamera(Vector2 position, bool methods = false)
+        public void MoveCamera(Vector2 position)
         {
-            _autoMoving = true;
-            _moveTowards = methods;
+            //_autoMoving = true;
+            //_moveTowards = methods;
             _targetAutoMoving = new Vector3(
                 position.x + AppConstants.CENTER_MAP,
                 CameraSystem.transform.position.y,
                 position.y + AppConstants.CENTER_MAP
             );
+            
+            //Debug.Log("MoveCamera " + _targetAutoMoving + " " + CameraSystem.transform.position);
+            CameraSystem.transform
+                .DOMove(_targetAutoMoving, smoothTime)
+                .SetEase(Ease.OutCirc)
+                .SetUpdate(true)
+                .OnUpdate(() => _subjectCameraMoving.OnNext(Unit.Default));
         }
     }
 }

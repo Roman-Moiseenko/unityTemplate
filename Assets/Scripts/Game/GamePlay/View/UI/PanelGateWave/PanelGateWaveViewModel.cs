@@ -28,7 +28,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         private readonly Coroutines _coroutines;
         public override string Id => "PanelGateWave";
         public override string Path => "Gameplay/Panels/GateWaveInfo/";
-        public readonly int CurrentSpeed;
+        public readonly float CurrentSpeed;
         
         //Состояния отображения окон
         public ReactiveProperty<bool> ShowButtonWave = new(true);

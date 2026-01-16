@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
@@ -18,13 +19,14 @@ namespace Game.GamePlay.View.Frames
         [SerializeField] private Material forbidden;
         [SerializeField] private Material forbiddenSelected;
         [SerializeField] private GameObject frame;
-        [SerializeField] public Transform Element;
+        [SerializeField] private Transform Element;
         [SerializeField] private ParticleSystem cloud;
+        
         private Vector3 _targetPosition;
         private Vector3 _targetPositionElement;
         private bool _isMoving = false;
         private const int speed = 20;
-        private const float smoothTime = 0.2f;
+        private const float smoothTime = 0.3f;
         private Vector3 _velocity;
         private IDisposable _disposable;
 
@@ -48,7 +50,8 @@ namespace Game.GamePlay.View.Frames
             viewModel.Position.Subscribe(newPosition =>
             {
                 _targetPosition = new Vector3(newPosition.x, transform.position.y, newPosition.y);
-                _isMoving = true;
+                transform.DOMove(_targetPosition, smoothTime).SetEase(Ease.OutQuad).SetUpdate(true);
+                
             }).AddTo(ref d);
 
 
@@ -94,7 +97,7 @@ namespace Game.GamePlay.View.Frames
         {
             if (_isMoving)
             {
-                transform.position = Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, smoothTime, speed );
+                transform.position = Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, smoothTime, speed, Time.unscaledTime);
                 if (_velocity.magnitude < 0.0005)
                 {
                     _isMoving = false;

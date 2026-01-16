@@ -36,15 +36,7 @@ namespace Game.GamePlay.View.Towers
             
             _disposable = d.Build();
         }
-
-        private IEnumerator PauseTowerFire()
-        {
-            //Продолжить анимацию после окончания выстрела в сек
-            //   yield return new WaitForSeconds(awayFire);
-            //animator.SetBool("IsFire", _viewModel.IsShot.CurrentValue);
-            yield return null;
-        }
-
+        
         public ReactiveProperty<bool> Direction(Vector2 newValue)
         {
             if (rotateBlock != null) //Вращение башни
@@ -100,10 +92,10 @@ namespace Game.GamePlay.View.Towers
                     yield break;
                 }
 
-                if (_timeElapsed < _viewModel.SpeedFire.Value)
+                if (_timeElapsed < _viewModel.SpeedFire)
                 {
                     rotateBlock.transform.rotation = Quaternion.Lerp(rotateBlock.transform.rotation, _targetRotation,
-                        _timeElapsed / _viewModel.SpeedFire.Value);
+                        _timeElapsed / _viewModel.SpeedFire);
                     _timeElapsed += Time.deltaTime;
                 }
                 else

@@ -19,28 +19,23 @@ namespace Game.GamePlay.Services
 {
     public class TowersService
     {
-        private readonly IObservableCollection<TowerEntity> _towerEntities; //кешируем
-        private readonly List<TowerCardData> _baseTowerCards; //
-        private readonly ICommandProcessor _cmd;
-        private readonly PlacementService _placementService;
-
-        private readonly ObservableList<TowerViewModel> _allTowers = new();
-        private readonly Dictionary<int, TowerViewModel> _towersMap = new();
-
-        private readonly Dictionary<string, List<TowerLevelSettings>> _towerSettingsMap = new();
-
-        //Кешируем параметры башен на карте
-        public readonly Dictionary<
-            string,
+        public readonly Dictionary<string,
             Dictionary<TowerParameterType, TowerParameterData>> TowerParametersMap = new();
 
         public IObservableCollection<TowerViewModel> AllTowers =>
             _allTowers; //Интерфейс менять нельзя, возвращаем через динамический массив
         public IObservableCollection<TowerEntity> AllTowerEntities => _towerEntities; 
-
         public readonly ObservableDictionary<string, int> Levels = new(); //Уровни башен по типам ConfigId
-
-        public ReactiveProperty<int> GameSpeed;
+        
+        private readonly IObservableCollection<TowerEntity> _towerEntities; //кешируем
+        private readonly List<TowerCardData> _baseTowerCards; //
+        private readonly ICommandProcessor _cmd;
+        private readonly PlacementService _placementService;
+        private readonly ObservableList<TowerViewModel> _allTowers = new();
+        private readonly Dictionary<int, TowerViewModel> _towersMap = new();
+        //Кешируем параметры башен на карте
+        private readonly Dictionary<string, List<TowerLevelSettings>> _towerSettingsMap = new();
+        
 
         /**
          * При загрузке создаем все view-модели из реактивного списка всех строений.
@@ -54,21 +49,16 @@ namespace Game.GamePlay.Services
             PlacementService placementService
         )
         {
-         //   Debug.Log(JsonConvert.SerializeObject(TowerParametersMap, Formatting.Indented));
-            //Debug.Log("Входные данные для башен " + JsonConvert.SerializeObject(baseTowerCards, Formatting.Indented));
             _towerEntities = gameplayState.Towers;
             _baseTowerCards = baseTowerCards;
             _cmd = cmd;
             _placementService = placementService;
-            GameSpeed = gameplayState.GameSpeed;
             //Кешируем настройки зданий / объектов
-            
             foreach (var towerSettings in towersSettings.AllTowers)
             {
                 _towerSettingsMap[towerSettings.ConfigId] = towerSettings.GameplayLevels;
                 Levels[towerSettings.ConfigId] = 1;
             }
-
             //Кешируем уровень башни по конфигу, если башня этого типа есть на карте
             foreach (var towerEntity in _towerEntities)
             {
@@ -117,9 +107,6 @@ namespace Game.GamePlay.Services
                 {
                     if (towerEntity.ConfigId != configId) continue;
                     towerEntity.Level.OnNext(newLevel);
-                    
-                   // RemoveTowerViewModel(towerEntity); //Удаляем все модели viewModel.ConfigId == x.NewItem.Key
-                   // CreateTowerViewModel(towerEntity); //Создаем модели Заново
                 }
             });
         }
@@ -146,8 +133,7 @@ namespace Game.GamePlay.Services
             var command = new CommandPlaceTower(towerTypeId, position);
             return _cmd.Process(command);
         }
-
-
+        
         public bool MoveTower(int towerId, Vector2Int position)
         {
             var command = new CommandMoveTower(towerId, position);
@@ -220,7 +206,6 @@ namespace Game.GamePlay.Services
             }
 
             return towers;
-            //return _baseTowerCards.Select(towerCard => towerCard.ConfigId).ToList();
         }
 
         /**
@@ -232,9 +217,7 @@ namespace Game.GamePlay.Services
             foreach (var towerViewModel in _allTowers) //Все построенные башни
             {
                 if (Levels[towerViewModel.ConfigId] < 6)
-                {
                     towers.TryAdd(towerViewModel.ConfigId, Levels[towerViewModel.ConfigId]); //Добавлять один раз
-                }
             }
             return towers;
         }

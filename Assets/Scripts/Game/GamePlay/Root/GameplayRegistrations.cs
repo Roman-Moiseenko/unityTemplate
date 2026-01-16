@@ -97,8 +97,6 @@ namespace Game.GamePlay.Root
             //var cmd = new CommandProcessorGameplay(gameStateProvider); //Создаем обработчик команд
             //container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
 
-            gameplayState.GameSpeed.Value =
-                gameplayEnterParams.GameSpeed; //Получаем скорость игры из настроек GameState
             cmd.RegisterHandler(new CommandCreateGroundHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState, gameSettings.TowersSettings));
             cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
@@ -193,7 +191,7 @@ namespace Game.GamePlay.Root
           //  var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, fsmGameplay);
         //    container.RegisterInstance(shotService);
 
-            var damageService = new DamageService(fsmGameplay, gameplayState, gameSettings.TowersSettings, waveService,
+            var damageService = new DamageService(fsmGameplay, gameplayState, waveService,
                 towersService, rewardService);
 
             container.RegisterInstance(damageService);

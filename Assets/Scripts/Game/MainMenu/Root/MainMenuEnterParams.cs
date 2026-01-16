@@ -14,7 +14,7 @@ namespace Game.MainMenu.Root
         public int LastWave { get; set; } //Последняя волна, при проигрыше
         public bool FinishedMap { get; set; } //Уровень выйгран
         
-        public int GameSpeed { get; set; }
+        public float GameSpeed { get; set; }
         public int MapId { get; set; }
         public int KillsMob { get; set; }
         public TypeGameplay TypeGameplay { get; set; }

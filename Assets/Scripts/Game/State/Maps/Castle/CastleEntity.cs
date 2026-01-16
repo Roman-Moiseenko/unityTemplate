@@ -112,6 +112,7 @@ namespace Game.State.Maps.Castle
 
         public void ClearTarget()
         {
+            if (Target.Count == 0) return;
             foreach (var mobEntity in Target.ToList())
             {
                 RemoveTarget(mobEntity);

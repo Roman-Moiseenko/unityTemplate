@@ -17,9 +17,12 @@ namespace Game.GamePlay.View.UI.PanelActions
         protected override void OnBind(PanelActionsViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
+            _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.GetCurrentSpeed()}x";
+            /*
             viewModel.CurrentSpeed
                 .Subscribe(x => { _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{x}x"; })
                 .AddTo(ref d);
+            */
             _disposable = d.Build();
             //_btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.CurrentSpeed}x";
         }
@@ -38,7 +41,9 @@ namespace Game.GamePlay.View.UI.PanelActions
 
         private void OnChangeGameSpeed()
         {
+            
             ViewModel.RequestGameSpeed();
+            _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.GetCurrentSpeed()}x";
         }
 
         private void OnProgressAdd()

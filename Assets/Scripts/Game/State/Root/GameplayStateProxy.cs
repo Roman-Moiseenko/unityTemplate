@@ -19,14 +19,14 @@ namespace Game.State.Root
     {
         public readonly GameplayState Origin;
 
-        public readonly ReactiveProperty<int> GameSpeed;
+        //public readonly ReactiveProperty<int> GameSpeed;
         public readonly ReactiveProperty<int> Progress;
         public readonly ReactiveProperty<int> ProgressLevel;
         public readonly ReactiveProperty<long> SoftCurrency;
         public readonly ReactiveProperty<int> MapId;
         public readonly ReactiveProperty<int> CurrentWave;
         public readonly ReactiveProperty<int> UpdateCards;
-        private readonly ReactiveProperty<int> _previousGameSpeed  = new();
+        private float _previousGameSpeed;
         public readonly ReactiveProperty<int> KillMobs;
         public readonly ReactiveProperty<TypeGameplay> TypeGameplay;
         
@@ -47,13 +47,12 @@ namespace Game.State.Root
         {
             Origin = origin;
             Castle = new CastleEntity(origin.CastleData);
-            _previousGameSpeed.Value = Origin.GameSpeed;
-            GameSpeed = new ReactiveProperty<int>(origin.GameSpeed);
-            GameSpeed.Subscribe(newSpeed =>
-            {
-                origin.GameSpeed = newSpeed;
-              //  Debug.Log($"Новая гейплей скорость = {newSpeed} PreviousGameSpeed = {PreviousGameSpeed.Value}");
-            });
+            _previousGameSpeed = Origin.GameSpeed;
+         //   GameSpeed = new ReactiveProperty<int>(origin.GameSpeed);
+       //     GameSpeed.Subscribe(newSpeed =>
+      //      {
+       //         origin.GameSpeed = newSpeed;
+       //     });
             
             Progress = new ReactiveProperty<int>(origin.Progress);
             Progress.Subscribe(newProgress => origin.Progress = newProgress);
@@ -167,10 +166,11 @@ namespace Game.State.Root
         /**
          * Ставим игру на паузу. Все объекты, которые зависят от скорости игры, подписываются на GameSpeed
          */
-        public void SetPauseGame() 
+        public void SetPauseGame()
         {
-            _previousGameSpeed.Value = GameSpeed.Value;
-            GameSpeed.Value = 0;
+            _previousGameSpeed = Time.timeScale; //GameSpeed.Value;
+            Time.timeScale = 0;
+            //GameSpeed.Value = 0;
         }
         
         /**
@@ -178,36 +178,41 @@ namespace Game.State.Root
          */
         public void GameplayReturn()
         {
-           // Debug.Log("PreviousGameSpeed = " + PreviousGameSpeed);
-            GameSpeed.Value = _previousGameSpeed.Value == 0 ? 1 : _previousGameSpeed.Value;
+            //GameSpeed.Value 
+            //Debug.Log("_previousGameSpeed = " + _previousGameSpeed);
+            Time.timeScale = _previousGameSpeed == 0 ? 1 : _previousGameSpeed;
+            //Debug.Log("Time.timeScale  = " + Time.timeScale );
         }
 
         public void SetSkillSpeed()
         {
-            _previousGameSpeed.Value = GameSpeed.Value;
+            _previousGameSpeed = Time.timeScale; //GameSpeed.Value;
             SetGameSpeed(1);
         }
         
         private void SetGameSpeed(int newSpeed)
         {
-            if (newSpeed == GameSpeed.Value) return;
-            GameSpeed.Value = newSpeed;
+            Time.timeScale = newSpeed;
+            Origin.GameSpeed = newSpeed; //Запоминаем скорость
+            //if (newSpeed == GameSpeed.Value) return;
+            //GameSpeed.Value = newSpeed;
         }
 
-        public int GetLastSpeedGame()
+        public float GetLastSpeedGame()
         {
-            return Mathf.Max(GameSpeed.CurrentValue, _previousGameSpeed.Value);
+            //GameSpeed.CurrentValue;
+            return Mathf.Max(Time.timeScale, _previousGameSpeed);
         }
 
-        public int GetCurrentSpeed()
+        public float GetCurrentSpeed()
         {
-            return GameSpeed.Value;
+            return Time.timeScale == 0 ? _previousGameSpeed : Time.timeScale;
         }
 
         public int SetNextSpeed()
         {
             var newSpeed = 1;
-            switch (GameSpeed.Value)
+            switch (Time.timeScale)
             {
                 case 1: newSpeed = 2;
                     break;

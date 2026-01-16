@@ -18,11 +18,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
         [SerializeField] private Image imageBack;
         [SerializeField] private Transform endPoint;
         [SerializeField] private Transform moving;
+        
         public ReactiveProperty<CurrencyState> RewardState;
 
         private ImageManagerBinder _imageManager;
         private Vector3 _targetFinish;
-        
         private Sequence Sequence { get; set; }
 
         public void Bind()
@@ -58,35 +58,37 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
                 moving.transform.position.y + random.y * 160,
                 moving.transform.position.z
             );
-            
+            endPoint.gameObject.SetActive(true);
             Sequence = DOTween.Sequence();
             Sequence
                 .Append(
                     moving.transform
                         .DOScale(new Vector3(1f, 1f, 1f), 0.5f)
                         .From(new Vector3(0.5f, 0.5f, 1f))
-                        .SetEase(Ease.OutQuint))
+                        .SetEase(Ease.OutQuint)
+                        .SetUpdate(true))
                 .Join(
                     moving.transform
                         .DOMove(targetEjection, 0.5f)
-                        .SetEase(Ease.OutQuint))
-                .SetDelay(0.3f)
+                        .SetEase(Ease.OutQuint)
+                        .SetUpdate(true))
+                .Append(DOTween.Sequence().SetDelay(0.3f).SetUpdate(true))
                 .Append(
                     moving.transform
                         .DOMove(_targetFinish, 0.7f)
-                        .SetEase(Ease.InOutCirc))
+                        .SetEase(Ease.InOutCirc)
+                        .SetUpdate(true))
                 .OnComplete(() =>
                 {
                     moving.transform.gameObject.SetActive(false);
                     endPoint.transform.gameObject.SetActive(false);
                     Sequence.Kill();
-                });
+                }).SetUpdate(true);
 
             RewardState.Value = CurrencyState.Animation;
         }
 
         
-
         private void OnDestroy()
         {
             Sequence.Kill();

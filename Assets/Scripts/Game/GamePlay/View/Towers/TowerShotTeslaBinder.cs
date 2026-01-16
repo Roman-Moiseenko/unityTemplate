@@ -31,8 +31,8 @@ namespace Game.GamePlay.View.Towers
         public override IEnumerator FireStart()
         {
             //Debug.Log("Tesla FireStart " + missiles.Count);
-            yield return new WaitForSeconds(_viewModel.SpeedFire.CurrentValue);
-            yield return new WaitUntil(() => _viewModel.GameSpeed.Value != 0);
+            yield return new WaitForSeconds(_viewModel.SpeedFire);
+            //yield return new WaitUntil(() => _viewModel.GameSpeed.Value != 0);
         }
         
     }

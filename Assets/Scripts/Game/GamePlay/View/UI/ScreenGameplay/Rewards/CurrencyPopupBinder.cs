@@ -9,9 +9,9 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
 {
     public class CurrencyPopupBinder : MonoBehaviour
     {
+        public ReactiveProperty<bool> Free;       
+         
         private Camera _camera;
-        public ReactiveProperty<bool> Free;
-
         private Vector3 _target;
         private Vector3 _targetFinish;
         private Sequence Sequence { get; set; }
@@ -22,8 +22,6 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
             transform.gameObject.SetActive(false);
             _camera = camera;
             _targetFinish = targetFinish;
-            //animator = gameObject.GetComponent<Animator>();
-//            animator.enabled = false;
         }
         
         public void StartPopup(Vector3 position)
@@ -44,24 +42,26 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
                     transform.GetComponent<RectTransform>()
                         .DOSizeDelta(new Vector2(50, 50), 0.4f)
                         .From(new Vector2(25, 25))
-                        .SetEase(Ease.OutQuint))
+                        .SetEase(Ease.OutQuint)
+                        .SetUpdate(true))
                 .Join(
                     transform
                         .DOMove(targetEjection, 0.4f)
-                        .SetEase(Ease.OutQuint))
-                .SetDelay(0.1f)
+                        .SetEase(Ease.OutQuint)
+                        .SetUpdate(true))
+                .Append(DOTween.Sequence().SetDelay(0.1f).SetUpdate(true))
                 .Append(
                     transform
                         .DOMove(_targetFinish, 0.7f)
-                        .SetEase(Ease.InOutCirc))
+                        .SetEase(Ease.InOutCirc)
+                        .SetUpdate(true))
                 .OnComplete(() =>
                 {
                     transform.gameObject.SetActive(false);
                     Free.Value = true;
                     Sequence.Kill();
-                });
+                }).SetUpdate(true);
         }
-
 
         private void OnDestroy()
         {

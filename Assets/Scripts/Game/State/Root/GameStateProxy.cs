@@ -19,7 +19,7 @@ namespace Game.State.Root
         public const int MaxChest = 4;
         //private readonly GameState _gameState;
         public ReactiveProperty<int> CurrentMapId = new();
-        public ReactiveProperty<int> GameSpeed;
+        public ReactiveProperty<float> GameSpeed;
         public ReactiveProperty<long> HardCurrency;
         public ReactiveProperty<long> SoftCurrency;
 
@@ -35,7 +35,7 @@ namespace Game.State.Root
             Origin = gameState;
             //_gameState = gameState;
 
-            GameSpeed = new ReactiveProperty<int>(gameState.GameSpeed);
+            GameSpeed = new ReactiveProperty<float>(gameState.GameSpeed);
             GameSpeed.Subscribe(newValue =>
             {
                 gameState.GameSpeed = newValue;

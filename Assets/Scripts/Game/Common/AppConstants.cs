@@ -14,7 +14,9 @@
         public const string CLICK_WORLD_ENTITY = nameof(CLICK_WORLD_ENTITY);
         public const int COST_UPDATE_BUILD = 20; //стоимость повышения обновления карточек за каждый раз
         public const int COST_REPAIR_CASTLE = 40; //стоимость восстановления замка
-        public const int TIME_WAVE_NEW = 60;
+        public const int TIME_WAVE_NEW = 60; //Кол-во кадров на таймере волны
+        public const float TIME_PAUSE_WAVE_NEW = 0.04f; //Время между кадрами таймера волны
+        
         public const float MOB_BASE_SPEED = 0.5f;
         public const float SHOT_BASE_SPEED = 10f;
         public const float MOB_SPEED_ATTACK = 1f;

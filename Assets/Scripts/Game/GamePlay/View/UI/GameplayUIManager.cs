@@ -42,6 +42,8 @@ namespace Game.GamePlay.View.UI
             rootUI.AddPanel(new PanelActionsViewModel(this, container));
             rootUI.AddPanel(new PanelConfirmationViewModel(this, container));
             
+           // rootUI.ShowPanel<PanelBuildViewModel>();
+            //rootUI.HidePanel<PanelBuildViewModel>();
             
             //_gameState = gameStateProvider.GameState;
             _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>();
@@ -51,6 +53,7 @@ namespace Game.GamePlay.View.UI
                 if (newValue == null) return;
                 if (newValue.GetType() == typeof(FsmStateBuildBegin))
                 {
+                    //Debug.Log("BuildBegin");
                     rootUI.HidePanel<PanelConfirmationViewModel>();
                     rootUI.ShowPanel<PanelBuildViewModel>();
                     rootUI.HidePanel<PanelActionsViewModel>();
