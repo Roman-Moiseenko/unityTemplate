@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using Game.State.Maps.Mobs;
 using R3;
 using UnityEngine;
@@ -25,8 +26,7 @@ namespace Game.GamePlay.View.Castle
                 _duration.Value = viewModel.CastleEntity.Speed / viewModel.GameSpeed.CurrentValue;
             });
         }
-
-
+        
         public void Fire(MobEntity mobEntity)
         {
             shot.FirePrepare(mobEntity);

@@ -9,6 +9,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         [SerializeField] private TMP_Text nameField;
         [SerializeField] private TMP_Text valueField;
         [SerializeField] private Transform image;
+        public string colorBoss = "FF5353";
+        
         public void Bind(Sprite sprite, string nameParam, float valueParam, int number)
         {
             image.GetComponentInChildren<Image>().sprite = sprite;
