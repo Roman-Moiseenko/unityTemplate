@@ -33,12 +33,12 @@ namespace Game.GamePlay.View.Towers
         public bool IsOnRoad => TowerEntity.IsOnRoad;
         public ReactiveProperty<bool> IsShot;
 
-        public ReactiveProperty<Vector2> Direction;
+        public ReactiveProperty<Vector3> Direction = new();
         public float SpeedFire = 0f;
         
         public ReactiveProperty<int> NumberModel = new(0);
         public float SpeedShot => TowerEntity.SpeedShot;
-        //public ReactiveProperty<int> GameSpeed;
+        //public ReactiveProperty<Vector3> Direction = new();
 
         public IObservableCollection<MobEntity> Targets => TowerEntity.Targets;
         public TowerViewModel(
@@ -52,7 +52,7 @@ namespace Game.GamePlay.View.Towers
             TowerEntityId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
-            Direction = towerEntity.PrepareShot;
+            //Direction = towerEntity.PrepareShot;
             Position = towerEntity.Position;
             //SpeedFire = new ReactiveProperty<float>();
             //GameSpeed = towerService.GameSpeed;
@@ -171,13 +171,15 @@ namespace Game.GamePlay.View.Towers
                 _ => throw new Exception("Неизвестный уровень")
             };
         }
-
-
+        
         public void RemoveTarget(MobEntity mobEntity)
         {
             TowerEntity.RemoveTarget(mobEntity);
         }
-        
 
+        public void SetDirection(Vector2Int direction)
+        {
+            Direction.Value = new Vector3(direction.x, 0, direction.y);
+        }
     }
 }

@@ -107,7 +107,7 @@ namespace Game.GamePlay.View.Towers
         private IEnumerator TowerFire(MobEntity mobEntity)
         {
             //Поворачиваем башню
-            yield return _towerBinder.StartDirection(mobEntity.Position.CurrentValue);
+            _towerBinder.StartDirection(mobEntity.Position.CurrentValue);
             //Подготовка выстрела
             _towerShotBinder.FirePrepare(mobEntity);
             _towerBinder.FireAnimation(); // Анимация выстрела

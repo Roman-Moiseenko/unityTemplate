@@ -4,13 +4,11 @@ using System.Linq;
 using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Tower;
-using Game.State.Entities;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using MVVM.CMD;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -127,7 +125,6 @@ namespace Game.GamePlay.Services
             }
         }
 
-
         public bool PlaceTower(string towerTypeId, Vector2Int position)
         {
             var command = new CommandPlaceTower(towerTypeId, position);
@@ -158,6 +155,8 @@ namespace Game.GamePlay.Services
             var towerViewModel = new TowerViewModel(
                 towerEntity, 
                 _towerSettingsMap[towerEntity.ConfigId], this); //3
+            var directionTower = _placementService.GetDirectionTower(towerEntity.Position.CurrentValue);
+            towerViewModel.SetDirection(directionTower);
             _allTowers.Add(towerViewModel); //4
             _towersMap[towerEntity.UniqueId] = towerViewModel;
         }

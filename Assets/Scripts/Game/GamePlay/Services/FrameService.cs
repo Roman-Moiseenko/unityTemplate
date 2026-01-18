@@ -147,7 +147,7 @@ namespace Game.GamePlay.Services
             _areaViewModel.SetStartPosition(towerEntity.Position.Value);
             _areaViewModel.SetRadius(towerViewModel.GetRadius());
 
-            _viewModel = new FrameBlockViewModel(position);
+            _viewModel = new FrameBlockViewModel(position, _placementService);
             _viewModel.AddItem(towerViewModel);
             _viewModels.Add(_viewModel);
             _viewModel.Enable.Value =
@@ -196,11 +196,9 @@ namespace Game.GamePlay.Services
 
         public bool IsPosition(Vector2Int position)
         {
-            Debug.Log(_viewModels.Count);
+//            Debug.Log(_viewModels.Count);
             if (_viewModels.Count == 0) return false;
-
-            if (_viewModel.IsTower() || _viewModel.IsGround())
-                return _viewModel.Position.CurrentValue == position;
+            if (_viewModel.IsTower() || _viewModel.IsGround()) return _viewModel.Position.CurrentValue == position;
             if (_viewModel.IsRoad())
             {
                 var rotateIndex = _viewModel.GetRotateValue();
@@ -219,9 +217,8 @@ namespace Game.GamePlay.Services
          */
         public void CreateFrameRoad(Vector2Int position, string configId, Vector2Int direction)
         {
-            _viewModel = new FrameBlockViewModel(position);
-
-
+            _viewModel = new FrameBlockViewModel(position, _placementService);
+            
             var v_d = position - direction;
             switch (configId)
             {
@@ -362,7 +359,7 @@ namespace Game.GamePlay.Services
         public void CreateFrameGround(Vector2Int position)
         {
             // Debug.Log("CreateFrameGround " + position);
-            _viewModel = new FrameBlockViewModel(position);
+            _viewModel = new FrameBlockViewModel(position, _placementService);
             //_viewModel.AddItem(towerViewModel);
             _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, 0)));
             _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(1, 0)));

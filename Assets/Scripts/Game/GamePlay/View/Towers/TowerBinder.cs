@@ -13,14 +13,15 @@ namespace Game.GamePlay.View.Towers
         private TowerViewModel _viewModel;
         private Vector3 _targetPosition;
         private bool _isMoving;
-        private readonly ReactiveProperty<bool> _isDirection = new();
+        private bool _isDirection;
         private const int Speed = 20;
         private const float SmoothTime = 0.2f;
         private Vector3 _velocity;
         private IDisposable _disposable;
         private const string AnimationFireName = "tower_fire";
 
-        private Quaternion _targetRotation;
+        private Vector3 _targetDirection;
+       // private Quaternion _targetRotation;
         private float _timeElapsed = 0f;
         private float _lerpDuration;
 
@@ -33,24 +34,16 @@ namespace Game.GamePlay.View.Towers
                 _targetPosition = new Vector3(newPosition.x, transform.position.y, newPosition.y);
                 _isMoving = true;
             }).AddTo(ref d);
+            if (rotateBlock != null) rotateBlock.rotation = Quaternion.LookRotation(viewModel.Direction.CurrentValue);
             
+            viewModel.Direction.Where(x => x != Vector3.zero).Subscribe(v =>
+            {
+                if (rotateBlock != null) rotateBlock.rotation = Quaternion.LookRotation(v);
+                
+            }).AddTo(ref d);
             _disposable = d.Build();
         }
         
-        public ReactiveProperty<bool> Direction(Vector2 newValue)
-        {
-            if (rotateBlock != null) //Вращение башни
-            {
-                var fromDirection = new Vector3(_viewModel.Position.Value.x, 0, _viewModel.Position.Value.y);
-                var toDirection = new Vector3(newValue.x, 0, newValue.y);
-                var direction = toDirection - fromDirection;
-                _targetRotation = Quaternion.LookRotation(direction);
-                _isDirection.OnNext(true);
-            }
-
-            return _isDirection;
-        }
-
         public void FireAnimation()
         {
             if (animator == null) return;
@@ -59,13 +52,36 @@ namespace Game.GamePlay.View.Towers
 
         private void Update()
         {
-            if (!_isMoving) return;
-            transform.position =
-                Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, SmoothTime, Speed);
-            if (!(_velocity.magnitude < 0.0005)) return;
+            if (_isMoving)
+            {
+                transform.position =
+                    Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, SmoothTime, Speed);
+                if (!(_velocity.magnitude < 0.0005)) return;
+
+                _isMoving = false;
+                transform.position = _targetPosition;
+            }
             
-            _isMoving = false;
-            transform.position = _targetPosition;
+            if (_isDirection)
+            {
+                if (rotateBlock == null) //При смене модели башни
+                {
+                    _isDirection = false;
+                    _timeElapsed = 0;
+                    return;
+                }
+
+                if (_timeElapsed < _viewModel.SpeedFire)
+                {
+                    _viewModel.Direction.Value = Vector3.Lerp(_viewModel.Direction.Value, _targetDirection,_timeElapsed / _viewModel.SpeedFire);
+                    _timeElapsed += Time.deltaTime;
+                }
+                else
+                {
+                    _isDirection = false;
+                    _timeElapsed = 0;
+                }
+            }
         }
 
         private void OnDestroy()
@@ -73,39 +89,13 @@ namespace Game.GamePlay.View.Towers
             _disposable?.Dispose();
         }
 
-        public IEnumerator StartDirection(Vector2 newValue)
+        public void StartDirection(Vector2 newValue)
         {
-            if (rotateBlock == null) yield break; //Вращение башни
-
+            if (rotateBlock == null) return; //Вращение башни
             var fromDirection = new Vector3(_viewModel.Position.Value.x, 0, _viewModel.Position.Value.y);
             var toDirection = new Vector3(newValue.x, 0, newValue.y);
-            var direction = toDirection - fromDirection;
-            _targetRotation = Quaternion.LookRotation(direction);
-            _isDirection.OnNext(true);
-
-            while (_isDirection.CurrentValue)
-            {
-                if (rotateBlock == null) //При смене модели башни
-                {
-                    _isDirection.OnNext(false);
-                    _timeElapsed = 0;
-                    yield break;
-                }
-
-                if (_timeElapsed < _viewModel.SpeedFire)
-                {
-                    rotateBlock.transform.rotation = Quaternion.Lerp(rotateBlock.transform.rotation, _targetRotation,
-                        _timeElapsed / _viewModel.SpeedFire);
-                    _timeElapsed += Time.deltaTime;
-                }
-                else
-                {
-                    _isDirection.OnNext(false);
-                    _timeElapsed = 0;
-                }
-
-                yield return null;
-            }
+            _targetDirection = toDirection - fromDirection;
+            _isDirection = true;
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Game.GamePlay.View.Frames
             {
                 _targetPosition = new Vector3(newPosition.x, transform.position.y, newPosition.y);
                 transform.DOMove(_targetPosition, smoothTime).SetEase(Ease.OutQuad).SetUpdate(true);
-                
+                viewModel.RotateTower();
             }).AddTo(ref d);
 
 
@@ -65,13 +65,19 @@ namespace Game.GamePlay.View.Frames
                 viewModel.Position.CurrentValue.y
             );
 
+            //Анимационный запуск окончания строительства
             viewModel.StartRemoveFlag.Where(x => x).Subscribe(_ =>
             {
-                frame.SetActive(false);
-                downElement = true;
-                _targetPositionElement = Vector3.zero;
+                frame.SetActive(false); //Скрываем фрейм, можно сделать через DOTween растворение
+                //Опускаем элементы
+                Element.DOLocalMove(Vector3.zero, 0.25f).OnComplete(() =>
+                {
+                    showCloudDust = true; //Запуск пыли
+                    cloud.Play();
+                });
             }).AddTo(ref d);
 
+            //В зависимости от типа фрейма создаем элементы.
             switch (viewModel.TypeElements)
             {
                 case FrameType.Tower:
@@ -80,7 +86,6 @@ namespace Game.GamePlay.View.Frames
                 case FrameType.Road:
                     foreach (var roadViewModel in viewModel.EntityViewModels.Cast<RoadViewModel>().ToList())
                         CreateRoad(roadViewModel);
-                    
                     break;
                 case FrameType.Ground:
                     foreach (var groundFrameViewModel in viewModel.EntityViewModels.Cast<GroundFrameViewModel>().ToList())
@@ -105,21 +110,10 @@ namespace Game.GamePlay.View.Frames
                 }
             }
 
-            if (downElement) //Опускаем Элементы
-            {
-                Element.localPosition = Vector3.Lerp(Element.localPosition, _targetPositionElement, 0.15f);
-                if (Element.localPosition.y < 0.01)
-                {
-                    downElement = false;
-                    showCloudDust = true; //Запуск пыли
-                    cloud.Play();
-                }
-            }
-            if (showCloudDust && !cloud.isPlaying)
-            {
-                showCloudDust = false;
-                _viewModel.FinishRemoveFlag.OnNext(true);
-            }
+            if (!showCloudDust || cloud.isPlaying) return;
+            
+            showCloudDust = false;
+            _viewModel.FinishRemoveFlag.OnNext(true);
         }
         
         private void CreateTower(TowerViewModel towerViewModel)

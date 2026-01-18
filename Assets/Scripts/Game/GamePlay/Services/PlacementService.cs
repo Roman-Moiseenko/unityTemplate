@@ -24,6 +24,21 @@ namespace Game.GamePlay.Services
             _wayService = wayService;
         }
 
+        public Vector2Int GetDirectionTower(Vector2Int positionTower)
+        {
+            foreach (var roadEntity in _gameplayState.Way)
+            {
+                if (IsPositionNear(positionTower, roadEntity.Position.CurrentValue))
+                    return roadEntity.Position.CurrentValue - positionTower;
+            }
+            
+            foreach (var roadEntity in _gameplayState.WaySecond)
+            {
+                if (IsPositionNear(positionTower, roadEntity.Position.CurrentValue))
+                    return roadEntity.Position.CurrentValue - positionTower;
+            }
+            return Vector2Int.zero;
+        }
 
         public bool CheckPlacementTower(Vector2Int position, int towerId, bool onRoad)
         {
@@ -216,5 +231,15 @@ namespace Game.GamePlay.Services
         {
             return _gameplayState.Origin.Grounds.Any(ground => ground.Position == position);
         }
+        
+        public bool IsPositionNear(Vector2Int target, Vector2Int position)
+        {
+            if (position.x == target.x && position.y == target.y - 1) return true;
+            if (position.x == target.x && position.y == target.y + 1) return true;
+            if (position.x == target.x - 1 && position.y == target.y) return true;
+            if (position.x == target.x + 1 && position.y == target.y) return true;
+            return false;
+        }
     }
+    
 }

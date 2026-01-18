@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.GamePlay.Services;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
-using Game.State.Entities;
 using R3;
 using UnityEngine;
 
@@ -12,6 +12,7 @@ namespace Game.GamePlay.View.Frames
 {
     public class FrameBlockViewModel : IDisposable
     {
+        private readonly PlacementService _placementService;
         public ReactiveProperty<Vector2Int> Position { get; set; }
         public ReactiveProperty<bool> StartRemoveFlag = new(false);
         public ReactiveProperty<bool> FinishRemoveFlag = new(false);
@@ -22,8 +23,9 @@ namespace Game.GamePlay.View.Frames
         public FrameType TypeElements;
         public ReactiveProperty<bool> IsSelected;
 
-        public FrameBlockViewModel(Vector2Int position)
+        public FrameBlockViewModel(Vector2Int position, PlacementService placementService)
         {
+            _placementService = placementService;
             Position = new ReactiveProperty<Vector2Int>(position);
             Enable = new ReactiveProperty<bool>(true);
             Rotate = new ReactiveProperty<int>(0);
@@ -40,7 +42,6 @@ namespace Game.GamePlay.View.Frames
 
         public void MoveFrame(Vector2Int position)
         {
-            //var delta = position - EntityViewModels[0].GetPosition();
             Position.Value = position;
         }
 
@@ -113,13 +114,15 @@ namespace Game.GamePlay.View.Frames
         {
             FinishRemoveFlag.Value = false;
             StartRemoveFlag.OnNext(true);
-            /*var Result = false;
-            FinishRemoveFlag.Subscribe(e =>
-            {
-                Debug.Log("FinishRemoveFlag " + e);
-                Result = FinishRemoveFlag.Value;
-            });*/
+
             return FinishRemoveFlag;
+        }
+
+        public void RotateTower()
+        {
+            if (!IsTower()) return;
+            var directionTower = _placementService.GetDirectionTower(Position.CurrentValue);
+            if (directionTower != Vector2Int.zero) GetTower().SetDirection(directionTower);
         }
     }
 }
