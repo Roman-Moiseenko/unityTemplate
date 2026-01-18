@@ -8,8 +8,8 @@ namespace Game.GamePlay.View.AttackAreas
     public class AttackAreaBinder : MonoBehaviour
     {
         [SerializeField] private Transform _area;
-        [SerializeField] private Transform _areaDisabled;
-        [SerializeField] private Transform _areaExpansion;
+      //  [SerializeField] private Transform _areaDisabled;
+      //  [SerializeField] private Transform _areaExpansion;
         private AttackAreaViewModel _viewModel;
         //private Animator _animator;
         private Vector3 _targetPosition;

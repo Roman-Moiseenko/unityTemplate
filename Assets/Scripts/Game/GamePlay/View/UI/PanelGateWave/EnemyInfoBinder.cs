@@ -20,7 +20,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             countField.text = $"x{countEnemy}";
 
             transform.localPosition = new Vector3(transform.localPosition.x,
-                transform.localPosition.y + 155 * number,
+                transform.localPosition.y + 110 * number,
                 transform.localPosition.z
             );
         }

@@ -171,7 +171,6 @@ GameObject:
   - component: {fileID: 3563793837021396874}
   - component: {fileID: 276137155019204625}
   - component: {fileID: 592638753927299498}
-  - component: {fileID: 5759924846384487273}
   m_Layer: 5
   m_Name: CardBuild
   m_TagString: Untagged
@@ -221,6 +220,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7ecae3b1a54392bdf6aae45d56ff2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  frontButton: {fileID: 5917291077841453893}
+  backButton: {fileID: 6790447936966059151}
+  infoButton: {fileID: 2143448471573456825}
   buttonBuild: {fileID: 3707857403433685474}
   buttonShowInfo: {fileID: 3301180961047285171}
   buttonHideInfo: {fileID: 400280079037891826}
@@ -240,28 +242,6 @@ MonoBehaviour:
   - {fileID: 4001731170023668315}
   blockLevel: {fileID: 1964108839057384516}
   blockLevelUp: {fileID: 1872584714010084195}
---- !u!95 &5759924846384487273
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1939544267288055192}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ea4917ff96d579049afa75a725b4225b, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 2
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2844903846690234686
 GameObject:
   m_ObjectHideFlags: 0

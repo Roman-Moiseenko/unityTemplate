@@ -23,7 +23,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         private IDisposable _disposable;
         private ImageManagerBinder _imageManager;
-        Sequence Sequence;
 
         private void Awake()
         {
@@ -78,35 +77,15 @@ namespace Game.GamePlay.View.UI.PanelBuild
             //Получаем у ViewModel данные для отображения на карточках, грузим картинки
             base.Show();
             panel.pivot = new Vector2(0.5f, 0);
-            StartAnimationCards();
-            //StartCoroutine(ShowCards());
+            StartCoroutine(ShowCards());
         }
-
-        private void StartAnimationCards()
-        {
-            //Debug.Log("StartAnimationCards");
-            Sequence = DOTween.Sequence();
-            Sequence
-                .AppendCallback(() => cards[0].GetComponent<CardBinder>().ShowCard())
-                .AppendInterval(0.1f)
-                //.Append(DOTween.Sequence().SetDelay(0.1f).SetUpdate(true))
-                .AppendCallback(() => cards[1].GetComponent<CardBinder>().ShowCard())
-                .AppendInterval(0.1f)
-                //.Append(DOTween.Sequence().SetDelay(0.1f).SetUpdate(true))
-                .AppendCallback(() => cards[2].GetComponent<CardBinder>().ShowCard())
-                .OnComplete(() =>
-                {
-                    Sequence.Kill();
-                }).SetUpdate(true);
-        }
-
-        // ReSharper disable Unity.PerformanceAnalysis
+        
         private IEnumerator ShowCards()
         {
             foreach (var card in cards)
             {
                 card.GetComponent<CardBinder>().ShowCard();
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSecondsRealtime(0.1f);
             }
         }
 

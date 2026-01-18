@@ -189,12 +189,14 @@ namespace Game.GamePlay.Services
                 _areaViewModel = null;
             }
             _viewModels.Remove(_viewModel);
+            _viewModels.Clear();
             _viewModel?.Dispose();
            // _viewModel = null;
         }
 
         public bool IsPosition(Vector2Int position)
         {
+            Debug.Log(_viewModels.Count);
             if (_viewModels.Count == 0) return false;
 
             if (_viewModel.IsTower() || _viewModel.IsGround())

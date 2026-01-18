@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using R3;
 using TMPro;
 using UnityEngine;
@@ -8,10 +9,12 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
     public class ReducePopupBinder : MonoBehaviour
     {
         [SerializeField] private Transform _textPanel;
+        [SerializeField] private TMP_Text text;
         private Camera _camera;
         private Vector3 _position = Vector3.zero;
         private IDisposable _disposable;
-
+        private Sequence Sequence;
+        
         public void Bind(Camera camera, Subject<Unit> positionCamera)
         {
             var d = Disposable.CreateBuilder();
@@ -34,6 +37,25 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
             _textPanel.GetComponent<TMP_Text>().text = reduce.ToString();
             
             transform.gameObject.SetActive(true);
+            Sequence = DOTween.Sequence();
+
+            Sequence
+                .Append(_textPanel
+                    .DOLocalMove(new Vector3(0, 60, 0), 0.4f)
+                    .From(Vector3.zero)
+                    .SetUpdate(true)) //Поднимаем
+                .Join(text
+                    .DOFade(0, 0.3f)
+                    .From(1)
+                    .SetEase(Ease.InQuad)
+                    .SetUpdate(true)) //Плавно исчезаем
+                
+                .OnComplete(() =>
+                {
+                    transform.gameObject.SetActive(false);
+                    Sequence.Kill();
+                });
+            
         }
         
         private void OnDestroy()

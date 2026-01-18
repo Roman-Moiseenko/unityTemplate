@@ -204,7 +204,7 @@ namespace Game.GamePlay.Root.View
         public void ClickEntity(Vector2 mousePosition)
         {
             var position = _cameraService.GetWorldPoint(mousePosition);
-            _entityClick.OnNext(Unit.Default);
+            
             if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
             {
                 foreach (var towerViewModel in AllTowers)
@@ -220,6 +220,7 @@ namespace Game.GamePlay.Root.View
                 if (CastleViewModel.IsPosition(position))
                     Debug.Log(" Это крепость " + CastleViewModel.ConfigId);
                 AreaViewModel.Hide();
+                _entityClick.OnNext(Unit.Default);
                 return;
             }
             
@@ -234,6 +235,7 @@ namespace Game.GamePlay.Root.View
                 card.Position.y = Mathf.FloorToInt(position.y + 0.5f);
                 _fsmGameplay.Fsm.StateCurrent.Value.Params = card;
             }
+            _entityClick.OnNext(Unit.Default);
         }
 
         //Если при нажатии клавиши, под ним фрейм, то выделяем его и возвращаем true
@@ -247,6 +249,7 @@ namespace Game.GamePlay.Root.View
             );
             //TODO Проверить при повторном перемещении
             _isFrameDownClick = _frameService.IsPosition(vectorInt);
+//            Debug.Log("StartMoving " + _isFrameDownClick);
             if (_isFrameDownClick)
             {
                 _frameService.SelectedFrame();

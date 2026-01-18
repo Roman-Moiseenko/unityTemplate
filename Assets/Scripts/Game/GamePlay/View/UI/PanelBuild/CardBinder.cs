@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using Game.Common;
 using Game.GameRoot.ImageManager;
 using Game.Settings;
@@ -17,11 +18,11 @@ namespace Game.GamePlay.View.UI.PanelBuild
     {
         private IDisposable _disposable;
         private ImageManagerBinder _imageManager;
-        
+
         //BUTTONS
-        [SerializeField] private Button buttonBuild;
-        [SerializeField] private Button buttonShowInfo;
-        [SerializeField] private Button buttonHideInfo;
+        [SerializeField] private Transform frontButton;
+        [SerializeField] private Transform backButton;
+        [SerializeField] private Transform infoButton;
         
         //FRONTEND
         [SerializeField] private TMP_Text textCaption;
@@ -54,7 +55,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         //  private GameSettings _gameSettings;
         private CardViewModel _viewModel;
-        private Animator _animator;
+        Sequence Sequence;
 
         private void Awake()
         {
@@ -68,13 +69,14 @@ namespace Game.GamePlay.View.UI.PanelBuild
             imageCardBack.color = Color.white;
             _imageCardBackTransform = imageCardBack.GetComponent<RectTransform>();
             _textDescriptionTransform = textDescriptionBack.GetComponent<RectTransform>();
-            buttonHideInfo.GetComponent<RectTransform>().gameObject.SetActive(false);
+            backButton.gameObject.SetActive(false);
+            frontButton.gameObject.SetActive(true);
+            infoButton.gameObject.SetActive(true);
             foreach (var parameterBinder in parameterBinders)
             {
                 parameterBinder.gameObject.SetActive(false);
             }
             
-            _animator = gameObject.GetComponent<Animator>();
             _viewModel = viewModel;
             _viewModel.Updated.Subscribe(_ =>
             {
@@ -158,28 +160,62 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         private void OnEnable()
         {
-            buttonBuild.onClick.AddListener(OnRequestBuild);
-            buttonShowInfo.onClick.AddListener(OnRequestShowInfo);
-            buttonHideInfo.onClick.AddListener(OnRequestHideInfo);
+            frontButton.GetComponent<Button>().onClick.AddListener(OnRequestBuild);
+            infoButton.GetComponent<Button>().onClick.AddListener(OnRequestShowInfo);
+            backButton.GetComponent<Button>().onClick.AddListener(OnRequestHideInfo);
         }
 
         private void OnDisable()
         {
-            buttonBuild.onClick.RemoveListener(OnRequestBuild);
-            buttonShowInfo.onClick.RemoveListener(OnRequestShowInfo);
-            buttonHideInfo.onClick.RemoveListener(OnRequestHideInfo);
+            frontButton.GetComponent<Button>().onClick.RemoveListener(OnRequestBuild);
+            infoButton.GetComponent<Button>().onClick.RemoveListener(OnRequestShowInfo);
+            backButton.GetComponent<Button>().onClick.RemoveListener(OnRequestHideInfo);
         }
 
         private void OnRequestShowInfo()
         {
-            _animator.Play("show_info_card");
-//            var t = _textDescriptionTransform.GetComponent<RectTransform>();
-          //  Debug.Log(t.sizeDelta + " " + t.localPosition + " "  + t.name);
+            Sequence = DOTween.Sequence();
+            infoButton.gameObject.SetActive(false);
+            Sequence
+                .Append(frontButton
+                    .DOLocalRotate(new Vector3(0, 90, 0), 0.15f)
+                    .From(Vector3.zero).SetUpdate(true))
+                .AppendCallback(() =>
+                {
+                    backButton.gameObject.SetActive(true);
+                    frontButton.gameObject.SetActive(false);
+                })
+                .Append(backButton
+                    .DOLocalRotate(new Vector3(0, 0, 0), 0.15f)
+                    .From(new Vector3(0, 90, 0)).SetUpdate(true))
+                .OnComplete(() =>
+                {
+                    Sequence.Kill();
+                })  
+                .SetUpdate(true);
         }
 
         private void OnRequestHideInfo()
         {
-            _animator.Play("hide_info_card");
+            Sequence = DOTween.Sequence();
+            Sequence
+                .Append(backButton
+                    .DORotate(new Vector3(0, 90, 0), 0.15f)
+                    .From(Vector3.zero).SetUpdate(true))
+                .AppendCallback(() =>
+                {
+                    backButton.gameObject.SetActive(false);
+                    frontButton.gameObject.SetActive(true);
+                })
+                .Append(frontButton
+                    .DORotate(new Vector3(0, 0, 0), 0.15f)
+                    .From(new Vector3(0, 90, 0)).SetUpdate(true))
+                .AppendCallback(() =>
+                {
+                    infoButton.gameObject.SetActive(true);
+                })
+                .OnComplete(() => { Sequence.Kill(); })  
+                .SetUpdate(true);
         }
 
         private void OnRequestBuild()
@@ -195,8 +231,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
         public void ShowCard()
         {
             gameObject.SetActive(true);
-            _animator.gameObject.SetActive(true);
-            _animator.Play("start_card");
+            transform.DOScale(1, 0.1f).From(0.8f).SetEase(Ease.OutSine).SetUpdate(true);
         }
 
         public void HideCard()

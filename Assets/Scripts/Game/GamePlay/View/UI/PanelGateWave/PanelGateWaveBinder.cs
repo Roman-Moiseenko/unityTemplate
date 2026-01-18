@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using Game.Common;
 using Game.GameRoot.ImageManager;
 using Game.State.Maps.Mobs;
@@ -32,7 +33,6 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         private List<UpgradeParameterBinder> _upgradeParameterBinders = new();
         
         private Image _btnImage;
-        private Animator _animator;
         private IDisposable _disposableImplementation;
         private ImageManagerBinder _imageManager;
 
@@ -40,7 +40,6 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         {
             //Инициализация
             //Аниматор панели
-            _animator = gameObject.GetComponent<Animator>();
             //Кнопка Волны - показ инфо, форсированный запуск
             _btnInfo = _infoBlock.Find("ButtonBlock/ButtonWave").GetComponent<Button>();
             //Инфо панель о волне
@@ -70,11 +69,22 @@ namespace Game.GamePlay.View.UI.PanelGateWave
                 if (showButton)
                 {
                     _infoBlock.gameObject.SetActive(true);
-                    _animator.Play("info_wave_start");
+                    _infoBlock.DOScale(1, 0.3f)
+                        .From(0.7f)
+                        .SetEase(Ease.OutBack)
+                        .SetUpdate(true);
                 }
                 else
                 {
-                    _animator.Play("info_wave_finish");
+                    _infoBlock.DOScale(0f, 0.3f)
+                        .From(1)
+                        .SetEase(Ease.InBack)
+                        .SetUpdate(true)
+                        .OnComplete(() =>
+                        {
+                            _infoBlock.gameObject.SetActive(false);
+                            _btnImage.fillAmount = 1;
+                        });
                 }
 
                 ViewModel.ShowInfoWave.OnNext(false);
@@ -87,12 +97,19 @@ namespace Game.GamePlay.View.UI.PanelGateWave
                 if (showInfo)
                 {
                     _infoPanel.gameObject.SetActive(true);
-                    //_animator.Play("info_panel_start");
+                    _infoPanel.DOScale(1, 0.3f)
+                        .From(0.3f)
+                        .SetEase(Ease.OutBack)
+                        .SetUpdate(true);
                 }
                 else
                 {
-                    _infoPanel.gameObject.SetActive(false);
-                    //_animator.Play("info_panel_finish");
+                    _infoPanel.DOScale(0f, 0.3f)
+                        .From(1)
+                        .SetEase(Ease.InBack)
+                        .SetUpdate(true)
+                        .OnComplete(() => _infoPanel.gameObject.SetActive(false));
+                    
                 }
             }).AddTo(ref d);
             InfoWavePanelClear();
@@ -116,14 +133,25 @@ namespace Game.GamePlay.View.UI.PanelGateWave
                     //Эпичность
                     //Название
                     //Уровень в Геймплее
-                    
+                    //Debug.Log("ShowInfoTower " + showTower);
+                    if (_infoTower.gameObject.activeSelf)
+                    {
+                        _infoTower.localScale = Vector3.one * 0.3f;
+                    }
                     _infoTower.gameObject.SetActive(true);
-                    //_animator.Play("info_tower_start");
+                    _infoTower.DOScale(1, 0.3f)
+                        .From(0.3f)
+                        .SetEase(Ease.OutBack)
+                        .SetUpdate(true);
                 }
                 else
                 {
-                    _infoTower.gameObject.SetActive(false);
-                    //  _animator.Play("info_tower_finish");
+                    //Debug.Log("ShowInfoTower " + showTower);
+                    _infoTower.DOScale(0f, 0.3f)
+                        .From(1)
+                        .SetEase(Ease.InBack)
+                        .SetUpdate(true)
+                        .OnComplete(() => _infoTower.gameObject.SetActive(false));
                 }
             }).AddTo(ref d);
 
@@ -158,7 +186,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
                 count
             );
             _enemyInfoBinders.Add(createdInfoString);
-            _enemies.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 270 + 155 * count);
+            _enemies.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 310 + 110 * count);
         }
 
         private void InfoWavePanelClear()
@@ -242,24 +270,6 @@ namespace Game.GamePlay.View.UI.PanelGateWave
 
         public override void Hide()
         {
-        }
-
-        public void FinishButtonAnimation()
-        {
-            _infoBlock.gameObject.SetActive(false);
-            _btnImage.fillAmount = 1;
-
-            //Пауза 0.5с
-        }
-
-        public void FinishInfoAnimation()
-        {
-            _infoPanel.gameObject.SetActive(false);
-        }
-
-        public void FinishTowerAnimation()
-        {
-            _infoTower.gameObject.SetActive(false);
         }
 
         public void OnDestroy()

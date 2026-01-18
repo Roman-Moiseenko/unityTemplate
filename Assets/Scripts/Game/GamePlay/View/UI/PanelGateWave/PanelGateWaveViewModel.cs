@@ -73,14 +73,14 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             
             entityClick.Subscribe(_ =>
             {
-                ShowInfoWave.OnNext(false);
-                ShowInfoTower.OnNext(false);
+                if (ShowInfoWave.CurrentValue) ShowInfoWave.OnNext(false);
+                if (ShowInfoTower.CurrentValue) ShowInfoTower.OnNext(false);
             }).AddTo(ref d);
             towerClick.Subscribe(towerViewModel =>
             {
                 if (_towerPrevious == towerViewModel.Position.CurrentValue)
                 {
-                    ShowInfoTower.OnNext(false);
+                    if (ShowInfoTower.CurrentValue) ShowInfoTower.OnNext(false);
                     _towerPrevious = Vector2Int.zero;
                 }
                 else
