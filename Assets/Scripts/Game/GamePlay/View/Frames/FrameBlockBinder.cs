@@ -24,16 +24,14 @@ namespace Game.GamePlay.View.Frames
         
         private Vector3 _targetPosition;
         private Vector3 _targetPositionElement;
-        private bool _isMoving = false;
-        private const int speed = 20;
-        private const float smoothTime = 0.3f;
+        private bool _isMoving;
+        private const int Speed = 20;
+        private const float SmoothTime = 0.3f;
         private Vector3 _velocity;
         private IDisposable _disposable;
+        private bool _showCloudDust;
 
-        private bool downElement = false;
-        private bool showCloudDust = false;
-
-        private List<MonoBehaviour> elements = new(); 
+        private readonly List<MonoBehaviour> _elements = new(); 
         
         public void Bind(FrameBlockViewModel viewModel)
         {
@@ -50,7 +48,7 @@ namespace Game.GamePlay.View.Frames
             viewModel.Position.Subscribe(newPosition =>
             {
                 _targetPosition = new Vector3(newPosition.x, transform.position.y, newPosition.y);
-                transform.DOMove(_targetPosition, smoothTime).SetEase(Ease.OutQuad).SetUpdate(true);
+                transform.DOMove(_targetPosition, SmoothTime).SetEase(Ease.OutQuad).SetUpdate(true);
                 viewModel.RotateTower();
             }).AddTo(ref d);
 
@@ -72,7 +70,7 @@ namespace Game.GamePlay.View.Frames
                 //Опускаем элементы
                 Element.DOLocalMove(Vector3.zero, 0.25f).OnComplete(() =>
                 {
-                    showCloudDust = true; //Запуск пыли
+                    _showCloudDust = true; //Запуск пыли
                     cloud.Play();
                 });
             }).AddTo(ref d);
@@ -94,7 +92,6 @@ namespace Game.GamePlay.View.Frames
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
             _disposable = d.Build();
         }
         
@@ -102,7 +99,7 @@ namespace Game.GamePlay.View.Frames
         {
             if (_isMoving)
             {
-                transform.position = Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, smoothTime, speed, Time.unscaledTime);
+                transform.position = Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, SmoothTime, Speed, Time.unscaledTime);
                 if (_velocity.magnitude < 0.0005)
                 {
                     _isMoving = false;
@@ -110,9 +107,9 @@ namespace Game.GamePlay.View.Frames
                 }
             }
 
-            if (!showCloudDust || cloud.isPlaying) return;
+            if (!_showCloudDust || cloud.isPlaying) return;
             
-            showCloudDust = false;
+            _showCloudDust = false;
             _viewModel.FinishRemoveFlag.OnNext(true);
         }
         
@@ -124,7 +121,7 @@ namespace Game.GamePlay.View.Frames
             var towerPrefab = Resources.Load<TowerBinder>(prefabTowerLevelPath);
             var createdTower = Instantiate(towerPrefab, Element.transform);
             createdTower.Bind(towerViewModel);
-            elements.Add(createdTower);
+            _elements.Add(createdTower);
         }
         private void CreateGroundFrame(GroundFrameViewModel groundFrameViewModel)
         {
@@ -132,7 +129,7 @@ namespace Game.GamePlay.View.Frames
             var groundFramePrefab = Resources.Load<GroundFrameBinder>(prefabGroundFramePath);
             var createdGroundFrame = Instantiate(groundFramePrefab, Element.transform);
             createdGroundFrame.Bind(groundFrameViewModel);
-            elements.Add(createdGroundFrame);
+            _elements.Add(createdGroundFrame);
         }
         private void CreateRoad(RoadViewModel roadViewModel)
         {
@@ -142,13 +139,13 @@ namespace Game.GamePlay.View.Frames
             var roadPrefab = Resources.Load<RoadBinder>(prefabRoadLevelPath);
             var createdRoad = Instantiate(roadPrefab, Element.transform);
             createdRoad.Bind(roadViewModel);
-            elements.Add(createdRoad);
+            _elements.Add(createdRoad);
         }
         
         private void OnDestroy()
         {
             _disposable.Dispose();
-            foreach (var element in elements)
+            foreach (var element in _elements)
             {
                 Destroy(element.gameObject);
                 Destroy(element);

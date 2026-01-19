@@ -91,27 +91,14 @@ namespace Game.GamePlay.Services
             _gameplayState.Castle.IsDead.Where(e => e)
                 .Subscribe(newValue =>
                 {
-                    if (_gameplayState.Castle.CountResurrection.CurrentValue == 2)
-                    {
-                        Lose();
-                    }
+                    if (_gameplayState.Castle.CountResurrection.CurrentValue == 2) Lose();
                 })
                 .AddTo(ref d);
-            /*   _exitSceneRequest.Subscribe(e =>
-               {
-                   Debug.Log(JsonConvert.SerializeObject(e.MainMenuEnterParams, Formatting.Indented));
-               });*/
-            //Сработала следующая волна, после максимальной => Победа
-
-            //Здоровье крепости меньше 0 => Проигрыш
-            //gameplayState.Castle.IsDead.Subscribe(h => Lose()).AddTo(ref d);
-//            _fsmGameplay.Fsm.StateCurrent.Subscribe(e => Debug.Log(e));
             _disposable = d.Build();
         }
 
-        public void Win() //private
+        public void Win()
         {
-            //Debug.Log("Победа");
             var menuParams = GetMainMenuParams(true);
             if (_gameState.ContainerChests.IsFreeCell())
             {
@@ -124,7 +111,6 @@ namespace Game.GamePlay.Services
             }
 
             var exitParams = new GameplayExitParams(menuParams);
-            //Debug.Log(JsonConvert.SerializeObject(exitParams, Formatting.Indented));
 
             GameOver.OnNext(exitParams);
             //TODO Показать окно окончания игры без сохранения

@@ -95,10 +95,7 @@ namespace Game.GamePlay.View.Towers
             }
             if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
             {
-               // _towerService.GameSpeed.Where(x => x != 0).Subscribe(v =>
-                //{
-                    SpeedFire = towerSpeed.Value;// / v; 
-               // });
+                SpeedFire = towerSpeed.Value;
             }
             else
             {

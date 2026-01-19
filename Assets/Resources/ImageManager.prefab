@@ -236,25 +236,25 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 78d037194d07a1948b35ce2666c92fb6, type: 3}
     Texture: {fileID: 0}
   - ConfigId: 2
-    Sprite: {fileID: 21300000, guid: b889e71c80248714e910cfb52ca8f786, type: 3}
+    Sprite: {fileID: 21300000, guid: f4e01a4395a0f5748941da93ab5efec3, type: 3}
     Texture: {fileID: 0}
   - ConfigId: 3
-    Sprite: {fileID: 21300000, guid: d2164b00662c2bc45909e01d3ae2b37f, type: 3}
+    Sprite: {fileID: 21300000, guid: 6916cc07cf4f945428411855b8c686d6, type: 3}
     Texture: {fileID: 0}
   - ConfigId: 4
-    Sprite: {fileID: 21300000, guid: e897c9a45477c794d86f31a6ea7eccdc, type: 3}
+    Sprite: {fileID: 21300000, guid: c9b16329746c79b4e90a8133396b2756, type: 3}
     Texture: {fileID: 0}
   - ConfigId: 5
-    Sprite: {fileID: 21300000, guid: 3dfd5322af7d14243b4b4bbb2fbc2299, type: 3}
+    Sprite: {fileID: 21300000, guid: 4f08f1fda80648e488bd3209c8fe14b0, type: 3}
     Texture: {fileID: 0}
   - ConfigId: 6
-    Sprite: {fileID: 21300000, guid: 971c0cf16d4dcf144ac72def624bf47b, type: 3}
+    Sprite: {fileID: 21300000, guid: 9a6dcd100bc17c44bb78fb7405f3940b, type: 3}
     Texture: {fileID: 0}
   - ConfigId: 7
-    Sprite: {fileID: 21300000, guid: e7d44631c3853ce42b2ddc4efe7bca45, type: 3}
+    Sprite: {fileID: 21300000, guid: cf6b5677d01f984468028b86b7c84416, type: 3}
     Texture: {fileID: 0}
   - ConfigId: 8
-    Sprite: {fileID: 21300000, guid: c3b0785a9a1a7504eb648e790771c3b1, type: 3}
+    Sprite: {fileID: 21300000, guid: 132e0ae9f5b397a45b8cee1030e8d3e0, type: 3}
     Texture: {fileID: 0}
   chests:
   - TypeChest: 0

@@ -104,7 +104,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 {
                     RewardType.Road => _imageManager.GetRoad(_viewModel.ImageCard),
                     RewardType.TowerLevelUp => _imageManager.GetTowerCard(_viewModel.ImageCard, _viewModel.NumberModel),
-                    RewardType.Tower => _imageManager.GetTowerCard(_viewModel.ImageCard, _viewModel.Level),
+                    RewardType.Tower => _imageManager.GetTowerCard(_viewModel.ImageCard, _viewModel.NumberModel),
                     _ => _imageManager.GetOther(_viewModel.ImageCard),
                 };
                 if (_viewModel.RewardType is RewardType.Tower or RewardType.TowerLevelUp)
