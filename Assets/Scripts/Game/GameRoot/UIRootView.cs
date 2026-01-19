@@ -15,7 +15,8 @@ namespace Scripts.Game.GameRoot
         [SerializeField] private GameObject _loadingFirstScreen;
         [SerializeField] private Transform _uiSceneContainer;
         [SerializeField] private RectTransform _CanvasScaler;
-        
+        [SerializeField] private TMP_Text firstText;
+            
         private void Awake()
         {
             HideLoadingScreen();
@@ -58,7 +59,7 @@ namespace Scripts.Game.GameRoot
 
         public void TextLoadingFirst(string text)
         {
-            _loadingFirstScreen.transform.Find("textField").GetComponent<TMP_Text>().text = text;
+            firstText.text = text;
         }
 
         public Vector3 GetScale()
