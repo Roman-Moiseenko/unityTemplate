@@ -65,7 +65,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
 
         private void OnDestroy()
         {
-            Sequence.Kill();
+            if (Sequence.IsActive())
+            {
+                Sequence.Kill();
+                Sequence = null;
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
         public string ImageBack;
         public string DescriptionBack;
         public int Level = 0;
+        public int NumberModel;
         public Dictionary<TowerParameterType, Vector2> Parameters = new();
 
         public MobDefence? Defence = null;
@@ -140,7 +141,13 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 .Find(t => t.ConfigId == _rewardData.ConfigId);
             Caption = "";
             Level = _rewardData.Level;
-            
+            NumberModel = _rewardData.Level switch
+            {
+                1 or 2 => 1,
+                3 or 4 => 2,
+                5 or 6 => 3,
+                _ => throw new Exception("Неизвестный уровень")
+            };
             Description = "БАШНЯ \n" + config.TitleLid;
             DescriptionBack = Description;
             

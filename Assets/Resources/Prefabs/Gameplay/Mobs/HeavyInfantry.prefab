@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthBar: {fileID: 7374007172048882459}
+  UnityId: 0
 --- !u!136 &9172985174820594965
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -98,7 +99,7 @@ Transform:
   m_GameObject: {fileID: 8701187608073462820}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.2, z: 0}
+  m_LocalPosition: {x: 0, y: 0.15, z: 0}
   m_LocalScale: {x: 0.2, y: 0.29999998, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -221,7 +222,7 @@ Transform:
   m_GameObject: {fileID: 8919478966430719116}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.245, z: 0.094}
+  m_LocalPosition: {x: 0, y: 0.1987, z: 0.094}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []

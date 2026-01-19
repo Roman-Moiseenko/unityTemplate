@@ -161,6 +161,11 @@ namespace Game.GamePlay.View.Towers
         
         private void OnDestroy()
         {
+            if (Sequence.IsActive())
+            {
+                Sequence.Kill();
+                Sequence = null;
+            }
             _disposable?.Dispose();
         }
         

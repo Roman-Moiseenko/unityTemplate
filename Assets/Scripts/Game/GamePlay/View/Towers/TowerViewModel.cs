@@ -52,10 +52,7 @@ namespace Game.GamePlay.View.Towers
             TowerEntityId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
-            //Direction = towerEntity.PrepareShot;
             Position = towerEntity.Position;
-            //SpeedFire = new ReactiveProperty<float>();
-            //GameSpeed = towerService.GameSpeed;
             TowerEntity = towerEntity;
             
             
@@ -67,17 +64,13 @@ namespace Game.GamePlay.View.Towers
                     _towerLevelSettingsMap[towerLevelSetting.Level] = towerLevelSetting;
                 }
             }
-            if (towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
-            {
-               // towerService.GameSpeed.Where(x => x != 0).Subscribe(v =>
-               // {
-                    SpeedFire = towerSpeed.Value;// / v; 
-                //});
-            }
+            if (towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed)) 
+                SpeedFire = towerSpeed.Value;
 
+            
             Level.Subscribe(level =>
             {
-                //TODO Смена модели и/или материал
+                //Смена модели
                 NumberModel.Value = level switch
                 {
                     1 or 2 => 1,

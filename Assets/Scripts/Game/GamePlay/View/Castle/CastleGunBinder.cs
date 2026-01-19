@@ -56,11 +56,22 @@ namespace Game.GamePlay.View.Castle
 
         public void StopFire()
         {
+            KillSequence();
+            shot.FireFinish();
+        }
+
+        private void OnDestroy()
+        {
+            KillSequence();
+        }
+        
+        private void KillSequence()
+        { 
             if (Sequence.IsActive())
             {
                 Sequence.Kill();
+                Sequence = null;
             }
-            shot.FireFinish();
         }
     }
 }

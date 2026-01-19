@@ -103,7 +103,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 imageCard.sprite = _viewModel.RewardType switch
                 {
                     RewardType.Road => _imageManager.GetRoad(_viewModel.ImageCard),
-                    RewardType.TowerLevelUp => _imageManager.GetTowerCard(_viewModel.ImageCard, _viewModel.Level + 1),
+                    RewardType.TowerLevelUp => _imageManager.GetTowerCard(_viewModel.ImageCard, _viewModel.NumberModel),
                     RewardType.Tower => _imageManager.GetTowerCard(_viewModel.ImageCard, _viewModel.Level),
                     _ => _imageManager.GetOther(_viewModel.ImageCard),
                 };
@@ -225,6 +225,11 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         private void OnDestroy()
         {
+            if (Sequence.IsActive())
+            {
+                Sequence.Kill();
+                Sequence = null;
+            }
             _disposable.Dispose();
         }
 

@@ -60,6 +60,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
         
         private void OnDestroy()
         {
+            if (Sequence.IsActive())
+            {
+                Sequence.Kill();
+                Sequence = null;
+            }
             _disposable.Dispose();
         }
 

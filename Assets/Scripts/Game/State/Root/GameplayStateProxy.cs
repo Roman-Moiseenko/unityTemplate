@@ -190,7 +190,7 @@ namespace Game.State.Root
             SetGameSpeed(1);
         }
         
-        private void SetGameSpeed(int newSpeed)
+        private void SetGameSpeed(float newSpeed)
         {
             Time.timeScale = newSpeed;
             Origin.GameSpeed = newSpeed; //Запоминаем скорость
@@ -209,16 +209,16 @@ namespace Game.State.Root
             return Time.timeScale == 0 ? _previousGameSpeed : Time.timeScale;
         }
 
-        public int SetNextSpeed()
+        public float SetNextSpeed()
         {
-            var newSpeed = 1;
+            var newSpeed = 1f;
             switch (Time.timeScale)
             {
                 case 1: newSpeed = 2;
                     break;
                 case 2: newSpeed = 4;
                     break;
-                case 4: newSpeed = 1;
+                case 4: newSpeed = 0.5f;
                     break;
             }
           
