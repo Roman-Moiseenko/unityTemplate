@@ -89,6 +89,9 @@ MonoBehaviour:
   - ConfigId: Tower05
     Sprite: {fileID: 21300000, guid: 4797874de9f734a4dbfd22a8ac9a54a7, type: 3}
     Texture: {fileID: 0}
+  - ConfigId: Tower06
+    Sprite: {fileID: 21300000, guid: 1ce86726493f06a4db2fe2897c179162, type: 3}
+    Texture: {fileID: 0}
   - ConfigId: Tower07
     Sprite: {fileID: 21300000, guid: fd4415f43c291b54891d662d8318793c, type: 3}
     Texture: {fileID: 0}
@@ -155,6 +158,14 @@ MonoBehaviour:
       Sprite: {fileID: 21300000, guid: 43a508129498d5742b910368448e93f1, type: 3}
     - Level: 6
       Sprite: {fileID: 21300000, guid: 3dde272b881531a40bca0ad4a72a67e9, type: 3}
+  - ConfigId: Tower06
+    ByLevels:
+    - Level: 1
+      Sprite: {fileID: 21300000, guid: d5f69739d6c74d646bdeacdc73aa3291, type: 3}
+    - Level: 2
+      Sprite: {fileID: 21300000, guid: 4ca88db4c42d6474a868c845dfa4084d, type: 3}
+    - Level: 3
+      Sprite: {fileID: 21300000, guid: 0c348dd98ee801d4287160fd9c04837d, type: 3}
   - ConfigId: Tower07
     ByLevels:
     - Level: 1

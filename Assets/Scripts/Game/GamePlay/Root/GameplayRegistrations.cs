@@ -41,21 +41,21 @@ namespace Game.GamePlay.Root
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
             var gameState = gameStateProvider.GameState; //TODO Получим кристалы для изменения
 
-            
+
             var gameplayState = gameStateProvider.GameplayState;
             gameplayState.MapId.OnNext(gameplayEnterParams.MapId);
             gameplayState.TypeGameplay.OnNext(gameplayEnterParams.TypeGameplay);
-            
+
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
-            
+
             //Debug.Log(JsonConvert.SerializeObject(gameplayState.Origin, Formatting.Indented));
             //Регистрируем машину состояния
             var fsmGameplay = new FsmGameplay(container);
             container.RegisterInstance(fsmGameplay);
             var fsmWave = new FsmWave(container);
             container.RegisterInstance(fsmWave);
-            
+
             switch (gameplayState.TypeGameplay.CurrentValue)
             {
                 case TypeGameplay.Infinity:
@@ -188,11 +188,13 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(
                 gameplayService); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             //Сервис создания выстрелов
-          //  var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, fsmGameplay);
-        //    container.RegisterInstance(shotService);
+            //  var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, fsmGameplay);
+            //    container.RegisterInstance(shotService);
 
+            var warriorService = new WarriorService(towersService, gameplayState);
+            container.RegisterInstance(warriorService);
             var damageService = new DamageService(fsmGameplay, gameplayState, waveService,
-                towersService, rewardService);
+                towersService, rewardService, warriorService);
 
             container.RegisterInstance(damageService);
 

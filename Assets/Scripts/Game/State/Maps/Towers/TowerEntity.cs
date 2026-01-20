@@ -16,14 +16,15 @@ namespace Game.State.Maps.Towers
         public string ConfigId => Origin.ConfigId;
 
         public readonly ReactiveProperty<int> Level;
-        public EntityType Type => Origin.Type;
         public bool IsOnRoad => Origin.IsOnRoad;
         public readonly ReactiveProperty<Vector2Int> Position;
         
         public readonly TowerTypeEnemy TypeEnemy;
         public readonly bool IsMultiShot;
         public readonly bool IsSingleTarget;
+        public readonly bool IsPlacement;
         public readonly float SpeedShot;
+        public ReactiveProperty<Vector2Int> Placement; 
         
         public ReactiveProperty<bool> IsShot = new(false);
         public ReactiveProperty<bool> IsBusy = new(false);
@@ -40,6 +41,9 @@ namespace Game.State.Maps.Towers
             Origin = towerEntityData;
             Position = new ReactiveProperty<Vector2Int>(towerEntityData.Position);
             Position.Subscribe(newPosition => towerEntityData.Position = newPosition); //При изменении позиции Position.Value меняем в данных
+
+            Placement = new ReactiveProperty<Vector2Int>(towerEntityData.Placement);
+            Placement.Subscribe(v => towerEntityData.Placement = v);
             
             Level = new ReactiveProperty<int>(towerEntityData.Level);
             Level.Subscribe(newLevel =>
@@ -51,7 +55,7 @@ namespace Game.State.Maps.Towers
             IsMultiShot = towerEntityData.IsMultiShot;
             SpeedShot = towerEntityData.SpeedShot;
             IsSingleTarget = towerEntityData.IsSingleTarget;
-
+            IsPlacement = towerEntityData.IsPlacement;
             /*          Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
                       Parameters.ObserveAdd().Subscribe(e =>
                       {
@@ -105,18 +109,12 @@ namespace Game.State.Maps.Towers
             {
                 return d <= distance.Value;
             }
-/*
-            var start = new Vector3(Position.CurrentValue.x, 0.1f, Position.CurrentValue.y);
-            var end = new Vector3(Position.CurrentValue.x + 0.5f, 0.1f, Position.CurrentValue.y);
-            Debug.DrawLine(start, end);
-*/
             //Башня на дороге, нет дистанции
             return Vector2.Distance(mobPosition, Position.CurrentValue) <= 0.5f;
         }
 
         public bool SetTarget(MobEntity mobEntity)
         {
-            //Debug.Log("Проверяем моба " + mobEntity.UniqueId);
             //Проверка на совпадение типа врага и башни
             if (!IsTargetForAttack(mobEntity.IsFly)) return false;
             //Проверка на дистанцию до моба

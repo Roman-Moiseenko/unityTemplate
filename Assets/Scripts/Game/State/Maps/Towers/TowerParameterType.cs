@@ -11,6 +11,7 @@
         Critical,
         Health,
         SlowingDown,
+        Range,
         // MiddleDamage,
         //  HighDamage,
     }

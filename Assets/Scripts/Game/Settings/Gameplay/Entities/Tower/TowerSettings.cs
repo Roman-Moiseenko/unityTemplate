@@ -11,7 +11,9 @@ namespace Game.Settings.Gameplay.Entities.Tower
         public string TitleLid;
         public string DescriptionLid;
         public string PrefabPath;
-        public bool OnRoad;
+        public bool OnRoad; //Башня размещается на дороге
+        public bool Placement; //Башня имеет точку размещения (Гарнизон)
+        public bool Buffs; //Башня накладывает Баффы
         public bool MultiShot; //Массовый урон всем в области действия
         public TowerTypeEnemy TypeEnemy;
 

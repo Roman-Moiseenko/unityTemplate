@@ -37,13 +37,8 @@ namespace Game.GamePlay.Classes
             _playerControls.Gameplay.Click.canceled += OnPointerCanceled;
             _playerControls.Gameplay.Move.performed += ReadPointerPosition;
             _playerControls.Gameplay.Move.canceled += ReadPointerPosition;
-
             _playerControls.UI.ClickUI.performed += OnClickUI;
 
-            //  _playerControls.Gameplay.Down1.performed += OnDownP1;
-            // _playerControls.Gameplay.Down2.performed += OnDownP2;
-            // _playerControls.Gameplay.Down1.started += OnDown1;
-            //_playerControls.Gameplay.SecondaryContact.performed += OnSecondaryContactPerformed;
             //Масштаб карты
             // На Андроид
             _playerControls.Gameplay.SecondaryContact.started += OnSecondaryContactStarted;

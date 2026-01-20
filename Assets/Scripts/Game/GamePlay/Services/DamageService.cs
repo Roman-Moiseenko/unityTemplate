@@ -16,12 +16,18 @@ using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
+    /**
+     * Сервис проверки башен для атаки и запуск процедур атаки, бафа или создания войск
+     * И нанесения урона мобам после удачной атаки
+     * З.Ы. Переименовать в соответствующее название ... ??? TowerAttackService ??
+     */
     public class DamageService
     {
         public ObservableList<DamageEntity> AllDamages = new();
 
         private readonly FsmGameplay _fsmGameplay;
         private readonly WaveService _waveService;
+        private readonly WarriorService _warriorService;
         private readonly Coroutines _coroutines;
         private readonly CastleEntity _castle;
         private readonly ObservableList<TowerEntity> _allTowers;
@@ -32,11 +38,13 @@ namespace Game.GamePlay.Services
             GameplayStateProxy gameplayState,
             WaveService waveService,
             TowersService towersService,
-            RewardProgressService rewardProgressService
+            RewardProgressService rewardProgressService,
+            WarriorService warriorService
         )
         {
             _fsmGameplay = fsmGameplay;
             _waveService = waveService;
+            _warriorService = warriorService;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
             _castle = gameplayState.Castle;
             _allTowers = gameplayState.Towers;
@@ -133,14 +141,15 @@ namespace Game.GamePlay.Services
         {
             if (_fsmGameplay.IsGamePause.Value) return;
             if (_waveService.AllMobsMap.Count == 0) return;
-
             foreach (var towerEntity in _allTowers)
             {
                 if (towerEntity.IsBusy.Value) continue;
                 towerEntity.IsBusy.Value = true;
-                _coroutines.StartCoroutine(TowerFireShot(towerEntity));
+                _coroutines.StartCoroutine(towerEntity.IsPlacement
+                    ? TowerForPlacement(towerEntity)
+                    : TowerFireShot(towerEntity));
             }
-
+            
             if (!_castle.IsBusy.Value) //Стрельба крепости
             {
                 _castle.IsBusy.Value = true;
@@ -162,9 +171,8 @@ namespace Game.GamePlay.Services
             _castle.IsBusy.Value = false;
         }
 
-        public IEnumerator TowerFireShot(TowerEntity towerEntity)
+        private IEnumerator TowerFireShot(TowerEntity towerEntity)
         {
-            yield return new WaitUntil(() => !_fsmGameplay.IsGamePause.Value); //На паузе не стреляем
             //У башни нет скорости, пропускаем обработку
             if (!towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed)) yield break;
             towerEntity.IsBusy.Value = true; //Башня занята, обрабатывается выстрел
@@ -179,5 +187,20 @@ namespace Game.GamePlay.Services
 
             towerEntity.IsBusy.OnNext(false); //Освобождаем башню для следующего выстрела
         }
+
+        private IEnumerator TowerForPlacement(TowerEntity towerEntity)
+        {
+            towerEntity.IsBusy.Value = true;
+            yield return new WaitForSeconds(1f);
+            if (_warriorService.AllWarriorsIDead(towerEntity.UniqueId))
+            {
+                Debug.Log("Добавляем воинов на карту");
+                _warriorService.AddWarriorsTower(towerEntity);    
+            }
+            
+            //TODO Проверяем если все Warriors IsDead => Создаем новых
+            towerEntity.IsBusy.OnNext(false);
+        }
+        
     }
 }

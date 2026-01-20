@@ -91,8 +91,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             }).AddTo(ref d);
             ViewModel.PositionInfoBtn.Subscribe(p => _infoBlock.transform.position = p).AddTo(ref d);
             ViewModel.FillAmountBtn.Subscribe(n => _btnImage.fillAmount = n).AddTo(ref d);
-
-            ViewModel.ShowInfoWave.Subscribe(showInfo =>
+            _infoPanel.gameObject.SetActive(false);
+            ViewModel.ShowInfoWave.Skip(1).Subscribe(showInfo =>
             {
                 if (showInfo)
                 {

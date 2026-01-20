@@ -28,13 +28,13 @@ namespace Game.GamePlay.Commands.TowerCommand
                 UniqueId = entityId,
                 Position = command.Position,
                 ConfigId = command.TowerTypeId,
-                Type = EntityType.Tower,
                 TypeEnemy = towerSettings.TypeEnemy,
                 IsMultiShot = towerSettings.MultiShot,
                 IsSingleTarget = towerSettings.Shot.Single,
                 SpeedShot = towerSettings.Shot.Speed,
                 IsOnRoad = towerSettings.OnRoad,
-                Defence = towerSettings.Defence
+                Defence = towerSettings.Defence,
+                IsPlacement = towerSettings.Placement
             };
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
             _gameplayState.Towers.Add(newTower);//Добавляем в список объектов карты

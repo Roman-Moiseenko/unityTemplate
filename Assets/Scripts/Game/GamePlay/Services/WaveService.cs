@@ -82,8 +82,10 @@ namespace Game.GamePlay.Services
                 if (!trigger) StartWave.OnNext(true); //Это первый моб из волны = > Показать надпись Волна идет
 
                 var mobViewModel = newValue.Value;
+                //TODO mobViewModel.Go();
+                
                 _coroutines.StartCoroutine(
-                    MovingMobOnWay(newValue.Value)); //При добавлении моба, запускаем его движение
+                    MovingMobOnWay(mobViewModel)); //При добавлении моба, запускаем его движение
 
                 mobViewModel.Debuffs.ObserveAdd().Subscribe(d =>
                     _coroutines.StartCoroutine(MobTimerDebuff(d.Value.Key, d.Value.Value, mobViewModel)));
@@ -184,14 +186,17 @@ namespace Game.GamePlay.Services
 
         private IEnumerator MovingMobOnWay(MobViewModel mobViewModel)
         {
-            yield return _fsmGameplay.WaitPause();
-            yield return mobViewModel.MovingModel(GenerateRoadPoints(mobViewModel));
+           // yield return _fsmGameplay.WaitPause();
+           //mobViewModel.StartMoving();
+            yield return mobViewModel.MovingModel();
+            //TODO Вставить препятствие и атаку на цель
+            
             yield return mobViewModel.AttackEntity(_gameplayState.Castle);
         }
 
         public IEnumerator MobTimerDebuff(string configId, MobDebuff debuff, MobViewModel mobViewModel)
         {
-            yield return _fsmGameplay.WaitPause();
+          //  yield return _fsmGameplay.WaitPause();
             yield return new WaitForSeconds(debuff.Time);
             mobViewModel.RemoveDebuff(configId);
         }
@@ -276,11 +281,12 @@ namespace Game.GamePlay.Services
             mobEntity.IsWay = true;
             var mobViewModel = new MobViewModel(mobEntity, this, _cameraService, _fsmGameplay);
             mobViewModel.NumberWave = numberWave;
+            GenerateRoadPoints(mobViewModel);
             AllMobsMap.Add(mobEntity.UniqueId, mobEntity);
             _allMobsOnWay.Add(mobViewModel);
         }
 
-        private List<RoadPoint> GenerateRoadPoints(MobViewModel mobViewModel)
+        private void GenerateRoadPoints(MobViewModel mobViewModel)
         {
             var way = _gameplayState.Origin.Way;
             List<RoadPoint> roads = new();
@@ -322,8 +328,8 @@ namespace Game.GamePlay.Services
                 //TODO для IsFly при i = 1, а при i = 0 нет движения
                 roads.Add(new RoadPoint(position, direction)); //Список точек движения 
             }
-
-            return roads;
+            mobViewModel.RoadPoints = roads;
+            //return roads;
         }
     }
 }

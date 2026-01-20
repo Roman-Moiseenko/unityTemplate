@@ -82,11 +82,20 @@ namespace Game.GamePlay.View.Mobs
             yield return null;
         }
 
-        public IEnumerator MovingModel(List<RoadPoint> roadPoints)
+        public void Go()
+        {
+            //TODO 
+        //Moving = true;
+        // Attack = false;
+        //Если препятсвие, то Moving = false; Attack = true; Target = IEntityHasHealth entity
+        //В Update проверяем Moving и Attack или Атакуем Target пока Target или Mob !IsDead
+        }
+        
+        public IEnumerator MovingModel()
         {
             if (_mobEntity.IsDead.CurrentValue) yield break;
             
-            RoadPoints = roadPoints;
+            //RoadPoints = roadPoints;
             _targetPosition = GetTargetPosition();
             IsMoving.OnNext(true); //Начать движение
             while (IsMoving.Value)
