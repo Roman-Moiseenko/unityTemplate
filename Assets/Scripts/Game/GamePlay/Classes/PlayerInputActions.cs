@@ -1163,9 +1163,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Down"",
+                    ""name"": ""Down1"",
                     ""type"": ""Button"",
                     ""id"": ""199b9036-1a80-4a6c-8e2f-1ae47d59b4c7"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Down2"",
+                    ""type"": ""Button"",
+                    ""id"": ""56ec338b-af50-4ef1-b305-73c0a705b9c5"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1231,11 +1240,22 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""184280d9-72b7-48ce-ae7a-ca076f0f5ab0"",
-                    ""path"": ""<Touchscreen>/primaryTouch/tap"",
+                    ""path"": ""<Touchscreen>/touch0/tap"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Down"",
+                    ""groups"": "";Touch"",
+                    ""action"": ""Down1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4921d975-5d2c-4d89-809d-8533f652fc0f"",
+                    ""path"": ""<Touchscreen>/touch1/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Touch"",
+                    ""action"": ""Down2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1334,7 +1354,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Gameplay_Newaction = m_Gameplay.FindAction("New action", throwIfNotFound: true);
         m_Gameplay_Click = m_Gameplay.FindAction("Click", throwIfNotFound: true);
         m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
-        m_Gameplay_Down = m_Gameplay.FindAction("Down", throwIfNotFound: true);
+        m_Gameplay_Down1 = m_Gameplay.FindAction("Down1", throwIfNotFound: true);
+        m_Gameplay_Down2 = m_Gameplay.FindAction("Down2", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -1810,7 +1831,8 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Newaction;
     private readonly InputAction m_Gameplay_Click;
     private readonly InputAction m_Gameplay_Move;
-    private readonly InputAction m_Gameplay_Down;
+    private readonly InputAction m_Gameplay_Down1;
+    private readonly InputAction m_Gameplay_Down2;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -1835,9 +1857,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Move => m_Wrapper.m_Gameplay_Move;
         /// <summary>
-        /// Provides access to the underlying input action "Gameplay/Down".
+        /// Provides access to the underlying input action "Gameplay/Down1".
         /// </summary>
-        public InputAction @Down => m_Wrapper.m_Gameplay_Down;
+        public InputAction @Down1 => m_Wrapper.m_Gameplay_Down1;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/Down2".
+        /// </summary>
+        public InputAction @Down2 => m_Wrapper.m_Gameplay_Down2;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1873,9 +1899,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Move.started += instance.OnMove;
             @Move.performed += instance.OnMove;
             @Move.canceled += instance.OnMove;
-            @Down.started += instance.OnDown;
-            @Down.performed += instance.OnDown;
-            @Down.canceled += instance.OnDown;
+            @Down1.started += instance.OnDown1;
+            @Down1.performed += instance.OnDown1;
+            @Down1.canceled += instance.OnDown1;
+            @Down2.started += instance.OnDown2;
+            @Down2.performed += instance.OnDown2;
+            @Down2.canceled += instance.OnDown2;
         }
 
         /// <summary>
@@ -1896,9 +1925,12 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Move.started -= instance.OnMove;
             @Move.performed -= instance.OnMove;
             @Move.canceled -= instance.OnMove;
-            @Down.started -= instance.OnDown;
-            @Down.performed -= instance.OnDown;
-            @Down.canceled -= instance.OnDown;
+            @Down1.started -= instance.OnDown1;
+            @Down1.performed -= instance.OnDown1;
+            @Down1.canceled -= instance.OnDown1;
+            @Down2.started -= instance.OnDown2;
+            @Down2.performed -= instance.OnDown2;
+            @Down2.canceled -= instance.OnDown2;
         }
 
         /// <summary>
@@ -2182,11 +2214,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMove(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Down" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Down1" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDown(InputAction.CallbackContext context);
+        void OnDown1(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Down2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDown2(InputAction.CallbackContext context);
     }
 }

@@ -35,6 +35,9 @@ namespace Game.GamePlay.Classes
             _playerControls.UI.ClickUI.performed += OnClickUI;
 
 
+            _playerControls.Gameplay.Down1.started += OnDown1;
+            _playerControls.Gameplay.Down2.started += OnDown2;
+
 #if UNITY_EDITOR
 //            Debug.Log("UNITY_EDITOR");
         _tapThresholdDistance = 20f;    
@@ -42,6 +45,15 @@ namespace Game.GamePlay.Classes
          //   Debug.Log("UNITY_ANDROID");
         _tapThresholdDistance = 100f;
 #endif
+        }
+
+        private void OnDown1(InputAction.CallbackContext context)
+        {
+            Debug.Log("Down 1");
+        }
+        private void OnDown2(InputAction.CallbackContext context)
+        {
+            Debug.Log("Down 2");
         }
         private void OnClickUI(InputAction.CallbackContext context)
         {

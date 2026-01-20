@@ -1077,9 +1077,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Down",
+                    "name": "Down1",
                     "type": "Button",
                     "id": "199b9036-1a80-4a6c-8e2f-1ae47d59b4c7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Down2",
+                    "type": "Button",
+                    "id": "56ec338b-af50-4ef1-b305-73c0a705b9c5",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1145,11 +1154,22 @@
                 {
                     "name": "",
                     "id": "184280d9-72b7-48ce-ae7a-ca076f0f5ab0",
-                    "path": "<Touchscreen>/primaryTouch/tap",
+                    "path": "<Touchscreen>/touch0/tap",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "Down",
+                    "groups": ";Touch",
+                    "action": "Down1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4921d975-5d2c-4d89-809d-8533f652fc0f",
+                    "path": "<Touchscreen>/touch1/tap",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Touch",
+                    "action": "Down2",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
