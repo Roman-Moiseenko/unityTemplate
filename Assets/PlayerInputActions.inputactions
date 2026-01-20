@@ -1078,7 +1078,7 @@
                 },
                 {
                     "name": "Down1",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "199b9036-1a80-4a6c-8e2f-1ae47d59b4c7",
                     "expectedControlType": "",
                     "processors": "",
@@ -1086,10 +1086,28 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Down2",
-                    "type": "Button",
+                    "name": "SecondaryContact",
+                    "type": "Value",
                     "id": "56ec338b-af50-4ef1-b305-73c0a705b9c5",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "SecondaryMove",
+                    "type": "PassThrough",
+                    "id": "e336a71e-7887-45a1-a0ea-33f6100f2fdc",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ScrollMouse",
+                    "type": "PassThrough",
+                    "id": "0887be45-5c06-4c3b-8a3a-c904e797f863",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -1154,7 +1172,7 @@
                 {
                     "name": "",
                     "id": "184280d9-72b7-48ce-ae7a-ca076f0f5ab0",
-                    "path": "<Touchscreen>/touch0/tap",
+                    "path": "<Touchscreen>/primaryTouch/press",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Touch",
@@ -1165,11 +1183,33 @@
                 {
                     "name": "",
                     "id": "4921d975-5d2c-4d89-809d-8533f652fc0f",
-                    "path": "<Touchscreen>/touch1/tap",
+                    "path": "<Touchscreen>/touch1/press",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Touch",
-                    "action": "Down2",
+                    "action": "SecondaryContact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fa33d298-5e9e-465d-adf8-3cf7fa9021ed",
+                    "path": "<Touchscreen>/touch1/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Touch",
+                    "action": "SecondaryMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "813faa5b-33f8-44c3-a5b0-e8283bd33caf",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ScrollMouse",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

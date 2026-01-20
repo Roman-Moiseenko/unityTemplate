@@ -1164,7 +1164,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Down1"",
-                    ""type"": ""Button"",
+                    ""type"": ""PassThrough"",
                     ""id"": ""199b9036-1a80-4a6c-8e2f-1ae47d59b4c7"",
                     ""expectedControlType"": """",
                     ""processors"": """",
@@ -1172,10 +1172,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Down2"",
-                    ""type"": ""Button"",
+                    ""name"": ""SecondaryContact"",
+                    ""type"": ""Value"",
                     ""id"": ""56ec338b-af50-4ef1-b305-73c0a705b9c5"",
-                    ""expectedControlType"": """",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""SecondaryMove"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""e336a71e-7887-45a1-a0ea-33f6100f2fdc"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ScrollMouse"",
+                    ""type"": ""PassThrough"",
+                    ""id"": ""0887be45-5c06-4c3b-8a3a-c904e797f863"",
+                    ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -1240,7 +1258,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""184280d9-72b7-48ce-ae7a-ca076f0f5ab0"",
-                    ""path"": ""<Touchscreen>/touch0/tap"",
+                    ""path"": ""<Touchscreen>/primaryTouch/press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Touch"",
@@ -1251,11 +1269,33 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""4921d975-5d2c-4d89-809d-8533f652fc0f"",
-                    ""path"": ""<Touchscreen>/touch1/tap"",
+                    ""path"": ""<Touchscreen>/touch1/press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Touch"",
-                    ""action"": ""Down2"",
+                    ""action"": ""SecondaryContact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fa33d298-5e9e-465d-adf8-3cf7fa9021ed"",
+                    ""path"": ""<Touchscreen>/touch1/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Touch"",
+                    ""action"": ""SecondaryMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""813faa5b-33f8-44c3-a5b0-e8283bd33caf"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ScrollMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1355,7 +1395,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Gameplay_Click = m_Gameplay.FindAction("Click", throwIfNotFound: true);
         m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
         m_Gameplay_Down1 = m_Gameplay.FindAction("Down1", throwIfNotFound: true);
-        m_Gameplay_Down2 = m_Gameplay.FindAction("Down2", throwIfNotFound: true);
+        m_Gameplay_SecondaryContact = m_Gameplay.FindAction("SecondaryContact", throwIfNotFound: true);
+        m_Gameplay_SecondaryMove = m_Gameplay.FindAction("SecondaryMove", throwIfNotFound: true);
+        m_Gameplay_ScrollMouse = m_Gameplay.FindAction("ScrollMouse", throwIfNotFound: true);
     }
 
     ~@PlayerInputActions()
@@ -1832,7 +1874,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Click;
     private readonly InputAction m_Gameplay_Move;
     private readonly InputAction m_Gameplay_Down1;
-    private readonly InputAction m_Gameplay_Down2;
+    private readonly InputAction m_Gameplay_SecondaryContact;
+    private readonly InputAction m_Gameplay_SecondaryMove;
+    private readonly InputAction m_Gameplay_ScrollMouse;
     /// <summary>
     /// Provides access to input actions defined in input action map "Gameplay".
     /// </summary>
@@ -1861,9 +1905,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Down1 => m_Wrapper.m_Gameplay_Down1;
         /// <summary>
-        /// Provides access to the underlying input action "Gameplay/Down2".
+        /// Provides access to the underlying input action "Gameplay/SecondaryContact".
         /// </summary>
-        public InputAction @Down2 => m_Wrapper.m_Gameplay_Down2;
+        public InputAction @SecondaryContact => m_Wrapper.m_Gameplay_SecondaryContact;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/SecondaryMove".
+        /// </summary>
+        public InputAction @SecondaryMove => m_Wrapper.m_Gameplay_SecondaryMove;
+        /// <summary>
+        /// Provides access to the underlying input action "Gameplay/ScrollMouse".
+        /// </summary>
+        public InputAction @ScrollMouse => m_Wrapper.m_Gameplay_ScrollMouse;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1902,9 +1954,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Down1.started += instance.OnDown1;
             @Down1.performed += instance.OnDown1;
             @Down1.canceled += instance.OnDown1;
-            @Down2.started += instance.OnDown2;
-            @Down2.performed += instance.OnDown2;
-            @Down2.canceled += instance.OnDown2;
+            @SecondaryContact.started += instance.OnSecondaryContact;
+            @SecondaryContact.performed += instance.OnSecondaryContact;
+            @SecondaryContact.canceled += instance.OnSecondaryContact;
+            @SecondaryMove.started += instance.OnSecondaryMove;
+            @SecondaryMove.performed += instance.OnSecondaryMove;
+            @SecondaryMove.canceled += instance.OnSecondaryMove;
+            @ScrollMouse.started += instance.OnScrollMouse;
+            @ScrollMouse.performed += instance.OnScrollMouse;
+            @ScrollMouse.canceled += instance.OnScrollMouse;
         }
 
         /// <summary>
@@ -1928,9 +1986,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Down1.started -= instance.OnDown1;
             @Down1.performed -= instance.OnDown1;
             @Down1.canceled -= instance.OnDown1;
-            @Down2.started -= instance.OnDown2;
-            @Down2.performed -= instance.OnDown2;
-            @Down2.canceled -= instance.OnDown2;
+            @SecondaryContact.started -= instance.OnSecondaryContact;
+            @SecondaryContact.performed -= instance.OnSecondaryContact;
+            @SecondaryContact.canceled -= instance.OnSecondaryContact;
+            @SecondaryMove.started -= instance.OnSecondaryMove;
+            @SecondaryMove.performed -= instance.OnSecondaryMove;
+            @SecondaryMove.canceled -= instance.OnSecondaryMove;
+            @ScrollMouse.started -= instance.OnScrollMouse;
+            @ScrollMouse.performed -= instance.OnScrollMouse;
+            @ScrollMouse.canceled -= instance.OnScrollMouse;
         }
 
         /// <summary>
@@ -2221,11 +2285,25 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnDown1(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Down2" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "SecondaryContact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDown2(InputAction.CallbackContext context);
+        void OnSecondaryContact(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SecondaryMove" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSecondaryMove(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ScrollMouse" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnScrollMouse(InputAction.CallbackContext context);
     }
 }

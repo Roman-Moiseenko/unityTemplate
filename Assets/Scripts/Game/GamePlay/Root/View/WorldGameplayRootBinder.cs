@@ -301,10 +301,15 @@ namespace Game.GamePlay.Root.View
         {
             _viewModel?.Update();
         }
-        
+
         /**
          * Функции для отловли событий на Input
          */
+
+        private void HandleScaling(bool scalingUp)
+        {
+            _viewModel.ScalingCamera(scalingUp);
+        }
         private void HandleTap(Vector2 screenPosition)
         {
             _viewModel.ClickEntity(screenPosition);
@@ -331,6 +336,7 @@ namespace Game.GamePlay.Root.View
             InputManager.OnPointerDown += HandlePointerDown;
             InputManager.OnPointerUp += HandlePointerUp;
             InputManager.OnPointerDrag += HandlePointerDrag;
+            InputManager.OnScalingUp += HandleScaling;
         }
 
         private void OnDisable()
@@ -339,6 +345,7 @@ namespace Game.GamePlay.Root.View
             InputManager.OnPointerDown -= HandlePointerDown;
             InputManager.OnPointerUp -= HandlePointerUp;
             InputManager.OnPointerDrag -= HandlePointerDrag;
+            InputManager.OnScalingUp -= HandleScaling;
         }
     }
 }

@@ -256,6 +256,11 @@ namespace Game.GamePlay.Root.View
             }
         }
 
+        public void ScalingCamera(bool scalingUp)
+        {
+            _cameraService.ScalingCamera(scalingUp);
+        }
+
         public void StartGameplayServices()
         {
             _waveService.StartNextWave();

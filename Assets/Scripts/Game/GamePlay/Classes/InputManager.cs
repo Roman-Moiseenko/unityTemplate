@@ -10,18 +10,24 @@ namespace Game.GamePlay.Classes
     {
         private PlayerInputActions _playerControls;
         private Vector2 _currentPointerPosition; // Текущая позиция указателя (мышь или касание)
-        private Vector2 _tapStartPosition;       // Позиция, где началось касание
-        private bool _isPointerDown;             // Флаг, указывающий, нажат ли указатель
+        private Vector2 _currentSecondPosition; // Текущая позиция указателя (мышь или касание)
+        private Vector2 _tapStartPosition; // Позиция, где началось касание
+        private Vector2 _tapStartSecondPosition = Vector2.zero; // Позиция, где началось касание
+        private bool _isPointerDown; // Флаг, указывающий, нажат ли указатель
         private const float TapHoldThreshold = 0.2f; // Время в секундах, после которого нажатие считается "долгим"
         private float _tapThresholdDistance = 10f; // Расстояние в пикселях, после которого нажатие считается "драгом"
-        public static event System.Action<Vector2> OnTapPerformed;        // Одинарный клик/короткое касание
-        public static event System.Action<Vector2> OnPointerDown;         // Начало нажатия
-        public static event System.Action<Vector2> OnPointerUp;           // Отпускание нажатия
+        public static event System.Action<Vector2> OnTapPerformed; // Одинарный клик/короткое касание
+        public static event System.Action<Vector2> OnPointerDown; // Начало нажатия
+        public static event System.Action<Vector2> OnPointerUp; // Отпускание нажатия
         public static event System.Action<Vector2, Vector2> OnPointerDrag; // Перемещение нажатого указателя
-        public static event System.Action<Vector2> OnTapUI;        // Одинарный клик/короткое касание
+        public static event System.Action<Vector2> OnTapUI; // Одинарный клик/короткое касание
+        public static event System.Action<bool> OnScalingUp;
+
 
         private Camera mainCamera; // Главная камера для преобразования ScreenToWorldPoint
-        
+
+        private bool _isScrolling = false;
+
         private void Awake()
         {
             _playerControls = new PlayerInputActions();
@@ -34,39 +40,88 @@ namespace Game.GamePlay.Classes
 
             _playerControls.UI.ClickUI.performed += OnClickUI;
 
-
-            _playerControls.Gameplay.Down1.started += OnDown1;
-            _playerControls.Gameplay.Down2.started += OnDown2;
+            //  _playerControls.Gameplay.Down1.performed += OnDownP1;
+            // _playerControls.Gameplay.Down2.performed += OnDownP2;
+            // _playerControls.Gameplay.Down1.started += OnDown1;
+            //_playerControls.Gameplay.SecondaryContact.performed += OnSecondaryContactPerformed;
+            //Масштаб карты
+            // На Андроид
+            _playerControls.Gameplay.SecondaryContact.started += OnSecondaryContactStarted;
+            _playerControls.Gameplay.SecondaryContact.canceled += OnSecondaryContactCanceled;
+            _playerControls.Gameplay.SecondaryMove.performed += OnSecondaryContactPosition;
+            // В редакторе
+            _playerControls.Gameplay.ScrollMouse.performed += OnScrollWheel;
 
 #if UNITY_EDITOR
 //            Debug.Log("UNITY_EDITOR");
-        _tapThresholdDistance = 20f;    
+            _tapThresholdDistance = 20f;
 #elif UNITY_IOS || UNITY_ANDROID
          //   Debug.Log("UNITY_ANDROID");
         _tapThresholdDistance = 100f;
 #endif
         }
 
-        private void OnDown1(InputAction.CallbackContext context)
+        private void OnScrollWheel(InputAction.CallbackContext context)
         {
-            Debug.Log("Down 1");
+            var scrollWheelValue = context.ReadValue<Vector2>().y;
+            if (scrollWheelValue != 0) OnScalingUp?.Invoke(scrollWheelValue > 0);
         }
-        private void OnDown2(InputAction.CallbackContext context)
+        private void OnSecondaryContactPosition(InputAction.CallbackContext context)
         {
-            Debug.Log("Down 2");
+            _currentSecondPosition = context.ReadValue<Vector2>();
+            if (IsPointerOverUIObject(_currentSecondPosition)) return;
+
+            if (_tapStartSecondPosition == Vector2.zero) _tapStartSecondPosition = _currentSecondPosition;
+
+            Vector2 delta = _currentSecondPosition - _tapStartSecondPosition;
+
+            if (delta.magnitude > _tapThresholdDistance)
+            {
+                var distBegin = Vector2.Distance(_currentPointerPosition, _tapStartSecondPosition);
+                var distEnd = Vector2.Distance(_currentPointerPosition, _currentSecondPosition);
+
+                OnScalingUp?.Invoke(distBegin < distEnd);
+
+                _tapStartSecondPosition = _currentSecondPosition;
+            }
+
+            //Debug.Log($"Secondary Contact Position: {_currentSecondPosition}");
         }
+
+        private void OnSecondaryContactStarted(InputAction.CallbackContext context)
+        {
+            if (_playerControls.Gameplay.Click.IsPressed())
+            {
+                //_tapStartSecondPosition = 
+                _isScrolling = true;
+            }
+        }
+
+        private void OnSecondaryContactCanceled(InputAction.CallbackContext context)
+        {
+            _isScrolling = false;
+        }
+
+
+        private void Update()
+        {
+        }
+
         private void OnClickUI(InputAction.CallbackContext context)
         {
             OnTapUI?.Invoke(_currentPointerPosition);
 //            Debug.Log(_currentPointerPosition);
-          //  var position = context.ReadValue<Vector2>();
+            //  var position = context.ReadValue<Vector2>();
         }
-        
+
         private void ReadPointerPosition(InputAction.CallbackContext context)
         {
             _currentPointerPosition = context.ReadValue<Vector2>();
             // !!! ГЛАВНОЕ ИЗМЕНЕНИЕ: Проверяем, если указатель нажат и находится над UI
-            if (_isPointerDown && IsPointerOverUIObject(_currentPointerPosition) /*EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()*/)
+            if (_isPointerDown &&
+                IsPointerOverUIObject(
+                    _currentPointerPosition) /*EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()*/
+               )
             {
                 // Если мы были нажаты над игровым объектом, но сейчас тащим над UI
                 // Можно прервать состояние isPointerDown или просто игнорировать drag событие
@@ -74,19 +129,31 @@ namespace Game.GamePlay.Classes
                 // Если нужно полное прерывание, можно вызвать OnPointerCanceled для очистки.
                 return;
             }
+
             // Если указатель нажат и перемещается, это "драг"
             if (_isPointerDown)
             {
                 Vector2 delta = _currentPointerPosition - _tapStartPosition;
-               // Debug.Log("ReadPointerPosition " + delta);
-                
+                // Debug.Log("ReadPointerPosition " + delta);
+
                 // Можно реализовать OnPointerDrag здесь или в Update,
                 // в зависимости от того, как часто вам нужны обновления.
                 // Для smooth drag лучше в Update или как отдельное событие.
                 // Пока просто выведем в консоль для демонстрации
                 if (delta.magnitude > _tapThresholdDistance)
                 {
-                    OnPointerDrag?.Invoke(_tapStartPosition, _currentPointerPosition);
+                    if (_isScrolling)
+                    {
+                        var distBegin = Vector2.Distance(_currentSecondPosition, _tapStartPosition);
+                        var distEnd = Vector2.Distance(_currentSecondPosition, _currentPointerPosition);
+
+                        OnScalingUp?.Invoke(distBegin < distEnd);
+                    }
+                    else
+                    {
+                        OnPointerDrag?.Invoke(_tapStartPosition, _currentPointerPosition);
+                    }
+
                     _tapStartPosition = _currentPointerPosition;
                 }
             }
@@ -96,13 +163,13 @@ namespace Game.GamePlay.Classes
         {
             _isPointerDown = false;
             Vector2 releasePosition = _currentPointerPosition; // Позиция отпускания
-            float tapDuration = (float)context.duration;       // Длительность нажатия
+            float tapDuration = (float)context.duration; // Длительность нажатия
             float movedDistance = Vector2.Distance(_tapStartPosition, releasePosition);
 
             // Оповещаем об отпускании нажатия
             //Debug.Log($"Pointer UP at screen position: {releasePosition}");
             OnPointerUp?.Invoke(releasePosition);
-            
+
             // Если нажатие было коротким и без значительного перемещения, считаем это "тапом"
             if (tapDuration < TapHoldThreshold && movedDistance < _tapThresholdDistance)
             {
@@ -123,14 +190,16 @@ namespace Game.GamePlay.Classes
         private void OnPointerStarted(InputAction.CallbackContext context)
         {
             //_currentPointerPosition = _playerControls.Gameplay.PointerPosition.ReadValue<Vector2>();
-            
+
             // !!! ГЛАВНОЕ ИЗМЕНЕНИЕ: Проверяем, находится ли курсор над UI
-            if (IsPointerOverUIObject(_currentPointerPosition) /*EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()*/)
+            if (IsPointerOverUIObject(
+                    _currentPointerPosition) /*EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()*/
+               )
             {
                 //Debug.Log("Pointer Down: OVER UI. Ignoring game objects.");
                 return; // Игнорируем начало нажатия, если оно над UI
             }
-            
+
             _isPointerDown = true;
             _tapStartPosition = _currentPointerPosition; // Запоминаем начальную позицию
 
@@ -152,15 +221,14 @@ namespace Game.GamePlay.Classes
 
         private void OnClick(InputAction.CallbackContext context)
         {
-          //  var position = context.ReadValue<Vector2>();
-          //  Debug.Log("Клик " + position);
+            //  var position = context.ReadValue<Vector2>();
+            //  Debug.Log("Клик " + position);
             // После отпускания кнопки, мы оцениваем, был ли это "тап" или "драг".
             // Это делается в OnPointerCanceled, чтобы учесть фактическое время и расстояние.
-        //    Debug.Log("Клик" );
+            //    Debug.Log("Клик" );
 //            Debug.Log("Клик" );
-
         }
-        
+
         public Vector3 ScreenToWorld(Vector2 screenPosition)
         {
             if (mainCamera == null)
@@ -171,7 +239,8 @@ namespace Game.GamePlay.Classes
 
             // Для 2D-сцены обычно z-координату задают 0 или на уровне игровой плоскости.
             // Для 3D-сцены нужно использовать Depth.
-            return mainCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y, mainCamera.nearClipPlane));
+            return mainCamera.ScreenToWorldPoint(new Vector3(screenPosition.x, screenPosition.y,
+                mainCamera.nearClipPlane));
         }
 
         /// <summary>
@@ -184,7 +253,7 @@ namespace Game.GamePlay.Classes
             RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPosition, null, out pos);
             return pos;
         }
-        
+
         private bool IsPointerOverUIObject(Vector2 screenPosition)
         {
             if (EventSystem.current == null) return false;
@@ -193,7 +262,7 @@ namespace Game.GamePlay.Classes
             eventDataCurrentPosition.position = screenPosition;
             var results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
-        
+
             // Проверяем, есть ли результаты Raycast и не является ли это только нашим собственным EventSystem,
             // а именно, есть ли активные UI элементы, перехватывающие клик.
             foreach (var result in results)
@@ -205,6 +274,7 @@ namespace Game.GamePlay.Classes
                     return true;
                 }
             }
+
             return false;
         }
     }

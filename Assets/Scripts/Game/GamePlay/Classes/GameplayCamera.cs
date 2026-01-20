@@ -201,5 +201,11 @@ namespace Game.GamePlay.Classes
                 .SetUpdate(true)
                 .OnUpdate(() => _subjectCameraMoving.OnNext(Unit.Default));
         }
+
+        public void ScalingCamera(bool scalingUp)
+        {
+            var newSize = Camera.orthographicSize + (scalingUp ? -1 : +1) *  AppConstants.CAMERA_SCALE_SPEED;
+            Camera.orthographicSize = Mathf.Clamp(newSize, AppConstants.CAMERA_SCALE_MIN,  AppConstants.CAMERA_SCALE_MAX);
+        }
     }
 }
