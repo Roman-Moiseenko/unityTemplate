@@ -34,7 +34,8 @@ namespace Game.GamePlay.View.Towers
                 _targetPosition = new Vector3(newPosition.x, transform.position.y, newPosition.y);
                 _isMoving = true;
             }).AddTo(ref d);
-            if (rotateBlock != null) rotateBlock.rotation = Quaternion.LookRotation(viewModel.Direction.CurrentValue);
+            if (rotateBlock != null && viewModel.Direction.CurrentValue != Vector3.zero)
+                rotateBlock.rotation = Quaternion.LookRotation(viewModel.Direction.CurrentValue);
             
             viewModel.Direction.Where(x => x != Vector3.zero).Subscribe(v =>
             {

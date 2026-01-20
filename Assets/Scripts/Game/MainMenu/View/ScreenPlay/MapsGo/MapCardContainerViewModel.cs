@@ -9,6 +9,9 @@ using R3;
 
 namespace Game.MainMenu.View.ScreenPlay.MapsGo
 {
+    /**
+     * Контейнер для карт, содержит список MapCardViewModel
+     */
     public class MapCardContainerViewModel
     {
         private readonly DIContainer _container;

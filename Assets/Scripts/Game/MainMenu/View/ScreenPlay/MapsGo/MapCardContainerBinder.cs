@@ -47,18 +47,24 @@ namespace Game.MainMenu.View.ScreenPlay.MapsGo
                 CreateMapCard(mapViewModel);
             }
 
+            //При изменении номера последней завершенной карты, открываем следующую
             viewModel.LastMapId.Subscribe(v =>
             {
                 if (v != 0) _createdMapCardMap[v].SetFinished();
                 _createdMapCardMap[v + 1].SetEnabled();
+                _numberShow.OnNext(v + 1); //Автоматически прокручиваем на новую
             }).AddTo(ref d);
 
             _deltaScroll = 1f / (_createdMapCardMap.Count - 1);
+            
+            //Скроллинг карт при изменении текущего номера
             _numberShow.Skip(1).Subscribe(v =>
             {
                 _isScrolling = true;
                 _targetScroll = _deltaScroll * (v - 1);
             }).AddTo(ref d);
+            //Начальная установка на последней доступной карте
+            screenView.horizontalNormalizedPosition = _deltaScroll * viewModel.LastMapId.CurrentValue;
             
             disposable = d.Build();
         }
