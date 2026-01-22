@@ -33,7 +33,8 @@ namespace Game.GamePlay.Services
         private readonly Dictionary<int, TowerViewModel> _towersMap = new();
         //Кешируем параметры башен на карте
         private readonly Dictionary<string, List<TowerLevelSettings>> _towerSettingsMap = new();
-        
+        private readonly GameplayStateProxy _gameplayState;
+
 
         /**
          * При загрузке создаем все view-модели из реактивного списка всех строений.
@@ -47,6 +48,7 @@ namespace Game.GamePlay.Services
             PlacementService placementService
         )
         {
+            _gameplayState = gameplayState;
             _towerEntities = gameplayState.Towers;
             _baseTowerCards = baseTowerCards;
             _cmd = cmd;
@@ -128,6 +130,7 @@ namespace Game.GamePlay.Services
         public bool PlaceTower(string towerTypeId, Vector2Int position)
         {
             var command = new CommandPlaceTower(towerTypeId, position);
+            command.Placement = _placementService.GetDirectionTower(position) + position;
             return _cmd.Process(command);
         }
         
@@ -154,7 +157,7 @@ namespace Game.GamePlay.Services
         {
             var towerViewModel = new TowerViewModel(
                 towerEntity, 
-                _towerSettingsMap[towerEntity.ConfigId], this); //3
+                _towerSettingsMap[towerEntity.ConfigId], _gameplayState, _cmd); //3
             var directionTower = _placementService.GetDirectionTower(towerEntity.Position.CurrentValue);
             towerViewModel.SetDirection(directionTower);
             _allTowers.Add(towerViewModel); //4

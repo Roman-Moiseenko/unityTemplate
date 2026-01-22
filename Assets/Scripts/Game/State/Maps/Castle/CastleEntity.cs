@@ -76,6 +76,11 @@ namespace Game.State.Maps.Castle
             }
         }
 
+        public bool IsDeadEntity()
+        {
+            return IsDead.Value;
+        }
+
         public bool Resurrection()
         {
             if (CountResurrection.CurrentValue == 2) return false;
@@ -93,7 +98,6 @@ namespace Game.State.Maps.Castle
 //                Debug.Log("Цель уже установлена " + mobEntity.UniqueId);//TODO Отладить
                 return false;
             } 
-           // Debug.Log("Цель добавлена " + mobEntity.UniqueId);//TODO Отладить
             Target.Add(mobEntity);
             return true;
         }

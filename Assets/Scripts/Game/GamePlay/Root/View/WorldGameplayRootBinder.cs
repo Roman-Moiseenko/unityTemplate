@@ -10,6 +10,7 @@ using Game.GamePlay.View.Map;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
+using Game.GamePlay.View.Warriors;
 using Game.GamePlay.View.Waves;
 using ObservableCollections;
 using R3;
@@ -20,8 +21,9 @@ namespace Game.GamePlay.Root.View
     public class WorldGameplayRootBinder : MonoBehaviour
     {
         [SerializeField] private MapFogBinder mapFog;
- 
+
         private readonly Dictionary<int, TowerBaseBinder> _createTowersMap = new();
+        private readonly Dictionary<int, WarriorBinder> _createWarriorsMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
         private readonly Dictionary<int, BoardBinder> _createBoardsMap = new();
         private FrameBlockBinder _frameBlockBinder;
@@ -30,11 +32,11 @@ namespace Game.GamePlay.Root.View
         private readonly List<GateWaveBinder> _createGateMap = new();
         private CastleBinder _castleBinder;
         private AttackAreaBinder _attackAreaBinder;
-        
+
         private IDisposable _disposable;
         private readonly Dictionary<string, List<MobBinder>> _mobsPull = new(); //Пул мобов
         private WorldGameplayRootViewModel _viewModel;
-        
+
         public void Bind(WorldGameplayRootViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
@@ -50,7 +52,7 @@ namespace Game.GamePlay.Root.View
             viewModel.AllGrounds.ObserveRemove()
                 .Subscribe(e => DestroyGround(e.Value))
                 .AddTo(ref d);
-            
+
             //Границы
             foreach (var boardViewModel in viewModel.AllBoards) CreateBoard(boardViewModel);
             viewModel.AllBoards.ObserveAdd()
@@ -59,20 +61,29 @@ namespace Game.GamePlay.Root.View
             viewModel.AllBoards.ObserveRemove()
                 .Subscribe(e => DestroyBoard(e.Value))
                 .AddTo(ref d);
-            
+
             //Башни
             foreach (var towerViewModel in viewModel.AllTowers)
             {
                 CreateTowerBase(towerViewModel);
             }
 
-            viewModel.AllTowers.ObserveAdd().Subscribe(e =>
-            {
-                CreateTowerBase(e.Value);
-            }).AddTo(ref d);
+            viewModel.AllTowers.ObserveAdd().Subscribe(e => { CreateTowerBase(e.Value); }).AddTo(ref d);
             viewModel.AllTowers.ObserveRemove()
                 .Subscribe(e => DestroyTowerBase(e.Value))
                 .AddTo(ref d);
+
+            //Воины
+            foreach (var warriorViewModel in viewModel.AllWarriors)
+            {
+                CreateWarrior(warriorViewModel);
+            }
+
+            viewModel.AllWarriors.ObserveAdd().Subscribe(e => { CreateWarrior(e.Value); }).AddTo(ref d);
+            viewModel.AllWarriors.ObserveRemove()
+                .Subscribe(e => DestroyWarrior(e.Value))
+                .AddTo(ref d);
+
 
             //Мобы
             foreach (var mobViewModel in viewModel.AllMobs) CreateMob(mobViewModel);
@@ -86,7 +97,7 @@ namespace Game.GamePlay.Root.View
                 {
                     if (_mobsPull.TryGetValue(e.Value.ConfigId, out var listMobs))
                     {
-                        var mobBinder = listMobs.Find(m => m._viewModel.MobEntityId == e.Value.MobEntityId);
+                        var mobBinder = listMobs.Find(m => m.ViewModel.UniqueId == e.Value.UniqueId);
                         mobBinder.FreeUp();
                     }
                 })
@@ -94,7 +105,7 @@ namespace Game.GamePlay.Root.View
 
             //Замок
             CreateCastle(viewModel.CastleViewModel);
-            
+
             //Дорога
             foreach (var roadViewModel in viewModel.AllRoads) CreateRoad(roadViewModel);
             viewModel.AllRoads.ObserveAdd()
@@ -129,7 +140,7 @@ namespace Game.GamePlay.Root.View
         {
             if (_castleBinder != null) Destroy(_castleBinder.gameObject);
             if (_attackAreaBinder != null) Destroy(_attackAreaBinder.gameObject);
-            
+
             _disposable?.Dispose();
             _createGateMap.ForEach(item => Destroy(item.gameObject));
         }
@@ -144,14 +155,23 @@ namespace Game.GamePlay.Root.View
             createdGate.Bind(viewModel);
             _createGateMap.Add(createdGate);
         }
-
+        
+        private void CreateWarrior(WarriorViewModel warriorViewModel)
+        {
+            var prefabWarriorPath = $"Prefabs/Gameplay/Warriors/Warrior-{warriorViewModel.ConfigId}"; //Перенести в настройки уровня
+            var warriorPrefab = Resources.Load<WarriorBinder>(prefabWarriorPath);
+            var createdWarrior = Instantiate(warriorPrefab, transform);
+            createdWarrior.Bind(warriorViewModel);
+            _createWarriorsMap[warriorViewModel.UniqueId] = createdWarrior;
+        }
+        
         private void CreateMob(MobViewModel mobViewModel)
         {
             var prefabPath = $"Prefabs/Gameplay/Mobs/{mobViewModel.ConfigId}"; //Перенести в настройки уровня
             var mobPrefab = Resources.Load<MobBinder>(prefabPath);
             var createdMob = Instantiate(mobPrefab, transform);
 
-            _createMobsMap[mobViewModel.MobEntityId] = createdMob;
+            _createMobsMap[mobViewModel.UniqueId] = createdMob;
             //Добавляем моба в пул
             if (_mobsPull.TryGetValue(mobViewModel.ConfigId, out var listBinders))
             {
@@ -176,6 +196,7 @@ namespace Game.GamePlay.Root.View
                     return;
                 }
             }
+
             CreateMob(mobViewModel);
         }
 
@@ -203,9 +224,9 @@ namespace Game.GamePlay.Root.View
             var towerPrefab = Resources.Load<TowerBaseBinder>(prefabTowerLevelPath);
             var createdTower = Instantiate(towerPrefab, transform);
             createdTower.Bind(towerViewModel);
-            _createTowersMap[towerViewModel.TowerEntityId] = createdTower;
+            _createTowersMap[towerViewModel.UniqueId] = createdTower;
         }
-        
+
         private void CreateRoad(RoadViewModel roadViewModel, Transform parentTransform = null)
         {
             var roadConfig = roadViewModel.ConfigId;
@@ -244,8 +265,17 @@ namespace Game.GamePlay.Root.View
             createdFrame.Bind(frameBlockViewModel);
             _frameBlockBinder = createdFrame;
         }
-        
+
         //DESTROY
+        private void DestroyWarrior(WarriorViewModel warriorViewModel)
+        {
+            if (_createWarriorsMap.TryGetValue(warriorViewModel.UniqueId, out var warriorBinder))
+            {
+                Destroy(warriorBinder.gameObject);
+                _createWarriorsMap.Remove(warriorViewModel.UniqueId);
+            }
+        }
+
         private void DestroyRoad(RoadViewModel roadViewModel)
         {
             if (_createdRoadsMap.TryGetValue(roadViewModel.RoadEntityId, out var roadBinder))
@@ -260,22 +290,22 @@ namespace Game.GamePlay.Root.View
             Destroy(_frameBlockBinder.gameObject);
             Destroy(_frameBlockBinder);
         }
-        
+
         private void DestroyTowerBase(TowerViewModel towerViewModel)
         {
-            if (_createTowersMap.TryGetValue(towerViewModel.TowerEntityId, out var towerBinder))
+            if (_createTowersMap.TryGetValue(towerViewModel.UniqueId, out var towerBinder))
             {
                 Destroy(towerBinder.gameObject);
-                _createTowersMap.Remove(towerViewModel.TowerEntityId);
+                _createTowersMap.Remove(towerViewModel.UniqueId);
             }
         }
 
         private void DestroyMob(MobViewModel mobViewModel)
         {
-            if (_createMobsMap.TryGetValue(mobViewModel.MobEntityId, out var mobBinder))
+            if (_createMobsMap.TryGetValue(mobViewModel.UniqueId, out var mobBinder))
             {
                 Destroy(mobBinder.gameObject);
-                _createMobsMap.Remove(mobViewModel.MobEntityId);
+                _createMobsMap.Remove(mobViewModel.UniqueId);
             }
         }
 
@@ -305,11 +335,11 @@ namespace Game.GamePlay.Root.View
         /**
          * Функции для отловли событий на Input
          */
-
         private void HandleScaling(bool scalingUp)
         {
             _viewModel.ScalingCamera(scalingUp);
         }
+
         private void HandleTap(Vector2 screenPosition)
         {
             _viewModel.ClickEntity(screenPosition);
@@ -329,7 +359,7 @@ namespace Game.GamePlay.Root.View
         {
             _viewModel.ProcessMoving(currentPosition);
         }
-        
+
         private void OnEnable()
         {
             InputManager.OnTapPerformed += HandleTap;

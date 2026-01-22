@@ -5,13 +5,16 @@ namespace Game.GamePlay.Commands.TowerCommand
 {
     public class CommandPlaceTower : ICommand
     {
-        public readonly string TowerTypeId;
+        public readonly string ConfigId;
         public readonly Vector2Int Position;
+        public Vector2Int Placement { get; set; }
 
-        public CommandPlaceTower(string towerTypeId, Vector2Int position)
+        public CommandPlaceTower(string configId, Vector2Int position)
         {
-            TowerTypeId = towerTypeId;
+            ConfigId = configId;
             Position = position;
         }
+
+        
     }
 }

@@ -1,7 +1,12 @@
-﻿using Game.State.Entities;
+﻿using System;
+using System.Linq;
+using Game.GamePlay.Commands.WarriorCommands;
+using Game.GamePlay.View.Warriors;
+using Game.State.Entities;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
 using Game.State.Root;
+using MVVM.CMD;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -10,67 +15,93 @@ namespace Game.GamePlay.Services
 {
     public class WarriorService
     {
-        private ObservableList<WarriorEntity> _allWarriors = new();
+        private readonly ObservableList<WarriorEntity> _allWarriorEntities = new();
+        private readonly ObservableList<WarriorViewModel> _allWarriors = new();
+        public IObservableCollection<WarriorViewModel> AllWarriors => _allWarriors;
 
         private readonly TowersService _towersService;
         private readonly GameplayStateProxy _gameplayState;
+        private readonly ICommandProcessor _cmd;
 
         //private readonly Dictionary<string, Dictionary<TowerParameterType, TowerParameterData>> TowerParametersMap = new();
-        public WarriorService(TowersService towersService, GameplayStateProxy gameplayState)
+        public WarriorService(GameplayStateProxy gameplayState, ICommandProcessor cmd)
         {
-            _towersService = towersService;
             _gameplayState = gameplayState;
+            _cmd = cmd;
+            foreach (var warriorEntity in gameplayState.Warriors)
+            {
+                Debug.Log(" " + warriorEntity.UniqueId + " " + warriorEntity.ParentId);
+                CreateWarriorViewModel(warriorEntity);
+            }
+            
+            gameplayState.Warriors.ObserveAdd().Subscribe(e =>
+            {
+                var warriorEntity = e.Value;
+                CreateWarriorViewModel(warriorEntity);
+                warriorEntity.IsDead.Skip(1).Where(x => x).Subscribe(
+                    _ => RemoveWarrior(warriorEntity));
+            });
+            gameplayState.Warriors.ObserveRemove().Subscribe();
+            
+            gameplayState.Warriors.ObserveRemove().Subscribe(e =>
+            {
+                var warriorEntity = e.Value;
+                Debug.Log(" Удален warriorEntity " + warriorEntity.UniqueId);
+                RemoveWarriorViewModel(warriorEntity);
+            });
+            
+        }
+
+        private void RemoveWarriorViewModel(WarriorEntity warriorEntity)
+        {
+            foreach (var warriorViewModel in _allWarriors.ToList())
+            {
+                if (warriorViewModel.UniqueId == warriorEntity.UniqueId)
+                {
+                    _allWarriors.Remove(warriorViewModel);
+                }
+            }
+        }
+
+        private void CreateWarriorViewModel(WarriorEntity warriorEntity)
+        {
+            var warriorViewModel = new WarriorViewModel(warriorEntity, _gameplayState);
+            _allWarriors.Add(warriorViewModel);
         }
 
         public void AddWarriorsTower(TowerEntity towerEntity)
         {
-            var placement = towerEntity.Placement;
-            var parameters = _towersService.TowerParametersMap[towerEntity.ConfigId];
-
-            parameters.TryGetValue(TowerParameterType.Damage, out var damage);
-            parameters.TryGetValue(TowerParameterType.Speed, out var speed);
-            parameters.TryGetValue(TowerParameterType.Health, out var health);
-            parameters.TryGetValue(TowerParameterType.Range, out var range);
-
-            var isFly = towerEntity.TypeEnemy == TowerTypeEnemy.Air;
-            var position = new Vector3(towerEntity.Position.CurrentValue.x, isFly ? 1 : 0,
-                towerEntity.Position.CurrentValue.y);
-            const float delta = 0.2f;
-            
-            for (var i = -1; i < 2; i++)
+            var command = new CommandCreateWarriorTower
             {
-                var startPosition = new Vector3(
-                    towerEntity.Placement.CurrentValue.x + delta * i,
-                    isFly ? 1 : 0,
-                    towerEntity.Placement.CurrentValue.y + delta * i
-                );
-
-                var warriorEntityData = new WarriorEntityData()
-                {
-                    ParentId = towerEntity.UniqueId,
-                    ConfigId = towerEntity.ConfigId,
-                    Damage = damage.Value,
-                    Health = health.Value,
-                    MaxHealth = health.Value,
-                    Speed = speed.Value,
-                    IsFly = isFly,
-                    Position = position,
-                    StartPosition = startPosition,
-                    UniqueId = _gameplayState.CreateEntityID(),
-                    Range = range.Value
-                };
-                _allWarriors.Add(new WarriorEntity(warriorEntityData));
-            }
+                UniqueId = towerEntity.UniqueId,
+                ConfigId = towerEntity.ConfigId,
+                TypeEnemy = towerEntity.TypeEnemy,
+                Position = towerEntity.Position.CurrentValue,
+                Placement = towerEntity.Placement.CurrentValue,
+            };
+            _cmd.Process(command);
         }
 
-        public bool AllWarriorsIDead(int towerId)
+        /**
+         * Все воины, выпущенные башней towerId мертвы
+         */
+        public bool AllWarriorsIsDead(int towerId)
         {
-            foreach (var warriorEntity in _allWarriors)
+            foreach (var warriorViewModel in _allWarriors)
             {
-                if (warriorEntity.ParentId == towerId) return false;
+                if (warriorViewModel.ParentId == towerId) return false;
             }
 
             return true;
+        }
+
+        public void RemoveWarrior(WarriorEntity warriorEntity)
+        {
+            var command = new CommandRemoveWarriorTower
+            {
+                UniqueId = warriorEntity.UniqueId,
+            };
+            _cmd.Process(command);
         }
     }
 }

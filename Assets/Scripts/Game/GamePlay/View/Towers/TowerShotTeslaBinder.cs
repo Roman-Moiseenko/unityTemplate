@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game.GamePlay.View.Mobs;
 using Game.State.Maps.Mobs;
 using R3;
 using UnityEngine;
@@ -10,12 +11,12 @@ namespace Game.GamePlay.View.Towers
     public class TowerShotTeslaBinder : TowerShotBinder
     {
         private List<ShotTeslaBinder> missiles = new();
-        public override void FirePrepare(MobEntity mobEntity)
+        public override void FirePrepare(MobViewModel mobViewModel)
         {
-            _target = mobEntity.PositionTarget;
+            _target = mobViewModel.PositionTarget;
             //Делаем дубль объекта
             var shotTeslaBinder = Instantiate(missile.GetComponent<ShotTeslaBinder>(), transform);
-            shotTeslaBinder.Bind(mobEntity);
+            shotTeslaBinder.Bind(mobViewModel);
             missiles.Add(shotTeslaBinder);
         }
 
@@ -28,10 +29,10 @@ namespace Game.GamePlay.View.Towers
             }
         }
 
-        public override IEnumerator FireStart()
+        public override void FireStart()
         {
             //Debug.Log("Tesla FireStart " + missiles.Count);
-            yield return new WaitForSeconds(_viewModel.SpeedFire);
+            //yield return new WaitForSeconds(_viewModel.Speed);
             //yield return new WaitUntil(() => _viewModel.GameSpeed.Value != 0);
         }
         

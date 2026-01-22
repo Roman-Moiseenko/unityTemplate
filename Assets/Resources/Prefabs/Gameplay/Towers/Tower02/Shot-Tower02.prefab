@@ -9725,6 +9725,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 519175484817383755}
+  - component: {fileID: 102366206933984588}
+  - component: {fileID: 1616798552689958491}
+  - component: {fileID: 8354758253658905440}
   m_Layer: 0
   m_Name: Missile
   m_TagString: Untagged
@@ -9753,6 +9756,66 @@ RectTransform:
   m_AnchoredPosition: {x: 0.006, y: 0.709}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!135 &102366206933984588
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4390508819404862504}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &1616798552689958491
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4390508819404862504}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
+--- !u!114 &8354758253658905440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4390508819404862504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e52c2021c0b241ddbba157e04df80505, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.Towers.ShotBinder
 --- !u!1 &4809381978166959749
 GameObject:
   m_ObjectHideFlags: 0
@@ -9897,6 +9960,7 @@ MonoBehaviour:
   fire: {fileID: 2266571332856577402}
   missile: {fileID: 519175484817383755}
   explosion: {fileID: 3694179648706444914}
+  shotBinder: {fileID: 8354758253658905440}
 --- !u!1 &5203112601792822848
 GameObject:
   m_ObjectHideFlags: 0

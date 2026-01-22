@@ -21,7 +21,8 @@ namespace Game.GamePlay.View.Towers
         private const string AnimationFireName = "tower_fire";
 
         private Vector3 _targetDirection;
-       // private Quaternion _targetRotation;
+
+        // private Quaternion _targetRotation;
         private float _timeElapsed = 0f;
         private float _lerpDuration;
 
@@ -36,15 +37,15 @@ namespace Game.GamePlay.View.Towers
             }).AddTo(ref d);
             if (rotateBlock != null && viewModel.Direction.CurrentValue != Vector3.zero)
                 rotateBlock.rotation = Quaternion.LookRotation(viewModel.Direction.CurrentValue);
-            
+
             viewModel.Direction.Where(x => x != Vector3.zero).Subscribe(v =>
             {
                 if (rotateBlock != null) rotateBlock.rotation = Quaternion.LookRotation(v);
-                
             }).AddTo(ref d);
+
             _disposable = d.Build();
         }
-        
+
         public void FireAnimation()
         {
             if (animator == null) return;
@@ -62,27 +63,6 @@ namespace Game.GamePlay.View.Towers
                 _isMoving = false;
                 transform.position = _targetPosition;
             }
-            
-            if (_isDirection)
-            {
-                if (rotateBlock == null) //При смене модели башни
-                {
-                    _isDirection = false;
-                    _timeElapsed = 0;
-                    return;
-                }
-
-                if (_timeElapsed < _viewModel.SpeedFire)
-                {
-                    _viewModel.Direction.Value = Vector3.Lerp(_viewModel.Direction.Value, _targetDirection,_timeElapsed / _viewModel.SpeedFire);
-                    _timeElapsed += Time.deltaTime;
-                }
-                else
-                {
-                    _isDirection = false;
-                    _timeElapsed = 0;
-                }
-            }
         }
 
         private void OnDestroy()
@@ -90,13 +70,30 @@ namespace Game.GamePlay.View.Towers
             _disposable?.Dispose();
         }
 
-        public void StartDirection(Vector2 newValue)
+        public IEnumerator StartDirection(Vector2 newValue)
         {
-            if (rotateBlock == null) return; //Вращение башни
+            if (rotateBlock == null) yield break;
             var fromDirection = new Vector3(_viewModel.Position.Value.x, 0, _viewModel.Position.Value.y);
             var toDirection = new Vector3(newValue.x, 0, newValue.y);
             _targetDirection = toDirection - fromDirection;
-            _isDirection = true;
+
+            while (true)
+            {
+                _viewModel.Direction.Value =
+                    Vector3.Lerp(_viewModel.Direction.Value, _targetDirection, Time.deltaTime * 15f);
+                if (Vector3.Distance(_viewModel.Direction.Value, _targetDirection) < 0.05) yield break;
+                yield return null;
+            }
         }
+
+        /*   public void StartDirection(Vector2 newValue)
+           {
+               if (rotateBlock == null) return; //Вращение башни
+               var fromDirection = new Vector3(_viewModel.Position.Value.x, 0, _viewModel.Position.Value.y);
+               var toDirection = new Vector3(newValue.x, 0, newValue.y);
+               _targetDirection = toDirection - fromDirection;
+               _isDirection = true;
+           }
+           */
     }
 }

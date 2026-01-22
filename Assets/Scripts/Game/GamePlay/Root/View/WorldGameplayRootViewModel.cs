@@ -14,6 +14,7 @@ using Game.GamePlay.View.Map;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
+using Game.GamePlay.View.Warriors;
 using Game.GamePlay.View.Waves;
 using Game.State.Gameplay;
 using ObservableCollections;
@@ -25,6 +26,7 @@ namespace Game.GamePlay.Root.View
     public class WorldGameplayRootViewModel
     {
         public readonly IObservableCollection<TowerViewModel> AllTowers;
+        public readonly IObservableCollection<WarriorViewModel> AllWarriors;
         public readonly IObservableCollection<MobViewModel> AllMobs;
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
         public readonly IObservableCollection<BoardViewModel> AllBoards;
@@ -56,6 +58,7 @@ namespace Game.GamePlay.Root.View
             WaveService waveService,
             GameplayCamera cameraService,
             DamageService damageService,
+            WarriorService warriorService,
             DIContainer container
         )
         {
@@ -75,6 +78,8 @@ namespace Game.GamePlay.Root.View
             AllBoards = groundsService.AllBoards;
             AllTowers = towersService.AllTowers;
             AllMobs = waveService.AllMobsOnWay;
+            AllWarriors = warriorService.AllWarriors;
+            
             FrameBlockViewModels = frameService.ViewModels;
             CastleViewModel = castleService.CastleViewModel;
             GateWaveViewModel = waveService.GateWaveViewModel;
@@ -270,7 +275,7 @@ namespace Game.GamePlay.Root.View
         {
             _cameraService?.UpdateMoving(); //Движение камеры
             //_cameraService?.AutoMoving();
-            _damageService.Update();
+            //_damageService.Update();
         }
 
         public void FinishMoving(Vector2 mousePosition)

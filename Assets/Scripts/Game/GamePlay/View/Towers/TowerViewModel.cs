@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Game.GamePlay.Commands.WarriorCommands;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Frames;
+using Game.GamePlay.View.Mobs;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
+using Game.State.Root;
+using MVVM.CMD;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
@@ -15,40 +21,49 @@ namespace Game.GamePlay.View.Towers
 {
     public class TowerViewModel : IMovingEntityViewModel
     {
+        private readonly GameplayStateProxy _gameplayState;
+        private readonly ICommandProcessor _cmd;
         public TowerEntity TowerEntity { get; }
         public Dictionary<TowerParameterType, TowerParameterData> Parameters => TowerEntity.Parameters;
-        public readonly int TowerEntityId;
+        public readonly int UniqueId;
         public ReactiveProperty<int> Level { get; set; }
         public readonly string ConfigId;
         public ReactiveProperty<Vector2Int> Position { get; set; }
+        public ReactiveProperty<Vector3> PositionMap = new();
         public bool IsOnRoad => TowerEntity.IsOnRoad;
         public ReactiveProperty<bool> IsShot;
         public ReactiveProperty<Vector3> Direction = new();
-        public float SpeedFire = 0f;
+        public float Speed = 0f;
         public ReactiveProperty<int> NumberModel = new(0);
         public float SpeedShot => TowerEntity.SpeedShot;
         public IObservableCollection<MobEntity> Targets => TowerEntity.Targets;
-
-        private List<TowerLevelSettings> _towerLevelSettings;
-        private readonly TowersService _towerService;
+        
         private readonly Dictionary<int, TowerLevelSettings> _towerLevelSettingsMap = new();
         private IMovingEntityViewModel _movingEntityViewModelImplementation;
+
+        public ReactiveProperty<bool> IsBusy = new(false);
+        public ReactiveProperty<float> MaxDistance = new(0f);
+        public float MinDistance = 0f;
+
+        public ObservableDictionary<int, MobViewModel> MobTargets = new();
         
         public TowerViewModel(
             TowerEntity towerEntity,
             List<TowerLevelSettings> towerLevelSettings,
-            TowersService towerService
+            GameplayStateProxy gameplayState,
+            ICommandProcessor cmd
         )
         {
-            _towerService = towerService;
+            _gameplayState = gameplayState;
+            _cmd = cmd;
             IsShot = towerEntity.IsShot;
-            TowerEntityId = towerEntity.UniqueId;
+            UniqueId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
             Position = towerEntity.Position;
             TowerEntity = towerEntity;
-
-            _towerLevelSettings = towerLevelSettings;
+            Position.Subscribe(v => PositionMap.Value = new Vector3(v.x, 0, v.y));
+            
             if (towerLevelSettings != null)
             {
                 foreach (var towerLevelSetting in towerLevelSettings)
@@ -58,10 +73,19 @@ namespace Game.GamePlay.View.Towers
             }
 
             if (towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
-                SpeedFire = towerSpeed.Value;
+                Speed = towerSpeed.Value;
 
+            if (towerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var towerMinDistance))
+                MinDistance = towerMinDistance.Value;
+            
             Level.Subscribe(level =>
             {
+                
+                if (towerEntity.Parameters.TryGetValue(TowerParameterType.Distance, out var towerDistance))
+                    MaxDistance.Value = towerDistance.Value;
+                if (towerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var towerMaxDistance))
+                    MaxDistance.Value = towerMaxDistance.Value;
+                
                 //Смена модели
                 NumberModel.Value = level switch
                 {
@@ -72,33 +96,6 @@ namespace Game.GamePlay.View.Towers
                 };
             });
         }
-
-        public void UpdateParameters(List<TowerLevelSettings> towerLevelSettings)
-        {
-            _towerLevelSettings = towerLevelSettings;
-            if (towerLevelSettings != null)
-            {
-                foreach (var towerLevelSetting in towerLevelSettings)
-                {
-                    _towerLevelSettingsMap[towerLevelSetting.Level] = towerLevelSetting;
-                }
-            }
-
-            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
-            {
-                SpeedFire = towerSpeed.Value;
-            }
-            else
-            {
-                SpeedFire = 0;
-            }
-        }
-
-        public TowerLevelSettings GetLevelSettings(int level)
-        {
-            return _towerLevelSettingsMap[level];
-        }
-
         public bool IsPosition(Vector2 position)
         {
             const float delta = 0.5f; //Половина ширины клетки
@@ -134,7 +131,7 @@ namespace Game.GamePlay.View.Towers
             return radius;
         }
 
-        public void RemoveTarget(MobEntity mobEntity)
+        public void RemoveTargetEntity(MobEntity mobEntity)
         {
             TowerEntity.RemoveTarget(mobEntity);
         }
@@ -142,6 +139,61 @@ namespace Game.GamePlay.View.Towers
         public void SetDirection(Vector2Int direction)
         {
             Direction.Value = new Vector3(direction.x, 0, direction.y);
+        }
+        
+        public void SetTarget(MobViewModel viewModel)
+        {
+            if (MobTargets.TryGetValue(viewModel.UniqueId, out var value)) return;
+            MobTargets.TryAdd(viewModel.UniqueId, viewModel);
+//            Debug.Log($"Для башни {UniqueId} добавили цель {viewModel.UniqueId}"); 
+        }
+
+        public void RemoveTarget(MobViewModel mobBinderViewModel)
+        {
+            MobTargets.Remove(mobBinderViewModel.UniqueId);
+            // Debug.Log($"Для башни {UniqueId} RemoveTarget {mobBinderViewModel.UniqueId}");
+        }
+        
+        /**
+         * Башня наносящая урон
+         */
+        public void SetDamageAfterShot()
+        {
+            foreach (var (uniqueId, mobViewModel) in MobTargets.ToList())
+            {
+                if (mobViewModel == null) continue;
+                
+                var shot = TowerEntity.GetShotParameters(mobViewModel.Defence);
+                shot.MobEntityId = uniqueId;
+                _gameplayState.Shots.Add(shot);    
+            }
+            
+            //Доп.проверка на случай убийства моба
+            
+        }
+
+        /**
+         * Башня призывающая воинов
+         */
+        public void AddWarriorsTower()
+        {
+            if (!TowerEntity.IsPlacement) return;
+            Debug.Log("AddWarriorsTower " + UniqueId);
+            foreach (var warriorEntity in _gameplayState.Warriors) //Некоторые warrior еще живы
+            {
+                Debug.Log(" warriorEntity.ParentId " + warriorEntity.ParentId);
+                if (warriorEntity.ParentId == UniqueId) return;
+            } 
+            
+            var command = new CommandCreateWarriorTower
+            {
+                UniqueId = TowerEntity.UniqueId,
+                ConfigId = TowerEntity.ConfigId,
+                TypeEnemy = TowerEntity.TypeEnemy,
+                Position = TowerEntity.Position.CurrentValue,
+                Placement = TowerEntity.Placement.CurrentValue,
+            };
+            _cmd.Process(command);
         }
     }
 }

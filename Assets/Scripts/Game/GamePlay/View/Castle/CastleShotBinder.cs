@@ -10,7 +10,7 @@ namespace Game.GamePlay.View.Castle
     public class CastleShotBinder : MonoBehaviour
     {
         private Vector3 _beginPosition;
-        private MobEntity _mobEntity;
+        private MobViewModel _mobEntity;
         private ReactiveProperty<Vector3> _target;
         private bool _isMoving = false;
         private float _duration;
@@ -24,14 +24,14 @@ namespace Game.GamePlay.View.Castle
             transform.gameObject.SetActive(false);
         }
 
-        public void FirePrepare(MobEntity mobEntity)
+        public void FirePrepare(MobViewModel mobViewModel)
         {
             IsShotComplete.Value = false;
-            _target = mobEntity.PositionTarget;
+            _target = mobViewModel.PositionTarget;
             transform.localPosition = _beginPosition;
         }
 
-        public void Fire(MobEntity mobEntity)
+        public void Fire()
         {
             transform.gameObject.SetActive(true);
             _timeElapsed = 0f;

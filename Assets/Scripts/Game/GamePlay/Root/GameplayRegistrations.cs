@@ -11,6 +11,7 @@ using Game.GamePlay.Commands.MapCommand;
 using Game.GamePlay.Commands.RewardCommand;
 using Game.GamePlay.Commands.RoadCommand;
 using Game.GamePlay.Commands.TowerCommand;
+using Game.GamePlay.Commands.WarriorCommands;
 using Game.GamePlay.Commands.WaveCommands;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
@@ -98,13 +99,15 @@ namespace Game.GamePlay.Root
             //container.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
 
             cmd.RegisterHandler(new CommandCreateGroundHandler(gameplayState));
-            cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState, gameSettings.TowersSettings));
+            cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState, gameSettings.TowersSettings, cmd));
             cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
             cmd.RegisterHandler(new CommandCreateWaveHandler(gameSettings, gameplayState,
                 container.Resolve<GenerateService>()));
             cmd.RegisterHandler(new CommandWaveGenerateHandler(gameSettings, cmd,
                 container.Resolve<GenerateService>()));
 
+            
+            
             cmd.RegisterHandler(new CommandCastleCreateHandler(gameSettings, gameplayState));
             cmd.RegisterHandler(new CommandGroundCreateBaseHandler(cmd));
             cmd.RegisterHandler(new CommandRoadCreateBaseHandler(gameplayState, cmd));
@@ -155,7 +158,10 @@ namespace Game.GamePlay.Root
             );
 
             container.RegisterInstance(towersService);
-
+            
+            cmd.RegisterHandler(new CommandCreateWarriorTowerHandler(gameplayState, towersService));
+            cmd.RegisterHandler(new CommandRemoveWarriorTowerHandler(gameplayState));
+            
             var frameService = new FrameService(gameplayState, placementService, towersService, roadsService,
                 gameSettings.TowersSettings);
             container.RegisterInstance(frameService);
@@ -191,10 +197,9 @@ namespace Game.GamePlay.Root
             //  var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, fsmGameplay);
             //    container.RegisterInstance(shotService);
 
-            var warriorService = new WarriorService(towersService, gameplayState);
+            var warriorService = new WarriorService(gameplayState, cmd);
             container.RegisterInstance(warriorService);
-            var damageService = new DamageService(fsmGameplay, gameplayState, waveService,
-                towersService, rewardService, warriorService);
+            var damageService = new DamageService(gameplayState, waveService, rewardService);
 
             container.RegisterInstance(damageService);
 

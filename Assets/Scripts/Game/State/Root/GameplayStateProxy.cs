@@ -6,7 +6,9 @@ using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Roads;
+using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
+using Game.State.Maps.Warriors;
 using Game.State.Maps.Waves;
 using Newtonsoft.Json;
 using ObservableCollections;
@@ -42,7 +44,10 @@ namespace Game.State.Root
         public ObservableList<RoadEntity> WaySecond { get; } = new();
         public ObservableList<RoadEntity> WayDisabled { get; } = new();
         public ObservableDictionary<int, WaveEntity> Waves { get; } = new();
+        public ObservableList<WarriorEntity> Warriors { get; } = new(); 
         
+        public ObservableList<ShotData> Shots { get; } = new();
+
         public GameplayStateProxy(GameplayState origin)
         {
             Origin = origin;
@@ -110,6 +115,17 @@ namespace Game.State.Root
             {
                 var removedMapState = gameplayState.Towers.FirstOrDefault(b => b.UniqueId == e.Value.UniqueId);
                 gameplayState.Towers.Remove(removedMapState);
+            });
+            //Воины
+            gameplayState.Warriors.ForEach(
+                warriorOriginal => Warriors.Add(new WarriorEntity(warriorOriginal))
+            );
+            Warriors.ObserveAdd().Subscribe(e => gameplayState.Warriors.Add(e.Value.Origin));
+
+            Warriors.ObserveRemove().Subscribe(e =>
+            {
+                var removedMapState = gameplayState.Warriors.FirstOrDefault(b => b.UniqueId == e.Value.UniqueId);
+                gameplayState.Warriors.Remove(removedMapState);
             });
             
             //Дороги

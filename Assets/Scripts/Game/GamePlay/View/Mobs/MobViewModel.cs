@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
+using Game.State.Maps.Warriors;
+using Game.State.Root;
 using ObservableCollections;
 using R3;
 using Scripts.Utils;
@@ -16,24 +19,20 @@ namespace Game.GamePlay.View.Mobs
     public class MobViewModel
     {
         private MobEntity _mobEntity;
-        private int _currentIndexListPoint = 0;
-        private Vector2 _targetPosition;
-        private readonly WaveService _waveService;
-        private readonly FsmGameplay _fsmGameplay;
-        public int MobEntityId => _mobEntity.UniqueId;
+
+
+        public int UniqueId => _mobEntity.UniqueId;
         public bool IsFly => _mobEntity.IsFly;
         public string ConfigId => _mobEntity.ConfigId;
         public ReactiveProperty<bool> IsMoving = new(false);
-
+        public ReactiveProperty<bool> IsAttack = new(false);
         public ReactiveProperty<Vector2> Position => _mobEntity.Position;
         public ReactiveProperty<Vector2Int> Direction;
-        //public readonly ReactiveProperty<int> GameSpeed;
-        
         public Vector2 StartPosition;
         public Vector2Int StartDirection;
         public List<RoadPoint> RoadPoints = new();
         public GameplayCamera CameraService;
-        public ReactiveProperty<MobState> State;
+        public ReactiveProperty<MobState> State; //TODO Возможно удалить или модифицировать до FSM
         public ReactiveProperty<float> CurrentHealth;
         public float MaxHealth;
         public float Delta => _mobEntity.Delta;
@@ -42,19 +41,27 @@ namespace Game.GamePlay.View.Mobs
         public IReadOnlyObservableDictionary<string, MobDebuff> Debuffs => _mobEntity.Debuffs;
         public int Level => _mobEntity.Level;
         public float Attack => _mobEntity.Attack;
-        
         public int NumberWave;
+        public ReactiveProperty<Vector3> PositionTarget => _mobEntity.PositionTarget;
+        public ReadOnlyReactiveProperty<bool> IsDead => _mobEntity.IsDead;
+        public MobDefence Defence => _mobEntity.Defence;
+
+        private readonly GameplayStateProxy _gameplayState;
         //public float SpeedAttack => _mobEntity.SpeedAttack;
 
-        public MobViewModel(MobEntity mobEntity, WaveService waveService, GameplayCamera cameraService, FsmGameplay fsmGameplay)
+        public MobViewModel(
+            MobEntity mobEntity,
+            GameplayCamera cameraService,
+            GameplayStateProxy gameplayState
+        )
         {
+            _gameplayState = gameplayState;
+
             _mobEntity = mobEntity;
-            _waveService = waveService;
-            _fsmGameplay = fsmGameplay;
+
             CameraService = cameraService;
             StartPosition = mobEntity.Position.CurrentValue;
             StartDirection = mobEntity.Direction.CurrentValue;
-            //GameSpeed = waveService.GameSpeed;
             CurrentHealth = mobEntity.Health;
             MaxHealth = mobEntity.Health.CurrentValue;
 
@@ -77,67 +84,21 @@ namespace Game.GamePlay.View.Mobs
             _mobEntity.RemoveDebuff(configId);
         }
 
-        public IEnumerator RotateModel(Vector2Int direction)
-        {
-            yield return null;
-        }
-
         public void Go()
         {
-            //TODO 
-        //Moving = true;
-        // Attack = false;
-        //Если препятсвие, то Moving = false; Attack = true; Target = IEntityHasHealth entity
-        //В Update проверяем Moving и Attack или Атакуем Target пока Target или Mob !IsDead
-        }
-        
-        public IEnumerator MovingModel()
-        {
-            if (_mobEntity.IsDead.CurrentValue) yield break;
-            
-            //RoadPoints = roadPoints;
-            _targetPosition = GetTargetPosition();
-            IsMoving.OnNext(true); //Начать движение
-            while (IsMoving.Value)
-            {
-                yield return MovingEntity();
-            }
-            
-           // yield return new WaitUntil(() => !IsMoving.CurrentValue); // 
+            IsMoving.Value = true;
         }
 
-        private IEnumerator MovingEntity()
+
+        public float GetSpeedMob()
         {
-            if (IsMoving.Value)
-            {
-                if (_targetPosition == Position.CurrentValue) //Дошли то след.точки
-                {
-                    Direction.Value = RoadPoints[_currentIndexListPoint].Direction; //Направление поворота
-                    //Проверяем, поменялось ли направление
-                    _currentIndexListPoint++;
-                    if (_currentIndexListPoint == RoadPoints.Count)
-                    {
-                        IsMoving.OnNext(false);
-                        yield break;
-                    }
-                    _targetPosition = GetTargetPosition();
-                }
-                
-                var speedMob = AppConstants.MOB_BASE_SPEED * _mobEntity.Speed();
-                Position.Value = Vector2.MoveTowards(
-                    Position.CurrentValue, 
-                    _targetPosition,  
-                    Time.deltaTime * speedMob);
-            }
-            
-            yield return null;
+            return _mobEntity.Speed();
         }
-        
-        private Vector2 GetTargetPosition()
+
+        public Vector3 GetTargetPosition(int index)
         {
-            var newValue = RoadPoints[_currentIndexListPoint].Point;
-            _targetPosition = new Vector2(newValue.x, newValue.y);
-            return _targetPosition;
+            var newValue = RoadPoints[index].Point; //_currentIndexListPoint
+            return new Vector3(newValue.x, IsFly ? 0.9f : 0.0f, newValue.y);
         }
 
         public void StartAnimationDelete()
@@ -151,20 +112,40 @@ namespace Game.GamePlay.View.Mobs
             _mobEntity.RemoveDebuff(configId);
         }
 
+        public IEnumerator AttackCastle()
+        {
+            IsMoving.Value = false;
+            IsAttack.Value = true;
+            yield return AttackEntity(_gameplayState.Castle);
+        }
+
+        public IEnumerator AttackWarrior(int warriorUniqueId)
+        {
+            IsMoving.Value = false;
+            IsAttack.Value = true;
+            WarriorEntity warrior = null;
+            foreach (var warriorEntity in _gameplayState.Warriors)
+                if (warriorEntity.UniqueId == warriorUniqueId) warrior = warriorEntity;
+            if (warrior == null) yield break;
+
+            yield return AttackEntity(warrior);
+        }
+
         public IEnumerator AttackEntity(IEntityHasHealth entity)
         {
             State.Value = MobState.Attacking;
-            
+
             while (State.Value == MobState.Attacking)
             {
-                yield return _fsmGameplay.WaitPause();
                 yield return new WaitForSeconds(AppConstants.MOB_BASE_SPEED);
                 if (_mobEntity.IsDead.CurrentValue) yield break;
                 entity.DamageReceived(Attack);
-                
-               // yield return null;
+                if (!entity.IsDeadEntity()) continue;
+
+                State.Value = MobState.Moving;
+                IsMoving.Value = true;
+                IsAttack.Value = false;
             }
         }
-        
     }
 }

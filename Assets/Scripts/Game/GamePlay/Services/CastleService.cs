@@ -37,9 +37,8 @@ namespace Game.GamePlay.Services
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
             _castleEntity = gameplayState.Castle;
             _fsmGameplay = container.Resolve<FsmGameplay>();
-            //GameSpeed = gameplayState.GameSpeed;
             CurrenHealth = castleEntity.CurrenHealth;
-            CastleViewModel = new CastleViewModel(castleEntity);
+            CastleViewModel = new CastleViewModel(castleEntity, gameplayState);
 
             _castleEntity.CurrenHealth.Subscribe(h =>
             {

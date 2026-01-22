@@ -65,7 +65,7 @@ namespace Game.GamePlay.Services
             if (_viewModel.IsTower())
             {
                 _viewModel.Enable.Value = _placementService.CheckPlacementTower(position,
-                    _viewModel.GetTower().TowerEntityId, _viewModel.GetTower().IsOnRoad);
+                    _viewModel.GetTower().UniqueId, _viewModel.GetTower().IsOnRoad);
                 if (_areaViewModel != null)
                 {
                     _areaViewModel.SetPosition(position);
@@ -142,7 +142,7 @@ namespace Game.GamePlay.Services
                 IsOnRoad = _towerOnRoadMap[configId],
             });
             towerEntity.Parameters = _towerService.TowerParametersMap[configId];
-            var towerViewModel = new TowerViewModel(towerEntity, null, _towerService);
+            var towerViewModel = new TowerViewModel(towerEntity, null, null, null);
             _areaViewModel = areaViewModel;
             _areaViewModel.SetStartPosition(towerEntity.Position.Value);
             _areaViewModel.SetRadius(towerViewModel.GetRadius());
@@ -170,7 +170,6 @@ namespace Game.GamePlay.Services
                     }
                     _viewModels.Remove(_viewModel);
                     _viewModel?.Dispose();
-                    //_viewModel = null;
                     frameIsRemoveFull.Value = true;
                 }
             );
@@ -191,12 +190,10 @@ namespace Game.GamePlay.Services
             _viewModels.Remove(_viewModel);
             _viewModels.Clear();
             _viewModel?.Dispose();
-           // _viewModel = null;
         }
 
         public bool IsPosition(Vector2Int position)
         {
-//            Debug.Log(_viewModels.Count);
             if (_viewModels.Count == 0) return false;
             if (_viewModel.IsTower() || _viewModel.IsGround()) return _viewModel.Position.CurrentValue == position;
             if (_viewModel.IsRoad())
@@ -208,7 +205,6 @@ namespace Game.GamePlay.Services
                     if (position == entityViewModel.GetPosition() + realPosition) return true;
                 }
             }
-
             return false;
         }
 

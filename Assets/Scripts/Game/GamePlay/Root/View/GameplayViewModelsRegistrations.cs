@@ -35,6 +35,7 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<WaveService>(),
                 c.Resolve<GameplayCamera>(),
                 c.Resolve<DamageService>(),
+                c.Resolve<WarriorService>(),
                 //c.Resolve<ShotService>(),
                 container
             )).AsSingle();

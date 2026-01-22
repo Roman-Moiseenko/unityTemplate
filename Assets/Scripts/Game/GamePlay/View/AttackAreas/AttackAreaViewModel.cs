@@ -53,6 +53,7 @@ namespace Game.GamePlay.View.AttackAreas
         public void SetRadius(Vector3 radius)
         {
             _memoryRadius = radius;
+            //Debug.Log("radius = " + radius);
             Radius.OnNext(radius);
         }
 

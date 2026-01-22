@@ -199,6 +199,8 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: eca52a5c6a61e5b4b8861ef6b16b1744, type: 3}
   - TypeParameter: 8
     Sprite: {fileID: 21300000, guid: 096ba8dd29f47254faa172f672b14ad7, type: 3}
+  - TypeParameter: 9
+    Sprite: {fileID: 21300000, guid: b3a4f4e8703c94d40ae435a8193040bc, type: 3}
   defences:
   - Defence: 0
     Sprite: {fileID: 21300000, guid: f9b32e8eaef2c6849bf32f0e37233eb2, type: 3}

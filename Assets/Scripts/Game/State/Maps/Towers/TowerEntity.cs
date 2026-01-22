@@ -140,17 +140,14 @@ namespace Game.State.Maps.Towers
             return false;
         }
 
-        public ShotEntityData GetShotParameters(MobEntity mobEntity)
+        public ShotData GetShotParametersOLD(MobEntity mobEntity)
         {
             var damage = 0f;
-            //Расчет урона от башни
-            if (Parameters.TryGetValue(TowerParameterType.Damage, out var parameter))
-                damage = parameter.Value;
+            if (Parameters.TryGetValue(TowerParameterType.Damage, out var parameter)) damage = parameter.Value;
             
             MobDebuff debuff = null;
             if (Parameters.TryGetValue(TowerParameterType.DamageArea, out parameter))
                 damage = parameter.Value;
-
 
             //Добавляем дебафф к выстрелу
             if (Parameters.TryGetValue(TowerParameterType.SlowingDown, out var slowParameter))
@@ -166,8 +163,8 @@ namespace Game.State.Maps.Towers
                     Time = speedTower,
                 };
             }
-            //Critical damage
-            var damageType = DamageType.Normal;
+            
+            var damageType = DamageType.Normal; //Critical damage
             if (Parameters.TryGetValue(TowerParameterType.Critical, out var criticalParameter))
             {
                 var shans = Mathf.FloorToInt(100 / criticalParameter.Value);
@@ -177,28 +174,69 @@ namespace Game.State.Maps.Towers
                     damage *= 2.0f;
                 }
             }
-            
             if (Defence.Previous() == mobEntity.Defence) damage *= 0.8f;
             if (Defence.Next() == mobEntity.Defence) damage *= 1.2f;
-            
-            var shotEntityData = new ShotEntityData
+            var shotData = new ShotData
             {
-                
-                TowerEntityId = UniqueId,
                 MobEntityId = mobEntity.UniqueId,
                 ConfigId = ConfigId,
-
-                Speed = SpeedShot, 
                 Single = IsSingleTarget,
-                
                 Damage = damage, 
                 Debuff = debuff,
                 DamageType = damageType,
             };
 
-            return shotEntityData;
+            return shotData;
         }
 
+        public ShotData GetShotParameters(MobDefence mobDefence)
+        {
+            var damage = 0f;
+            if (Parameters.TryGetValue(TowerParameterType.Damage, out var parameter)) damage = parameter.Value;
+            
+            MobDebuff debuff = null;
+            if (Parameters.TryGetValue(TowerParameterType.DamageArea, out parameter))
+                damage = parameter.Value;
+
+            //Добавляем дебафф к выстрелу
+            if (Parameters.TryGetValue(TowerParameterType.SlowingDown, out var slowParameter))
+            {
+                var speedTower = 1f;
+                if (Parameters.TryGetValue(TowerParameterType.Speed, out var speedParameter))
+                    speedTower = speedParameter.Value; //Скорость выстрела == время действия дебафа
+                
+                debuff = new MobDebuff
+                {
+                    Value = slowParameter.Value,
+                    Type = MobDebuffType.Speed,
+                    Time = speedTower,
+                };
+            }
+            
+            var damageType = DamageType.Normal; //Critical damage
+            if (Parameters.TryGetValue(TowerParameterType.Critical, out var criticalParameter))
+            {
+                var shans = Mathf.FloorToInt(100 / criticalParameter.Value);
+                if (Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % shans == 0)
+                {
+                    damageType = DamageType.Critical;
+                    damage *= 2.0f;
+                }
+            }
+            if (Defence.Previous() == mobDefence) damage *= 0.8f;
+            if (Defence.Next() == mobDefence) damage *= 1.2f;
+            var shotData = new ShotData
+            {
+                //MobEntityId = mobEntity.UniqueId,
+                ConfigId = ConfigId,
+                Single = IsSingleTarget,
+                Damage = damage, 
+                Debuff = debuff,
+                DamageType = damageType,
+            };
+
+            return shotData;
+        }
         public void RemoveTarget(MobEntity mobEntity)
         {
             Targets.Remove(mobEntity);

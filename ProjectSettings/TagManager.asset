@@ -8,6 +8,10 @@ TagManager:
   - Shot
   - Tower
   - Castle
+  - Warrior
+  - Wall
+  - MobVisible
+  - TowerVisible
   layers:
   - Default
   - TransparentFX

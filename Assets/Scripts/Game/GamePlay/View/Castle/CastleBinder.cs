@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game.GamePlay.View.Mobs;
 using Game.State.Maps.Mobs;
 using ObservableCollections;
 using R3;
@@ -15,18 +16,16 @@ namespace Game.GamePlay.View.Castle
         [SerializeField] private CastleGunBinder gunCenter;
         [SerializeField] private CastleGunBinder gunRight;
         [SerializeField] private ParticleSystem explosionEffect;
-
+        [SerializeField] private CastleVisibleBinder visibleBinder;
 
         private IDisposable _disposable;
-
         private CastleViewModel _viewModel;
-
-        //private readonly Dictionary<MobEntity, IDisposable> _targetsDisposables = new();
         private Coroutine _coroutine;
 
         public void Bind(CastleViewModel viewModel)
         {
             _viewModel = viewModel;
+            visibleBinder.Bind(viewModel);
             gunLeft.Bind(viewModel);
             gunCenter.Bind(viewModel);
             gunRight.Bind(viewModel);
@@ -37,18 +36,21 @@ namespace Game.GamePlay.View.Castle
                 viewModel.Position.y
             );
 
-            //shots.Bind(viewModel);
-            viewModel.Target
-                .ObserveAdd()
-                .Subscribe(e =>
-                {
-                    var mobEntity = e.Value;
-                    Fire(mobEntity);
-                    //_coroutine = StartCoroutine(CastleFire(mobEntity));
-                })
-                .AddTo(ref d);
-
-            //Когда все выстрелы завершились
+            viewModel.MobTarget.Subscribe(mobViewModel =>
+            {
+                if (mobViewModel == null)
+                { //На случай, если моба убьет не Замок или цель вышла из зоны поражения
+                    StopFire();
+                    return;
+                }
+                _coroutine = StartCoroutine(FireOneTarget(mobViewModel));
+                //TODO Протестировать и придумать отписку после удаления моба
+                mobViewModel.IsDead
+                    .Where(x => x)
+                    .Subscribe(_ => _viewModel.RemoveTarget(mobViewModel));
+            }).AddTo(ref d);
+            
+            //Когда все выстрелы завершились(попали в цель)
             gunLeft.IsShotComplete
                 .Merge(gunCenter.IsShotComplete)
                 .Merge(gunRight.IsShotComplete)
@@ -61,26 +63,23 @@ namespace Game.GamePlay.View.Castle
                         FinishFire();
                     }
                 }).AddTo(ref d);
-            //Когда моба убъет другая башня
-            viewModel.Target.ObserveRemove().Subscribe(e =>
-            {
-                //var mobEntity = e.Value;
-                StopFire();
-                // StopCoroutine(_coroutine);
-                //  shots.StopShot();
-            }).AddTo(ref d);
             _disposable = d.Build();
         }
 
-        private void Fire(MobEntity mobEntity)
+        private IEnumerator FireOneTarget(MobViewModel mobViewModel)
         {
-            gunLeft.Fire(mobEntity);
-            gunCenter.Fire(mobEntity);
-            gunRight.Fire(mobEntity);
+            while (!mobViewModel.IsDead.CurrentValue)
+            {
+                gunLeft.Fire(mobViewModel);
+                gunCenter.Fire(mobViewModel);
+                gunRight.Fire(mobViewModel);
+                yield return new WaitForSeconds(_viewModel.Speed);
+            }
         }
 
         private void StopFire()
         {
+            if(_coroutine != null) StopCoroutine(_coroutine);
             gunLeft.StopFire();
             gunCenter.StopFire();
             gunRight.StopFire();
@@ -93,11 +92,11 @@ namespace Game.GamePlay.View.Castle
 
         private void FinishFire()
         {
-            if (_viewModel.Target.Count == 0) return;
-            var target = _viewModel.Target[0];
-            explosionEffect.transform.position = target.PositionTarget.CurrentValue;
+            var mobViewModel = _viewModel.MobTarget.CurrentValue;
+            if (mobViewModel == null) return;
+            explosionEffect.transform.position = mobViewModel.PositionTarget.CurrentValue;
             explosionEffect.Play();
-            _viewModel.CastleEntity.ClearTarget(); //удаляем цель из башни
+            _viewModel.SetDamageAfterShot();
         }
     }
 }

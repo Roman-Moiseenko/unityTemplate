@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.GamePlay.View.Mobs;
 using Game.State.Maps.Mobs;
 using R3;
 using UnityEngine;
@@ -10,12 +11,12 @@ namespace Game.GamePlay.View.Towers
         [SerializeField] protected Transform missile;
 
         private IDisposable _disposable;
-        public void Bind(MobEntity mobEntity)
+        public void Bind(MobViewModel mobViewModel)
         {
             var d = Disposable.CreateBuilder();
             
             missile.gameObject.SetActive(true);
-            mobEntity.PositionTarget.Subscribe(position =>
+            mobViewModel.PositionTarget.Subscribe(position =>
             {
                 var dist = Vector3.Distance(transform.position, position) + 1f;
                 missile.localScale = new Vector3(1, 1, dist);

@@ -22,14 +22,14 @@ namespace Game.State.Maps.Shots
         public MobDebuff Debuff => Origin.Debuff;
         public DamageType DamageType => Origin.DamageType;
         
-        public ShotEntity(ShotEntityData shotEntityData, ReactiveProperty<Vector3> position)
+        public ShotEntity(ShotEntityData shotEntityData)
         {
             Origin = shotEntityData;
             Position = new ReactiveProperty<Vector3>(shotEntityData.Position);
             Position.Subscribe(newValue => shotEntityData.Position = newValue);
             
-            FinishPosition = position; //Конечная позиция снаряда меняется при движении моба
-            FinishPosition.Subscribe(newValue => shotEntityData.FinishPosition = newValue);
+          //  FinishPosition = position; //Конечная позиция снаряда меняется при движении моба
+            //FinishPosition.Subscribe(newValue => shotEntityData.FinishPosition = newValue);
         }
         
     }

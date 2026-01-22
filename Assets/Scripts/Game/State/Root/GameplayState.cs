@@ -6,6 +6,7 @@ using Game.State.Maps.Grounds;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
+using Game.State.Maps.Warriors;
 using Game.State.Maps.Waves;
 
 namespace Game.State.Root
@@ -36,7 +37,7 @@ namespace Game.State.Root
         public List<TowerEntityData> Towers;  //Либо разделить на Tower и Ground 
 
         public List<GroundEntityData> Grounds;
-        
+        public List<WarriorEntityData> Warriors = new();
         public List<RoadEntityData> Way; //Основная Дорога
         public List<RoadEntityData> WaySecond;
         public List<RoadEntityData> WayDisabled;

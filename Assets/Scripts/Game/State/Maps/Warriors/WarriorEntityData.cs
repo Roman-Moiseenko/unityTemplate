@@ -6,7 +6,7 @@ namespace Game.State.Maps.Warriors
     {
         public int UniqueId { get; set; }
         public string ConfigId { get; set; }
-        public Vector3 Position { get; set; } 
+        //public Vector3 Position { get; set; } 
         public float Health { get; set; } 
         public float MaxHealth { get; set; } 
         public float Speed { get; set; } 
@@ -14,6 +14,7 @@ namespace Game.State.Maps.Warriors
         public float Range { get; set; }
         public bool IsFly { get; set; }
         public int ParentId { get; set; } //Родительская башня
-        public Vector3 StartPosition { get; set; }
+        public Vector2Int StartPosition { get; set; }
+        public Vector2Int PlacementPosition { get; set; }
     }
 }

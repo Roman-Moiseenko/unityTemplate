@@ -1,5 +1,6 @@
 ﻿using System;
 using DG.Tweening;
+using Game.GamePlay.View.Mobs;
 using Game.State.Maps.Mobs;
 using R3;
 using UnityEngine;
@@ -21,10 +22,10 @@ namespace Game.GamePlay.View.Castle
             //Запуск полета снарядов
         }
         
-        public void Fire(MobEntity mobEntity)
+        public void Fire(MobViewModel mobViewModel)
         {
-            shot.FirePrepare(mobEntity);
-            var direction = mobEntity.PositionTarget.CurrentValue - turret.position;
+            shot.FirePrepare(mobViewModel);
+            var direction = mobViewModel.PositionTarget.CurrentValue - turret.position;
             var targetRotation = Quaternion.LookRotation(direction);
             
             Sequence = DOTween.Sequence();
@@ -43,7 +44,7 @@ namespace Game.GamePlay.View.Castle
                     // 2. Пламя
                     if (fireEffect != null) fireEffect.Play(); //Запуск эффекта выстрела
                     // 3. Полет снаряда
-                    shot.Fire(mobEntity);
+                    shot.Fire();
                 })
                 .OnComplete(() =>
                 {

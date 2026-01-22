@@ -77,15 +77,15 @@ namespace Game.GamePlay.Services
 
                 var trigger = _allMobsOnWay.Any(viewModel =>
                     viewModel.NumberWave == newValue.Value.NumberWave &&
-                    viewModel.MobEntityId != newValue.Value.MobEntityId
+                    viewModel.UniqueId != newValue.Value.UniqueId
                 );
                 if (!trigger) StartWave.OnNext(true); //Это первый моб из волны = > Показать надпись Волна идет
 
                 var mobViewModel = newValue.Value;
-                //TODO mobViewModel.Go();
                 
-                _coroutines.StartCoroutine(
-                    MovingMobOnWay(mobViewModel)); //При добавлении моба, запускаем его движение
+                mobViewModel.Go();
+                
+                //_coroutines.StartCoroutine(MovingMobOnWay(mobViewModel)); //При добавлении моба, запускаем его движение
 
                 mobViewModel.Debuffs.ObserveAdd().Subscribe(d =>
                     _coroutines.StartCoroutine(MobTimerDebuff(d.Value.Key, d.Value.Value, mobViewModel)));
@@ -96,7 +96,7 @@ namespace Game.GamePlay.Services
 
             _allMobsOnWay.ObserveRemove().Subscribe(e =>
             {
-                _coroutines.StopCoroutine(MovingMobOnWay(e.Value)); //Прерываем движение моба
+                //_coroutines.StopCoroutine(MovingMobOnWay(e.Value)); //Прерываем движение моба
                 _gameplayState.KillMobs.Value++;
                 var trigger = _allMobsOnWay.Any(mobViewModel => mobViewModel.NumberWave == e.Value.NumberWave);
                 if (!trigger) FinishWave.OnNext(true); //Текущая волна моба закончилась
@@ -183,20 +183,9 @@ namespace Game.GamePlay.Services
             }
             _fsmWave.Fsm.SetState<FsmStateWaveEnd>(); //Все мобы вышли
         }
-
-        private IEnumerator MovingMobOnWay(MobViewModel mobViewModel)
-        {
-           // yield return _fsmGameplay.WaitPause();
-           //mobViewModel.StartMoving();
-            yield return mobViewModel.MovingModel();
-            //TODO Вставить препятствие и атаку на цель
-            
-            yield return mobViewModel.AttackEntity(_gameplayState.Castle);
-        }
-
+        
         public IEnumerator MobTimerDebuff(string configId, MobDebuff debuff, MobViewModel mobViewModel)
         {
-          //  yield return _fsmGameplay.WaitPause();
             yield return new WaitForSeconds(debuff.Time);
             mobViewModel.RemoveDebuff(configId);
         }
@@ -214,7 +203,7 @@ namespace Game.GamePlay.Services
 
         private IEnumerator RemoveMobViewModel(int mobId)
         {
-            var mobViewModel = _allMobsOnWay.FirstOrDefault(e => e.MobEntityId == mobId);
+            var mobViewModel = _allMobsOnWay.FirstOrDefault(e => e.UniqueId == mobId);
             if (mobViewModel == null) yield break;
             mobViewModel.StartAnimationDelete(); //Запускаем процесс удаления модели
             yield return mobViewModel.WaitFinishAnimation(); //Ждем удаления модели
@@ -279,7 +268,7 @@ namespace Game.GamePlay.Services
             mobEntity.SetStartPosition(position, direction);
 
             mobEntity.IsWay = true;
-            var mobViewModel = new MobViewModel(mobEntity, this, _cameraService, _fsmGameplay);
+            var mobViewModel = new MobViewModel(mobEntity, _cameraService, _gameplayState);
             mobViewModel.NumberWave = numberWave;
             GenerateRoadPoints(mobViewModel);
             AllMobsMap.Add(mobEntity.UniqueId, mobEntity);
@@ -290,7 +279,7 @@ namespace Game.GamePlay.Services
         {
             var way = _gameplayState.Origin.Way;
             List<RoadPoint> roads = new();
-
+            
             //Формируем список точек движения моба
             for (int i = way.Count - 1; i >= 0; i--)
             {
@@ -326,8 +315,10 @@ namespace Game.GamePlay.Services
 
                 //TODO если i = 0, то добавляем 0.25 по направлению
                 //TODO для IsFly при i = 1, а при i = 0 нет движения
+                //Debug.Log(i + " " + position + " " + direction);
                 roads.Add(new RoadPoint(position, direction)); //Список точек движения 
             }
+            
             mobViewModel.RoadPoints = roads;
             //return roads;
         }
