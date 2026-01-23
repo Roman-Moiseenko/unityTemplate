@@ -38,7 +38,7 @@ namespace Game.GamePlay.View.Towers
         public float SpeedShot => TowerEntity.SpeedShot;
         public bool IsMultiShot => TowerEntity.IsMultiShot;
         
-        private readonly Dictionary<int, TowerLevelSettings> _towerLevelSettingsMap = new();
+      //  private readonly Dictionary<int, TowerLevelSettings> _towerLevelSettingsMap = new();
         private IMovingEntityViewModel _movingEntityViewModelImplementation;
 
         public ReactiveProperty<bool> IsBusy = new(false);
@@ -49,7 +49,6 @@ namespace Game.GamePlay.View.Towers
         
         public TowerViewModel(
             TowerEntity towerEntity,
-            List<TowerLevelSettings> towerLevelSettings,
             GameplayStateProxy gameplayState,
             ICommandProcessor cmd
         )
@@ -63,7 +62,7 @@ namespace Game.GamePlay.View.Towers
             Position = towerEntity.Position;
             TowerEntity = towerEntity;
             Position.Subscribe(v => PositionMap.Value = new Vector3(v.x, 0, v.y));
-            
+          /*  
             if (towerLevelSettings != null)
             {
                 foreach (var towerLevelSetting in towerLevelSettings)
@@ -71,7 +70,7 @@ namespace Game.GamePlay.View.Towers
                     _towerLevelSettingsMap[towerLevelSetting.Level] = towerLevelSetting;
                 }
             }
-
+*/
             if (towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
                 Speed = towerSpeed.Value;
 
@@ -140,13 +139,11 @@ namespace Game.GamePlay.View.Towers
         {
             if (MobTargets.TryGetValue(viewModel.UniqueId, out var value)) return;
             MobTargets.TryAdd(viewModel.UniqueId, viewModel);
-//            Debug.Log($"Для башни {UniqueId} добавили цель {viewModel.UniqueId} = {MobTargets.Count}"); 
         }
 
         public void RemoveTarget(MobViewModel mobBinderViewModel)
         {
             MobTargets.Remove(mobBinderViewModel.UniqueId);
-            // Debug.Log($"Для башни {UniqueId} RemoveTarget {mobBinderViewModel.UniqueId}");
         }
 
         public void ClearTargets()
@@ -162,22 +159,10 @@ namespace Game.GamePlay.View.Towers
          */
         public void SetDamageAfterShot(MobViewModel mobViewModel)
         {
-            /*
-            foreach (var (uniqueId, mobViewModel) in MobTargets.ToList())
-            {
-                if (mobViewModel == null) continue;
-                
-                var shot = TowerEntity.GetShotParameters(mobViewModel.Defence);
-                shot.MobEntityId = uniqueId;
-                _gameplayState.Shots.Add(shot);    
-            }
-            */
             if (!MobTargets.TryGetValue(mobViewModel.UniqueId, out _)) return;
             var shot = TowerEntity.GetShotParameters(mobViewModel.Defence);
             shot.MobEntityId = mobViewModel.UniqueId;
             _gameplayState.Shots.Add(shot); 
-            //Доп.проверка на случай убийства моба
-            
         }
 
         /**
@@ -186,7 +171,6 @@ namespace Game.GamePlay.View.Towers
         public bool IsDeadAllWarriors()
         {
             if (!TowerEntity.IsPlacement) return false;
-         //   Debug.Log("AddWarriorsTower " + UniqueId);
             foreach (var warriorEntity in _gameplayState.Warriors) //Некоторые warrior еще живы
             {
                 if (warriorEntity.ParentId == UniqueId) return false;

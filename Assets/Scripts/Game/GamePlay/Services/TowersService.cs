@@ -155,9 +155,7 @@ namespace Game.GamePlay.Services
          */
         private void CreateTowerViewModel(TowerEntity towerEntity)
         {
-            var towerViewModel = new TowerViewModel(
-                towerEntity, 
-                _towerSettingsMap[towerEntity.ConfigId], _gameplayState, _cmd); //3
+            var towerViewModel = new TowerViewModel(towerEntity, _gameplayState, _cmd); //3
             var directionTower = _placementService.GetDirectionTower(towerEntity.Position.CurrentValue);
             towerViewModel.SetDirection(directionTower);
             _allTowers.Add(towerViewModel); //4

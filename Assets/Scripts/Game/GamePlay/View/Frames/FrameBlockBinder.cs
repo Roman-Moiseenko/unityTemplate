@@ -72,7 +72,7 @@ namespace Game.GamePlay.View.Frames
                 {
                     _showCloudDust = true; //Запуск пыли
                     cloud.Play();
-                });
+                }).SetUpdate(true);
             }).AddTo(ref d);
 
             //В зависимости от типа фрейма создаем элементы.

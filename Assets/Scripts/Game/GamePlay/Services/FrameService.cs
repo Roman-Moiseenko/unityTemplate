@@ -142,7 +142,7 @@ namespace Game.GamePlay.Services
                 IsOnRoad = _towerOnRoadMap[configId],
             });
             towerEntity.Parameters = _towerService.TowerParametersMap[configId];
-            var towerViewModel = new TowerViewModel(towerEntity, null, null, null);
+            var towerViewModel = new TowerViewModel(towerEntity, null, null);
             _areaViewModel = areaViewModel;
             _areaViewModel.SetStartPosition(towerEntity.Position.Value);
             _areaViewModel.SetRadius(towerViewModel.GetRadius());

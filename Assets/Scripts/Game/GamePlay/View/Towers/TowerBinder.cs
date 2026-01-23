@@ -22,11 +22,8 @@ namespace Game.GamePlay.View.Towers
         private Vector3 _velocity;
         private IDisposable _disposable;
         private const string AnimationFireName = "tower_fire";
-
         private Vector3 _targetDirection;
 
-        // private Quaternion _targetRotation;
-        //private float _timeElapsed = 0f;
         private float _lerpDuration;
 
         public void Bind(TowerViewModel viewModel)
@@ -89,14 +86,5 @@ namespace Game.GamePlay.View.Towers
             }
         }
 
-        /*   public void StartDirection(Vector2 newValue)
-           {
-               if (rotateBlock == null) return; //Вращение башни
-               var fromDirection = new Vector3(_viewModel.Position.Value.x, 0, _viewModel.Position.Value.y);
-               var toDirection = new Vector3(newValue.x, 0, newValue.y);
-               _targetDirection = toDirection - fromDirection;
-               _isDirection = true;
-           }
-           */
     }
 }

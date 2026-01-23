@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using Game.Common;
 using Game.GamePlay.View.Mobs;
-using Game.State.Maps.Mobs;
-using ObservableCollections;
 using R3;
 using UnityEngine;
 
@@ -18,8 +15,7 @@ namespace Game.GamePlay.View.Towers
 
         protected IDisposable _disposable;
         protected TowerViewModel _viewModel;
-        protected readonly ReactiveProperty<bool> _isMoving = new(false);
-
+        
         public bool IsFree;
         protected MobViewModel MobTarget;
         protected Coroutine mainCoroutine;
@@ -36,7 +32,6 @@ namespace Game.GamePlay.View.Towers
 
             _disposable = d.Build();
         }
-
 
         public virtual void FireToTarget(MobViewModel mobViewModel)
         {

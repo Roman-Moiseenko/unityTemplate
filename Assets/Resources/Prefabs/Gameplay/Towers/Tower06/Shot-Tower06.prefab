@@ -79,7 +79,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7581759422358462014}
-  - component: {fileID: 393310055715366765}
+  - component: {fileID: 5133140864685001905}
   m_Layer: 0
   m_Name: Shot-Tower06
   m_TagString: Untagged
@@ -105,7 +105,7 @@ Transform:
   - {fileID: 3253986630609876060}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &393310055715366765
+--- !u!114 &5133140864685001905
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -114,12 +114,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 5019716899704907410}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4053c6819eb43d18aeadc8b9c67407f, type: 3}
+  m_Script: {fileID: 11500000, guid: 4ef5481920b94f2d8de84aaf96ba5e1f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.Towers.TowerShotBarrackBinder
+  m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.Towers.TowerShotBinder
   fire: {fileID: 729334146811936795}
   missile: {fileID: 519175484817383755}
   explosion: {fileID: 3253986630609876060}
+  shotBinder: {fileID: 0}
+  IsFree: 0
 --- !u!1 &8475212214409891121
 GameObject:
   m_ObjectHideFlags: 0

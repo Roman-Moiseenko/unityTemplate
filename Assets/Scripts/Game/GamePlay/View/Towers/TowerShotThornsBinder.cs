@@ -1,15 +1,35 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Game.GamePlay.View.Mobs;
-using Game.State.Maps.Mobs;
-using R3;
-using UnityEngine;
 
 namespace Game.GamePlay.View.Towers
 {
     public class TowerShotThornsBinder : TowerShotBinder
     {
+        private MobViewModel _mobViewModel;
+
+        public override void Bind(TowerViewModel viewModel)
+        {
+            _viewModel = viewModel;
+        }
+
+        public override void FireToTarget(MobViewModel mobViewModel)
+        {
+            _mobViewModel = mobViewModel;
+            if (mainCoroutine != null) StopCoroutine(mainCoroutine);
+
+            IsFree = false;
+            mainCoroutine = StartCoroutine(StartShotFire());
+        }
         
+        protected override IEnumerator StartShotFire()
+        {
+            yield return null;
+            _viewModel.SetDamageAfterShot(_mobViewModel);
+            IsFree = true;
+            yield return null;
+        }
+        public override void StopShot()
+        {
+        }
     }
 }

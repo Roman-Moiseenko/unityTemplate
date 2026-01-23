@@ -174,9 +174,10 @@ namespace Game.GamePlay.View.UI.PanelBuild
             }
             else
             {
+                //Завершение строительства
                 _fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(_rewardData);
-                //Debug.Log("RequestBuild");
-                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
+                //Необходимо дождаться проигрывания анимации
+//                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
 //                Debug.Log("Режим конца строительства = " + _rewardData.ConfigId);
             }
         }

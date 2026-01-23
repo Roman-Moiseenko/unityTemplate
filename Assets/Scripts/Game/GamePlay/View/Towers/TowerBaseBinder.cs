@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Game.Common;
@@ -69,7 +70,7 @@ namespace Game.GamePlay.View.Towers
                 RestartAttack();
             }).AddTo(ref d);
             //Смена модели при обновлении на четных уровнях
-            _viewModel.NumberModel.Where(x => x > 1).Subscribe(number =>
+            _viewModel.NumberModel.Skip(1).Subscribe(number =>
             {
                 //Если Префаб уже был, то запускаем анимацию
                 Sequence = DOTween.Sequence();
@@ -78,7 +79,7 @@ namespace Game.GamePlay.View.Towers
                         container
                             .DOScale(Vector3.zero, 0.5f)
                             .From(Vector3.one)
-                            .SetEase(Ease.OutCubic))
+                            .SetEase(Ease.OutCubic).SetUpdate(true))
                     .AppendCallback(() =>
                     {
                         DestroyTower();
@@ -87,8 +88,11 @@ namespace Game.GamePlay.View.Towers
                     .Append(
                         container.transform
                             .DOScale(Vector3.one, 0.5f)
-                            .SetEase(Ease.InCubic))
-                    .OnComplete(() => { Sequence.Kill(); });
+                            .SetEase(Ease.InCubic).SetUpdate(true))
+                    .OnComplete(() =>
+                    {
+                        Sequence.Kill();
+                    }).SetUpdate(true);
             }).AddTo(ref d);
             _disposable = d.Build();
         }
@@ -158,10 +162,8 @@ namespace Game.GamePlay.View.Towers
         private TowerShotBinder FindFreeShot()
         {
             foreach (var shotBinder in _shotBinders)
-            {
                 if (shotBinder.IsFree) return shotBinder;
-            }
-
+            
             return CreateShot();
         }        
         
@@ -198,7 +200,6 @@ namespace Game.GamePlay.View.Towers
                 Sequence.Kill();
                 Sequence = null;
             }
-
             _disposable?.Dispose();
         }
     }
