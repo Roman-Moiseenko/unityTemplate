@@ -42,7 +42,7 @@ namespace Game.GamePlay.Commands.TowerCommand
             };
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
             _gameplayState.Towers.Add(newTower);//Добавляем в список объектов карты
-            /*
+            
             if (towerSettings.Placement)
             {
                 var commandWarrior = new CommandCreateWarriorTower{
@@ -55,7 +55,7 @@ namespace Game.GamePlay.Commands.TowerCommand
                 
                 _cmd.Process(commandWarrior);
             }
-            */
+            
             return true;
         }
     }

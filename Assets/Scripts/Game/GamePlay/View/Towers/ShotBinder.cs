@@ -11,11 +11,11 @@ namespace Game.GamePlay.View.Towers
     public class ShotBinder : MonoBehaviour
     {
         protected TowerViewModel _viewModel;
-        private IDisposable _disposable;
+        protected IDisposable _disposable;
         protected float _baseYMissile = 0f;
         protected ReactiveProperty<Vector3> _target = new();
         protected readonly ReactiveProperty<bool> _isMoving = new(false);
-        
+        protected MobViewModel _mobViewModel;
         public void Bind(TowerViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
@@ -32,6 +32,7 @@ namespace Game.GamePlay.View.Towers
 
         public virtual void FirePrepare(MobViewModel mobViewModel)
         {
+            _mobViewModel = mobViewModel;
             _target = mobViewModel.PositionTarget;
             transform.localPosition = new Vector3(0, _baseYMissile, 0); //Размещение снаряда в точке 0
         }
@@ -62,7 +63,7 @@ namespace Game.GamePlay.View.Towers
 
         }
         
-        public void StopShot()
+        public virtual void StopShot()
         {
             transform.gameObject.SetActive(false);
             _isMoving.OnNext(false);
@@ -74,7 +75,9 @@ namespace Game.GamePlay.View.Towers
             //Debug.Log($"Выстрел {_viewModel.UniqueId} => {_mobViewModel.UniqueId} " + other.transform.position + " " + _viewModel.Position.CurrentValue);
             //Debug.Log(" кол-во целей" + _viewModel.MobTargets.Count);
             StopShot();
-            _viewModel.SetDamageAfterShot();
+            _viewModel.SetDamageAfterShot(_mobViewModel);
         }
+        
+
     }
 }

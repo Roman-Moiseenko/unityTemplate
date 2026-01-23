@@ -50,7 +50,7 @@ namespace Game.GamePlay.View.Towers
         {
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
             //Если мультишот или нет целей, то при движении цели
-            if (_viewModel.TowerEntity.IsMultiShot || _viewModel.MobTargets.Count == 0)
+            if (_viewModel.IsMultiShot || _viewModel.MobTargets.Count == 0)
             {
                 var mobBinder = other.gameObject.GetComponent<MobBinder>();
                 if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели

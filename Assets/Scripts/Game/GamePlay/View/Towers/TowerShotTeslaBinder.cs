@@ -10,16 +10,30 @@ namespace Game.GamePlay.View.Towers
 {
     public class TowerShotTeslaBinder : TowerShotBinder
     {
-        private List<ShotTeslaBinder> missiles = new();
-        public override void FirePrepare(MobViewModel mobViewModel)
+/*
+        public override void Bind(TowerViewModel viewModel)
         {
-            _target = mobViewModel.PositionTarget;
+            IsFree = true;
+            Debug.Log("TowerShotTeslaBinder");
+            _viewModel = viewModel;
+            shotBinder.gameObject.SetActive(false);
+            var d = Disposable.CreateBuilder();
+            _disposable = d.Build();
+
+        }
+        */
+   /*     public override void FirePrepare(MobViewModel mobViewModel)
+        {
+            _targetPosition = mobViewModel.PositionTarget;
             //Делаем дубль объекта
+            Debug.Log("FirePrepare " + mobViewModel.UniqueId);
             var shotTeslaBinder = Instantiate(missile.GetComponent<ShotTeslaBinder>(), transform);
             shotTeslaBinder.Bind(mobViewModel);
             missiles.Add(shotTeslaBinder);
+            //TODO Анимация разрадов
         }
-
+        */
+/*
         public override void FireFinish()
         {
             foreach (var teslaBinder in missiles.ToList())
@@ -35,6 +49,10 @@ namespace Game.GamePlay.View.Towers
             //yield return new WaitForSeconds(_viewModel.Speed);
             //yield return new WaitUntil(() => _viewModel.GameSpeed.Value != 0);
         }
-        
+        public override void StopShot()
+        {
+            FireFinish();
+        }
+        */
     }
 }

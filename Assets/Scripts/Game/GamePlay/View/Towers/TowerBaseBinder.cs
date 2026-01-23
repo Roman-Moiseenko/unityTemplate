@@ -13,6 +13,9 @@ using UnityEngine;
 
 namespace Game.GamePlay.View.Towers
 {
+    /**
+     * Основой Binder башни, связывает все действия
+     */
     public class TowerBaseBinder : MonoBehaviour
     {
         [SerializeField] private Transform container;
@@ -21,6 +24,7 @@ namespace Game.GamePlay.View.Towers
         [SerializeField] private Transform shot;
         [SerializeField] private TowerVisibleBinder visibleBinder;
 
+        private List<TowerShotBinder> _shotBinders = new();
         private IDisposable _disposable;
         private Coroutine _mainCoroutine;
         private TowerViewModel _viewModel;
@@ -32,9 +36,14 @@ namespace Game.GamePlay.View.Towers
 
         public void Bind(TowerViewModel viewModel)
         {
-            var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
-
+            transform.position = new Vector3(
+                viewModel.Position.CurrentValue.x,
+                transform.position.y,
+                viewModel.Position.CurrentValue.y
+            );
+            
+            CreateTower();
             //Для башен с точкой размещения солдат не подключаем Коллайдер Видимости
             //Также сделать для Бафных башен ??
             if (viewModel.TowerEntity.IsPlacement)
@@ -44,61 +53,59 @@ namespace Game.GamePlay.View.Towers
             else
             {
                 visibleBinder.Bind(viewModel);
-                CreateShot();
+                //Для одиночного создаем снаряд
+                //if (!viewModel.IsMultiShot) 
+                //CreateShot();
                 _mainCoroutine = StartCoroutine(FireUpdateTower());
             }
-
-            transform.position = new Vector3(
-                viewModel.Position.CurrentValue.x,
-                transform.position.y,
-                viewModel.Position.CurrentValue.y
-            );
-
+            
+            // ПОДПИСКИ //
+            var d = Disposable.CreateBuilder();
+            //Запуск эффекта обновления уровня
             _viewModel.Level.Skip(1).Subscribe(_ =>
             {
-                //Запускаем анимацию шейдеров и частиц при обновлении уровня башни
                 start.Play();
                 finish.Play();
                 RestartAttack();
             }).AddTo(ref d);
-
-            _viewModel.NumberModel.Subscribe(number =>
+            //Смена модели при обновлении на четных уровнях
+            _viewModel.NumberModel.Where(x => x > 1).Subscribe(number =>
             {
                 //Если Префаб уже был, то запускаем анимацию
-                if (_towerBinder != null)
-                {
-                    Sequence = DOTween.Sequence();
-                    Sequence
-                        .Append(
-                            container
-                                .DOScale(Vector3.zero, 0.5f)
-                                .From(Vector3.one)
-                                .SetEase(Ease.OutCubic))
-                        .AppendCallback(() =>
-                        {
-                            DestroyTower();
-                            CreateTower();
-                        })
-                        .Append(
-                            container.transform
-                                .DOScale(Vector3.one, 0.5f)
-                                .SetEase(Ease.InCubic))
-                        .OnComplete(() => { Sequence.Kill(); });
-                }
-                else
-                {
-                    CreateTower();
-                }
+                Sequence = DOTween.Sequence();
+                Sequence
+                    .Append(
+                        container
+                            .DOScale(Vector3.zero, 0.5f)
+                            .From(Vector3.one)
+                            .SetEase(Ease.OutCubic))
+                    .AppendCallback(() =>
+                    {
+                        DestroyTower();
+                        CreateTower();
+                    })
+                    .Append(
+                        container.transform
+                            .DOScale(Vector3.one, 0.5f)
+                            .SetEase(Ease.InCubic))
+                    .OnComplete(() => { Sequence.Kill(); });
             }).AddTo(ref d);
             _disposable = d.Build();
         }
 
+        
         private IEnumerator PlacementUpdateTower()
         {
             while (true)
             {
-                _viewModel.AddWarriorsTower();
-                yield return new WaitForSeconds(6f);
+                if (_viewModel.IsDeadAllWarriors())
+                {
+                    //TODO Ускорение при быстром вызове волны
+                    yield return new WaitForSeconds(10f);
+                    _viewModel.AddWarriorsTower();
+                }
+
+                yield return null;
             }
         }
 
@@ -106,14 +113,17 @@ namespace Game.GamePlay.View.Towers
         {
             while (true)
             {
+                yield return null;
                 //Обходим все цели в модели
                 foreach (var (uniqueId, mobViewModel) in _viewModel.MobTargets.ToList())
                 {
                     if (!mobViewModel.IsDead.CurrentValue)
                     {
                         //Если цель жива, запускаем процесс атаки
-                        yield return _towerBinder.StartDirection(mobViewModel.Position.CurrentValue);
-                        FireOneTarget(mobViewModel);
+                        if (!_viewModel.IsMultiShot) //Для одиночного выстрела поворачиваем башню
+                            yield return _towerBinder.StartDirection(mobViewModel.Position.CurrentValue);
+                        _towerBinder.FireAnimation(); // Анимация выстрела
+                        FindFreeShot().FireToTarget(mobViewModel);
                     }
                     else
                     {
@@ -125,17 +135,7 @@ namespace Game.GamePlay.View.Towers
                 yield return new WaitForSeconds(_viewModel.Speed);
             }
         }
-
-        private void FireOneTarget(MobViewModel mobViewModel)
-        {
-            //Подготовка выстрела
-            _towerShotBinder.FirePrepare(mobViewModel);
-            _towerBinder.FireAnimation(); // Анимация выстрела
-            //Запускаем снаряд и ждем когда долетит
-            _towerShotBinder.FireStart();
-            _towerShotBinder.FireFinish();
-        }
-
+        
         private void DestroyTower()
         {
             Destroy(_towerBinder.gameObject);
@@ -155,14 +155,26 @@ namespace Game.GamePlay.View.Towers
             _towerBinder.Bind(_viewModel);
         }
 
-        private void CreateShot()
+        private TowerShotBinder FindFreeShot()
+        {
+            foreach (var shotBinder in _shotBinders)
+            {
+                if (shotBinder.IsFree) return shotBinder;
+            }
+
+            return CreateShot();
+        }        
+        
+        private TowerShotBinder CreateShot()
         {
             var towerType = _viewModel.ConfigId;
             var prefabTowerShotPath =
                 $"Prefabs/Gameplay/Towers/{towerType}/Shot-{towerType}";
             var shotPrefab = Resources.Load<TowerShotBinder>(prefabTowerShotPath);
-            _towerShotBinder = Instantiate(shotPrefab, shot.transform);
-            _towerShotBinder.Bind(_viewModel);
+            var towerShotBinder = Instantiate(shotPrefab, shot.transform);
+            towerShotBinder.Bind(_viewModel);
+            _shotBinders.Add(towerShotBinder);
+            return towerShotBinder;
         }
 
 
@@ -171,13 +183,11 @@ namespace Game.GamePlay.View.Towers
          */
         private void RestartAttack()
         {
-            foreach (var mobEntity in _viewModel.Targets.ToList())
+            foreach (var shotBinder in _shotBinders)
             {
-                _viewModel.RemoveTargetEntity(mobEntity);
+                shotBinder.StopShot();
             }
-
-            _towerShotBinder.StopShot();
-            _viewModel.TowerEntity.FreeToFire();
+            _viewModel.ClearTargets();
         }
 
         private void OnDestroy()
@@ -188,6 +198,7 @@ namespace Game.GamePlay.View.Towers
                 Sequence.Kill();
                 Sequence = null;
             }
+
             _disposable?.Dispose();
         }
     }

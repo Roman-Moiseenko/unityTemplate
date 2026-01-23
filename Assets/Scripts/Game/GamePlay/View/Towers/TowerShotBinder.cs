@@ -15,14 +15,21 @@ namespace Game.GamePlay.View.Towers
         [SerializeField] protected Transform missile;
         [SerializeField] protected Transform explosion;
         [SerializeField] protected ShotBinder shotBinder;
-        
-        private IDisposable _disposable;
+
+        protected IDisposable _disposable;
         protected TowerViewModel _viewModel;
         protected readonly ReactiveProperty<bool> _isMoving = new(false);
 
-        protected ReactiveProperty<Vector3> _target = new();
-        public void Bind(TowerViewModel viewModel)
+        public bool IsFree;
+        protected MobViewModel MobTarget;
+        protected Coroutine mainCoroutine;
+
+        protected ReactiveProperty<Vector3> _targetPosition = new();
+
+        public virtual void Bind(TowerViewModel viewModel)
         {
+            IsFree = true;
+            Debug.Log("TowerShotBinder");
             var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
             shotBinder.Bind(viewModel);
@@ -30,31 +37,31 @@ namespace Game.GamePlay.View.Towers
             _disposable = d.Build();
         }
 
-        public virtual void FirePrepare(MobViewModel mobViewModel)
-        {
-            _target = mobViewModel.PositionTarget;
-            Direction(_target.CurrentValue); //Поворот зоны выстрела мгновенный 
-            shotBinder.FirePrepare(mobViewModel);
 
-            //TODO Переделать
+        public virtual void FireToTarget(MobViewModel mobViewModel)
+        {
+            if (mainCoroutine != null) StopCoroutine(mainCoroutine);
+
+            IsFree = false;
+            MobTarget = mobViewModel;
+            _targetPosition = mobViewModel.PositionTarget;
+            Direction(_targetPosition.CurrentValue); //Поворот зоны выстрела мгновенный 
+
             var particle = fire.GetComponent<ParticleSystem>();
             if (particle != null) particle.Play(); //Запуск эффекта выстрела
 
-        }
-        public virtual void FireStart()
-        {
-            StartCoroutine(shotBinder.FireStart());
+            shotBinder.FirePrepare(mobViewModel);
+            mainCoroutine = StartCoroutine(StartShotFire());
         }
 
-        /**
-         * Эффект после выстрела
-         */
-        public virtual void FireFinish()
+        protected virtual IEnumerator StartShotFire()
         {
-            explosion.position = new Vector3(_target.CurrentValue.x, explosion.position.y, _target.CurrentValue.z);
-            StartCoroutine(StartExplosion());
-            //TODO Передать в сервис дорог координаты попадания, для показа шейдера мапинг (растрескивание)
+            yield return shotBinder.FireStart();
+
+            yield return StartExplosion();
+            IsFree = true;
         }
+        
 
         private void Direction(Vector3 toDirection)
         {
@@ -63,11 +70,18 @@ namespace Game.GamePlay.View.Towers
             var direction = toDirection - fromDirection;
             transform.rotation = Quaternion.LookRotation(direction);
         }
+
+        /**
+         * Эффект после выстрела
+         */
         private IEnumerator StartExplosion()
         {
-            explosion.gameObject.SetActive(true);
             var particle = explosion.GetComponent<ParticleSystem>();
             if (particle == null) yield break;
+
+            explosion.gameObject.SetActive(true);
+            explosion.position = new Vector3(_targetPosition.CurrentValue.x, explosion.position.y,
+                _targetPosition.CurrentValue.z);
             var playing = true;
             //TODO Передать в сервис дорог координаты попадания, для показа шейдера мапинг (растрескивание)
             particle.Play();
@@ -78,19 +92,19 @@ namespace Game.GamePlay.View.Towers
                     explosion.gameObject.SetActive(false);
                     playing = false;
                 }
+
                 yield return null;
             }
         }
-        
+
         private void OnDestroy()
         {
             _disposable?.Dispose();
         }
 
-        public void StopShot()
+        public virtual void StopShot()
         {
-            shotBinder.StopShot();
+            shotBinder?.StopShot();
         }
-        
     }
 }

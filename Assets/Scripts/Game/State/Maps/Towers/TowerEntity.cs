@@ -33,8 +33,6 @@ namespace Game.State.Maps.Towers
         public Dictionary<TowerParameterType, TowerParameterData> Parameters = new();
 
         public ReactiveProperty<Vector2> PrepareShot = new();
-
-        public ObservableList<MobEntity> Targets = new(); //ID мобов целей
         
         public TowerEntity(TowerEntityData towerEntityData)
         {
@@ -111,33 +109,6 @@ namespace Game.State.Maps.Towers
             }
             //Башня на дороге, нет дистанции
             return Vector2.Distance(mobPosition, Position.CurrentValue) <= 0.5f;
-        }
-
-        public bool SetTarget(MobEntity mobEntity)
-        {
-            //Проверка на совпадение типа врага и башни
-            if (!IsTargetForAttack(mobEntity.IsFly)) return false;
-            //Проверка на дистанцию до моба
-            if (MobDistanceShot(mobEntity.Position.CurrentValue))
-            {
-//                Debug.Log("Дистанция");
-                //TODO Проверить есть ли уже в списке
-                foreach (var target in Targets)
-                {
-                    if (target == mobEntity)
-                    {
-//                        Debug.Log("Попытка добавить цель повторно");
-                        return false;
-                    }
-                }
-                
-                
-                Targets.Add(mobEntity);
-                //IsShot.Value = true;
-                return true;
-            }
-
-            return false;
         }
 
         public ShotData GetShotParametersOLD(MobEntity mobEntity)
@@ -237,18 +208,6 @@ namespace Game.State.Maps.Towers
 
             return shotData;
         }
-        public void RemoveTarget(MobEntity mobEntity)
-        {
-            Targets.Remove(mobEntity);
-            if (Targets.Count != 0) return;
-          //  IsBusy.Value = false;
-          //  IsShot.Value = false;
-            
-        }
 
-        public void FreeToFire()
-        {
-            IsBusy.Value = false;
-        }
     }
 }

@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Game.GamePlay.View.Towers
 {
+    /**
+     * Отвечает за поворот башни и анимацию выстрела
+     */
     public class TowerBinder : MonoBehaviour
     {
         [SerializeField] private Transform rotateBlock;
@@ -23,7 +26,7 @@ namespace Game.GamePlay.View.Towers
         private Vector3 _targetDirection;
 
         // private Quaternion _targetRotation;
-        private float _timeElapsed = 0f;
+        //private float _timeElapsed = 0f;
         private float _lerpDuration;
 
         public void Bind(TowerViewModel viewModel)
