@@ -4,6 +4,7 @@ using Game.GamePlay.Classes;
 using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
+using Game.State.Maps.Mobs;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Shots;
@@ -44,7 +45,10 @@ namespace Game.State.Root
         public ObservableList<RoadEntity> WaySecond { get; } = new();
         public ObservableList<RoadEntity> WayDisabled { get; } = new();
         public ObservableDictionary<int, WaveEntity> Waves { get; } = new();
-        public ObservableList<WarriorEntity> Warriors { get; } = new(); 
+        public ObservableList<WarriorEntity> Warriors { get; } = new();
+        
+        public ObservableList<MobEntity> Mobs { get; } = new();
+ 
         
         public ObservableList<ShotData> Shots { get; } = new();
 
@@ -53,11 +57,6 @@ namespace Game.State.Root
             Origin = origin;
             Castle = new CastleEntity(origin.CastleData);
             _previousGameSpeed = Origin.GameSpeed;
-         //   GameSpeed = new ReactiveProperty<int>(origin.GameSpeed);
-       //     GameSpeed.Subscribe(newSpeed =>
-      //      {
-       //         origin.GameSpeed = newSpeed;
-       //     });
             
             Progress = new ReactiveProperty<int>(origin.Progress);
             Progress.Subscribe(newProgress => origin.Progress = newProgress);

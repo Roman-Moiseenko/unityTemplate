@@ -74,7 +74,7 @@ namespace Game.GamePlay.View.Towers
             if (_viewModel.MobTargets.Count != 0)
             {
                 var mobBinder = other.gameObject.GetComponent<MobBinder>();
-                Debug.Log($"Mob {mobBinder.ViewModel.UniqueId} Exit {_viewModel.UniqueId}");
+//                Debug.Log($"Mob {mobBinder.ViewModel.UniqueId} Exit {_viewModel.UniqueId}");
                 _viewModel.RemoveTarget(mobBinder.ViewModel);
             }
         }

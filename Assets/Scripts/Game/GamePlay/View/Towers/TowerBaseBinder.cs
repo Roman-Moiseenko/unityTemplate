@@ -96,7 +96,6 @@ namespace Game.GamePlay.View.Towers
             }).AddTo(ref d);
             _disposable = d.Build();
         }
-
         
         private IEnumerator PlacementUpdateTower()
         {

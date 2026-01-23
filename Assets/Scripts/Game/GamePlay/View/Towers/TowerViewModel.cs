@@ -170,11 +170,14 @@ namespace Game.GamePlay.View.Towers
          */
         public bool IsDeadAllWarriors()
         {
+            Debug.Log("IsDeadAllWarriors для " + UniqueId);
             if (!TowerEntity.IsPlacement) return false;
             foreach (var warriorEntity in _gameplayState.Warriors) //Некоторые warrior еще живы
             {
                 if (warriorEntity.ParentId == UniqueId) return false;
+                Debug.Log(warriorEntity.ParentId);
             } 
+            Debug.Log(_gameplayState.Warriors.Count);
             return true;
         }
         public void AddWarriorsTower()
