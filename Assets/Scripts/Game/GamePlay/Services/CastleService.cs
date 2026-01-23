@@ -34,7 +34,7 @@ namespace Game.GamePlay.Services
             GameplayStateProxy gameplayState
         )
         {
-            _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
+            _coroutines = GameObject.Find(AppConstants.COROUTINES).GetComponent<Coroutines>();
             _castleEntity = gameplayState.Castle;
             _fsmGameplay = container.Resolve<FsmGameplay>();
             CurrenHealth = castleEntity.CurrenHealth;
