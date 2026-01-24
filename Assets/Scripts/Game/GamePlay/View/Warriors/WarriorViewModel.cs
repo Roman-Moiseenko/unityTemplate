@@ -63,7 +63,7 @@ namespace Game.GamePlay.View.Warriors
                 Single = true,
                 MobEntityId = MobTarget.CurrentValue.UniqueId,
             };
-            Debug.Log("Урон от Warrior " + UniqueId + " Мобу " + MobTarget.CurrentValue.UniqueId);
+//            Debug.Log("Урон от Warrior " + UniqueId + " Мобу " + MobTarget.CurrentValue.UniqueId);
             _gameplayState.Shots.Add(shot);
         }
         

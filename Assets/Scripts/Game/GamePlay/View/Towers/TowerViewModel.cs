@@ -170,7 +170,7 @@ namespace Game.GamePlay.View.Towers
          */
         public bool IsDeadAllWarriors()
         {
-            Debug.Log("IsDeadAllWarriors для " + UniqueId);
+            //Debug.Log("IsDeadAllWarriors для " + UniqueId);
             if (!TowerEntity.IsPlacement) return false;
             foreach (var warriorEntity in _gameplayState.Warriors) //Некоторые warrior еще живы
             {

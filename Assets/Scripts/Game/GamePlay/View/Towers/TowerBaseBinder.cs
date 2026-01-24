@@ -49,14 +49,13 @@ namespace Game.GamePlay.View.Towers
             //Также сделать для Бафных башен ??
             if (viewModel.TowerEntity.IsPlacement)
             {
+                _viewModel.AddWarriorsTower();
                 _mainCoroutine = StartCoroutine(PlacementUpdateTower());
             }
             else
             {
                 visibleBinder.Bind(viewModel);
-                //Для одиночного создаем снаряд
-                //if (!viewModel.IsMultiShot) 
-                //CreateShot();
+                CreateShot(); //для ускорения сразу создаем 1 снаряд в пул
                 _mainCoroutine = StartCoroutine(FireUpdateTower());
             }
             

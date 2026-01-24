@@ -28,9 +28,9 @@ namespace Game.GamePlay.Commands.WarriorCommands
             parameters.TryGetValue(TowerParameterType.Health, out var health);
             parameters.TryGetValue(TowerParameterType.Range, out var range);
             
-            for (var i = -1; i < 2; i++)
+            for (var i = 1; i <= 3; i++)
             {
-//                Debug.Log(" " + i);
+                Debug.Log(" " + i);
                 var warriorEntityData = new WarriorEntityData()
                 {
                     ParentId = command.UniqueId,
@@ -47,7 +47,7 @@ namespace Game.GamePlay.Commands.WarriorCommands
                 };
                 var warriorEntity = new WarriorEntity(warriorEntityData);
                 _gameplayState.Warriors.Add(warriorEntity);
-                //Debug.Log($"Воин {warriorEntityData.UniqueId} создан для башни {command.UniqueId}");
+                Debug.Log($"Воин {warriorEntityData.UniqueId} создан для башни {command.UniqueId}");
             }
             
             return false;

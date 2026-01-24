@@ -25,7 +25,7 @@ namespace Game.GamePlay.View.Towers
         public virtual void Bind(TowerViewModel viewModel)
         {
             IsFree = true;
-            Debug.Log("TowerShotBinder");
+
             var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
             shotBinder.Bind(viewModel);
