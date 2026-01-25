@@ -203,13 +203,13 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: b3a4f4e8703c94d40ae435a8193040bc, type: 3}
   defences:
   - Defence: 0
-    Sprite: {fileID: 21300000, guid: f9b32e8eaef2c6849bf32f0e37233eb2, type: 3}
+    Sprite: {fileID: 21300000, guid: 641bd4885d92a674c8f423789fc240b3, type: 3}
   - Defence: 1
-    Sprite: {fileID: 21300000, guid: f9b32e8eaef2c6849bf32f0e37233eb2, type: 3}
+    Sprite: {fileID: 21300000, guid: f9e756ba7e470304290cc8ddc204ea36, type: 3}
   - Defence: 2
-    Sprite: {fileID: 21300000, guid: f9b32e8eaef2c6849bf32f0e37233eb2, type: 3}
+    Sprite: {fileID: 21300000, guid: 2ddc91e98b3fac24f83aebbf985af79e, type: 3}
   - Defence: 3
-    Sprite: {fileID: 21300000, guid: f9b32e8eaef2c6849bf32f0e37233eb2, type: 3}
+    Sprite: {fileID: 21300000, guid: 160b1d5fbd8f5db4badbc59d4abcd1b3, type: 3}
   otherSprite:
   - ConfigId: TowerUpCard
     Sprite: {fileID: 21300000, guid: 80fd7e715a58c58419284abc35cbbd90, type: 3}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Game.Common;
 using Game.GameRoot.ImageManager;
@@ -33,8 +34,13 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         private List<UpgradeParameterBinder> _upgradeParameterBinders = new();
         
         private Image _btnImage;
+        private Image _btnSelected;
+        private Image _btnEnemy;
+        private Image _btnBoss;
         private IDisposable _disposableImplementation;
         private ImageManagerBinder _imageManager;
+        private ReactiveProperty<bool> _isBoss = new(false);
+
 
         private void Awake()
         {
@@ -42,6 +48,10 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             //Аниматор панели
             //Кнопка Волны - показ инфо, форсированный запуск
             _btnInfo = _infoBlock.Find("ButtonBlock/ButtonWave").GetComponent<Button>();
+            _btnSelected = _infoBlock.Find("ButtonBlock/Selected").GetComponent<Image>();
+            _btnSelected.gameObject.SetActive(false);
+            _btnEnemy = _infoBlock.Find("ButtonBlock/IconEnemy").GetComponent<Image>();
+            _btnBoss = _infoBlock.Find("ButtonBlock/IconBoss").GetComponent<Image>();
             //Инфо панель о волне
             _infoPanel = _infoBlock.Find("InfoWave").GetComponent<Transform>();
             //Контейнер для списка инфо о мобах
@@ -62,12 +72,21 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         {
             var d = Disposable.CreateBuilder();
             _imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
+
+            _isBoss.Subscribe(v =>
+            {
+                _btnEnemy.gameObject.SetActive(!v);
+                _btnBoss.gameObject.SetActive(v);
+            }).AddTo(ref d);
             //Блок инфо о волне
-            ViewModel.ShowInfoWave.OnNext(false);
+            ViewModel.ShowInfoWave.OnNext(false); //При стар
             ViewModel.ShowButtonWave.Subscribe(showButton =>
             {
                 if (showButton)
                 {
+                    Debug.Log(_isBoss);
+                    //Меняем круглешок на кнопке Волны (враги или босс)
+                    
                     _infoBlock.gameObject.SetActive(true);
                     _infoBlock.DOScale(1, 0.3f)
                         .From(0.7f)
@@ -111,6 +130,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
                         .OnComplete(() => _infoPanel.gameObject.SetActive(false));
                     
                 }
+                _btnSelected.gameObject.SetActive(showInfo);
             }).AddTo(ref d);
             InfoWavePanelClear();
             foreach (var defenceCountMob in ViewModel.InfoWaveMobs)
@@ -174,8 +194,15 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             var createdInfoString = Instantiate(enemyPrefab, _enemies);
             
             var mobConfig = ViewModel.MobsSettings.AllMobs.Find(t => t.ConfigId == configId);
-            if (mobConfig == null) 
+            if (mobConfig == null)
+            {
+                _isBoss.Value = true;
                 mobConfig = ViewModel.MobsSettings.AllBosses.Find(t => t.ConfigId == configId);
+            }
+            else
+            {
+                _isBoss.Value = false;
+            }
             
             Sprite image = _imageManager.GetDefence(mobConfig.Defence);
 
@@ -183,7 +210,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave
                 image,
                 mobConfig.TitleLid,
                 objValue.Value,
-                count
+                count,
+                _isBoss.CurrentValue
             );
             _enemyInfoBinders.Add(createdInfoString);
             _enemies.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 310 + 110 * count);
@@ -256,6 +284,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         {
             if (!ViewModel.ShowInfoWave.CurrentValue)
             {
+                
                 ViewModel.ShowInfoWave.OnNext(true);
             }
             else

@@ -112,9 +112,16 @@ namespace Game.GamePlay.View.Mobs
                     //Направление поворота Проверяем, поменялось ли направление
 
                     _currentIndexListPoint++;
-                    if (_currentIndexListPoint == ViewModel.RoadPoints.Count) ViewModel.IsMoving.OnNext(false);
+                    if (_currentIndexListPoint == ViewModel.RoadPoints.Count)
+                    {
+                        ViewModel.IsMoving.OnNext(false);
+                    }
+                    else
+                    {
+                        _targetPosition = ViewModel.GetTargetPosition(_currentIndexListPoint);
+                    }
 
-                    _targetPosition = ViewModel.GetTargetPosition(_currentIndexListPoint);
+                    //Debug.Log(" _currentIndexListPoint = " + _currentIndexListPoint + " " + ViewModel.RoadPoints.);
                 }
 
                 var speedMob = AppConstants.MOB_BASE_SPEED * ViewModel.GetSpeedMob();
