@@ -27,7 +27,7 @@ namespace Game.GamePlay.View.Mobs
         public ReactiveProperty<bool> IsMoving = new(false);
         public ReactiveProperty<bool> IsAttack = new(false);
         public ReactiveProperty<Vector2> Position => _mobEntity.Position;
-        public ReactiveProperty<Vector2Int> Direction;
+
         public Vector2 StartPosition;
         public Vector2Int StartDirection;
         public List<RoadPoint> RoadPoints = new();
@@ -35,38 +35,49 @@ namespace Game.GamePlay.View.Mobs
         public ReactiveProperty<MobState> State; //TODO Возможно удалить или модифицировать до FSM
         public ReactiveProperty<float> CurrentHealth;
         public float MaxHealth;
-        public float Delta => _mobEntity.Delta;
+
         public ReactiveProperty<bool> FinishCurrentAnimation = new(true);
         public ReactiveProperty<bool> AnimationDelete = new(false);
         public IReadOnlyObservableDictionary<string, MobDebuff> Debuffs => _mobEntity.Debuffs;
         public int Level => _mobEntity.Level;
         public float Attack => _mobEntity.Attack;
-        public int NumberWave;
+
         public ReactiveProperty<Vector3> PositionTarget => _mobEntity.PositionTarget;
         public ReadOnlyReactiveProperty<bool> IsDead => _mobEntity.IsDead;
         public MobDefence Defence => _mobEntity.Defence;
 
         private readonly GameplayStateProxy _gameplayState;
-        //public float SpeedAttack => _mobEntity.SpeedAttack;
 
+        public ReactiveProperty<bool> StartGo = new(false);
+        
         public MobViewModel(
             MobEntity mobEntity,
             GameplayCamera cameraService,
-            GameplayStateProxy gameplayState
+            GameplayStateProxy gameplayState,
+            WaveService waveService
         )
         {
             _gameplayState = gameplayState;
-
             _mobEntity = mobEntity;
-
             CameraService = cameraService;
-            StartPosition = mobEntity.Position.CurrentValue;
-            StartDirection = mobEntity.Direction.CurrentValue;
             CurrentHealth = mobEntity.Health;
             MaxHealth = mobEntity.Health.CurrentValue;
-
             State = mobEntity.State;
-            Direction = new ReactiveProperty<Vector2Int>(mobEntity.Direction.CurrentValue); //Начальное направление
+            
+            //Моб вышел на дорогу, просчитываем путь и начальные координаты, от расположения ворот
+            mobEntity.IsWentOut.Where(x => x).Subscribe(_ =>
+            {
+                var position = waveService.GateWaveViewModel.Position.Value;
+                var direction = -1 * waveService.GateWaveViewModel.Direction.Value;
+                
+                mobEntity.SetStartPosition(position, direction);
+                StartPosition = mobEntity.Position.CurrentValue;
+                StartDirection = mobEntity.Direction.CurrentValue;
+                
+                RoadPoints = waveService.GenerateRoadPoints(mobEntity);
+                StartGo.Value = true;
+                IsMoving.Value = true;
+            });
         }
 
         public IEnumerator WaitFinishAnimation()
@@ -83,12 +94,7 @@ namespace Game.GamePlay.View.Mobs
             yield return new WaitForSeconds(debuff.Time);
             _mobEntity.RemoveDebuff(configId);
         }
-
-        public void Go()
-        {
-            IsMoving.Value = true;
-        }
-
+        
 
         public float GetSpeedMob()
         {

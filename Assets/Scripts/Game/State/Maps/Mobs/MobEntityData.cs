@@ -33,5 +33,6 @@ namespace Game.State.Maps.Mobs
 
             }
     */
+        public int NumberWave;
     }
 }

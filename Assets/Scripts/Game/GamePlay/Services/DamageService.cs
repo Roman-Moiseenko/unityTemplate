@@ -24,17 +24,17 @@ namespace Game.GamePlay.Services
         public ObservableList<DamageEntity> AllDamages = new();
         
         public DamageService(
-            GameplayStateProxy gameplayState,
-            WaveService waveService,
-            RewardProgressService rewardProgressService
+            GameplayStateProxy gameplayState
         )
         {
             gameplayState.Shots.ObserveAdd().Subscribe(e =>
             {
                 var shot = e.Value;
 
+                MobEntity mobEntity = gameplayState.Mobs.FirstOrDefault(mob => mob.UniqueId == shot.MobEntityId);
+
                 //Ищем моба, переделать на gameplayState.Mobs и перенести MobsEntity в gameplayState
-                if (!waveService.AllMobsMap.TryGetValue(shot.MobEntityId, out var mobEntity))
+                if (mobEntity == null)
                 {
                     gameplayState.Shots.Remove(shot); //Сущность уже удалена
                     return;
@@ -53,7 +53,7 @@ namespace Game.GamePlay.Services
 
                 var mobsUnderAttacks = new List<MobEntity>();
                 //Ищем соучастников урона и с проверкой на совместимость воздух/земля
-                foreach (var (k, entity) in waveService.AllMobsMap)
+                foreach (var entity in gameplayState.Mobs)
                 {
                     if (Vector2.Distance(position, entity.GetPosition()) <= 0.5f &&
                         entity.IsFly == shot.IsFly) mobsUnderAttacks.Add(entity);
@@ -67,26 +67,8 @@ namespace Game.GamePlay.Services
 
                 gameplayState.Shots.Remove(shot); //Удаляем из списка выстрел
             });
-
-            //TODO Перенести в waveService или rewardProgressService(!)
-            waveService.AllMobsMap.ObserveAdd().Subscribe(e =>
-            {
-                var mobEntity = e.Value.Value;
-                //Проверяем, что моб мертв 
-                mobEntity.IsDead.Skip(1)
-                    .Where(x => x)
-                    .Subscribe(_ =>
-                        {
-                            //выдаем награды и другое 
-                            rewardProgressService.RewardKillMob(mobEntity.RewardCurrency,
-                                mobEntity.Position.CurrentValue);
-                            waveService.AllMobsMap.Remove(e.Value.Key);
-                        }
-                    );
-            });
         }
-
-        //TODO Переделать под универсальную функцию
+        
         public void SetDamageMob(MobEntity mobEntity, ShotData shot)
         {
             var damage = new DamageEntity

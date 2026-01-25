@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.WaveStates;
+using Game.GamePlay.Queries.WaveQueries;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Towers;
 using Game.Settings;
@@ -13,7 +15,9 @@ using Game.Settings.Gameplay.Enemies;
 using Game.State;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
+using MVVM.CMD;
 using MVVM.UI;
+using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using Scripts.Utils;
@@ -49,6 +53,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         private readonly IDisposable _disposable;
         
         public ObservableDictionary<string, int> InfoWaveMobs = new(); //Информация о мобе в волн
+        
+        private readonly IQueryProcessor _qrc;
         public MobsSettings MobsSettings { get; private set; }
         
         public PanelGateWaveViewModel(
@@ -61,6 +67,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             _uiManager = uiManager;
             _waveService = container.Resolve<WaveService>();
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
+            _qrc = container.Resolve<IQueryProcessor>();
             
             var entityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
             var towerClick = container.Resolve<Subject<TowerViewModel>>();
@@ -68,6 +75,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             var gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             var positionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
 
+            
             CurrentSpeed = gameplayStateProxy.GetCurrentSpeed();
             MobsSettings = container.Resolve<ISettingsProvider>().GameSettings.MobsSettings;            
             
@@ -114,10 +122,14 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             gameplayStateProxy.CurrentWave.Subscribe(number =>
             {
                 InfoWaveMobs.Clear();
-                foreach (var keyPair in gameplayStateProxy.Waves[number].GetInfoMobsFromWave())
+                //Получить данные О Новой Волне
+                var query = new QueryInfoWave { NumberWave = number };
+                var dictionary = (Dictionary<string, int>)_qrc.Request(query);
+                foreach (var (configId, quantity) in dictionary)
                 {
-                    InfoWaveMobs.Add(keyPair.Key, keyPair.Value);
+                    InfoWaveMobs.Add(configId, quantity);
                 }
+ 
             }).AddTo(ref d);
             //Изменилась позиция камеры
             positionCamera.Subscribe(n =>

@@ -11,6 +11,7 @@ using Game.State.Maps.Mobs;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Game.GamePlay.View.Towers
 {
@@ -21,6 +22,8 @@ namespace Game.GamePlay.View.Towers
     {
         [SerializeField] private Transform container;
         [SerializeField] private ParticleSystem finish;
+        [SerializeField] private VisualEffect after;
+        [SerializeField] private VisualEffect befor;
         [SerializeField] private ParticleSystem start;
         [SerializeField] private Transform shot;
         [SerializeField] private TowerVisibleBinder visibleBinder;
@@ -34,6 +37,11 @@ namespace Game.GamePlay.View.Towers
         private Sequence Sequence { get; set; }
 
         private ReactiveProperty<Vector3> _firsTarget;
+
+        private void OnEnable()
+        {
+            befor.Stop();
+        }
 
         public void Bind(TowerViewModel viewModel)
         {
@@ -64,7 +72,10 @@ namespace Game.GamePlay.View.Towers
             //Запуск эффекта обновления уровня
             _viewModel.Level.Skip(1).Subscribe(_ =>
             {
-                start.Play();
+                befor.playRate = 1f;
+                befor.Play();
+                
+                //start.Play();
                 finish.Play();
                 RestartAttack();
             }).AddTo(ref d);

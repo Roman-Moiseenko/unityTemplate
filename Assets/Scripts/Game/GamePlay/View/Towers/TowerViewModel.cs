@@ -22,7 +22,7 @@ namespace Game.GamePlay.View.Towers
     public class TowerViewModel : IMovingEntityViewModel
     {
         private readonly GameplayStateProxy _gameplayState;
-        private readonly ICommandProcessor _cmd;
+        private readonly TowersService _towersService;
         public TowerEntity TowerEntity { get; }
         public Dictionary<TowerParameterType, TowerParameterData> Parameters => TowerEntity.Parameters;
         public readonly int UniqueId;
@@ -50,11 +50,11 @@ namespace Game.GamePlay.View.Towers
         public TowerViewModel(
             TowerEntity towerEntity,
             GameplayStateProxy gameplayState,
-            ICommandProcessor cmd
+            TowersService towersService
         )
         {
             _gameplayState = gameplayState;
-            _cmd = cmd;
+            _towersService = towersService;
             IsShot = towerEntity.IsShot;
             UniqueId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
@@ -170,27 +170,11 @@ namespace Game.GamePlay.View.Towers
          */
         public bool IsDeadAllWarriors()
         {
-            //Debug.Log("IsDeadAllWarriors для " + UniqueId);
-            if (!TowerEntity.IsPlacement) return false;
-            foreach (var warriorEntity in _gameplayState.Warriors) //Некоторые warrior еще живы
-            {
-                if (warriorEntity.ParentId == UniqueId) return false;
-                Debug.Log(warriorEntity.ParentId);
-            } 
-            Debug.Log(_gameplayState.Warriors.Count);
-            return true;
+            return _towersService.IsDeadAllWarriors(TowerEntity);
         }
         public void AddWarriorsTower()
         {
-            var command = new CommandCreateWarriorTower
-            {
-                UniqueId = TowerEntity.UniqueId,
-                ConfigId = TowerEntity.ConfigId,
-                TypeEnemy = TowerEntity.TypeEnemy,
-                Position = TowerEntity.Position.CurrentValue,
-                Placement = TowerEntity.Placement.CurrentValue,
-            };
-            _cmd.Process(command);
+            _towersService.AddWarriorsTower(TowerEntity);
         }
     }
 }

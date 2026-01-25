@@ -6,13 +6,10 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.Settings;
 using Game.Settings.Gameplay.Entities.Tower;
-using Game.State;
 using Game.State.Gameplay;
 using Game.State.Inventory;
 using Game.State.Maps.Rewards;
-using Game.State.Maps.Towers;
 using Game.State.Root;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -22,17 +19,16 @@ namespace Game.GamePlay.Services
 {
     public class RewardProgressService
     {
+        public ObservableList<RewardCurrencyEntity> RewardMaps = new();
+        public ReactiveProperty<RewardEntity> RewardEntity = new();       
+        
         private readonly GameplayStateProxy _gameplayState;
         private readonly DIContainer _container;
         private readonly GameSettings _gameSettings;
         private readonly TowersSettings _towersSettings;
         private readonly TowersService _towerService;
         private Dictionary<int, bool> _rewardsMap = new();
-       
-
-        public ObservableList<RewardCurrencyEntity> RewardMaps = new();
-
-        public ReactiveProperty<RewardEntity> RewardEntity = new();
+        
         public RewardProgressService(
             GameplayStateProxy gameplayState,
             DIContainer container,
@@ -46,8 +42,19 @@ namespace Game.GamePlay.Services
             _towerService = container.Resolve<TowersService>();
             _towersSettings = gameSettings.TowersSettings;
             
+            //gameplayState.Waves.
+            //TODO Подписка на мобов из текущей волны, что на карте, при удалении => выдать награду
+            
             var fsmGameplay = container.Resolve<FsmGameplay>();
 
+            
+            gameplayState.Mobs.ObserveRemove().Subscribe(e =>
+            {
+                //При удалении моба (когда IsDead => true) выдаем награду
+                var mobEntity = e.Value;
+                RewardKillMob(mobEntity.RewardCurrency, mobEntity.Position.CurrentValue);
+            });
+            
             gameplayState.Progress.Where(v => v >= 100).Subscribe(newValue =>
             {
                 if (!fsmGameplay.IsStateGamePlay()) return;

@@ -30,7 +30,7 @@ namespace Game.State
                 WaySecond = new List<RoadEntityData>(),
                 WayDisabled = new List<RoadEntityData>(),
                 Grounds = new List<GroundEntityData>(),
-                Waves = new Dictionary<int, WaveEntityData>(),
+                //Waves = new Dictionary<int, WaveEntityData>(),
                 //TODO Ресурсы игры
                 
             };

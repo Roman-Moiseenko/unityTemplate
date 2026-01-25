@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DI;
 using Game.Common;
-using Game.GamePlay.Commands.WaveCommands;
-using Game.GamePlay.Fsm;
-using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Root;
 using Game.GameRoot.Services;
 using Game.MainMenu.Root;
@@ -16,7 +13,6 @@ using Game.State.Root;
 using MVVM.CMD;
 using Newtonsoft.Json;
 using R3;
-using Debug = UnityEngine.Debug;
 using Random = System.Random;
 
 namespace Game.GamePlay.Services
@@ -31,8 +27,7 @@ namespace Game.GamePlay.Services
         private readonly DIContainer _container;
         private readonly GameplayStateProxy _gameplayState;
         private readonly AdService _adService;
-        private WaveService _waveService;
-        private FsmGameplay _fsmGameplay;
+
         private readonly ResourceService _resourceService;
         private readonly ICommandProcessor _cmd;
         private readonly GameStateProxy _gameState;
@@ -42,14 +37,11 @@ namespace Game.GamePlay.Services
         public int CountRepair;
         public ReactiveProperty<GameplayExitParams> GameOver = new(null);
         private IDisposable _disposable;
-        // public ReactiveProperty<float> CastleHealth;
 
         public GameplayService(
             Subject<GameplayExitParams> exitSceneRequest,
-            WaveService waveService,
             GameplayStateProxy gameplayState,
             AdService adService,
-            FsmGameplay fsmGameplay,
             ResourceService resourceService,
             ICommandProcessor cmd,
             GameStateProxy gameState,
@@ -62,24 +54,17 @@ namespace Game.GamePlay.Services
             _exitSceneRequest = exitSceneRequest;
             _gameplayState = gameplayState;
             _adService = adService;
-            _fsmGameplay = fsmGameplay;
-            _waveService = waveService;
+ 
             _resourceService = resourceService;
             _cmd = cmd;
             _gameState = gameState;
             _mapsSettings = mapsSettings;
             _towersService = towersService;
 
-            //TODO Переделать на другой параметр
-            waveService.IsMobsOnWay.Where(x => !x).Subscribe(_ =>
-                {
-                    //Мобы на дороге закончились, проверяем закончились ли волны. 
-                    if (waveService.FinishAllWaves.Value) Win();
-                }
-            ).AddTo(ref d);
-
+            gameplayState.MapFinished.Where(x => x).Subscribe(_ => Win()).AddTo(ref d);
+            
             //Для бесконечной игры добавляем автоувеличение уровня
-            if (_gameplayState.IsInfinity())
+          /*  if (_gameplayState.IsInfinity())
             {
                 _gameplayState.CurrentWave.Skip(1).Where(v => v == _gameplayState.Waves.Count).Subscribe(v =>
                 {
@@ -87,7 +72,7 @@ namespace Game.GamePlay.Services
                     cmd.Process(command);
                 }).AddTo(ref d);
             }
-
+*/
             _gameplayState.Castle.IsDead.Where(e => e)
                 .Subscribe(newValue =>
                 {
@@ -113,13 +98,10 @@ namespace Game.GamePlay.Services
             var exitParams = new GameplayExitParams(menuParams);
 
             GameOver.OnNext(exitParams);
-            //TODO Показать окно окончания игры без сохранения
-            // _exitSceneRequest.OnNext(exitParams); //TODO перенести в окно Finish
         }
 
-        public void Lose() //private
+        public void Lose()
         {
-//            Debug.Log("Lose");
             var menuParams = GetMainMenuParams(false);
             if (_gameState.ContainerChests.IsFreeCell())
             {
@@ -133,8 +115,6 @@ namespace Game.GamePlay.Services
 
             var exitParams = new GameplayExitParams(menuParams);
             GameOver.OnNext(exitParams);
-            //TODO Показать окно окончания игры
-            //_exitSceneRequest.OnNext(exitParams);
         }
 
         private TypeChest GetTypeChestLose(int lastWave, out TypeChest lastRewardChest)
@@ -231,7 +211,6 @@ namespace Game.GamePlay.Services
             var rewardWave = 0; //Последняя полученная награда за волну По-умолчанию
             if (_gameState.MapStates.Maps.TryGetValue(_gameplayState.MapId.CurrentValue, out var mapState))
             {
-                //Debug.Log(JsonConvert.SerializeObject(mapState));
                 //Уже получали награды
                 rewardWave = mapState.RewardOnWave.CurrentValue;
                 lastRewardOnWave = rewardWave;
@@ -357,9 +336,10 @@ namespace Game.GamePlay.Services
             if (!_gameplayState.Castle.Resurrection()) return;
 
             //Наносим урон всем мобам
-            foreach (var entity in _waveService.AllMobsMap.ToArray())
+            foreach (var entity in _gameplayState.Mobs.ToArray())
             {
-                entity.Value.SetDamage(_gameplayState.Castle.FullHealth);
+                //Если моб на дороге, наносим урон
+                if (entity.IsWentOut.CurrentValue) entity.SetDamage(_gameplayState.Castle.FullHealth);    
             }
 
             //Очищаем атаку на всех башнях

@@ -2,6 +2,9 @@
 
 namespace Game.GamePlay.Commands.WaveCommands
 {
+    /**
+     * Генерация волны для бесконечной игры, пока не используется
+     */
     public class CommandWaveGenerate : ICommand
     {
         public int Wave;

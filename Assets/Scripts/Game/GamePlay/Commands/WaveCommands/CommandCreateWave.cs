@@ -7,6 +7,6 @@ namespace Game.GamePlay.Commands.WaveCommands
     public class CommandCreateWave : ICommand
     {
         public int Index;
-        public List<WaveItemSettings> WaveItems;
+        //public List<WaveItemSettings> WaveItems;
     }
 }

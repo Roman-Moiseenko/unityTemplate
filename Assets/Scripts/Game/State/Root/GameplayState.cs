@@ -27,7 +27,6 @@ namespace Game.State.Root
         public TypeGameplay TypeGameplay { get; set; }
         
         //Список наград
-        //Список Волн
         //Список Мобов
         public CastleEntityData CastleData { get; set; } 
         
@@ -41,9 +40,7 @@ namespace Game.State.Root
         public List<RoadEntityData> Way; //Основная Дорога
         public List<RoadEntityData> WaySecond;
         public List<RoadEntityData> WayDisabled;
-
-        //public List<WaveEntityData> Waves;
-        public Dictionary<int, WaveEntityData> Waves;
+        
         
         public int CreateEntityID()
         {

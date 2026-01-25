@@ -1,7 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Game.GamePlay.Classes;
-using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Mobs;
@@ -10,7 +8,6 @@ using Game.State.Maps.Roads;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
-using Game.State.Maps.Waves;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
@@ -29,12 +26,13 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> MapId;
         public readonly ReactiveProperty<int> CurrentWave;
         public readonly ReactiveProperty<int> UpdateCards;
-        private float _previousGameSpeed;
+        
         public readonly ReactiveProperty<int> KillMobs;
         public readonly ReactiveProperty<TypeGameplay> TypeGameplay;
         
+        private float _previousGameSpeed;
+        public int CountWaves;
         //Для отслеживания за игровой процесс
-       // public readonly ReactiveProperty<bool> IsFinishWave = new(false);
 
         public CastleEntity Castle;
         
@@ -44,12 +42,10 @@ namespace Game.State.Root
         public ObservableList<RoadEntity> Way { get; } = new();
         public ObservableList<RoadEntity> WaySecond { get; } = new();
         public ObservableList<RoadEntity> WayDisabled { get; } = new();
-        public ObservableDictionary<int, WaveEntity> Waves { get; } = new();
         public ObservableList<WarriorEntity> Warriors { get; } = new();
-        
         public ObservableList<MobEntity> Mobs { get; } = new();
- 
-        
+
+        public ReactiveProperty<bool> MapFinished = new(false);
         public ObservableList<ShotData> Shots { get; } = new();
 
         public GameplayStateProxy(GameplayState origin)
@@ -80,7 +76,8 @@ namespace Game.State.Root
 
             TypeGameplay = new ReactiveProperty<TypeGameplay>(origin.TypeGameplay);
             TypeGameplay.Subscribe(newValue => origin.TypeGameplay = newValue);
-            
+
+
             //Награды
             origin.RewardEntities.ForEach(
                 reward => RewardEntities.Add(reward)
@@ -151,41 +148,31 @@ namespace Game.State.Root
                 var removedRoad = gameplayState.WayDisabled.FirstOrDefault(b => b.UniqueId == r.Value.UniqueId);
                 gameplayState.WayDisabled.Remove(removedRoad);
             });
-
-            foreach (var stateWave in gameplayState.Waves)
+            
+            //Список мобов на карте
+            Mobs.ObserveAdd().Subscribe(v =>
             {
-                Waves.Add(stateWave.Key, new WaveEntity(stateWave.Value));
-            }
-            //gameplayState.Waves.ForEach(wave => Waves.Add(new WaveEntity(wave)));
-            Waves.ObserveAdd().Subscribe(r => gameplayState.Waves.Add(r.Value.Key, r.Value.Value.Origin));
-            Waves.ObserveRemove().Subscribe(r =>
-            {
-                if (Waves.TryGetValue(r.Value.Key, out var waveEntity))
-                {
-                    gameplayState.Waves.Remove(r.Value.Key);
-                }
-                //var removedWave = gameplayState.Waves.FirstOrDefault(b => b.Number == r.Value.Number);
-                //gameplayState.Waves.Remove(removedWave);
+                var mobEntity = v.Value;
+                mobEntity.IsDead
+                    .Skip(1)
+                    .Where(x => x)
+                    .Subscribe(b => Mobs.Remove(mobEntity));
             });
 
+            Mobs.ObserveRemove().Subscribe(v =>
+            {
+                if (CurrentWave.CurrentValue == CountWaves && Mobs.Count == 0) MapFinished.OnNext(true);
+            });
         }
-
-
-        public void ClearProgress()
-        {
-            if (Progress.Value < 100) return;
-            Progress.Value -= 100;
-            ProgressLevel.Value++;
-        }
+        
         
         /**
          * Ставим игру на паузу. Все объекты, которые зависят от скорости игры, подписываются на GameSpeed
          */
         public void SetPauseGame()
         {
-            _previousGameSpeed = Time.timeScale; //GameSpeed.Value;
+            _previousGameSpeed = Time.timeScale;
             Time.timeScale = 0;
-            //GameSpeed.Value = 0;
         }
         
         /**
@@ -193,10 +180,7 @@ namespace Game.State.Root
          */
         public void GameplayReturn()
         {
-            //GameSpeed.Value 
-            //Debug.Log("_previousGameSpeed = " + _previousGameSpeed);
             Time.timeScale = _previousGameSpeed == 0 ? 1 : _previousGameSpeed;
-            //Debug.Log("Time.timeScale  = " + Time.timeScale );
         }
 
         public void SetSkillSpeed()
@@ -209,13 +193,10 @@ namespace Game.State.Root
         {
             Time.timeScale = newSpeed;
             Origin.GameSpeed = newSpeed; //Запоминаем скорость
-            //if (newSpeed == GameSpeed.Value) return;
-            //GameSpeed.Value = newSpeed;
         }
 
         public float GetLastSpeedGame()
         {
-            //GameSpeed.CurrentValue;
             return Mathf.Max(Time.timeScale, _previousGameSpeed);
         }
 
@@ -233,7 +214,7 @@ namespace Game.State.Root
                     break;
                 case 2: newSpeed = 4;
                     break;
-                case 4: newSpeed = 0.5f;
+                case 4: newSpeed = 1f;
                     break;
             }
           
@@ -251,17 +232,8 @@ namespace Game.State.Root
             //TODO Создать Логарифмический расчет награды
             var delta = 50 / Mathf.Sqrt(2 * ProgressLevel.Value - 1);
             Progress.Value += Mathf.FloorToInt(delta);
-            //Debug.Log("Progress delta = " + delta);
         }
-
-        /**
-         * CurrentWave отслеживает текущую волну, если номер превысил кол-во волн, то волны закончились 
-         */
-        public bool IsFinishWaves()
-        {
-            return CurrentWave.CurrentValue > Waves.Count;
-        }
-
+        
         public bool IsInfinity()
         {
             return TypeGameplay.CurrentValue == GamePlay.Classes.TypeGameplay.Infinity;
@@ -271,7 +243,6 @@ namespace Game.State.Root
         {
             Origin.TypeGameplay = typeGameplay;
         }
-        
         
     }
 }

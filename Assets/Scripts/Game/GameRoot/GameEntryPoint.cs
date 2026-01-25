@@ -128,7 +128,10 @@ namespace Scripts.Game.GameRoot
             var cmd = new CommandProcessor(gameStateProvider); //Создаем обработчик команд
             _rootContainer.RegisterInstance<ICommandProcessor>(cmd); //Кешируем его в DI
 
-
+            //TODO Возможно передать gameState и gameSettings
+            var qrc = new QueryProcessor(settingsProvider);
+            _rootContainer.RegisterInstance<IQueryProcessor>(qrc);
+            
             //Регистрируем общие команды для всей игры.
             //Потратить валюту.
             // Debug.Log(JsonConvert.SerializeObject());

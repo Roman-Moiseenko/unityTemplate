@@ -12,6 +12,9 @@ using UnityEngine;
 
 namespace Game.GamePlay.Commands.WaveCommands
 {
+    /**
+     * Генерация волн в бесконечной игре
+     */
     public class CommandWaveGenerateHandler : ICommandHandler<CommandWaveGenerate>
     {
         private readonly GameSettings _gameSettings;
@@ -35,7 +38,7 @@ namespace Game.GamePlay.Commands.WaveCommands
             var commandWave = new CommandCreateWave
             {
                 Index = command.Wave,
-                WaveItems = GenerateWave(command.Wave),
+                //WaveItems = GenerateWave(command.Wave),
             };
             _cmd.Process(commandWave);
             return false;

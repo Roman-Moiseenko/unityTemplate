@@ -85,11 +85,11 @@ namespace Game.GamePlay.Services
         /**
          * Все воины, выпущенные башней towerId мертвы
          */
-        public bool AllWarriorsIsDead(int towerId)
+        public bool IsDeadAllWarriors(int uniqueId)
         {
             foreach (var warriorViewModel in _allWarriors)
             {
-                if (warriorViewModel.ParentId == towerId) return false;
+                if (warriorViewModel.ParentId == uniqueId) return false;
             }
 
             return true;

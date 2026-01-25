@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.GameRoot.Services;
 using Game.Settings;
 using Game.Settings.Gameplay.Maps;
@@ -7,6 +8,8 @@ using Game.State.Maps.Mobs;
 using Game.State.Maps.Waves;
 using Game.State.Root;
 using MVVM.CMD;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Game.GamePlay.Commands.WaveCommands
 {
@@ -28,16 +31,13 @@ namespace Game.GamePlay.Commands.WaveCommands
 
         public bool Handle(CommandCreateWave command)
         {
-            var initialWave = new WaveEntityData //Создаем волну и присваиваем ей порядковый номер
-            {
-                Number = command.Index,
-                Mobs = new List<MobEntityData>(),
-            };
+            var newMapSettings =
+                _gameSettings.MapsSettings.Maps.First(m => m.MapId == _gameplayState.MapId.CurrentValue);
+            var newMapInitialStateSettings = newMapSettings.InitialStateSettings;
+            var waveItems = newMapInitialStateSettings.Waves[command.Index - 1].WaveItems;
 
-            foreach (var waveItem in command.WaveItems) //Настройки каждой волны - группы мобов
+            foreach (var waveItem in waveItems) //Настройки каждой волны - группы мобов
             {
-                //Коэфициент усиления от уровня
-
                 //Добавляем кол-во данного типа мобов в список
                 for (int i = 0; i < waveItem.Quantity; i++)
                 {
@@ -52,10 +52,7 @@ namespace Game.GamePlay.Commands.WaveCommands
 
                     if (mobConfig == null)
                         throw new Exception($"Не найдена конфигурация {waveItem.MobConfigId} моба.");
-
-                    //  var mobParameters = mobConfig.Parameters.Find(p => p.Level == waveItem.Level);
-                    //  if (mobParameters == null) throw new Exception($"Не найден уровень {waveItem.Level} в конфигурации {waveItem.MobConfigId} моба.");
-                    // var mobParameters = GenerateServiceStat.GenerateMobParameters(mobConfig.BaseParameters, waveItem.Level);
+                    //TODO Переделать получения ratioCurveMobs Либо константа, либо из настроек каждого моба
                     var levelCoef = _generateService.GetRatioCurve(waveItem.Level, _infinitySetting.ratioCurveMobs);
                     var mob = new MobEntityData
                     {
@@ -70,12 +67,12 @@ namespace Game.GamePlay.Commands.WaveCommands
                         RewardCurrency = (int)(mobConfig.RewardCurrency * levelCoef),
                         Level = waveItem.Level,
                         Defence = mobConfig.Defence,
+                        NumberWave = command.Index
                     };
-                    initialWave.Mobs.Add(mob);
+                    _gameplayState.Mobs.Add(new MobEntity(mob));
                 }
             }
 
-            _gameplayState.Waves.Add(command.Index, new WaveEntity(initialWave));
             return false; //Волну в не сохраняем, сохранение идет в создании уровня
         }
     }

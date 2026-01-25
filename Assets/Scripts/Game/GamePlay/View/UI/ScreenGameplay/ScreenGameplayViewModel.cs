@@ -90,7 +90,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                     }
                     else
                     {
-                        WaveText.Value = n + "/" + _gameplayState.Waves.Count;
+                        WaveText.Value = n + "/" + _gameplayState.CountWaves;
                     }
                     
                 })

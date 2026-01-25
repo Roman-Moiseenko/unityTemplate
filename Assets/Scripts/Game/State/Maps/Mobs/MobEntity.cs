@@ -23,7 +23,7 @@ namespace Game.State.Maps.Mobs
         public int Level => Origin.Level;
         public ReactiveProperty<float> Health;
         public ReactiveProperty<float> Armor;
-        public ReactiveProperty<bool> IsDead = new(false);
+        public ReadOnlyReactiveProperty<bool> IsDead; // = new(false);
         public float Attack => Origin.Attack;
         public float Delta;
         public ReactiveProperty<MobState> State;
@@ -32,9 +32,11 @@ namespace Game.State.Maps.Mobs
         public ObservableDictionary<string, MobDebuff> Debuffs = new();
 
         public readonly ReactiveProperty<Vector3> PositionTarget = new();
+        public ReactiveProperty<bool> IsWentOut = new(false); //Пошел по дороге
 
         public int RewardCurrency => Origin.RewardCurrency;
-        
+        public int NumberWave => Origin.NumberWave;
+
         public MobEntity(MobEntityData mobEntityData)
         {
             var h = mobEntityData.IsFly ? 0.55f : 0.1f;
@@ -51,12 +53,8 @@ namespace Game.State.Maps.Mobs
             //Direction.Subscribe(newValue => mobEntityData.Direction = newValue); 
             
             Health = new ReactiveProperty<float>(mobEntityData.Health);
-            Health.Subscribe(newValue => mobEntityData.Health = newValue); 
-            Health.Select(x => x <= 0).Subscribe(h =>
-            {
-                IsDead.Value = h;
-            });
-            
+            Health.Subscribe(newValue => mobEntityData.Health = newValue);
+            IsDead = Health.Select(x => x <= 0).ToReadOnlyReactiveProperty();
             Armor = new ReactiveProperty<float>(mobEntityData.Armor);
             Armor.Subscribe(newValue => mobEntityData.Armor = newValue); 
         }

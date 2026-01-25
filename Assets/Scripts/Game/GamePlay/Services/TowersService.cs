@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.GamePlay.Commands.TowerCommand;
+using Game.GamePlay.Commands.WarriorCommands;
 using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory;
@@ -29,6 +30,7 @@ namespace Game.GamePlay.Services
         private readonly List<TowerCardData> _baseTowerCards; //
         private readonly ICommandProcessor _cmd;
         private readonly PlacementService _placementService;
+        private readonly WarriorService _warriorService;
         private readonly ObservableList<TowerViewModel> _allTowers = new();
         private readonly Dictionary<int, TowerViewModel> _towersMap = new();
         //Кешируем параметры башен на карте
@@ -45,7 +47,8 @@ namespace Game.GamePlay.Services
             TowersSettings towersSettings,
             List<TowerCardData> baseTowerCards, //Базовые настройки колоды
             ICommandProcessor cmd,
-            PlacementService placementService
+            PlacementService placementService,
+            WarriorService warriorService
         )
         {
             _gameplayState = gameplayState;
@@ -53,6 +56,7 @@ namespace Game.GamePlay.Services
             _baseTowerCards = baseTowerCards;
             _cmd = cmd;
             _placementService = placementService;
+            _warriorService = warriorService;
             //Кешируем настройки зданий / объектов
             foreach (var towerSettings in towersSettings.AllTowers)
             {
@@ -155,7 +159,7 @@ namespace Game.GamePlay.Services
          */
         private void CreateTowerViewModel(TowerEntity towerEntity)
         {
-            var towerViewModel = new TowerViewModel(towerEntity, _gameplayState, _cmd); //3
+            var towerViewModel = new TowerViewModel(towerEntity, _gameplayState, this); //3
             var directionTower = _placementService.GetDirectionTower(towerEntity.Position.CurrentValue);
             towerViewModel.SetDirection(directionTower);
             _allTowers.Add(towerViewModel); //4
@@ -221,5 +225,18 @@ namespace Game.GamePlay.Services
             }
             return towers;
         }
+
+        public bool IsDeadAllWarriors(TowerEntity towerEntity)
+        {
+            if (!towerEntity.IsPlacement) return false;
+            return _warriorService.IsDeadAllWarriors(towerEntity.UniqueId);
+        }
+        
+        public void AddWarriorsTower(TowerEntity towerEntity)
+        {
+            if (!towerEntity.IsPlacement) return;
+            _warriorService.AddWarriorsTower(towerEntity);
+        }
+        
     }
 }

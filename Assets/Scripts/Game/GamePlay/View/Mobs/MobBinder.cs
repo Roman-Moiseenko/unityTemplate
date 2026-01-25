@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using Game.Common;
 using Game.State.Maps.Mobs;
 using ObservableCollections;
@@ -37,7 +38,7 @@ namespace Game.GamePlay.View.Mobs
             ViewModel = viewModel;
             UnityId = viewModel.UniqueId;
             _mobY = ViewModel.IsFly ? 0.9f : 0.0f;
-            transform.position = new Vector3(viewModel.StartPosition.x, _mobY, viewModel.StartPosition.y);
+            
 
             _healthBarBinder = _healthBar.GetComponent<HealthBar>();
             _healthBarBinder.Bind(
@@ -48,16 +49,14 @@ namespace Game.GamePlay.View.Mobs
             );
             _currentIndexListPoint = 0;
             mobVisible.Bind(viewModel);
-            //Начальная позиция - координата первой дороги от портала
-            _targetPosition = viewModel.GetTargetPosition(_currentIndexListPoint);
 
-            //поворачиваем модель
-            transform.rotation = Quaternion.LookRotation(new Vector3(viewModel.Direction.CurrentValue.x, 0,
-                viewModel.Direction.CurrentValue.y));
 
             //Вращаем в движении
 
-            viewModel.IsMoving.Subscribe().AddTo(ref d);
+            viewModel.IsMoving.Subscribe(v =>
+            {
+                //Debug.Log(v);
+            }).AddTo(ref d);
             viewModel.IsAttack.Subscribe().AddTo(ref d);
             viewModel.AnimationDelete.Where(v => v == true).Subscribe(_ =>
             {
@@ -73,8 +72,31 @@ namespace Game.GamePlay.View.Mobs
                     //   Debug.Log("Моб " + viewModel.MobEntityId + " Аттакует");
                 }
             }).AddTo(ref d);
+            
+            gameObject.SetActive(false);
+            viewModel.StartGo.Where(x => x).Subscribe(_ =>
+            {
+                transform.position = new Vector3(viewModel.StartPosition.x, _mobY, viewModel.StartPosition.y);
+                //TODO Включение анимации или эффекта длп старта
+                //Начальная позиция - координата первой дороги от портала
+                _targetPosition = viewModel.GetTargetPosition(_currentIndexListPoint);
+
+                
+                //поворачиваем модель
+                transform.rotation = Quaternion.LookRotation(new Vector3(viewModel.StartDirection.x, 0,
+                    viewModel.StartDirection.y));
+                gameObject.SetActive(true);
+            }).AddTo(ref d);
+            
+            //TODO Проверить 
+            //При проигрывании анимации удаляем все подписки, чтоб не сработали, т.е. сущность уже удалена
+            viewModel.AnimationDelete.Where(x => x).Subscribe(_ => disposable.Dispose()).AddTo(ref d);
+            
             disposable = d.Build();
-            gameObject.SetActive(true);
+
+
+            
+            //gameObject.SetActive(true);
         }
 
         public void Update()

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using DI;
-using Game.Common;
 using Game.GamePlay.Classes;
-using Game.GamePlay.Commands;
 using Game.GamePlay.Commands.CastleCommands;
 using Game.GamePlay.Commands.GroundCommands;
 using Game.GamePlay.Commands.MapCommand;
@@ -15,6 +12,7 @@ using Game.GamePlay.Commands.WarriorCommands;
 using Game.GamePlay.Commands.WaveCommands;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
+using Game.GamePlay.Queries.WaveQueries;
 using Game.GamePlay.Services;
 using Game.GameRoot.Services;
 using Game.Settings;
@@ -37,8 +35,6 @@ namespace Game.GamePlay.Root
             var defaultGroundConfigId = "";
             var defaultRoadConfigId = "";
             //Загружаем параметры карт от типа игры 
-
-
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
             var gameState = gameStateProvider.GameState; //TODO Получим кристалы для изменения
 
@@ -50,7 +46,6 @@ namespace Game.GamePlay.Root
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
 
-            //Debug.Log(JsonConvert.SerializeObject(gameplayState.Origin, Formatting.Indented));
             //Регистрируем машину состояния
             var fsmGameplay = new FsmGameplay(container);
             container.RegisterInstance(fsmGameplay);
@@ -88,6 +83,8 @@ namespace Game.GamePlay.Root
                     throw new ArgumentOutOfRangeException();
             }
 
+            var qrc = container.Resolve<IQueryProcessor>();
+            qrc.RegisterHandler(new QueryInfoWaveHandler(gameplayState));
 
             // var subjectExitParams = new Subject<GameplayExitParams>();
             //  container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
@@ -103,10 +100,10 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
             cmd.RegisterHandler(new CommandCreateWaveHandler(gameSettings, gameplayState,
                 container.Resolve<GenerateService>()));
-            cmd.RegisterHandler(new CommandWaveGenerateHandler(gameSettings, cmd,
-                container.Resolve<GenerateService>()));
-
             
+            //Бесконечная игра, пока не используется
+            //cmd.RegisterHandler(new CommandWaveGenerateHandler(gameSettings, cmd, container.Resolve<GenerateService>()));
+
             
             cmd.RegisterHandler(new CommandCastleCreateHandler(gameSettings, gameplayState));
             cmd.RegisterHandler(new CommandGroundCreateBaseHandler(cmd));
@@ -148,13 +145,17 @@ namespace Game.GamePlay.Root
                 )
             ).AsSingle();
 
+            //Сервис воинов (нужен для башен и навыков)
+            var warriorService = new WarriorService(gameplayState, cmd);
+            container.RegisterInstance(warriorService);
             //Сервис башен
             var towersService = new TowersService(
                 gameplayState,
                 gameSettings.TowersSettings,
                 gameplayEnterParams.Towers,
                 cmd,
-                placementService
+                placementService,
+                warriorService
             );
 
             container.RegisterInstance(towersService);
@@ -165,16 +166,15 @@ namespace Game.GamePlay.Root
             var frameService = new FrameService(gameplayState, placementService, towersService, roadsService,
                 gameSettings.TowersSettings);
             container.RegisterInstance(frameService);
-            // container.RegisterFactory(_ => ).AsSingle();
+
             container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();
             //сервис волн мобов
-            var waveService = new WaveService(container, gameplayState);
+            var waveService = new WaveService(container, gameplayState, cmd);
             container.RegisterInstance(waveService);
 
             container.RegisterFactory(_ => new CastleService(container,
                 gameplayState.Castle, gameplayState)).AsSingle();
 
-            // Fsm.Fsm.SetState<FsmStateGamePlay>();
 
             //Сервис наград
             var rewardService = new RewardProgressService(gameplayState, container, gameSettings);
@@ -182,26 +182,18 @@ namespace Game.GamePlay.Root
 
             var gameplayService = new GameplayService(
                 container.Resolve<Subject<GameplayExitParams>>(),
-                waveService, gameplayState,
+                gameplayState,
                 container.Resolve<AdService>(),
-                fsmGameplay,
                 container.Resolve<ResourceService>(),
                 cmd,
                 gameState,
                 gameSettings.MapsSettings,
                 towersService
             );
-            container.RegisterInstance(
-                gameplayService); //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
-            //Сервис создания выстрелов
-            //  var shotService = new ShotService(gameplayState, gameSettings.TowersSettings, fsmGameplay);
-            //    container.RegisterInstance(shotService);
-
-            var warriorService = new WarriorService(gameplayState, cmd);
-            container.RegisterInstance(warriorService);
-            var damageService = new DamageService(gameplayState, waveService, rewardService);
-
-            container.RegisterInstance(damageService);
+            //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
+            container.RegisterInstance(gameplayService);
+            
+            container.RegisterFactory(_ => new DamageService(gameplayState)).AsSingle();
 
             //Загружаем уровень из настроек, если gameplayState пуст.
             if (gameplayState.Towers.Any() != true)
