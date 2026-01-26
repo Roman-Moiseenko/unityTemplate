@@ -48,6 +48,9 @@ namespace Game.State.Root
         public ReactiveProperty<bool> MapFinished = new(false);
         public ObservableList<ShotData> Shots { get; } = new();
 
+        public ReactiveProperty<Vector2> GateWave = new();
+        public ReactiveProperty<Vector2> GateWaveSecond = new();
+
         public GameplayStateProxy(GameplayState origin)
         {
             Origin = origin;

@@ -9,6 +9,7 @@ using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Warriors;
 using Game.State.Root;
+using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using Scripts.Utils;
@@ -75,6 +76,7 @@ namespace Game.GamePlay.View.Mobs
                 StartDirection = mobEntity.Direction.CurrentValue;
                 
                 RoadPoints = waveService.GenerateRoadPoints(mobEntity);
+                //Debug.Log(JsonConvert.SerializeObject(RoadPoints, Formatting.Indented));
                 StartGo.Value = true;
                 IsMoving.Value = true;
             });

@@ -44,6 +44,13 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         private Slider _progress;
         private IDisposable _disposable;
 
+        //TODO РАЗБИТЬ НА МАЛЫЕ ЗАДАЧИ В ОТДЕЛЬНЫЕ BINDER
+        //1. TopMenu
+        //2. Блок показа начала и конца волны
+        //3. Панель для Сообщений
+        //4. Панель для Наград
+        
+        
         private void Awake()
         {
             _levelProgress = _progressContainer.Find("Level").GetComponent<TMP_Text>();

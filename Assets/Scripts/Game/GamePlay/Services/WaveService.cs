@@ -31,19 +31,18 @@ namespace Game.GamePlay.Services
         private readonly GameplayStateProxy _gameplayState;
         private readonly ICommandProcessor _cmd;
         private readonly WayService _wayService;
-        private readonly FsmGameplay _fsmGameplay;
+
         private readonly Coroutines _coroutines;
 
         public ReactiveProperty<float> TimeOutNewWaveValue = new(0f);
-
-        public ReactiveProperty<bool> IsMobsOnWay = new(); //Мобы на дороге
+        
         public ReactiveProperty<bool> FinishWave = new(false); //Волна закончилась
         public ReactiveProperty<bool> StartWave = new(false); //Волна началась
-        public ReactiveProperty<bool> FinishAllWaves = new(false); //Волны закончились
+
 
         private readonly ObservableList<MobViewModel> _allMobsOnWay = new();
         public IObservableCollection<MobViewModel> AllMobsOnWay => _allMobsOnWay;
-        //public readonly ObservableDictionary<int, MobEntity> AllMobsMap = new();
+
 
         public GateWaveViewModel GateWaveViewModel;
         public GateWaveViewModel GateWaveViewModelSecond; //TODO Сделать, когда будет 2 пути
@@ -60,7 +59,7 @@ namespace Game.GamePlay.Services
             _gameplayState = gameplayState;
             _cmd = cmd;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
-            _fsmGameplay = container.Resolve<FsmGameplay>();
+            //_fsmGameplay = container.Resolve<FsmGameplay>();
             _fsmWave = container.Resolve<FsmWave>();
             _wayService = container.Resolve<WayService>();
             var roadsService = container.Resolve<RoadsService>();
@@ -167,6 +166,9 @@ namespace Game.GamePlay.Services
                 _fsmWave.Fsm.SetState<FsmStateWaveWait>();
                 _gameplayState.CurrentWave.Value++;
             }
+
+            
+            
         }
 
         private IEnumerator GenerateMob(int numberWave)
@@ -266,10 +268,11 @@ namespace Game.GamePlay.Services
             _allMobsOnWay.Add(mobViewModel);
         }
 
-        public List<RoadPoint> GenerateRoadPoints(MobEntity mobViewModel)
+        public List<RoadPoint> GenerateRoadPoints(MobEntity mobEntity)
         {
-            var way = _gameplayState.Origin.Way;
+            var way = mobEntity.IsWay ? _gameplayState.Origin.Way : _gameplayState.Origin.WaySecond;
             List<RoadPoint> roads = new();
+//            Debug.Log(mobViewModel.UniqueId);
 
             //Формируем список точек движения моба
             for (int i = way.Count - 1; i >= 0; i--)
@@ -278,36 +281,26 @@ namespace Game.GamePlay.Services
                 //Смещение от центра на delta
                 if (way[i].IsTurn)
                 {
-                    position.x += mobViewModel.Delta;
-                    position.y += mobViewModel.Delta;
+                    position.x += mobEntity.Delta;
+                    position.y += mobEntity.Delta;
                 }
                 else
                 {
                     if (way[i].Rotate % 2 == 0)
                     {
-                        position.y += mobViewModel.Delta;
+                        position.y += mobEntity.Delta;
                     }
                     else
                     {
-                        position.x += mobViewModel.Delta;
+                        position.x += mobEntity.Delta;
                     }
                 }
-
-                Vector2Int direction;
-                if (i == 0)
-                {
-                 //   position.x -= 0.15f;
-                    direction = Vector2Int.zero - way[i].Position;
-                }
-                else
-                {
-                    direction = way[i - 1].Position - way[i].Position;
-                }
                 
+                var direction = ( i == 0 ? Vector2Int.zero : way[i - 1].Position) - way[i].Position;
                 roads.Add(new RoadPoint(position, direction)); //Список точек движения 
             }
-
-            //mobViewModel.RoadPoints = roads;
+            roads.Add(new RoadPoint(Vector2.zero, Vector2Int.left));
+            
             return roads;
         }
     }

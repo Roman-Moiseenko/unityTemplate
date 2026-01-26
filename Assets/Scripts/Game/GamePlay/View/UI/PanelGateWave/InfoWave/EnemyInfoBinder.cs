@@ -1,10 +1,8 @@
-﻿using System;
-using Game.State.Maps.Mobs;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.GamePlay.View.UI.PanelGateWave
+namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
 {
     public class EnemyInfoBinder : MonoBehaviour
     {

@@ -78,23 +78,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             CameraService = container.Resolve<GameplayCamera>();
             RepairBuffer = _castleService.RepairBuffer;
             PositionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
+            WaveText.Value = 1 + "/" + _gameplayState.CountWaves;
 
-            
-            
-            _gameplayState.CurrentWave
-                .Subscribe(n =>
-                {
-                    if (_gameplayState.IsInfinity())
-                    {
-                        WaveText.Value = n + "/-";
-                    }
-                    else
-                    {
-                        WaveText.Value = n + "/" + _gameplayState.CountWaves;
-                    }
-                    
-                })
-                .AddTo(ref d);
             _waveService.FinishWave.Where(v => v).Subscribe(v =>
             {
                 ShowFinishWave.Value = true;
@@ -104,6 +89,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             {
                 ShowStartWave.Value = true;
                 _waveService.StartWave.Value = false; //Сбрасываем флаг окончания волны
+                //Меняем номер волны
+                WaveText.Value = _gameplayState.CurrentWave.CurrentValue + "/" + _gameplayState.CountWaves;
             }).AddTo(ref d);
             
             _gameplayState.Progress.Subscribe(newValue => ProgressData.Value = newValue).AddTo(ref d);
