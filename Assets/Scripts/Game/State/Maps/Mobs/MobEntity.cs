@@ -9,52 +9,53 @@ namespace Game.State.Maps.Mobs
 {
     public class MobEntity
     {
-        public readonly MobEntityData Origin;
+        private readonly MobEntityData Origin;
         
         public string ConfigId => Origin.ConfigId;
         public int UniqueId => Origin.UniqueId;
-        public ReactiveProperty<Vector2> Position; //Данные не сохраняются в MobEntityData
-        public ReactiveProperty<Vector2Int> Direction; //Данные не сохраняются в MobEntityData
-        //public MobType Type => Origin.Type;
-        public bool IsWay = true; //На главной дороге
         public float SpeedMove => Origin.SpeedMove;
         public float SpeedAttack => Origin.SpeedAttack;
         public bool IsFly => Origin.IsFly;
-        public int Level => Origin.Level;
-        public ReactiveProperty<float> Health;
-        public ReactiveProperty<float> Armor;
-        public ReadOnlyReactiveProperty<bool> IsDead; // = new(false);
-        public float Attack => Origin.Attack;
-        public float Delta;
-        public ReactiveProperty<MobState> State;
-        public MobDefence Defence => Origin.Defence;
-        
-        public ObservableDictionary<string, MobDebuff> Debuffs = new();
-
-        public readonly ReactiveProperty<Vector3> PositionTarget = new();
-        public ReactiveProperty<bool> IsWentOut = new(false); //Пошел по дороге
-
+        public int Level => Origin.Level;        
+        public float Damage => Origin.Damage;   
+        public float DamageSecond => Origin.DamageSecond;   
+        public MobParameter? DamageSecondType => Origin.DamageSecondType;   
+        public MobDefence Defence => Origin.Defence;        
+        public bool IsBoss => Origin.IsBoss;     
         public int RewardCurrency => Origin.RewardCurrency;
-        public int NumberWave => Origin.NumberWave;
-
+        public int NumberWave => Origin.NumberWave;        
+        
+        public ReactiveProperty<float> Health;
+        public ReactiveProperty<float> Armor;       
+        
+        public bool IsWay = true; //На главной дороге
+        public float Delta;        
+        
+        public ReactiveProperty<Vector2> Position; //Данные не сохраняются в MobEntityData
+        public ReactiveProperty<Vector2Int> Direction; //Данные не сохраняются в MobEntityData
+        public ReadOnlyReactiveProperty<bool> IsDead; // = new(false);
+        public readonly ReactiveProperty<Vector3> PositionTarget = new();
+        public ReactiveProperty<bool> IsWentOut = new(false); //Пошел по дороге    
+        public ObservableDictionary<string, MobDebuff> Debuffs = new();        
+        
+        //public ReactiveProperty<MobState> State;
+        
         public MobEntity(MobEntityData mobEntityData)
         {
             var h = mobEntityData.IsFly ? 0.55f : 0.1f;
             Origin = mobEntityData;
-            State = new ReactiveProperty<MobState>(mobEntityData.State);
-            State.Subscribe(s => mobEntityData.State = s);
-            Position = new ReactiveProperty<Vector2>(new Vector2(0,0));
-            Position.Subscribe(newValue =>
-            {
-                PositionTarget.Value = new Vector3(newValue.x, h , newValue.y);
-            });
             
+            //State = new ReactiveProperty<MobState>(mobEntityData.State);
+            //State.Subscribe(s => mobEntityData.State = s);
+            
+            Position = new ReactiveProperty<Vector2>(new Vector2(0,0));
+            Position.Subscribe(newValue => PositionTarget.Value = new Vector3(newValue.x, h , newValue.y));
             Direction = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));
-            //Direction.Subscribe(newValue => mobEntityData.Direction = newValue); 
             
             Health = new ReactiveProperty<float>(mobEntityData.Health);
             Health.Subscribe(newValue => mobEntityData.Health = newValue);
             IsDead = Health.Select(x => x <= 0).ToReadOnlyReactiveProperty();
+            
             Armor = new ReactiveProperty<float>(mobEntityData.Armor);
             Armor.Subscribe(newValue => mobEntityData.Armor = newValue); 
         }
@@ -68,15 +69,8 @@ namespace Game.State.Maps.Mobs
 
         public float SetDamage(float damage)
         {
-            //посчитать коэфициент урона +-20% от defenceTower и defenceMob 
             Health.Value -= damage;
             return damage;
-
-            /*
-            var damageReceived = damage - Armor.Value;
-            Health.Value -= damageReceived;
-
-            return damageReceived;*/
         }
         
         public void SetDebuff(string configId, MobDebuff debuff)

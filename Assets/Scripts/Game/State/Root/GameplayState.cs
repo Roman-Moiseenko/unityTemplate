@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using Game.GamePlay.Classes;
-using Game.State.Entities;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
-using Game.State.Maps.Waves;
 
 namespace Game.State.Root
 {

@@ -19,7 +19,7 @@
         
         public const float MOB_BASE_SPEED = 0.5f;
         public const float SHOT_BASE_SPEED = 10f;
-        public const float MOB_SPEED_ATTACK = 1f;
+        public const float MOB_SPEED_ATTACK = 60f; //Коэф.деления, 60 = 1с
         public const float SPEED_REDICE_CASTLE = 1f;
 
         public const float RATIO_COST_OPEN_CHEST = 0.4f;

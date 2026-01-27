@@ -43,7 +43,7 @@ namespace Game.GamePlay.Commands.WaveCommands
             _cmd.Process(commandWave);
             return false;
         }
-
+/*
         private List<WaveItemSettings> GenerateWave(int numberWave)
         {
             var random = new System.Random();
@@ -142,5 +142,6 @@ namespace Game.GamePlay.Commands.WaveCommands
             //   Debug.Log(JsonConvert.SerializeObject(list, Formatting.Indented));
             return list;
         }
+        */
     }
 }

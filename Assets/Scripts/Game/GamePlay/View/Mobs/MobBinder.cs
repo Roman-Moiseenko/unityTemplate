@@ -63,7 +63,7 @@ namespace Game.GamePlay.View.Mobs
                 //TODO Анимация удаления объекта После окончания:
                 viewModel.FinishCurrentAnimation.Value = true;
             }).AddTo(ref d);
-
+/*
             viewModel.State.Subscribe(newState =>
             {
                 //TODO Переключаем анимацию от состояния моба.
@@ -72,7 +72,7 @@ namespace Game.GamePlay.View.Mobs
                     //   Debug.Log("Моб " + viewModel.MobEntityId + " Аттакует");
                 }
             }).AddTo(ref d);
-            
+            */
             gameObject.SetActive(false);
             viewModel.StartGo.Where(x => x).Subscribe(_ =>
             {

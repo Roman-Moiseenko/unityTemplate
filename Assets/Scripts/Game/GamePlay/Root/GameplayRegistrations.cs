@@ -5,6 +5,7 @@ using Game.GamePlay.Classes;
 using Game.GamePlay.Commands.CastleCommands;
 using Game.GamePlay.Commands.GroundCommands;
 using Game.GamePlay.Commands.MapCommand;
+using Game.GamePlay.Commands.MobCommands;
 using Game.GamePlay.Commands.RewardCommand;
 using Game.GamePlay.Commands.RoadCommand;
 using Game.GamePlay.Commands.TowerCommand;
@@ -98,12 +99,11 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandCreateGroundHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceTowerHandler(gameplayState, gameSettings.TowersSettings, cmd));
             cmd.RegisterHandler(new CommandTowerLevelUpHandler(gameplayState, gameSettings));
-            cmd.RegisterHandler(new CommandCreateWaveHandler(gameSettings, gameplayState,
-                container.Resolve<GenerateService>()));
+            cmd.RegisterHandler(new CommandCreateWaveHandler(gameSettings, gameplayState, cmd));
+            cmd.RegisterHandler(new CommandCreateMobHandler(gameSettings, gameplayState));
             
             //Бесконечная игра, пока не используется
             //cmd.RegisterHandler(new CommandWaveGenerateHandler(gameSettings, cmd, container.Resolve<GenerateService>()));
-
             
             cmd.RegisterHandler(new CommandCastleCreateHandler(gameSettings, gameplayState));
             cmd.RegisterHandler(new CommandGroundCreateBaseHandler(cmd));

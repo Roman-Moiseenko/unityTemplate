@@ -65,7 +65,25 @@ namespace Game.GamePlay.View.Towers
         {
             if (!other.gameObject.CompareTag("Mob")) return;
             StopShot();
-            _viewModel.SetDamageAfterShot(_mobViewModel);
+            if (_viewModel.IsMultiShot)
+            {
+                var colliders = Physics.OverlapSphere(other.transform.position, 0.5f);
+                foreach (var colliderTarget in colliders)
+                {
+                    if (colliderTarget.gameObject.CompareTag("Mob"))
+                    {
+                        var mob = colliderTarget.gameObject.GetComponent<MobBinder>();
+                        //Проверяем на Air/Ground и наносим урон
+                        if(_viewModel.IsTargetForDamage(mob.ViewModel.IsFly)) _viewModel.SetDamageAfterShot(mob.ViewModel);
+                    }
+                }
+            }
+            else
+            {
+                //Наносим урон одной цели
+                _viewModel.SetDamageAfterShot(_mobViewModel);
+            }
+            
         }
         
 

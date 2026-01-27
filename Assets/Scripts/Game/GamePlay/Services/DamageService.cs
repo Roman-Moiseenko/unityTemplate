@@ -40,13 +40,13 @@ namespace Game.GamePlay.Services
                     return;
                 }
 
-                if (shot.Single) //Одиночный урон
-                {
+             //   if (shot.Single) //Одиночный урон
+            //    {
                     SetDamageMob(mobEntity, shot);
                     gameplayState.Shots.Remove(shot);
-                    return;
-                }
-
+                //    return;
+             //   }
+/*
                 //Найти всех мобов в радиусе поражения и нанести каждому урон
                 var position = mobEntity.Position.CurrentValue;
                 if (shot.DamageType == DamageType.Normal) shot.DamageType = DamageType.MassDamage;
@@ -66,6 +66,7 @@ namespace Game.GamePlay.Services
                 }
 
                 gameplayState.Shots.Remove(shot); //Удаляем из списка выстрел
+                */
             });
         }
         

@@ -55,7 +55,7 @@ namespace Game.GamePlay.View.Towers
             CreateTower();
             //Для башен с точкой размещения солдат не подключаем Коллайдер Видимости
             //Также сделать для Бафных башен ??
-            if (viewModel.TowerEntity.IsPlacement)
+            if (viewModel.IsPlacement)
             {
                 _viewModel.AddWarriorsTower();
                 _mainCoroutine = StartCoroutine(PlacementUpdateTower());

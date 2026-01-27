@@ -23,20 +23,21 @@ namespace Game.GamePlay.View.Towers
     {
         private readonly GameplayStateProxy _gameplayState;
         private readonly TowersService _towersService;
-        public TowerEntity TowerEntity { get; }
-        public Dictionary<TowerParameterType, TowerParameterData> Parameters => TowerEntity.Parameters;
+        private readonly TowerEntity _towerEntity;
+        public bool IsPlacement => _towerEntity.IsPlacement; 
+        public Dictionary<TowerParameterType, TowerParameterData> Parameters => _towerEntity.Parameters;
         public readonly int UniqueId;
         public ReactiveProperty<int> Level { get; set; }
         public readonly string ConfigId;
         public ReactiveProperty<Vector2Int> Position { get; set; }
         public ReactiveProperty<Vector3> PositionMap = new();
-        public bool IsOnRoad => TowerEntity.IsOnRoad;
+        public bool IsOnRoad => _towerEntity.IsOnRoad;
         public ReactiveProperty<bool> IsShot;
         public ReactiveProperty<Vector3> Direction = new();
         public float Speed = 0f;
         public ReactiveProperty<int> NumberModel = new(0);
-        public float SpeedShot => TowerEntity.SpeedShot;
-        public bool IsMultiShot => TowerEntity.IsMultiShot;
+        public float SpeedShot => _towerEntity.SpeedShot;
+        public bool IsMultiShot => _towerEntity.IsMultiShot;
         
       //  private readonly Dictionary<int, TowerLevelSettings> _towerLevelSettingsMap = new();
         private IMovingEntityViewModel _movingEntityViewModelImplementation;
@@ -55,22 +56,16 @@ namespace Game.GamePlay.View.Towers
         {
             _gameplayState = gameplayState;
             _towersService = towersService;
+            _towerEntity = towerEntity;   
+            
             IsShot = towerEntity.IsShot;
             UniqueId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
             Position = towerEntity.Position;
-            TowerEntity = towerEntity;
+
             Position.Subscribe(v => PositionMap.Value = new Vector3(v.x, 0, v.y));
-          /*  
-            if (towerLevelSettings != null)
-            {
-                foreach (var towerLevelSetting in towerLevelSettings)
-                {
-                    _towerLevelSettingsMap[towerLevelSetting.Level] = towerLevelSetting;
-                }
-            }
-*/
+
             if (towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
                 Speed = towerSpeed.Value;
 
@@ -119,11 +114,11 @@ namespace Game.GamePlay.View.Towers
         public Vector3 GetRadius()
         {
             var radius = new Vector3(0, 0, 0);
-            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var min))
+            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var min))
                 radius.y = min.Value;
-            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var max))
+            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var max))
                 radius.x = max.Value;
-            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Distance, out var parameter))
+            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.Distance, out var parameter))
                 radius.x = parameter.Value;
             
             //TODO Если к башне применен параметр Высота (+дистанции) то вычисляем radius.z = %% от radius.x
@@ -160,7 +155,7 @@ namespace Game.GamePlay.View.Towers
         public void SetDamageAfterShot(MobViewModel mobViewModel)
         {
             if (!MobTargets.TryGetValue(mobViewModel.UniqueId, out _)) return;
-            var shot = TowerEntity.GetShotParameters(mobViewModel.Defence);
+            var shot = _towerEntity.GetShotParameters(mobViewModel.Defence);
             shot.MobEntityId = mobViewModel.UniqueId;
             _gameplayState.Shots.Add(shot); 
         }
@@ -170,11 +165,27 @@ namespace Game.GamePlay.View.Towers
          */
         public bool IsDeadAllWarriors()
         {
-            return _towersService.IsDeadAllWarriors(TowerEntity);
+            return _towersService.IsDeadAllWarriors(_towerEntity);
         }
         public void AddWarriorsTower()
         {
-            _towersService.AddWarriorsTower(TowerEntity);
+            _towersService.AddWarriorsTower(_towerEntity);
+        }
+
+        /**
+         * Проверяем на совместимость Башни и моба для нанесения урона
+         */
+        public bool IsTargetForDamage(bool mobIsFly)
+        {
+            switch (_towerEntity.TypeEnemy)
+            {
+                case TowerTypeEnemy.Universal:
+                case TowerTypeEnemy.Air when mobIsFly:
+                case TowerTypeEnemy.Ground when !mobIsFly:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

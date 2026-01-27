@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using Game.Settings.Gameplay.Enemies;
-using MVVM.CMD;
+﻿using MVVM.CMD;
 
 namespace Game.GamePlay.Commands.MobCommands
 {
     public class CommandCreateMob : ICommand
     {
-
+        public string ConfigId;
+        public int Level;
+        public int NumberWave;
+        public int Quantity;
     }
 }

@@ -33,7 +33,7 @@ namespace Game.GamePlay.View.Mobs
         public Vector2Int StartDirection;
         public List<RoadPoint> RoadPoints = new();
         public GameplayCamera CameraService;
-        public ReactiveProperty<MobState> State; //TODO Возможно удалить или модифицировать до FSM
+        //public ReactiveProperty<MobState> State; //TODO Возможно удалить или модифицировать до FSM
         public ReactiveProperty<float> CurrentHealth;
         public float MaxHealth;
 
@@ -41,7 +41,7 @@ namespace Game.GamePlay.View.Mobs
         public ReactiveProperty<bool> AnimationDelete = new(false);
         public IReadOnlyObservableDictionary<string, MobDebuff> Debuffs => _mobEntity.Debuffs;
         public int Level => _mobEntity.Level;
-        public float Attack => _mobEntity.Attack;
+        public float Damage => _mobEntity.Damage;
 
         public ReactiveProperty<Vector3> PositionTarget => _mobEntity.PositionTarget;
         public ReadOnlyReactiveProperty<bool> IsDead => _mobEntity.IsDead;
@@ -63,7 +63,7 @@ namespace Game.GamePlay.View.Mobs
             CameraService = cameraService;
             CurrentHealth = mobEntity.Health;
             MaxHealth = mobEntity.Health.CurrentValue;
-            State = mobEntity.State;
+            //State = mobEntity.State;
             
             //Моб вышел на дорогу, просчитываем путь и начальные координаты, от расположения ворот
             mobEntity.IsWentOut.Where(x => x).Subscribe(_ =>
@@ -129,28 +129,28 @@ namespace Game.GamePlay.View.Mobs
 
         public IEnumerator AttackWarrior(int warriorUniqueId)
         {
-            IsMoving.Value = false;
-            IsAttack.Value = true;
             WarriorEntity warrior = null;
             foreach (var warriorEntity in _gameplayState.Warriors)
                 if (warriorEntity.UniqueId == warriorUniqueId) warrior = warriorEntity;
             if (warrior == null) yield break;
-
+            
+            IsMoving.Value = false;
+            IsAttack.Value = true;
+            
             yield return AttackEntity(warrior);
         }
 
         public IEnumerator AttackEntity(IEntityHasHealth entity)
         {
-            State.Value = MobState.Attacking;
-
-            while (State.Value == MobState.Attacking)
+            //State.Value = MobState.Attacking;
+            while (IsAttack.Value)
             {
-                yield return new WaitForSeconds(AppConstants.MOB_BASE_SPEED);
+                yield return new WaitForSeconds(_mobEntity.SpeedAttack / AppConstants.MOB_SPEED_ATTACK);
                 if (_mobEntity.IsDead.CurrentValue) yield break;
-                entity.DamageReceived(Attack);
+                entity.DamageReceived(Damage);
                 if (!entity.IsDeadEntity()) continue;
 
-                State.Value = MobState.Moving;
+                //State.Value = MobState.Moving;
                 IsMoving.Value = true;
                 IsAttack.Value = false;
             }

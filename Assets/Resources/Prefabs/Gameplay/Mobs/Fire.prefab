@@ -211,6 +211,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1745502217340988823}
   - {fileID: 6075752627302437307}
   - {fileID: 8065038830165376930}
   m_Father: {fileID: 0}
@@ -228,6 +229,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthBar: {fileID: 8065038830165376930}
+  mobVisible: {fileID: 5106570951985133271}
+  UnityId: 0
 --- !u!136 &3320066325501786699
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -346,3 +349,80 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3622420335610380542, guid: d41caca255faa4d46a4c6e71aa3818f8, type: 3}
   m_PrefabInstance: {fileID: 6749112501088583516}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6878814040296996258
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7776152900030267890}
+    m_Modifications:
+    - target: {fileID: 5060079027805661732, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_Name
+      value: VisibleTarget
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.2875
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8379243312631603245, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_Radius
+      value: 0.4
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+--- !u!4 &1745502217340988823 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+  m_PrefabInstance: {fileID: 6878814040296996258}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5106570951985133271 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1848828617668807541, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+  m_PrefabInstance: {fileID: 6878814040296996258}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aac3b83c6a9147689133f190ada49311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.Mobs.MobVisibleBinder
