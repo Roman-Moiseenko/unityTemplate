@@ -16,13 +16,14 @@ namespace Game.GamePlay.View.Towers
         protected ReactiveProperty<Vector3> _target = new();
         protected readonly ReactiveProperty<bool> _isMoving = new(false);
         protected MobViewModel _mobViewModel;
+
         public void Bind(TowerViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
             transform.gameObject.SetActive(false);
             _baseYMissile = transform.position.y;
-            
+
             viewModel.MobTargets.ObserveRemove().Subscribe(_ =>
             {
                 if (viewModel.MobTargets.Count == 0) StopShot();
@@ -36,36 +37,41 @@ namespace Game.GamePlay.View.Towers
             _target = mobViewModel.PositionTarget;
             transform.localPosition = new Vector3(0, _baseYMissile, 0); //Размещение снаряда в точке 0
         }
-        
+
         public virtual IEnumerator FireStart()
         {
             transform.gameObject.SetActive(true);
             _isMoving.OnNext(true);
-            
+
             while (_isMoving.Value)
             {
                 var speedEntity = _viewModel.SpeedShot * AppConstants.SHOT_BASE_SPEED;
                 yield return null;
                 //TODO Расчет координат полета от типа снаряда
-                transform.position = Vector3.MoveTowards(transform.position, _target.CurrentValue,  Time.deltaTime * speedEntity);
+                transform.position = Vector3.MoveTowards(transform.position, _target.CurrentValue,
+                    Time.deltaTime * speedEntity);
 
                 if (Vector3.Distance(transform.position, _target.CurrentValue) < 0.1) StopShot();
                 if (_target == null || _target.Value == null) StopShot();
                 yield return null;
             }
         }
-        
+
         public virtual void StopShot()
         {
             transform.gameObject.SetActive(false);
             _isMoving.OnNext(false);
         }
-        
+
         private void OnCollisionEnter(Collision other)
         {
             if (!other.gameObject.CompareTag("Mob")) return;
             StopShot();
-            if (_viewModel.IsMultiShot)
+            if (_viewModel.IsSingleTarget)
+            {
+                _viewModel.SetDamageAfterShot(_mobViewModel); //Наносим урон одной цели
+            }
+            else
             {
                 var colliders = Physics.OverlapSphere(other.transform.position, 0.5f);
                 foreach (var colliderTarget in colliders)
@@ -74,18 +80,11 @@ namespace Game.GamePlay.View.Towers
                     {
                         var mob = colliderTarget.gameObject.GetComponent<MobBinder>();
                         //Проверяем на Air/Ground и наносим урон
-                        if(_viewModel.IsTargetForDamage(mob.ViewModel.IsFly)) _viewModel.SetDamageAfterShot(mob.ViewModel);
+                        if (_viewModel.IsTargetForDamage(mob.ViewModel.IsFly))
+                            _viewModel.SetDamageAfterShot(mob.ViewModel);
                     }
                 }
             }
-            else
-            {
-                //Наносим урон одной цели
-                _viewModel.SetDamageAfterShot(_mobViewModel);
-            }
-            
         }
-        
-
     }
 }

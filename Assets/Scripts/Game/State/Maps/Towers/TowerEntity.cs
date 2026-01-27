@@ -110,55 +110,7 @@ namespace Game.State.Maps.Towers
             //Башня на дороге, нет дистанции
             return Vector2.Distance(mobPosition, Position.CurrentValue) <= 0.5f;
         }
-
-        public ShotData GetShotParametersOLD(MobEntity mobEntity)
-        {
-            var damage = 0f;
-            if (Parameters.TryGetValue(TowerParameterType.Damage, out var parameter)) damage = parameter.Value;
-            
-            MobDebuff debuff = null;
-            if (Parameters.TryGetValue(TowerParameterType.DamageArea, out parameter))
-                damage = parameter.Value;
-
-            //Добавляем дебафф к выстрелу
-            if (Parameters.TryGetValue(TowerParameterType.SlowingDown, out var slowParameter))
-            {
-                var speedTower = 1f;
-                if (Parameters.TryGetValue(TowerParameterType.Speed, out var speedParameter))
-                    speedTower = speedParameter.Value; //Скорость выстрела == время действия дебафа
-                
-                debuff = new MobDebuff
-                {
-                    Value = slowParameter.Value,
-                    Type = MobDebuffType.Speed,
-                    Time = speedTower,
-                };
-            }
-            
-            var damageType = DamageType.Normal; //Critical damage
-            if (Parameters.TryGetValue(TowerParameterType.Critical, out var criticalParameter))
-            {
-                var shans = Mathf.FloorToInt(100 / criticalParameter.Value);
-                if (Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % shans == 0)
-                {
-                    damageType = DamageType.Critical;
-                    damage *= 2.0f;
-                }
-            }
-            if (Defence.Previous() == mobEntity.Defence) damage *= 0.8f;
-            if (Defence.Next() == mobEntity.Defence) damage *= 1.2f;
-            var shotData = new ShotData
-            {
-                MobEntityId = mobEntity.UniqueId,
-                ConfigId = ConfigId,
-                Single = IsSingleTarget,
-                Damage = damage, 
-                Debuff = debuff,
-                DamageType = damageType,
-            };
-
-            return shotData;
-        }
+        
 
         public ShotData GetShotParameters(MobDefence mobDefence)
         {
@@ -184,7 +136,7 @@ namespace Game.State.Maps.Towers
                 };
             }
             
-            var damageType = DamageType.Normal; //Critical damage
+            var damageType = IsSingleTarget ? DamageType.Normal : DamageType.MassDamage; 
             if (Parameters.TryGetValue(TowerParameterType.Critical, out var criticalParameter))
             {
                 var shans = Mathf.FloorToInt(100 / criticalParameter.Value);
@@ -205,7 +157,7 @@ namespace Game.State.Maps.Towers
                 Debuff = debuff,
                 DamageType = damageType,
             };
-
+            
             return shotData;
         }
 

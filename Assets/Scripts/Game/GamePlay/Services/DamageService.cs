@@ -1,17 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Game.GamePlay.Fsm;
+﻿using System.Linq;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
-using Game.State.Maps.Towers;
-using Game.State.Maps.Warriors;
 using Game.State.Root;
 using ObservableCollections;
 using R3;
-using Scripts.Utils;
 using UnityEngine;
-
 
 namespace Game.GamePlay.Services
 {
@@ -22,7 +15,7 @@ namespace Game.GamePlay.Services
     public class DamageService
     {
         public ObservableList<DamageEntity> AllDamages = new();
-        
+
         public DamageService(
             GameplayStateProxy gameplayState
         )
@@ -30,46 +23,13 @@ namespace Game.GamePlay.Services
             gameplayState.Shots.ObserveAdd().Subscribe(e =>
             {
                 var shot = e.Value;
-
                 MobEntity mobEntity = gameplayState.Mobs.FirstOrDefault(mob => mob.UniqueId == shot.MobEntityId);
-
                 //Ищем моба, переделать на gameplayState.Mobs и перенести MobsEntity в gameplayState
-                if (mobEntity == null)
-                {
-                    gameplayState.Shots.Remove(shot); //Сущность уже удалена
-                    return;
-                }
-
-             //   if (shot.Single) //Одиночный урон
-            //    {
-                    SetDamageMob(mobEntity, shot);
-                    gameplayState.Shots.Remove(shot);
-                //    return;
-             //   }
-/*
-                //Найти всех мобов в радиусе поражения и нанести каждому урон
-                var position = mobEntity.Position.CurrentValue;
-                if (shot.DamageType == DamageType.Normal) shot.DamageType = DamageType.MassDamage;
-
-                var mobsUnderAttacks = new List<MobEntity>();
-                //Ищем соучастников урона и с проверкой на совместимость воздух/земля
-                foreach (var entity in gameplayState.Mobs)
-                {
-                    if (Vector2.Distance(position, entity.GetPosition()) <= 0.5f &&
-                        entity.IsFly == shot.IsFly) mobsUnderAttacks.Add(entity);
-                }
-
-                foreach (var mobUnderAttack in mobsUnderAttacks)
-                {
-                    shot.Position = mobUnderAttack.GetPosition();
-                    SetDamageMob(mobUnderAttack, shot);
-                }
-
-                gameplayState.Shots.Remove(shot); //Удаляем из списка выстрел
-                */
+                if (mobEntity != null) SetDamageMob(mobEntity, shot);
+                gameplayState.Shots.Remove(shot);
             });
         }
-        
+
         public void SetDamageMob(MobEntity mobEntity, ShotData shot)
         {
             var damage = new DamageEntity

@@ -38,7 +38,8 @@ namespace Game.GamePlay.View.Towers
         public ReactiveProperty<int> NumberModel = new(0);
         public float SpeedShot => _towerEntity.SpeedShot;
         public bool IsMultiShot => _towerEntity.IsMultiShot;
-        
+
+        public bool IsSingleTarget => _towerEntity.IsSingleTarget;
       //  private readonly Dictionary<int, TowerLevelSettings> _towerLevelSettingsMap = new();
         private IMovingEntityViewModel _movingEntityViewModelImplementation;
 
@@ -154,7 +155,6 @@ namespace Game.GamePlay.View.Towers
          */
         public void SetDamageAfterShot(MobViewModel mobViewModel)
         {
-            if (!MobTargets.TryGetValue(mobViewModel.UniqueId, out _)) return;
             var shot = _towerEntity.GetShotParameters(mobViewModel.Defence);
             shot.MobEntityId = mobViewModel.UniqueId;
             _gameplayState.Shots.Add(shot); 
