@@ -21,10 +21,10 @@ namespace Game.GamePlay.View.Towers
     public class TowerBaseBinder : MonoBehaviour
     {
         [SerializeField] private Transform container;
-        [SerializeField] private ParticleSystem finish;
+//        [SerializeField] private ParticleSystem finish;
         [SerializeField] private VisualEffect after;
         [SerializeField] private VisualEffect befor;
-        [SerializeField] private ParticleSystem start;
+//        [SerializeField] private ParticleSystem start;
         [SerializeField] private Transform shot;
         [SerializeField] private TowerVisibleBinder visibleBinder;
 
@@ -40,6 +40,9 @@ namespace Game.GamePlay.View.Towers
 
         private void OnEnable()
         {
+            after.gameObject.SetActive(true);
+            befor.gameObject.SetActive(true);
+            after.Stop();
             befor.Stop();
         }
 
@@ -72,11 +75,7 @@ namespace Game.GamePlay.View.Towers
             //Запуск эффекта обновления уровня
             _viewModel.Level.Skip(1).Subscribe(_ =>
             {
-                befor.playRate = 1f;
-                befor.Play();
-                
-                //start.Play();
-                finish.Play();
+                StartCoroutine(EffectsUpgradeTower());
                 RestartAttack();
             }).AddTo(ref d);
             //Смена модели при обновлении на четных уровнях
@@ -106,7 +105,21 @@ namespace Game.GamePlay.View.Towers
             }).AddTo(ref d);
             _disposable = d.Build();
         }
-        
+
+        private IEnumerator EffectsUpgradeTower()
+        {
+            befor.playRate = 1.5f;
+            after.playRate = 1.5f;
+            
+            befor.Play();
+            yield return new WaitForSecondsRealtime(0.5f);
+            befor.Stop();
+            after.Play();
+          //  finish.Play(); //TODO Заменить на after
+            yield return new WaitForSecondsRealtime(0.5f);
+            after.Stop();
+        }
+
         private IEnumerator PlacementUpdateTower()
         {
             while (true)

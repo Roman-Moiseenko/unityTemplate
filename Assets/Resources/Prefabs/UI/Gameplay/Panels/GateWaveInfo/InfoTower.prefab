@@ -53,8 +53,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6a41c2e88be40cda61130263f2397b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.UI.PanelGateWave.InfoTower.InfoTowerBinder
-  _baseParameters: {fileID: 2811858157338342213}
-  _upgradeParameters: {fileID: 2932046488910058729}
+  baseParameters: {fileID: 2811858157338342213}
+  upgradeParameters: {fileID: 2932046488910058729}
 --- !u!1 &560639040966896078
 GameObject:
   m_ObjectHideFlags: 0

@@ -46,7 +46,7 @@ namespace Game.GamePlay.Services
             gameplayState.Warriors.ObserveRemove().Subscribe(e =>
             {
                 var warriorEntity = e.Value;
-                Debug.Log(" Удален warriorEntity " + warriorEntity.UniqueId);
+//                Debug.Log(" Удален warriorEntity " + warriorEntity.UniqueId);
                 RemoveWarriorViewModel(warriorEntity);
             });
             
