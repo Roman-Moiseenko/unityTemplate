@@ -10,8 +10,8 @@ namespace Game.GamePlay.View.Towers
     {
         [SerializeField] protected Transform fire;
         [SerializeField] protected Transform missile;
-        [SerializeField] protected Transform explosion;
         [SerializeField] protected ShotBinder shotBinder;
+        [SerializeField] protected ExplosionBinder explosionBinder;
 
         protected IDisposable _disposable;
         protected TowerViewModel _viewModel;
@@ -29,7 +29,8 @@ namespace Game.GamePlay.View.Towers
             var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
             shotBinder.Bind(viewModel);
-
+            if (explosionBinder != null) explosionBinder.Bind();
+            
             _disposable = d.Build();
         }
 
@@ -52,8 +53,7 @@ namespace Game.GamePlay.View.Towers
         protected virtual IEnumerator StartShotFire()
         {
             yield return shotBinder.FireStart();
-
-            yield return StartExplosion();
+            if (explosionBinder != null) yield return StartExplosion();    
             IsFree = true;
         }
         
@@ -71,25 +71,9 @@ namespace Game.GamePlay.View.Towers
          */
         private IEnumerator StartExplosion()
         {
-            var particle = explosion.GetComponent<ParticleSystem>();
-            if (particle == null) yield break;
-
-            explosion.gameObject.SetActive(true);
-            explosion.position = new Vector3(_targetPosition.CurrentValue.x, explosion.position.y,
-                _targetPosition.CurrentValue.z);
-            var playing = true;
-            //TODO Передать в сервис дорог координаты попадания, для показа шейдера мапинг (растрескивание)
-            particle.Play();
-            while (playing)
-            {
-                if (!particle.isPlaying)
-                {
-                    explosion.gameObject.SetActive(false);
-                    playing = false;
-                }
-
-                yield return null;
-            }
+          explosionBinder.Play(new Vector3(_targetPosition.CurrentValue.x, 0.1f,
+              _targetPosition.CurrentValue.z));
+          yield return new WaitForSeconds(0.3f);
         }
 
         private void OnDestroy()
