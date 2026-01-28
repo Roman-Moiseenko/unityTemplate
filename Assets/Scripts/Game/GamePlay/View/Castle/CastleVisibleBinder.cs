@@ -8,6 +8,11 @@ namespace Game.GamePlay.View.Castle
     {
         private CastleViewModel _viewModel;
 
+        private void Awake()
+        {
+            Physics.reuseCollisionCallbacks = true;
+        }
+
         public void Bind(CastleViewModel viewModel)
         {
             _viewModel = viewModel;

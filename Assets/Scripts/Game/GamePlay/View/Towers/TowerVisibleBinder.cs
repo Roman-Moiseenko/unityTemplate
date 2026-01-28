@@ -18,7 +18,8 @@ namespace Game.GamePlay.View.Towers
         private void Awake()
         {
             //По умолчанию коллайдер отключен
-            visibleCollider.gameObject.SetActive(false); 
+            visibleCollider.gameObject.SetActive(false);
+            Physics.reuseCollisionCallbacks = true;
         }
 
         public void Bind(TowerViewModel viewModel)
