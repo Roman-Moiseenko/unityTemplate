@@ -24,6 +24,7 @@ namespace Game.GamePlay.View.Towers
         [SerializeField] private VisualEffect after;
         [SerializeField] private VisualEffect befor;
         [SerializeField] private Transform shot;
+        [SerializeField] private Transform areaAction;
         [SerializeField] private TowerVisibleBinder visibleBinder;
 
         private List<TowerShotBinder> _shotBinders = new();
@@ -36,6 +37,10 @@ namespace Game.GamePlay.View.Towers
 
         private ReactiveProperty<Vector3> _firsTarget;
 
+        private AreaBinder _areaBinder;
+        //События, которые отлавливаем
+        private Subject<Unit> _entityClick;
+        private Subject<TowerViewModel> _towerClick;
         private void OnEnable()
         {
             after.gameObject.SetActive(true);
@@ -44,8 +49,17 @@ namespace Game.GamePlay.View.Towers
             befor.Stop();
         }
 
-        public void Bind(TowerViewModel viewModel)
+        public void Bind(TowerViewModel viewModel,
+            Subject<Unit> entityClick,
+            Subject<TowerViewModel> towerClick)
         {
+            //TODO Подписка на события клики, возможно передавать контейнер? или Сервис кликов
+            //TODO Или универсальное событие с Интерфейсом
+            _entityClick = entityClick;
+            _towerClick = towerClick;
+            
+            
+            
             _viewModel = viewModel;
             transform.position = new Vector3(
                 viewModel.Position.CurrentValue.x,
@@ -54,6 +68,8 @@ namespace Game.GamePlay.View.Towers
             );
             
             CreateTower();
+            CreateArea();
+            
             //Для башен с точкой размещения солдат не подключаем Коллайдер Видимости
             //Также сделать для Бафных башен ??
             if (viewModel.IsPlacement)
@@ -70,6 +86,28 @@ namespace Game.GamePlay.View.Towers
             
             // ПОДПИСКИ //
             var d = Disposable.CreateBuilder();
+
+            //Если есть площадь, то подписываемся на события
+            if (_areaBinder != null)
+            {
+                _entityClick.Subscribe(_ =>
+                {
+                    _areaBinder.Hide();
+                }).AddTo(ref d);
+                _towerClick.Subscribe(towerClickModel =>
+                {
+                    if (towerClickModel.UniqueId == viewModel.UniqueId)
+                    {
+                        _areaBinder.Show(_viewModel.GetAreaRadius());
+                    }
+                    else
+                    {
+                        _areaBinder.Hide();
+                    }
+                }).AddTo(ref d);
+            }
+
+            
             //Запуск эффекта обновления уровня
             _viewModel.Level.Skip(1).Subscribe(_ =>
             {
@@ -175,6 +213,20 @@ namespace Game.GamePlay.View.Towers
             var towerPrefab = Resources.Load<TowerBinder>(prefabTowerLevelPath);
             _towerBinder = Instantiate(towerPrefab, container.transform);
             _towerBinder.Bind(_viewModel);
+        }
+
+        private void CreateArea()
+        {
+            //Нет области Атаки
+            if (_viewModel.GetAreaRadius() == Vector3.zero) return;
+            
+            var prefabAreaPath = _viewModel.IsPlacement 
+                ? "Prefabs/Gameplay/Towers/Area/AreaPlacement"
+                : "Prefabs/Gameplay/Towers/Area/AreaAttack";
+            
+            var areaPrefab = Resources.Load<AreaBinder>(prefabAreaPath);
+            _areaBinder = Instantiate(areaPrefab, areaAction.transform);
+            _areaBinder.Bind();
         }
 
         private TowerShotBinder FindFreeShot()

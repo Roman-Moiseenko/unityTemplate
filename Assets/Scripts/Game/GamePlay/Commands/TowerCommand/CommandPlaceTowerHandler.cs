@@ -1,6 +1,4 @@
-﻿using Game.GamePlay.Commands.WarriorCommands;
-using Game.Settings.Gameplay.Entities.Tower;
-using Game.State.Entities;
+﻿using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using MVVM.CMD;
@@ -42,20 +40,6 @@ namespace Game.GamePlay.Commands.TowerCommand
             };
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
             _gameplayState.Towers.Add(newTower);//Добавляем в список объектов карты
-            /*
-            if (towerSettings.Placement)
-            {
-                var commandWarrior = new CommandCreateWarriorTower{
-                    UniqueId = newTower.UniqueId,
-                    ConfigId = newTower.ConfigId,
-                    TypeEnemy = newTower.TypeEnemy,
-                    Position = newTower.Position.CurrentValue,
-                    Placement = newTower.Placement.CurrentValue,
-                };
-                
-                _cmd.Process(commandWarrior);
-            }
-            */
             return true;
         }
     }

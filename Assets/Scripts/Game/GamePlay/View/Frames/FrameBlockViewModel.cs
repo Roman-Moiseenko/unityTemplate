@@ -43,6 +43,13 @@ namespace Game.GamePlay.View.Frames
         public void MoveFrame(Vector2Int position)
         {
             Position.Value = position;
+          /*  if (IsTower())
+            {
+                var tower = GetTower(); 
+                Enable.Value = _placementService.CheckPlacementTower(position, tower.UniqueId, tower.IsOnRoad);
+            }
+            */
+            
         }
 
         public bool IsRotate()

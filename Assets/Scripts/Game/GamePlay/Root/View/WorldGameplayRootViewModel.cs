@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.ObjectModel;
 using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Services;
-using Game.GamePlay.View.AttackAreas;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
@@ -37,7 +35,7 @@ namespace Game.GamePlay.Root.View
         public CastleViewModel CastleViewModel { get; private set; }
         public GateWaveViewModel GateWaveViewModel { get; private set; }
         public GateWaveViewModel GateWaveViewModelSecond { get; private set; }
-        public AttackAreaViewModel AreaViewModel { get; }
+        //public AttackAreaViewModel AreaViewModel { get; }
         public MapFogViewModel MapFogViewModel { get; }
 
         private readonly FsmGameplay _fsmGameplay;
@@ -45,8 +43,8 @@ namespace Game.GamePlay.Root.View
         private readonly WaveService _waveService;
         private readonly GameplayCamera _cameraService;
         private readonly DamageService _damageService;
-        private readonly Subject<Unit> _entityClick;
-        private readonly Subject<TowerViewModel> _towerClick;
+        public readonly Subject<Unit> EntityClick;
+        public readonly Subject<TowerViewModel> TowerClick;
         private bool _isFrameDownClick; //Отслеживаем что перетаскивать Фрейм ил Камеру
         private readonly Coroutines _coroutines;
 
@@ -72,11 +70,12 @@ namespace Game.GamePlay.Root.View
             _waveService = waveService;
             _cameraService = cameraService;
             _damageService = damageService;
-            //Регистрируем события 
-            _entityClick = new Subject<Unit>(); //клик по объектам игрового мира, не UI 
-            container.RegisterInstance(AppConstants.CLICK_WORLD_ENTITY, _entityClick);
-            _towerClick = new Subject<TowerViewModel>();
-            container.RegisterInstance(_towerClick);
+            //Регистрируем события в контейнер, для вытаскивания в UI
+            EntityClick = new Subject<Unit>(); //клик по объектам игрового мира, не UI 
+            container.RegisterInstance(AppConstants.CLICK_WORLD_ENTITY, EntityClick);
+            TowerClick = new Subject<TowerViewModel>();
+            container.RegisterInstance(TowerClick);
+            //TODO Клик на 
 
             AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
@@ -90,7 +89,7 @@ namespace Game.GamePlay.Root.View
             GateWaveViewModel = waveService.GateWaveViewModel;
             GateWaveViewModelSecond = waveService.GateWaveViewModelSecond;
 
-            AreaViewModel = new AttackAreaViewModel(_towerClick);
+            //AreaViewModel = new AttackAreaViewModel();
             MapFogViewModel = new MapFogViewModel(groundsService);
 
             //Изменение состояние Геймплея
@@ -105,7 +104,8 @@ namespace Game.GamePlay.Root.View
                     {
                         position = placementService.GetNewPositionTower(reward.OnRoad);
                         var level = towersService.Levels[reward.ConfigId];
-                        frameService.CreateFrameTower(position, level, reward.ConfigId, AreaViewModel);
+                        EntityClick.OnNext(Unit.Default);
+                        frameService.CreateFrameTower(position, level, reward.ConfigId);
                     }
 
                     if (reward.RewardType == RewardType.Road)
@@ -169,7 +169,6 @@ namespace Game.GamePlay.Root.View
                             });
                             break;
                         case RewardType.TowerLevelUp:
-                            
                             towersService.LevelUpTower(card.ConfigId);
                             //TODO Переделать на дождаться завершения анимации Либо подписка на Subject()
                             _coroutines.StartCoroutine(StartWaitBeforeGameplay(0.5f));
@@ -223,13 +222,15 @@ namespace Game.GamePlay.Root.View
         {
             var position = _cameraService.GetWorldPoint(mousePosition);
 
+            //TODO получить объект на который кликнули
+            
             if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
             {
                 foreach (var towerViewModel in AllTowers)
                 {
                     if (towerViewModel.IsPosition(position))
                     {
-                        _towerClick.OnNext(towerViewModel);
+                        TowerClick.OnNext(towerViewModel);
                         _cameraService.MoveCamera(towerViewModel.Position.Value);
                         return;
                     }
@@ -237,8 +238,8 @@ namespace Game.GamePlay.Root.View
 
                 if (CastleViewModel.IsPosition(position))
                     Debug.Log(" Это крепость " + CastleViewModel.ConfigId);
-                AreaViewModel.Hide();
-                _entityClick.OnNext(Unit.Default);
+                //AreaViewModel.Hide();
+                EntityClick.OnNext(Unit.Default);
                 return;
             }
 
@@ -254,7 +255,7 @@ namespace Game.GamePlay.Root.View
                 _fsmGameplay.Fsm.StateCurrent.Value.Params = card;
             }
 
-            _entityClick.OnNext(Unit.Default);
+            EntityClick.OnNext(Unit.Default);
         }
 
         //Если при нажатии клавиши, под ним фрейм, то выделяем его и возвращаем true
@@ -266,7 +267,6 @@ namespace Game.GamePlay.Root.View
                 Mathf.FloorToInt(position.x + 0.5f),
                 Mathf.FloorToInt(position.y + 0.5f)
             );
-            //TODO Проверить при повторном перемещении
             _isFrameDownClick = _frameService.IsPosition(vectorInt);
 //            Debug.Log("StartMoving " + _isFrameDownClick);
             if (_isFrameDownClick)

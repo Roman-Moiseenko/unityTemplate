@@ -14,10 +14,6 @@ namespace Game.GamePlay.View.Frames
     {
         private FrameBlockViewModel _viewModel;
         
-        [SerializeField] private Material allowed;
-        [SerializeField] private Material allowedSelected;
-        [SerializeField] private Material forbidden;
-        [SerializeField] private Material forbiddenSelected;
         [SerializeField] private GameObject frame;
         [SerializeField] private Transform Element;
         [SerializeField] private ParticleSystem cloud;
@@ -31,14 +27,16 @@ namespace Game.GamePlay.View.Frames
         private IDisposable _disposable;
         private bool _showCloudDust;
 
-        private readonly List<MonoBehaviour> _elements = new(); 
-        
+        private readonly List<MonoBehaviour> _elements = new();
+        private AreaBinder _areaBinder;
+
         public void Bind(FrameBlockViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
             var material = frame.GetComponent<Renderer>().material;
-            
+
+
             Observable.Merge(viewModel.Enable, viewModel.IsSelected).Subscribe(v =>
             {
                 material.SetInt("_Enabled", viewModel.Enable.CurrentValue ? 1 : 0);
@@ -67,6 +65,7 @@ namespace Game.GamePlay.View.Frames
             viewModel.StartRemoveFlag.Where(x => x).Subscribe(_ =>
             {
                 frame.SetActive(false); //Скрываем фрейм, можно сделать через DOTween растворение
+                if (_areaBinder != null) _areaBinder.Hide(false); //Если есть площадь, скрываем
                 //Опускаем элементы
                 Element.DOLocalMove(Vector3.zero, 0.25f).OnComplete(() =>
                 {
@@ -80,6 +79,7 @@ namespace Game.GamePlay.View.Frames
             {
                 case FrameType.Tower:
                     CreateTower((TowerViewModel)viewModel.EntityViewModels[0]);
+                    CreateArea((TowerViewModel)viewModel.EntityViewModels[0]);
                     break;
                 case FrameType.Road:
                     foreach (var roadViewModel in viewModel.EntityViewModels.Cast<RoadViewModel>().ToList())
@@ -92,6 +92,24 @@ namespace Game.GamePlay.View.Frames
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            
+            
+            if (_viewModel.IsTower() && _areaBinder != null)
+            {
+                viewModel.Enable.Subscribe(v =>
+                {
+                    if (v)
+                    {
+                        var tower = _viewModel.GetTower();
+                        _areaBinder.Show(tower.GetAreaRadius());
+                    }
+                    else
+                    {
+                        _areaBinder.Hide(false);
+                    }
+                }).AddTo(ref d);
+            }
+            
             _disposable = d.Build();
         }
         
@@ -123,6 +141,19 @@ namespace Game.GamePlay.View.Frames
             createdTower.Bind(towerViewModel);
             _elements.Add(createdTower);
         }
+        private void CreateArea(TowerViewModel towerViewModel)
+        {
+            if (towerViewModel.GetAreaRadius() == Vector3.zero) return;  //Нет области Атаки
+            var prefabAreaPath = towerViewModel.IsPlacement 
+                ? "Prefabs/Gameplay/Towers/Area/AreaPlacement"
+                : "Prefabs/Gameplay/Towers/Area/AreaAttack";
+            
+            var areaPrefab = Resources.Load<AreaBinder>(prefabAreaPath);
+            _areaBinder = Instantiate(areaPrefab, transform);
+            _areaBinder.Bind();
+            _areaBinder.Show(towerViewModel.GetAreaRadius());
+        }
+        
         private void CreateGroundFrame(GroundFrameViewModel groundFrameViewModel)
         {
             var prefabGroundFramePath = $"Prefabs/Gameplay/Grounds/Frame"; //Перенести в настройки уровня

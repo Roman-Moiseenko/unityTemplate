@@ -22,6 +22,12 @@ namespace Game.GamePlay.View.Towers
 
         protected ReactiveProperty<Vector3> _targetPosition = new();
 
+        private void Awake()
+        {
+            if (explosionBinder != null) explosionBinder.Stop(); 
+            
+        }
+
         public virtual void Bind(TowerViewModel viewModel)
         {
             IsFree = true;

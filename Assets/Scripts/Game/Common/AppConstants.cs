@@ -38,7 +38,7 @@
 
         public const int WIDTH_MAP = 10;
         public const int HIGHT_MAP = 10;
-        public const int CENTER_MAP = 2;
+        public const int CENTER_MAP = 0;
 
         public const float CAMERA_SCALE_SPEED = 0.3f;
         public const float CAMERA_SCALE_MIN = 3.5f;

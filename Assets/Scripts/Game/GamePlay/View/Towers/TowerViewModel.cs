@@ -40,10 +40,8 @@ namespace Game.GamePlay.View.Towers
         public bool IsMultiShot => _towerEntity.IsMultiShot;
 
         public bool IsSingleTarget => _towerEntity.IsSingleTarget;
-      //  private readonly Dictionary<int, TowerLevelSettings> _towerLevelSettingsMap = new();
         private IMovingEntityViewModel _movingEntityViewModelImplementation;
-
-        public ReactiveProperty<bool> IsBusy = new(false);
+        
         public ReactiveProperty<float> MaxDistance = new(0f);
         public float MinDistance = 0f;
 
@@ -112,9 +110,11 @@ namespace Game.GamePlay.View.Towers
             return Position.CurrentValue;
         }
 
-        public Vector3 GetRadius()
+        public Vector3 GetAreaRadius()
         {
-            var radius = new Vector3(0, 0, 0);
+            if (_towerEntity.IsPlacement) return new Vector3(5, 5, 1); //Scale для модели
+            
+            var radius = Vector3.zero; //Zero для башен без области
             if (_towerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var min))
                 radius.y = min.Value;
             if (_towerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var max))

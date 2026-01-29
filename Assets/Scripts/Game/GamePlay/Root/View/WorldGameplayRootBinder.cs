@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.GamePlay.Classes;
-using Game.GamePlay.View.AttackAreas;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
@@ -31,7 +30,7 @@ namespace Game.GamePlay.Root.View
         private readonly Dictionary<int, MobBinder> _createMobsMap = new();
         private readonly List<GateWaveBinder> _createGateMap = new();
         private CastleBinder _castleBinder;
-        private AttackAreaBinder _attackAreaBinder;
+       // private AttackAreaBinder _attackAreaBinder;
 
         private IDisposable _disposable;
         private readonly Dictionary<string, List<MobBinder>> _mobsPull = new(); //Пул мобов
@@ -126,7 +125,7 @@ namespace Game.GamePlay.Root.View
             //Создаем view-модель ворот из прехаба
             CreateGateWave(_viewModel.GateWaveViewModel);
             CreateGateWave(_viewModel.GateWaveViewModelSecond);
-            CreateAttackArea(_viewModel.AreaViewModel);
+            //CreateAttackArea(_viewModel.AreaViewModel);
 
             //Создаем Туман Войны
             mapFog.Bind(_viewModel.MapFogViewModel);
@@ -139,7 +138,7 @@ namespace Game.GamePlay.Root.View
         private void OnDestroy()
         {
             if (_castleBinder != null) Destroy(_castleBinder.gameObject);
-            if (_attackAreaBinder != null) Destroy(_attackAreaBinder.gameObject);
+         //   if (_attackAreaBinder != null) Destroy(_attackAreaBinder.gameObject);
 
             _disposable?.Dispose();
             _createGateMap.ForEach(item => Destroy(item.gameObject));
@@ -208,7 +207,7 @@ namespace Game.GamePlay.Root.View
             createdCastle.Bind(castleViewModel);
             _castleBinder = createdCastle;
         }
-
+/*
         private void CreateAttackArea(AttackAreaViewModel attackAreaViewModel)
         {
             var prefabPath = "Prefabs/Gameplay/AttackArea/AttackArea"; //Перенести в настройки уровня 
@@ -217,13 +216,13 @@ namespace Game.GamePlay.Root.View
             createdArea.Bind(attackAreaViewModel);
             _attackAreaBinder = createdArea;
         }
-
+*/
         private void CreateTowerBase(TowerViewModel towerViewModel)
         {
             var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/TowerBase"; //Перенести в настройки уровня
             var towerPrefab = Resources.Load<TowerBaseBinder>(prefabTowerLevelPath);
             var createdTower = Instantiate(towerPrefab, transform);
-            createdTower.Bind(towerViewModel);
+            createdTower.Bind(towerViewModel, _viewModel.EntityClick, _viewModel.TowerClick);
             _createTowersMap[towerViewModel.UniqueId] = createdTower;
         }
 

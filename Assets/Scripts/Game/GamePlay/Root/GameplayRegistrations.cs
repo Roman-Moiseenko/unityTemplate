@@ -13,6 +13,7 @@ using Game.GamePlay.Commands.WarriorCommands;
 using Game.GamePlay.Commands.WaveCommands;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
+using Game.GamePlay.Queries.TowerQueries;
 using Game.GamePlay.Queries.WaveQueries;
 using Game.GamePlay.Services;
 using Game.GameRoot.Services;
@@ -86,6 +87,7 @@ namespace Game.GamePlay.Root
 
             var qrc = container.Resolve<IQueryProcessor>();
             qrc.RegisterHandler(new QueryInfoWaveHandler(gameplayState));
+            qrc.RegisterHandler(new QueryInfoTowerHandler(gameplayState));
 
             // var subjectExitParams = new Subject<GameplayExitParams>();
             //  container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
@@ -164,7 +166,7 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandRemoveWarriorTowerHandler(gameplayState));
             
             var frameService = new FrameService(gameplayState, placementService, towersService, roadsService,
-                gameSettings.TowersSettings);
+                gameSettings.TowersSettings, qrc);
             container.RegisterInstance(frameService);
 
             container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();

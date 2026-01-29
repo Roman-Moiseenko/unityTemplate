@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Game.GamePlay.View;
-using Game.GamePlay.View.AttackAreas;
+using Game.GamePlay.Queries.TowerQueries;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Roads;
@@ -12,42 +10,41 @@ using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using MVVM.CMD;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
-using Unity.Mathematics.Geometry;
 using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
     public class FrameService
     {
+        public IObservableCollection<FrameBlockViewModel> ViewModels => _viewModels;    
+        
         private readonly GameplayStateProxy _gameplayState;
         private readonly PlacementService _placementService;
         private readonly TowersService _towerService;
         private readonly RoadsService _roadsService;
-
+        private readonly IQueryProcessor _qrc;
         private FrameBlockViewModel _viewModel;
         private readonly ObservableList<FrameBlockViewModel> _viewModels = new();
-        public IObservableCollection<FrameBlockViewModel> ViewModels => _viewModels;
         private Dictionary<string, bool> _towerOnRoadMap = new();
         private Dictionary<string, bool> _towerParametersMap = new();
-
         private Dictionary<int, Vector2Int> matrixRoads = new();
-        private AttackAreaViewModel _areaViewModel;
 
         public FrameService(
             GameplayStateProxy gameplayState,
             PlacementService placementService,
             TowersService towerService,
             RoadsService roadsService,
-            TowersSettings towersSettings
+            TowersSettings towersSettings,
+            IQueryProcessor qrc
         )
         {
             _gameplayState = gameplayState;
             _placementService = placementService;
             _towerService = towerService;
             _roadsService = roadsService;
+            _qrc = qrc;
             matrixRoads.Add(0, new Vector2Int(0, 0));
             matrixRoads.Add(1, new Vector2Int(0, 1));
             matrixRoads.Add(2, new Vector2Int(1, 1));
@@ -62,22 +59,12 @@ namespace Game.GamePlay.Services
         public void MoveFrame(Vector2Int position)
         {
             _viewModel.MoveFrame(position);
+            //TODO Все проверки перенести в модель
             if (_viewModel.IsTower())
             {
                 _viewModel.Enable.Value = _placementService.CheckPlacementTower(position,
                     _viewModel.GetTower().UniqueId, _viewModel.GetTower().IsOnRoad);
-                if (_areaViewModel != null)
-                {
-                    _areaViewModel.SetPosition(position);
-                    if (!_viewModel.Enable.Value)
-                    {
-                        _areaViewModel.Hide();
-                    }
-                    else
-                    {
-                        _areaViewModel.Restore();
-                    }
-                }
+                
             }
 
             if (_viewModel.IsRoad())
@@ -130,9 +117,12 @@ namespace Game.GamePlay.Services
             _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());
         }
 
-        public void CreateFrameTower(Vector2Int position, int level, string configId, AttackAreaViewModel areaViewModel)
+        public void CreateFrameTower(Vector2Int position, int level, string configId)
         {
             var towerEntityId = _gameplayState.CreateEntityID();
+
+            var query = new QueryInfoTower {ConfigId = configId};
+            var settings = (TowerSettings)_qrc.Request(query);
             var towerEntity = new TowerEntity(new TowerEntityData
             {
                 UniqueId = towerEntityId,
@@ -140,12 +130,10 @@ namespace Game.GamePlay.Services
                 Level = level,
                 ConfigId = configId,
                 IsOnRoad = _towerOnRoadMap[configId],
+                IsPlacement = settings.Placement,
             });
             towerEntity.Parameters = _towerService.TowerParametersMap[configId];
             var towerViewModel = new TowerViewModel(towerEntity, null, null);
-            _areaViewModel = areaViewModel;
-            _areaViewModel.SetStartPosition(towerEntity.Position.Value);
-            _areaViewModel.SetRadius(towerViewModel.GetRadius());
 
             _viewModel = new FrameBlockViewModel(position, _placementService);
             _viewModel.AddItem(towerViewModel);
@@ -163,11 +151,6 @@ namespace Game.GamePlay.Services
             //Запуск всех анимаций удаления
             _viewModel.StartRemove().Where(x => x).Subscribe(e =>
                 {
-                    if (_areaViewModel != null)
-                    {
-                        _areaViewModel.HideAnimation();
-                        _areaViewModel = null;
-                    }
                     _viewModels.Remove(_viewModel);
                     _viewModel?.Dispose();
                     frameIsRemoveFull.Value = true;
@@ -182,11 +165,6 @@ namespace Game.GamePlay.Services
          */
         public void RemoveFrame()
         {
-            if (_areaViewModel != null)
-            {
-                _areaViewModel.Hide();
-                _areaViewModel = null;
-            }
             _viewModels.Remove(_viewModel);
             _viewModels.Clear();
             _viewModel?.Dispose();
