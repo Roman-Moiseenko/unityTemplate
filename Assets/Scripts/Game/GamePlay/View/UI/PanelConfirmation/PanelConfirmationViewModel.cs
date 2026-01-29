@@ -1,13 +1,11 @@
 ﻿using System;
 using DI;
-using Game.GamePlay.Commands.RewardCommand;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Frames;
 using Game.State;
 using Game.State.Root;
-using MVVM.CMD;
 using MVVM.UI;
 using ObservableCollections;
 using R3;
@@ -16,7 +14,7 @@ using Random = UnityEngine.Random;
 
 namespace Game.GamePlay.View.UI.PanelConfirmation
 {
-    public class PanelConfirmationViewModel : WindowViewModel
+    public class PanelConfirmationViewModel : PanelViewModel
     {
         public override string Id => "PanelConfirmation";
         public override string Path => "Gameplay/Panels/";

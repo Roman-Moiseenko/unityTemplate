@@ -10,7 +10,7 @@ using R3;
 
 namespace Game.GamePlay.View.UI.PanelActions
 {
-    public class PanelActionsViewModel : WindowViewModel
+    public class PanelActionsViewModel : PanelViewModel
     {
         public override string Id => "PanelActions";
         public override string Path => "Gameplay/Panels/";
@@ -28,11 +28,11 @@ namespace Game.GamePlay.View.UI.PanelActions
         ) : base(container)
         {
             var d = Disposable.CreateBuilder();
+            IsShow = true; //По-умолчанию показываем
             _uiManager = uiManager;
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             var fsmGameplay = container.Resolve<FsmGameplay>();
             fsmGameplay.Fsm.StateCurrent.Subscribe();
-           // CurrentSpeed = _gameplayStateProxy.GameSpeed;
             _disposable = d.Build();
         }
         public void RequestGameSpeed()

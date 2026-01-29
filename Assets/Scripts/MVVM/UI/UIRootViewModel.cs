@@ -10,7 +10,7 @@ using UnityEngine;
 namespace MVVM.UI
 {
     /**
-     * Контейнер, в котором будут открыте popup и окно
+     * Контейнер, в котором будут открыты popup и окно
      */
     public class UIRootViewModel : IDisposable
     {
@@ -18,13 +18,13 @@ namespace MVVM.UI
 
         //Публичные поля, для подписки и чтения 
         public IObservableCollection<WindowViewModel> OpenedPopups => _openedPopups;
-        public IObservableCollection<WindowViewModel> OpenedPanels => _openedPanels;
+        public IObservableCollection<PanelViewModel> OpenedPanels => _openedPanels;
         public ReadOnlyReactiveProperty<WindowViewModel> OpenedScreen => _openedScreen;
         
         //Приватные поля для изменения
         private readonly ReactiveProperty<WindowViewModel> _openedScreen = new(null);
         private readonly ObservableList<WindowViewModel> _openedPopups = new(); //Массив открытых окон
-        private readonly ObservableList<WindowViewModel> _openedPanels = new(); //Массив открытых панелей
+        private readonly ObservableList<PanelViewModel> _openedPanels = new(); //Массив открытых панелей
         private readonly Dictionary<WindowViewModel, IDisposable> _popupSubscriptions = new ();
         
         public ReactiveProperty<WindowViewModel> ShowedPanel = new();
@@ -48,7 +48,7 @@ namespace MVVM.UI
             DisposeAllPanels();
         }
 
-        public void AddPanel(WindowViewModel panelViewModel)
+        public void AddPanel(PanelViewModel panelViewModel)
         {
             if (_openedPanels.Contains(panelViewModel)) return;
             _openedPanels.Add(panelViewModel);
@@ -61,15 +61,12 @@ namespace MVVM.UI
             _openedScreen.Value = screenViewModel;
         }
         
-        public void ShowPanel<T>()
+        public void ShowPanel<T>() 
         {
             var type = typeof(T);
             _openedPanels.ForEach(action =>
             {
-                if (action.GetType() == type)
-                {
-                    ShowedPanel.Value = action;
-                }
+                if (action.GetType() == type) ShowedPanel.OnNext(action);
             });
         }
         
@@ -78,13 +75,19 @@ namespace MVVM.UI
             var type = typeof(T);
             _openedPanels.ForEach(action =>
             {
-                if (action.GetType() == type)
-                {
-                    HidedPanel.Value = action;
-                }
+                if (action.GetType() == type) HidedPanel.OnNext(action);
             });
         }
-            
+        
+        public bool IsOpenedPanel<T>()
+        {
+            foreach (var panel in _openedPanels)
+            {
+                if (panel.GetType() == typeof(T) && panel.IsShow)
+                    return true;
+            }
+            return false;
+        }
         
         public void OpenPopup(WindowViewModel popupViewModel)
         {

@@ -21,7 +21,7 @@ using Object = System.Object;
 
 namespace Game.GamePlay.View.UI.PanelBuild
 {
-    public class PanelBuildViewModel : WindowViewModel
+    public class PanelBuildViewModel : PanelViewModel
     {
         public override string Id => "PanelBuild";
         public override string Path => "Gameplay/Panels/BuildCards/";

@@ -70,14 +70,14 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
 
         public override void Show()
         {
-            if (isShow) return;
+            if (IsShow()) return;
             panel.pivot = new Vector2(1f, 0.5f);
             base.Show();
         }
 
         public override void Hide()
         {
-            if (!isShow) return;
+            if (!IsShow()) return;
             base.Hide();
             panel.pivot = new Vector2(0f, 0.5f);
         }

@@ -5,7 +5,7 @@ using MVVM.UI;
 
 namespace Game.GamePlay.View.UI.PanelGateWave
 {
-    public class PanelGateWaveViewModel : WindowViewModel
+    public class PanelGateWaveViewModel : PanelViewModel
     {
         public InfoWaveViewModel InfoWaveViewModel;
         public InfoTowerViewModel InfoTowerViewModel;

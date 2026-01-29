@@ -32,16 +32,11 @@ namespace MVVM.FSM
 
         public void SetState<T>(object enterParams = null) where T : FSMState
         {
-            //  Debug.Log("SetState = " + typeof(T));
             Params = enterParams;
-            //if (enterParams != null) Debug.Log(JsonConvert.SerializeObject(enterParams, Formatting.Indented));
 
             var type = typeof(T);
             if (StateCurrent.Value != null && StateCurrent.Value.GetType() == type) return;
-
-            //Debug.Log(StateCurrent.Value.GetType());
-
-//            if (StateCurrent?.Value == null) return;
+            
             if (_states.TryGetValue(type, out var newState))
             {
                 if (StateCurrent.Value == null) //Текущего состояния еще нет, сохраняем и входим в него
@@ -51,15 +46,8 @@ namespace MVVM.FSM
                 //Проверка на выход из состояния, можно ли перейти к следующему состоянию
                 if (StateCurrent.Value != null) //Текущее состояние уже есть, то проверяем, 
                 {
-                    //     Debug.Log("Проверка на выход и тек.состояния");
-                    if (!StateCurrent.Value.Exit(newState))
-                    {
-                        //    Debug.Log("Выйти нельзя, возврат к текущему");
-                        return;
-                    } //- можно ли из него выйти
-
+                    if (!StateCurrent.Value.Exit(newState)) return; //- можно ли из него выйти
                     PreviousState = StateCurrent.Value; //- сохраняем его (если понадобится)
-            //        Debug.Log("Вышли");
                 }
 
                 if (enterParams != null)
@@ -67,11 +55,6 @@ namespace MVVM.FSM
 
                 newState.Enter(); //Сначала входим в новое состояние
                 StateCurrent.Value = newState; //Затем запоминаем, для подписок
-
-                //   Debug.Log(newState.GetType());
-                //StateCurrent.Value.Params = enterParams;
-                // Debug.Log("SetState = " + typeof(T) + "\n перед Enter");
-                //StateCurrent.Value.Enter();
             }
         }
 

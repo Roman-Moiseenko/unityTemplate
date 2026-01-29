@@ -69,7 +69,7 @@ namespace Game.GamePlay.Classes
             {
                 Vector2 point = GetWorldPoint(mousePosition);
                 float sqrDst = (_tempCenter - point).sqrMagnitude;
-                //Debug.Log("sqrDst = " + sqrDst);
+                
                 if (sqrDst > SensTouch)
                 {
                     if (_tempMousePos != mousePosition)
@@ -197,7 +197,7 @@ namespace Game.GamePlay.Classes
             //Debug.Log("MoveCamera " + _targetAutoMoving + " " + CameraSystem.transform.position);
             CameraSystem.transform
                 .DOMove(_targetAutoMoving, smoothTime)
-                .SetEase(Ease.OutCirc)
+                .SetEase(Ease.InSine)
                 .SetUpdate(true)
                 .OnUpdate(() => _subjectCameraMoving.OnNext(Unit.Default));
         }

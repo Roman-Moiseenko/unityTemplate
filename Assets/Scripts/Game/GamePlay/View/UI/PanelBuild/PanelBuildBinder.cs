@@ -73,7 +73,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         public override void Show()
         {
-            if (isShow) return;
+            if (IsShow()) return;
             //Получаем у ViewModel данные для отображения на карточках, грузим картинки
             base.Show();
             panel.pivot = new Vector2(0.5f, 0);
@@ -91,7 +91,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         public override void Hide()
         {
-            if (!isShow) return;
+            if (!IsShow()) return;
             base.Hide();
             foreach (var card in cards)
             {

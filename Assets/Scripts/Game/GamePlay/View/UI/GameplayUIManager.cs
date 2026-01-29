@@ -4,10 +4,12 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
+using Game.GamePlay.View.Towers;
 using Game.GamePlay.View.UI.PanelActions;
 using Game.GamePlay.View.UI.PanelBuild;
 using Game.GamePlay.View.UI.PanelConfirmation;
 using Game.GamePlay.View.UI.PanelGateWave;
+using Game.GamePlay.View.UI.PanelTowerAction;
 using Game.GamePlay.View.UI.PopupB;
 using Game.GamePlay.View.UI.PopupFinishGameplay;
 using Game.GamePlay.View.UI.PopupLose;
@@ -27,7 +29,7 @@ namespace Game.GamePlay.View.UI
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
         private readonly FsmGameplay _fsmGameplay;
         private ScreenGameplayViewModel _screenGameplayViewModel; //Кешируем главный экран геймплея - решение не очень, переделать
-
+        
         public GameplayUIManager(DIContainer container) : base(container)
         {
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
@@ -41,7 +43,7 @@ namespace Game.GamePlay.View.UI
             rootUI.AddPanel(new PanelBuildViewModel(container));
             rootUI.AddPanel(new PanelActionsViewModel(this, container));
             rootUI.AddPanel(new PanelConfirmationViewModel(this, container));
-            
+            rootUI.AddPanel(new PanelTowerActionViewModel(this, container));
            // rootUI.ShowPanel<PanelBuildViewModel>();
             //rootUI.HidePanel<PanelBuildViewModel>();
             
@@ -53,7 +55,6 @@ namespace Game.GamePlay.View.UI
                 if (newValue == null) return;
                 if (newValue.GetType() == typeof(FsmStateBuildBegin))
                 {
-                    //Debug.Log("BuildBegin");
                     rootUI.HidePanel<PanelConfirmationViewModel>();
                     rootUI.ShowPanel<PanelBuildViewModel>();
                     rootUI.HidePanel<PanelActionsViewModel>();
@@ -70,6 +71,30 @@ namespace Game.GamePlay.View.UI
                     rootUI.ShowPanel<PanelActionsViewModel>();
                 }
             });
+            
+            var towerClick = container.Resolve<Subject<TowerViewModel>>();
+            var entityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
+            //TODO Сделать более универсальную систему Панелей Actions
+            //Когда одна заменяет другую, а потом возвращается
+            entityClick.Subscribe(_ =>
+            {
+                if (rootUI.IsOpenedPanel<PanelTowerActionViewModel>())
+                {
+                    rootUI.HidePanel<PanelTowerActionViewModel>();
+                    if (_fsmGameplay.IsStateGamePlay()) rootUI.ShowPanel<PanelActionsViewModel>();
+                }
+ 
+            });
+            towerClick.Subscribe(towerViewModel =>
+            {
+                if (_fsmGameplay.IsStateGamePlay())
+                {
+                    rootUI.HidePanel<PanelActionsViewModel>();
+                    rootUI.ShowPanel<PanelTowerActionViewModel>();
+                }
+                if (_fsmGameplay.IsStateBuildBegin()) rootUI.ShowPanel<PanelTowerActionViewModel>();
+            });
+            
             
             var gameService = container.Resolve<GameplayService>();
             gameService.GameOver
