@@ -222,7 +222,7 @@ namespace Game.GamePlay.Root.View
             var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/TowerBase"; //Перенести в настройки уровня
             var towerPrefab = Resources.Load<TowerBaseBinder>(prefabTowerLevelPath);
             var createdTower = Instantiate(towerPrefab, transform);
-            createdTower.Bind(towerViewModel, _viewModel.EntityClick, _viewModel.TowerClick);
+            createdTower.Bind(towerViewModel);
             _createTowersMap[towerViewModel.UniqueId] = createdTower;
         }
 

@@ -46,7 +46,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
                     transform.DOScale(1, 0.3f)
                         .From(0.3f)
                         .SetEase(Ease.OutBack)
-                        .SetUpdate(true);
+                        .SetUpdate(true)
+                        .OnComplete(() => transform.gameObject.SetActive(true));
                 }
                 else
                 {

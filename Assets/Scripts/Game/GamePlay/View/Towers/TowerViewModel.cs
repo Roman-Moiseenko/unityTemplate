@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Game.GamePlay.Commands.WarriorCommands;
+using Game.GamePlay.Fsm;
+using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Mobs;
@@ -48,11 +50,13 @@ namespace Game.GamePlay.View.Towers
         public ObservableDictionary<int, MobViewModel> MobTargets = new();
 
         public ReactiveProperty<bool> FinishEffectLevelUp = new(false);
+        public ReactiveProperty<bool> ShowArea = new(false);
         
         public TowerViewModel(
             TowerEntity towerEntity,
             GameplayStateProxy gameplayState,
-            TowersService towersService
+            TowersService towersService,
+            FsmTower fsmTower
         )
         {
             _gameplayState = gameplayState;
@@ -90,6 +94,13 @@ namespace Game.GamePlay.View.Towers
                     _ => throw new Exception("Неизвестный уровень")
                 };
             });
+            fsmTower?.Fsm.StateCurrent.Subscribe(state =>
+            {
+                if (state.GetType() == typeof(FsmTowerNone)) ShowArea.Value = false;
+                if (state.GetType() == typeof(FsmTowerSelected) && fsmTower.GetTowerViewModel().UniqueId == UniqueId)
+                    ShowArea.Value = true;
+            });
+
         }
         public bool IsPosition(Vector2 position)
         {

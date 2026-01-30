@@ -1,14 +1,10 @@
 ﻿using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
-using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Towers;
 using Game.GamePlay.View.UI;
-using Game.GamePlay.View.Waves;
-using Game.MainMenu.Services;
 using R3;
-using UnityEngine;
 
 namespace Game.GamePlay.Root.View
 {
@@ -38,7 +34,6 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<GroundsService>(),
                 c.Resolve<TowersService>(),
                 c.Resolve<CastleService>(),
-                c.Resolve<FsmGameplay>(),
                 c.Resolve<FrameService>(),
                 c.Resolve<PlacementService>(),
                 c.Resolve<RoadsService>(),

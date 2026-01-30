@@ -1,5 +1,4 @@
-﻿using Game.GamePlay.View.UI.PopupPause;
-using MVVM.UI;
+﻿using MVVM.UI;
 using R3;
 using UnityEngine;
 using UnityEngine.UI;

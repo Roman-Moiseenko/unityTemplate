@@ -9,7 +9,7 @@ namespace MVVM.UI
         [SerializeField] private Transform _popupsContainer; //контейнер попап-ов
         [SerializeField] private Transform _panelsContainer; //контейнер попап-ов
 
-        private readonly Dictionary<WindowViewModel, IWindowBinder>
+        private readonly Dictionary<PanelViewModel, IPanelBinder>
             _openedPanelBinders = new(); //кеш открытых binder-ов для панелей
         private readonly Dictionary<WindowViewModel, IWindowBinder>
             _openedPopupBinders = new(); //кеш открытых binder-ов для попап
@@ -19,24 +19,24 @@ namespace MVVM.UI
         /**
          * Добавляем панели при загрузке, они всегда в памяти и только показываются или скрываются
          */
-        public void AddPanel(WindowViewModel viewModel)
+        public void AddPanel(PanelViewModel viewModel)
         {
            // Debug.Log("Этап 3. Создание панели " + viewModel.GetType());
             var prefabPath = GetPrefabPath(viewModel);
             var prefab = Resources.Load<GameObject>(prefabPath);
             var createPanel = Instantiate(prefab, _panelsContainer);
-            var binder = createPanel.GetComponent<IWindowBinder>();
+            var binder = createPanel.GetComponent<IPanelBinder>();
             binder.Bind(viewModel);
             _openedPanelBinders.Add(viewModel, binder);
         }
         
-        public void ShowPanel(WindowViewModel viewModel)
+        public void ShowPanel(PanelViewModel viewModel)
         {
             var binder = _openedPanelBinders[viewModel];
             binder.Show();
         }
 
-        public void HidePanel(WindowViewModel viewModel)
+        public void HidePanel(PanelViewModel viewModel)
         {
             var binder = _openedPanelBinders[viewModel];
             binder?.Hide();

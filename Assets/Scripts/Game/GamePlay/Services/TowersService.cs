@@ -4,6 +4,7 @@ using System.Linq;
 using DI;
 using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Commands.WarriorCommands;
+using Game.GamePlay.Fsm;
 using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory;
@@ -30,6 +31,7 @@ namespace Game.GamePlay.Services
         private readonly ICommandProcessor _cmd;
         private readonly PlacementService _placementService;
         private readonly WarriorService _warriorService;
+        private readonly FsmTower _fsmTower;
         private readonly ObservableList<TowerViewModel> _allTowers = new();
         private readonly Dictionary<int, TowerViewModel> _towersMap = new();
         //Кешируем параметры башен на карте
@@ -47,7 +49,8 @@ namespace Game.GamePlay.Services
             List<TowerCardData> baseTowerCards, //Базовые настройки колоды
             ICommandProcessor cmd,
             PlacementService placementService,
-            WarriorService warriorService
+            WarriorService warriorService,
+            FsmTower fsmTower
         )
         {
             _gameplayState = gameplayState;
@@ -56,7 +59,8 @@ namespace Game.GamePlay.Services
             _cmd = cmd;
             _placementService = placementService;
             _warriorService = warriorService;
-           
+            _fsmTower = fsmTower;
+
             //Кешируем настройки зданий / объектов
             foreach (var towerSettings in towersSettings.AllTowers)
             {
@@ -161,7 +165,7 @@ namespace Game.GamePlay.Services
          */
         private void CreateTowerViewModel(TowerEntity towerEntity)
         {
-            var towerViewModel = new TowerViewModel(towerEntity, _gameplayState, this); //3
+            var towerViewModel = new TowerViewModel(towerEntity, _gameplayState, this, _fsmTower); //3
             var directionTower = _placementService.GetDirectionTower(towerEntity.Position.CurrentValue);
             towerViewModel.SetDirection(directionTower);
             _allTowers.Add(towerViewModel); //4
@@ -190,20 +194,16 @@ namespace Game.GamePlay.Services
                 model = towerViewModel;
                 break;
             }
-            //Если модель не найдена, выйти за паузы сраззу
+            //Если модель не найдена, выйти за паузы сразу.
             if (model == null) return new ReactiveProperty<bool>(true);
             
+            model.FinishEffectLevelUp.Value = false; //Флаг - Анимация еще не завершена. 
             
-            model.FinishEffectLevelUp.OnNext(false);
             //Повышаем уровень башен
-            //Нужно для кеширования при строительстве новой башни и замены модели
-            
             var command = new CommandTowerLevelUp(configId);
-            //Если команда не выполнилась, выйти за паузы сраззу
+            //Если команда не выполнилась, выйти за паузы сразу
             if (!_cmd.Process(command)) return new ReactiveProperty<bool>(true);
-            
             Levels[configId] += 1;
-            
             return model.FinishEffectLevelUp;
         }
 

@@ -2,6 +2,8 @@
 using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
+using Game.GamePlay.Fsm;
+using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
 using Game.State;
@@ -65,6 +67,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _castleService = container.Resolve<CastleService>();
             _waveService = container.Resolve<WaveService>();
             _rewardService = container.Resolve<RewardProgressService>();
+            var fsmTower = container.Resolve<FsmTower>();
+            fsmTower.Fsm.StateCurrent.Subscribe(v =>
+            {
+                if (v.GetType() == typeof(FsmTowerDelete)) _uiManager.OpenPopupTowerDelete();
+            }).AddTo(ref d);
 
             HardCurrency = container.Resolve<IGameStateProvider>().GameState.HardCurrency;
             AllRewards = _rewardService.RewardMaps;

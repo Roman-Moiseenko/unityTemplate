@@ -133,7 +133,7 @@ namespace Game.GamePlay.Services
                 IsPlacement = settings.Placement,
             });
             towerEntity.Parameters = _towerService.TowerParametersMap[configId];
-            var towerViewModel = new TowerViewModel(towerEntity, null, null);
+            var towerViewModel = new TowerViewModel(towerEntity, null, null, null);
 
             _viewModel = new FrameBlockViewModel(position, _placementService);
             _viewModel.AddItem(towerViewModel);

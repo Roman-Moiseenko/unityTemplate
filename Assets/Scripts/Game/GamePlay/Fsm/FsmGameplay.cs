@@ -35,13 +35,6 @@ namespace Game.GamePlay.Fsm
             });
         }
 
-        public IEnumerator WaitPause()
-        {
-            while (IsGamePause.Value)//Пауза
-            {
-                yield return null;
-            }
-        }
 
         public void UpdateState()
         {

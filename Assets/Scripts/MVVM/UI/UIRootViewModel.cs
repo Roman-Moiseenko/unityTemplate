@@ -27,8 +27,8 @@ namespace MVVM.UI
         private readonly ObservableList<PanelViewModel> _openedPanels = new(); //Массив открытых панелей
         private readonly Dictionary<WindowViewModel, IDisposable> _popupSubscriptions = new ();
         
-        public ReactiveProperty<WindowViewModel> ShowedPanel = new();
-        public ReactiveProperty<WindowViewModel> HidedPanel = new();
+        public ReactiveProperty<PanelViewModel> ShowedPanel = new();
+        public ReactiveProperty<PanelViewModel> HidedPanel = new();
 
         public ReactiveProperty<bool> CloseAllPopupHandler = new(false);
         public ReactiveProperty<bool> HideAllPanelHandler = new(false);
@@ -64,30 +64,49 @@ namespace MVVM.UI
         public void ShowPanel<T>() 
         {
             var type = typeof(T);
-            _openedPanels.ForEach(action =>
+            foreach (var panelViewModel in _openedPanels)
             {
-                if (action.GetType() == type) ShowedPanel.OnNext(action);
+                if (panelViewModel.GetType() == type)
+                {
+                    if (panelViewModel.IsShow) return;
+                    ShowedPanel.OnNext(panelViewModel);
+                    panelViewModel.IsShow = true;
+                    return;
+                }
+            }
+            Debug.Log("ОШИБКА НЕВЕРНЫЙ ВЫЗОВ ПАНЕЛИ " + type);
+            /*
+            _openedPanels.ForEach(panelViewModel =>
+            {
+                if (panelViewModel.GetType() == type)
+                    ShowedPanel.OnNext(panelViewModel);
             });
+            */
         }
         
         public void HidePanel<T>()
         {
             var type = typeof(T);
+            foreach (var panelViewModel in _openedPanels)
+            {
+                if (panelViewModel.GetType() == type)
+                {
+                    if (!panelViewModel.IsShow) return;
+                    HidedPanel.OnNext(panelViewModel);
+                    panelViewModel.IsShow = false;
+                    return;
+                }
+            }
+            Debug.Log("ОШИБКА НЕВЕРНЫЙ ВЫЗОВ ПАНЕЛИ " + type);
+
+            
+            /*
             _openedPanels.ForEach(action =>
             {
                 if (action.GetType() == type) HidedPanel.OnNext(action);
-            });
+            }); */
         }
         
-        public bool IsOpenedPanel<T>()
-        {
-            foreach (var panel in _openedPanels)
-            {
-                if (panel.GetType() == typeof(T) && panel.IsShow)
-                    return true;
-            }
-            return false;
-        }
         
         public void OpenPopup(WindowViewModel popupViewModel)
         {

@@ -38,9 +38,6 @@ namespace Game.GamePlay.View.Towers
         private ReactiveProperty<Vector3> _firsTarget;
 
         private AreaBinder _areaBinder;
-        //События, которые отлавливаем
-        private Subject<Unit> _entityClick;
-        private Subject<TowerViewModel> _towerClick;
         private void OnEnable()
         {
             after.gameObject.SetActive(true);
@@ -49,17 +46,8 @@ namespace Game.GamePlay.View.Towers
             befor.Stop();
         }
 
-        public void Bind(TowerViewModel viewModel,
-            Subject<Unit> entityClick,
-            Subject<TowerViewModel> towerClick)
+        public void Bind(TowerViewModel viewModel)
         {
-            //TODO Подписка на события клики, возможно передавать контейнер? или Сервис кликов
-            //TODO Или универсальное событие с Интерфейсом
-            _entityClick = entityClick;
-            _towerClick = towerClick;
-            
-            
-            
             _viewModel = viewModel;
             transform.position = new Vector3(
                 viewModel.Position.CurrentValue.x,
@@ -90,13 +78,9 @@ namespace Game.GamePlay.View.Towers
             //Если есть площадь, то подписываемся на события
             if (_areaBinder != null)
             {
-                _entityClick.Subscribe(_ =>
+                _viewModel.ShowArea.Subscribe(show =>
                 {
-                    _areaBinder.Hide();
-                }).AddTo(ref d);
-                _towerClick.Subscribe(towerClickModel =>
-                {
-                    if (towerClickModel.UniqueId == viewModel.UniqueId)
+                    if (show)
                     {
                         _areaBinder.Show(_viewModel.GetAreaRadius());
                     }
@@ -105,6 +89,7 @@ namespace Game.GamePlay.View.Towers
                         _areaBinder.Hide();
                     }
                 }).AddTo(ref d);
+
             }
 
             

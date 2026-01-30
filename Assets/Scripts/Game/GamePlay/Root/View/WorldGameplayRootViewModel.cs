@@ -5,6 +5,7 @@ using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
+using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
@@ -39,13 +40,14 @@ namespace Game.GamePlay.Root.View
         public MapFogViewModel MapFogViewModel { get; }
 
         private readonly FsmGameplay _fsmGameplay;
+        private readonly FsmTower _fsmTower;
         private readonly FrameService _frameService;
         private readonly WaveService _waveService;
         private readonly GameplayCamera _cameraService;
         private readonly DamageService _damageService;
         //Публичны, для передачи из RootBinder в те Binder, где модели необходимо реагировать на события клик
-        public readonly Subject<Unit> EntityClick;
-        public readonly Subject<TowerViewModel> TowerClick;
+        private readonly Subject<Unit> _entityClick;
+        private readonly Subject<TowerViewModel> _towerClick;
         private bool _isFrameDownClick; //Отслеживаем что перетаскивать Фрейм ил Камеру
       //  private readonly Coroutines _coroutines;
 
@@ -53,7 +55,6 @@ namespace Game.GamePlay.Root.View
             GroundsService groundsService,
             TowersService towersService,
             CastleService castleService,
-            FsmGameplay fsmGameplay,
             FrameService frameService,
             PlacementService placementService,
             RoadsService roadsService,
@@ -64,14 +65,15 @@ namespace Game.GamePlay.Root.View
             DIContainer container
         )
         {
-            _fsmGameplay = fsmGameplay;
+            _fsmGameplay = container.Resolve<FsmGameplay>();
+            _fsmTower = container.Resolve<FsmTower>();
             _frameService = frameService;
             _waveService = waveService;
             _cameraService = cameraService;
             _damageService = damageService;
             //клики по объектам игрового мира, не UI 
-            EntityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
-            TowerClick = container.Resolve<Subject<TowerViewModel>>();
+            _entityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
+            _towerClick = container.Resolve<Subject<TowerViewModel>>();
 
             AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
@@ -100,7 +102,7 @@ namespace Game.GamePlay.Root.View
                     {
                         position = placementService.GetNewPositionTower(reward.OnRoad);
                         var level = towersService.Levels[reward.ConfigId];
-                        EntityClick.OnNext(Unit.Default);
+                        _entityClick.OnNext(Unit.Default);
                         frameService.CreateFrameTower(position, level, reward.ConfigId);
                     }
 
@@ -145,10 +147,8 @@ namespace Game.GamePlay.Root.View
                             {
                                 groundsService.PlaceGround(groundPosition);
                             }
-
                             groundsService.PlaceGround(position);
                             _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-
                             //});
                             break;
                         case RewardType.Road:
@@ -165,8 +165,9 @@ namespace Game.GamePlay.Root.View
                             });
                             break;
                         case RewardType.TowerLevelUp:
-                            towersService.LevelUpTower(card.ConfigId).Where(x => x).Subscribe(_ =>
-                                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>());
+                            towersService.LevelUpTower(card.ConfigId)
+                                .Where(x => x)
+                                .Subscribe(_ => _fsmGameplay.Fsm.SetState<FsmStateGamePlay>());
                             break;
                         case RewardType.TowerMove:
                             towersService.MoveTower(card.UniqueId, position);
@@ -218,22 +219,40 @@ namespace Game.GamePlay.Root.View
 
             //TODO получить объект на который кликнули
             
+            //Если Игра или Начало строительства
             if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
             {
-                foreach (var towerViewModel in AllTowers)
+                //И с башней нет работы или выделена (для смены на другую)
+                if (_fsmTower.IsNone() || _fsmTower.IsSelected())
                 {
-                    if (towerViewModel.IsPosition(position))
+                    foreach (var towerViewModel in AllTowers)
                     {
-                        TowerClick.OnNext(towerViewModel);
-                        _cameraService.MoveCamera(towerViewModel.Position.Value);
-                        return;
+                        //Кликнули по башне
+                        if (towerViewModel.IsPosition(position))
+                        {
+                            _towerClick.OnNext(towerViewModel); //TODO Удалить
+                            
+                            if (_fsmTower.IsSelected()) _fsmTower.Fsm.SetState<FsmTowerNone>(); //Сбрасываем выделение.
+                            _fsmTower.Fsm.SetState<FsmTowerSelected>(towerViewModel); //Башня выделена
+                            _cameraService.MoveCamera(towerViewModel.Position.Value);
+                            return;
+                        }
                     }
                 }
 
                 if (CastleViewModel.IsPosition(position))
                     Debug.Log(" Это крепость " + CastleViewModel.ConfigId);
+                
+                //Клик за пределами башен
                 //AreaViewModel.Hide();
-                EntityClick.OnNext(Unit.Default);
+                _entityClick.OnNext(Unit.Default);
+                if (_fsmTower.IsSelected())
+                {
+                    _fsmTower.Fsm.SetState<FsmTowerNone>();
+                }
+
+                //Обработать другие состояния _fsmTower
+                
                 return;
             }
 
@@ -249,7 +268,7 @@ namespace Game.GamePlay.Root.View
                 _fsmGameplay.Fsm.StateCurrent.Value.Params = card;
             }
 
-            EntityClick.OnNext(Unit.Default);
+            _entityClick.OnNext(Unit.Default);
         }
 
         //Если при нажатии клавиши, под ним фрейм, то выделяем его и возвращаем true

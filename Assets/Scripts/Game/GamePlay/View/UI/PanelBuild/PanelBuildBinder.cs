@@ -65,17 +65,9 @@ namespace Game.GamePlay.View.UI.PanelBuild
             _disposable = d.Build();
         }
 
-        private IEnumerator pause()
-        {
-            yield return new WaitForSeconds(0.1f);
-            Time.timeScale = 0;
-        }
-
         public override void Show()
         {
-            if (IsShow()) return;
             //Получаем у ViewModel данные для отображения на карточках, грузим картинки
-            base.Show();
             panel.pivot = new Vector2(0.5f, 0);
             StartCoroutine(ShowCards());
         }
@@ -91,8 +83,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         public override void Hide()
         {
-            if (!IsShow()) return;
-            base.Hide();
             foreach (var card in cards)
             {
                 card.GetComponent<CardBinder>().HideCard();

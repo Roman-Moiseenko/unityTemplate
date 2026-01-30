@@ -2,28 +2,24 @@
 
 namespace MVVM.UI
 {
-    public abstract class PanelBinder<T> : WindowBinder<T> where T : PanelViewModel
+    public abstract class PanelBinder<T> : WindowBinder<T>, IPanelBinder where T : PanelViewModel
     {
         //[SerializeField] protected bool isShow;
         [SerializeField] protected RectTransform panel;
         
-        public override void Show()
-        {
-            base.Show();
-            ViewModel.IsShow = true;
-        }
-        
-        public override void Hide()
-        {
-            base.Hide();
-            ViewModel.IsShow = false;
-        }
-
-        public bool IsShow()
+      /*  public bool IsShow()
         {
             return ViewModel.IsShow;
         }
+*/
 
-    
+        public virtual void Show()
+        {
+        }
+
+        public virtual void Hide()
+        {
+            
+        }
     }
 }

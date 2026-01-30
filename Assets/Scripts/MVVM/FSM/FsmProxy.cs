@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using ObservableCollections;
 using R3;
 using UnityEngine;
 
@@ -32,8 +30,8 @@ namespace MVVM.FSM
 
         public void SetState<T>(object enterParams = null) where T : FSMState
         {
-            Params = enterParams;
-
+            if (enterParams != null) Params = enterParams;
+            
             var type = typeof(T);
             if (StateCurrent.Value != null && StateCurrent.Value.GetType() == type) return;
             
@@ -54,7 +52,7 @@ namespace MVVM.FSM
                     newState.Params = enterParams; //Чтоб не перезаписать, при возврате к BuildBegin
 
                 newState.Enter(); //Сначала входим в новое состояние
-                StateCurrent.Value = newState; //Затем запоминаем, для подписок
+                StateCurrent.Value = newState; //Затем запоминаем, для подписок, принудительно
             }
         }
 

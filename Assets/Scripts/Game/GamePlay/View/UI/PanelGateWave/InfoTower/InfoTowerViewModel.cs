@@ -2,6 +2,8 @@
 using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
+using Game.GamePlay.Fsm;
+using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.View.Towers;
 using Game.State.Maps.Towers;
 using ObservableCollections;
@@ -24,39 +26,24 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
         
         public InfoTowerViewModel(DIContainer container)
         {
-            var entityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
-            var towerClick = container.Resolve<Subject<TowerViewModel>>();
             var positionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
-            _cameraService = container.Resolve<GameplayCamera>();
-            entityClick.Subscribe(_ =>
+            var fsmTower = container.Resolve<FsmTower>();
+            fsmTower.Fsm.StateCurrent.Subscribe(state =>
             {
-                if (ShowInfoTower.CurrentValue) ShowInfoTower.OnNext(false);
-            });
-            //Событие при клике по башне
-            towerClick.Subscribe(towerViewModel =>
-            {
-                if (_towerPrevious == towerViewModel.Position.CurrentValue)
+                if (state.GetType() == typeof(FsmTowerNone) || state.GetType() == typeof(FsmTowerDelete))
                 {
-                    if (ShowInfoTower.CurrentValue) ShowInfoTower.OnNext(false);
+                    ShowInfoTower.Value = false;
                     _towerPrevious = Vector2Int.zero;
                 }
-                else
+                if (state.GetType() == typeof(FsmTowerSelected))
                 {
-                    TowerViewModel = towerViewModel;
-                    _towerPrevious = towerViewModel.GetPosition();
-                    BaseParameters.Clear();
-                    UpgradeParameters.Clear();
-                    
-                    foreach (var parameterData in towerViewModel.Parameters)
-                    {
-                        BaseParameters.Add(parameterData.Key, parameterData.Value.Value);
-                    }
-                    
-                    NewPositionTowerInfo();
-                    ShowInfoTower.OnNext(true);
+                    PrepareAndShowInfo(fsmTower.GetTowerViewModel());
                 }
+                //TODO Сделать для других состояний
             });
             
+            _cameraService = container.Resolve<GameplayCamera>();
+ 
             //Изменилась позиция камеры
             positionCamera.Subscribe(n =>
             {
@@ -71,6 +58,30 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
             v.z = 0;
             v.y += 100;
             PositionInfoTower.Value = v;
+        }
+
+        private void PrepareAndShowInfo(TowerViewModel towerViewModel)
+        {
+            if (_towerPrevious == towerViewModel.Position.CurrentValue)
+            {
+                if (ShowInfoTower.CurrentValue) ShowInfoTower.OnNext(false);
+                _towerPrevious = Vector2Int.zero;
+            }
+            else
+            {
+                TowerViewModel = towerViewModel;
+                _towerPrevious = towerViewModel.GetPosition();
+                BaseParameters.Clear();
+                UpgradeParameters.Clear();
+                    
+                foreach (var parameterData in towerViewModel.Parameters)
+                {
+                    BaseParameters.Add(parameterData.Key, parameterData.Value.Value);
+                }
+                    
+                NewPositionTowerInfo();
+                ShowInfoTower.OnNext(true);
+            }
         }
     }
 }

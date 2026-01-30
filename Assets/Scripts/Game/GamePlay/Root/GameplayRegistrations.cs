@@ -53,6 +53,8 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(fsmGameplay);
             var fsmWave = new FsmWave(container);
             container.RegisterInstance(fsmWave);
+            var fsmTower = new FsmTower(container);
+            container.RegisterInstance(fsmTower);
 
             switch (gameplayState.TypeGameplay.CurrentValue)
             {
@@ -157,7 +159,8 @@ namespace Game.GamePlay.Root
                 gameplayEnterParams.Towers,
                 cmd,
                 placementService,
-                warriorService
+                warriorService,
+                fsmTower
             );
 
             container.RegisterInstance(towersService);
