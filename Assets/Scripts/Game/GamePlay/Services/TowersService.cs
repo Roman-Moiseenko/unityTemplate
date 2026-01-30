@@ -180,20 +180,34 @@ namespace Game.GamePlay.Services
             }
         }
 
-        public bool LevelUpTower(string configId)
+        public ReactiveProperty<bool> LevelUpTower(string configId)
         {
+            TowerViewModel model = null;
+            //Находим первую модель текущего типа башни, для отслеживания завершения анимации
+            foreach (var towerViewModel in _allTowers)
+            {
+                if (towerViewModel.ConfigId != configId) continue;
+                model = towerViewModel;
+                break;
+            }
+            //Если модель не найдена, выйти за паузы сраззу
+            if (model == null) return new ReactiveProperty<bool>(true);
+            
+            
+            model.FinishEffectLevelUp.OnNext(false);
             //Повышаем уровень башен
             //Нужно для кеширования при строительстве новой башни и замены модели
+            
             var command = new CommandTowerLevelUp(configId);
-            if (_cmd.Process(command))
-            {
-                Levels[configId] += 1;
-                return true;
-            }
-
-            return false;
+            //Если команда не выполнилась, выйти за паузы сраззу
+            if (!_cmd.Process(command)) return new ReactiveProperty<bool>(true);
+            
+            Levels[configId] += 1;
+            
+            return model.FinishEffectLevelUp;
         }
 
+        
         public void ReplaceTower(int cardUniqueId, object cardUniqueId2)
         {
             //TODO Меняем местами две башни

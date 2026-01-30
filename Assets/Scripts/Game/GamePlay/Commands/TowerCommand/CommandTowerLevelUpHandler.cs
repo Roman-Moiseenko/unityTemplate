@@ -15,25 +15,19 @@ namespace Game.GamePlay.Commands.TowerCommand
         {
             _gameplayState = gameplayState;
         }
+
         public bool Handle(CommandTowerLevelUp command)
-        {
-            //Загружаем настройки уровней башен
-            ApplyLevelUpTower(command.ConfigId);
-
-            return true;
-        }
-
-        private void ApplyLevelUpTower(string configIdTower)
         {
             foreach (var entity in _gameplayState.Towers)
             {
-                if (entity is TowerEntity towerEntity && towerEntity.ConfigId == configIdTower)
+                if (entity.ConfigId == command.ConfigId)
                 {
-                    //TODO Применить навыки к башням
-                    // entity.Damage += bustSettings.Damage;
+
                     entity.Level.Value += 1;
                 }
             }
+
+            return true; //Сохраняем результат
         }
     }
 }

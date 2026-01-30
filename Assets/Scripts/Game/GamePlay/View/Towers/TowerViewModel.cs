@@ -46,6 +46,8 @@ namespace Game.GamePlay.View.Towers
         public float MinDistance = 0f;
 
         public ObservableDictionary<int, MobViewModel> MobTargets = new();
+
+        public ReactiveProperty<bool> FinishEffectLevelUp = new(false);
         
         public TowerViewModel(
             TowerEntity towerEntity,
@@ -187,5 +189,6 @@ namespace Game.GamePlay.View.Towers
                     return false;
             }
         }
+        
     }
 }

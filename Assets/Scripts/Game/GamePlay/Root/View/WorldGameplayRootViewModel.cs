@@ -43,10 +43,11 @@ namespace Game.GamePlay.Root.View
         private readonly WaveService _waveService;
         private readonly GameplayCamera _cameraService;
         private readonly DamageService _damageService;
+        //Публичны, для передачи из RootBinder в те Binder, где модели необходимо реагировать на события клик
         public readonly Subject<Unit> EntityClick;
         public readonly Subject<TowerViewModel> TowerClick;
         private bool _isFrameDownClick; //Отслеживаем что перетаскивать Фрейм ил Камеру
-        private readonly Coroutines _coroutines;
+      //  private readonly Coroutines _coroutines;
 
         public WorldGameplayRootViewModel(
             GroundsService groundsService,
@@ -63,19 +64,14 @@ namespace Game.GamePlay.Root.View
             DIContainer container
         )
         {
-            _coroutines = GameObject.Find(AppConstants.COROUTINES).GetComponent<Coroutines>();
-            
             _fsmGameplay = fsmGameplay;
             _frameService = frameService;
             _waveService = waveService;
             _cameraService = cameraService;
             _damageService = damageService;
-            //Регистрируем события в контейнер, для вытаскивания в UI
-            EntityClick = new Subject<Unit>(); //клик по объектам игрового мира, не UI 
-            container.RegisterInstance(AppConstants.CLICK_WORLD_ENTITY, EntityClick);
-            TowerClick = new Subject<TowerViewModel>();
-            container.RegisterInstance(TowerClick);
-            //TODO Клик на 
+            //клики по объектам игрового мира, не UI 
+            EntityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
+            TowerClick = container.Resolve<Subject<TowerViewModel>>();
 
             AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
@@ -169,10 +165,8 @@ namespace Game.GamePlay.Root.View
                             });
                             break;
                         case RewardType.TowerLevelUp:
-                            towersService.LevelUpTower(card.ConfigId);
-                            //TODO Переделать на дождаться завершения анимации Либо подписка на Subject()
-                            _coroutines.StartCoroutine(StartWaitBeforeGameplay(0.5f));
-                            //_fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
+                            towersService.LevelUpTower(card.ConfigId).Where(x => x).Subscribe(_ =>
+                                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>());
                             break;
                         case RewardType.TowerMove:
                             towersService.MoveTower(card.UniqueId, position);
@@ -319,13 +313,6 @@ namespace Game.GamePlay.Root.View
                 _cameraService.OnPointMove(mousePosition);
             }
         }
-
-        private IEnumerator StartWaitBeforeGameplay(float delta)
-        {
-            yield return new WaitForSecondsRealtime(delta);
-            _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-        }
-        
         
     }
 }

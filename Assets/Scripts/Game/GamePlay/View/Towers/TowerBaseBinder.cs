@@ -144,6 +144,7 @@ namespace Game.GamePlay.View.Towers
 
         private IEnumerator EffectsUpgradeTower()
         {
+            //_viewModel.FinishEffectLevelUp.Value = false;
             befor.playRate = 1.5f;
             after.playRate = 1.5f;
             befor.Play();
@@ -152,6 +153,7 @@ namespace Game.GamePlay.View.Towers
             after.Play();
             yield return new WaitForSecondsRealtime(0.5f);
             after.Stop();
+            _viewModel.FinishEffectLevelUp.OnNext(true);
         }
 
         private IEnumerator PlacementUpdateTower()

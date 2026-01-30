@@ -3,6 +3,7 @@ using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
+using Game.GamePlay.View.Towers;
 using Game.GamePlay.View.UI;
 using Game.GamePlay.View.Waves;
 using Game.MainMenu.Services;
@@ -18,6 +19,15 @@ namespace Game.GamePlay.Root.View
     {
         public static void Register(DIContainer container)
         {
+            //Сигналы для вызова UI ()
+
+            //Клик по пустому месту (сброс UI)
+            container.RegisterFactory(AppConstants.CLICK_WORLD_ENTITY, _ => new Subject<Unit>()).AsSingle();
+
+            //Клик по башне
+            container.RegisterFactory(_ => new Subject<TowerViewModel>()).AsSingle();
+            
+            
             //Добавить сервис если нужен в UIGameplayRootViewModel и WorldGameplayRootViewModel
             container.RegisterFactory(c => new UIGameplayRootViewModel(container)).AsSingle();
             //container.RegisterFactory(c => new GateWaveViewModel(c.Resolve<WaveService>())).AsSingle();
