@@ -74,6 +74,19 @@ namespace Game.GamePlay.Services
                 if (onRoad)
                 {
                     if (position == roadEntity.Position.CurrentValue) result = true;
+                    if (roadEntity.PositionNear(position)) result = false;
+                }
+                else
+                {
+                    if (position == roadEntity.Position.CurrentValue) return false; //На дороге
+                    if (roadEntity.PositionNear(position)) result = true;
+                }
+            }
+            foreach (var roadEntity in _gameplayState.WaySecond)
+            {
+                if (onRoad)
+                {
+                    if (position == roadEntity.Position.CurrentValue) result = true;
                     if (roadEntity.PositionNear(position)) return false;
                 }
                 else
@@ -82,8 +95,23 @@ namespace Game.GamePlay.Services
                     if (roadEntity.PositionNear(position)) result = true;
                 }
             }
+            //TODO Проверяем второй путь
 
             return result;
+        }
+
+        public bool IsRoad(Vector2Int position)
+        {
+            foreach (var roadEntity in _gameplayState.Way)
+            {
+                if (roadEntity.Position.CurrentValue == position) return true;
+            }
+
+            foreach (var roadEntity in _gameplayState.WaySecond)
+            {
+                if (roadEntity.Position.CurrentValue == position) return true;
+            }
+            return false;
         }
 
         public Vector2Int GetNewPositionTower(bool onRoad)

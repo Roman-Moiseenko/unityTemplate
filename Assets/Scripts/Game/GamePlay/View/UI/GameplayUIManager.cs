@@ -11,6 +11,7 @@ using Game.GamePlay.View.UI.PanelBuild;
 using Game.GamePlay.View.UI.PanelConfirmation;
 using Game.GamePlay.View.UI.PanelGateWave;
 using Game.GamePlay.View.UI.PanelTowerAction;
+using Game.GamePlay.View.UI.PanelTowerPlacement;
 using Game.GamePlay.View.UI.PopupB;
 using Game.GamePlay.View.UI.PopupFinishGameplay;
 using Game.GamePlay.View.UI.PopupLose;
@@ -18,11 +19,9 @@ using Game.GamePlay.View.UI.PopupPause;
 using Game.GamePlay.View.UI.PopupTowerDelete;
 using Game.GamePlay.View.UI.ScreenGameplay;
 using Game.State;
-using Game.State.Root;
 using MVVM.UI;
-using Newtonsoft.Json;
 using R3;
-using UnityEngine;
+
 
 namespace Game.GamePlay.View.UI
 {
@@ -42,18 +41,18 @@ namespace Game.GamePlay.View.UI
             
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
  
-            //Создаем панели, необходимые для Геймплея           
+            //Создаем панели, необходимые для Геймплея
             rootUI.AddPanel(new PanelGateWaveViewModel(this, container));
             rootUI.AddPanel(new PanelBuildViewModel(container));
             rootUI.AddPanel(new PanelActionsViewModel(this, container));
             rootUI.AddPanel(new PanelConfirmationViewModel(this, container));
             rootUI.AddPanel(new PanelTowerActionViewModel(this, container));
-           // rootUI.ShowPanel<PanelBuildViewModel>();
-            //rootUI.HidePanel<PanelBuildViewModel>();
+            rootUI.AddPanel(new PanelTowerPlacementViewModel(this, container));
             
-            //_gameState = gameStateProvider.GameState;
             _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>();
 
+            //Логика показа/скрытия панелей от состояний FSM (Gameplay и Tower)
+            //Основные панели
             _fsmGameplay.Fsm.StateCurrent.Subscribe(newValue =>
             {
                 if (newValue == null) return;
@@ -76,50 +75,41 @@ namespace Game.GamePlay.View.UI
                 }
             });
             
-     //       var towerClick = container.Resolve<Subject<TowerViewModel>>();
-   //         var entityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
-
+            //Панели Tower
             _fsmTower.Fsm.StateCurrent.Subscribe(newState =>
             {
                 if (newState.GetType() == typeof(FsmTowerSelected))
                 {
                     rootUI.HidePanel<PanelActionsViewModel>();
+                    rootUI.HidePanel<PanelTowerPlacementViewModel>();
                     rootUI.ShowPanel<PanelTowerActionViewModel>();
                 }
 
                 if (newState.GetType() == typeof(FsmTowerNone))
                 {
                     rootUI.HidePanel<PanelTowerActionViewModel>();
+                    rootUI.HidePanel<PanelTowerPlacementViewModel>();
                     if (_fsmGameplay.IsStateGaming())
                     {
                         rootUI.ShowPanel<PanelActionsViewModel>();
+                    }
+                }
 
+                if (newState.GetType() == typeof(FsmTowerPlacement))
+                {
+                    rootUI.HidePanel<PanelTowerActionViewModel>();
+                    rootUI.ShowPanel<PanelTowerPlacementViewModel>();
+                }
+
+                if (newState.GetType() == typeof(FsmTowerPlacementEnd))
+                {
+                    rootUI.HidePanel<PanelTowerPlacementViewModel>();
+                    if (_fsmGameplay.IsStateGaming())
+                    {
+                        rootUI.ShowPanel<PanelActionsViewModel>();
                     }
                 }
             });
-            
-            
-            //TODO Сделать более универсальную систему Панелей Actions
-            //Когда одна заменяет другую, а потом возвращается
-         /*   entityClick.Subscribe(_ =>
-            {
-                if (rootUI.IsOpenedPanel<PanelTowerActionViewModel>())
-                {
-                    rootUI.HidePanel<PanelTowerActionViewModel>();
-                    if (_fsmGameplay.IsStateGamePlay()) rootUI.ShowPanel<PanelActionsViewModel>();
-                }
- 
-            });
-            towerClick.Subscribe(towerViewModel =>
-            {
-                if (_fsmGameplay.IsStateGamePlay())
-                {
-                    rootUI.HidePanel<PanelActionsViewModel>();
-                    rootUI.ShowPanel<PanelTowerActionViewModel>();
-                }
-                if (_fsmGameplay.IsStateBuildBegin()) rootUI.ShowPanel<PanelTowerActionViewModel>();
-            });
-            */
             
             var gameService = container.Resolve<GameplayService>();
             gameService.GameOver
@@ -167,34 +157,10 @@ namespace Game.GamePlay.View.UI
             return b;
         }
 
-        /**
-         * Показываем/Скрывем панель Action
-         */
-        public void ViewActionPanel(bool isVisible)
-        {
-            //
-        }
-        /**
-         * Показываем/Скрывем панель Card
-         */
-        public void ViewCardPanel(bool isVisible)
-        {
-            //
-        }
-
-        /**
-         * Панель подтверждения действия Строить/Отмена
-         */
-        public void ViewConfirmPanel(bool isVisible)
-        {
-            
-        }
-
         public PopupFinishGameplayViewModel OpenFinishPopup(GameplayExitParams exitParams)
         {
             //TODO Закрыть все другие попап
             //TODO Закрыть все панели
-            //Debug.Log(JsonConvert.SerializeObject(exitParams, Formatting.Indented));
             
             var finish = new PopupFinishGameplayViewModel(exitParams, _exitSceneRequest, Container);
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();

@@ -41,5 +41,10 @@ namespace Game.GamePlay.Fsm
         {
             return (TowerViewModel)Fsm.Params;
         }
+
+        public bool IsPlacement()
+        {
+            return Fsm.StateCurrent.Value.GetType() == typeof(FsmTowerPlacement);
+        }
     }
 }

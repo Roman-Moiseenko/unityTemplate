@@ -30,7 +30,9 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
             var fsmTower = container.Resolve<FsmTower>();
             fsmTower.Fsm.StateCurrent.Subscribe(state =>
             {
-                if (state.GetType() == typeof(FsmTowerNone) || state.GetType() == typeof(FsmTowerDelete))
+                if (state.GetType() == typeof(FsmTowerNone) || 
+                    state.GetType() == typeof(FsmTowerDelete) ||
+                    state.GetType() == typeof(FsmTowerPlacement))
                 {
                     ShowInfoTower.Value = false;
                     _towerPrevious = Vector2Int.zero;

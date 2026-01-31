@@ -33,6 +33,7 @@ namespace Game.GamePlay.Root.View
         public readonly IObservableCollection<BoardViewModel> AllBoards;
         public readonly IObservableCollection<RoadViewModel> AllRoads;
         public readonly IObservableCollection<FrameBlockViewModel> FrameBlockViewModels;
+        public ReactiveProperty<FramePlacementViewModel> FramePlacement = new(null);
         public CastleViewModel CastleViewModel { get; private set; }
         public GateWaveViewModel GateWaveViewModel { get; private set; }
         public GateWaveViewModel GateWaveViewModelSecond { get; private set; }
@@ -210,6 +211,40 @@ namespace Game.GamePlay.Root.View
                 {
                     _cameraService.MoveCamera(Vector2Int.zero); //Центрируем карту
                 }
+
+                if (_fsmTower.IsPlacement())
+                {
+                    var tower = _fsmTower.GetTowerViewModel();
+                    tower.Placement.OnNext(newPosition);
+                }
+            });
+
+            _fsmTower.Fsm.StateCurrent.Subscribe(newState =>
+            {
+                if (newState.GetType() == typeof(FsmTowerPlacement))
+                {
+                    //Создать FramePlacement
+                    var frame = new FramePlacementViewModel(_fsmTower.GetTowerViewModel(), placementService);
+                    FramePlacement.Value = frame;
+                }
+                else
+                {
+                    if (newState.GetType() == typeof(FsmTowerPlacementEnd))
+                    { 
+                        //Сохраняем новое значение
+                        towersService.SetPlacement();
+                    }
+
+                    if (newState.GetType() == typeof(FsmTowerSelected) && _fsmTower.Fsm.PreviousState.GetType() == typeof(FsmTowerPlacement))
+                    {
+                        //Возвращаем старое значение
+                        towersService.ResumePlacement(FramePlacement.CurrentValue.TowerUniqueId, FramePlacement.CurrentValue.StartPosition);
+                    }
+                    
+                    //Удалить FramePlacement, если был создан
+                    FramePlacement.Value = null;
+                }
+                
             });
         }
         
@@ -220,6 +255,7 @@ namespace Game.GamePlay.Root.View
             //TODO получить объект на который кликнули
             
             //Если Игра или Начало строительства
+            //В этих же режим проходят все состояния FsmTower 
             if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
             {
                 //И с башней нет работы или выделена (для смены на другую)
@@ -238,6 +274,14 @@ namespace Game.GamePlay.Root.View
                             return;
                         }
                     }
+                }
+
+                if (_fsmTower.IsPlacement())
+                {
+                    _fsmGameplay.SetPosition(new Vector2Int(
+                        Mathf.FloorToInt(position.x + 0.5f),
+                        Mathf.FloorToInt(position.y + 0.5f)
+                    ));
                 }
 
                 if (CastleViewModel.IsPosition(position))

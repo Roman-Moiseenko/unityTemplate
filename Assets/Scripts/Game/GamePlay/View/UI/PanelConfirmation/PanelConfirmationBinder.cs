@@ -1,8 +1,6 @@
 ﻿using System;
-using Game.GamePlay.View.UI.PanelActions;
 using MVVM.UI;
 using R3;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -71,12 +69,10 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
         public override void Show()
         {
             panel.pivot = new Vector2(1f, 0.5f);
-            base.Show();
         }
 
         public override void Hide()
         {
-            base.Hide();
             panel.pivot = new Vector2(0f, 0.5f);
         }
         

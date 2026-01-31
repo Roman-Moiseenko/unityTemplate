@@ -6,6 +6,7 @@ using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Commands.WarriorCommands;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.View.Towers;
+using Game.GameRoot.Commands;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
@@ -242,6 +243,10 @@ namespace Game.GamePlay.Services
             return towers;
         }
 
+        /**
+         * Методы для башен Placement с Warriors
+         */   
+        
         public bool IsDeadAllWarriors(TowerEntity towerEntity)
         {
             if (!towerEntity.IsPlacement) return false;
@@ -254,5 +259,27 @@ namespace Game.GamePlay.Services
             _warriorService.AddWarriorsTower(towerEntity);
         }
         
+        
+        //public 
+
+
+        //
+        public void SetPlacement()
+        {
+            var command = new CommandSaveGameState();
+            _cmd.Process(command);
+        }
+
+        public void ResumePlacement(int uniqueId, Vector2Int position)
+        {
+            foreach (var towerEntity in _gameplayState.Towers)
+            {
+                if (towerEntity.UniqueId == uniqueId)
+                {
+                    towerEntity.Placement.OnNext(position);
+                    break;
+                }
+            }
+        }
     }
 }

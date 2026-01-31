@@ -25,12 +25,14 @@ namespace Game.GamePlay.Root.View
         private readonly Dictionary<int, WarriorBinder> _createWarriorsMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
         private readonly Dictionary<int, BoardBinder> _createBoardsMap = new();
+
         private FrameBlockBinder _frameBlockBinder;
+        private FramePlacementBinder _framePlacementBinder;
         private readonly Dictionary<int, RoadBinder> _createdRoadsMap = new();
         private readonly Dictionary<int, MobBinder> _createMobsMap = new();
         private readonly List<GateWaveBinder> _createGateMap = new();
         private CastleBinder _castleBinder;
-       // private AttackAreaBinder _attackAreaBinder;
+        // private AttackAreaBinder _attackAreaBinder;
 
         private IDisposable _disposable;
         private readonly Dictionary<string, List<MobBinder>> _mobsPull = new(); //Пул мобов
@@ -83,6 +85,7 @@ namespace Game.GamePlay.Root.View
                 .Subscribe(e => DestroyWarrior(e.Value))
                 .AddTo(ref d);
 
+            //
 
             //Мобы
             foreach (var mobViewModel in viewModel.AllMobs) CreateMob(mobViewModel);
@@ -114,13 +117,28 @@ namespace Game.GamePlay.Root.View
                 .Subscribe(e => DestroyRoad(e.Value))
                 .AddTo(ref d);
 
-            //Фрейм строительный //только подписка, в начале уровня его нет
+            //Фреймы
+
+            //1. Фрейм строительный //только подписка, в начале уровня его нет
             viewModel.FrameBlockViewModels.ObserveAdd()
                 .Subscribe(e => CreateFrameBlock(e.Value))
                 .AddTo(ref d);
             viewModel.FrameBlockViewModels.ObserveRemove()
-                .Subscribe(e => DestroyFrameBlock(e.Value))
+                .Subscribe(e => DestroyFrameBlock())
                 .AddTo(ref d);
+
+            //2. Фрейм расположения войск из башни
+            viewModel.FramePlacement.Skip(1).Subscribe(framePlacement =>
+            {
+                if (framePlacement == null)
+                {
+                    DestroyFramePlacement();
+                }
+                else
+                {
+                    CreateFramePlacement(framePlacement);
+                }
+            });
 
             //Создаем view-модель ворот из прехаба
             CreateGateWave(_viewModel.GateWaveViewModel);
@@ -138,7 +156,7 @@ namespace Game.GamePlay.Root.View
         private void OnDestroy()
         {
             if (_castleBinder != null) Destroy(_castleBinder.gameObject);
-         //   if (_attackAreaBinder != null) Destroy(_attackAreaBinder.gameObject);
+            //   if (_attackAreaBinder != null) Destroy(_attackAreaBinder.gameObject);
 
             _disposable?.Dispose();
             _createGateMap.ForEach(item => Destroy(item.gameObject));
@@ -154,16 +172,17 @@ namespace Game.GamePlay.Root.View
             createdGate.Bind(viewModel);
             _createGateMap.Add(createdGate);
         }
-        
+
         private void CreateWarrior(WarriorViewModel warriorViewModel)
         {
-            var prefabWarriorPath = $"Prefabs/Gameplay/Warriors/Warrior-{warriorViewModel.ConfigId}"; //Перенести в настройки уровня
+            var prefabWarriorPath =
+                $"Prefabs/Gameplay/Warriors/Warrior-{warriorViewModel.ConfigId}"; //Перенести в настройки уровня
             var warriorPrefab = Resources.Load<WarriorBinder>(prefabWarriorPath);
             var createdWarrior = Instantiate(warriorPrefab, transform);
             createdWarrior.Bind(warriorViewModel);
             _createWarriorsMap[warriorViewModel.UniqueId] = createdWarrior;
         }
-        
+
         private void CreateMob(MobViewModel mobViewModel)
         {
             var prefabPath = $"Prefabs/Gameplay/Mobs/{mobViewModel.ConfigId}"; //Перенести в настройки уровня
@@ -207,10 +226,11 @@ namespace Game.GamePlay.Root.View
             createdCastle.Bind(castleViewModel);
             _castleBinder = createdCastle;
         }
+
 /*
         private void CreateAttackArea(AttackAreaViewModel attackAreaViewModel)
         {
-            var prefabPath = "Prefabs/Gameplay/AttackArea/AttackArea"; //Перенести в настройки уровня 
+            var prefabPath = "Prefabs/Gameplay/AttackArea/AttackArea"; //Перенести в настройки уровня
             var areaPrefab = Resources.Load<AttackAreaBinder>(prefabPath);
             var createdArea = Instantiate(areaPrefab, transform);
             createdArea.Bind(attackAreaViewModel);
@@ -265,6 +285,15 @@ namespace Game.GamePlay.Root.View
             _frameBlockBinder = createdFrame;
         }
 
+        private void CreateFramePlacement(FramePlacementViewModel framePlacementViewModel)
+        {
+            var prefabFrame = $"Prefabs/Gameplay/Frames/FramePlacement";
+            var framePrefab = Resources.Load<FramePlacementBinder>(prefabFrame);
+            var createdFrame = Instantiate(framePrefab, transform);
+            createdFrame.Bind(framePlacementViewModel);
+            _framePlacementBinder = createdFrame;
+        }
+
         //DESTROY
         private void DestroyWarrior(WarriorViewModel warriorViewModel)
         {
@@ -284,10 +313,16 @@ namespace Game.GamePlay.Root.View
             }
         }
 
-        private void DestroyFrameBlock(FrameBlockViewModel frameBlockViewModel)
+        private void DestroyFrameBlock()
         {
             Destroy(_frameBlockBinder.gameObject);
             Destroy(_frameBlockBinder);
+        }
+
+        private void DestroyFramePlacement()
+        {
+            Destroy(_framePlacementBinder.gameObject);
+            Destroy(_framePlacementBinder);
         }
 
         private void DestroyTowerBase(TowerViewModel towerViewModel)

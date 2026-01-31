@@ -51,6 +51,11 @@ namespace Game.GamePlay.View.Towers
 
         public ReactiveProperty<bool> FinishEffectLevelUp = new(false);
         public ReactiveProperty<bool> ShowArea = new(false);
+
+        public ReactiveProperty<Vector2Int> Placement => _towerEntity.Placement;
+
+        //Флаг для передачи в Панели подтверждения из различных состояния
+        public ReactiveProperty<bool> IsConfirmationState = new(true);
         
         public TowerViewModel(
             TowerEntity towerEntity,
@@ -200,6 +205,13 @@ namespace Game.GamePlay.View.Towers
                     return false;
             }
         }
-        
+
+        public bool IsInPlacement()
+        {
+            if (IsPlacement == false) return false;
+
+            return Math.Abs(Position.CurrentValue.x - Placement.CurrentValue.x) < 3 && 
+                   Math.Abs(Position.CurrentValue.y - Placement.CurrentValue.y) < 3;
+        }
     }
 }
