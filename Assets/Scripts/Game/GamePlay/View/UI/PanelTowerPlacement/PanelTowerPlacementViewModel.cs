@@ -1,8 +1,11 @@
-﻿using DI;
+﻿using System;
+using System.Collections.Generic;
+using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.Services;
 using MVVM.UI;
+using ObservableCollections;
 using R3;
 using UnityEngine;
 
@@ -15,29 +18,29 @@ namespace Game.GamePlay.View.UI.PanelTowerPlacement
         public override string Path => "Gameplay/Panels/";
         
         public ReactiveProperty<bool> IsEnable;
+        private readonly List<IDisposable> _disposables = new();
 
         public PanelTowerPlacementViewModel(GameplayUIManager uiManager, DIContainer container) : base(container)
         {
             _fsmTower = container.Resolve<FsmTower>();
             IsEnable = new ReactiveProperty<bool>(true);
 
-            _fsmTower.Fsm.StateCurrent
-                .Subscribe(state =>
+            var framePlacementService = container.Resolve<FramePlacementService>();
+            var frameModelViews = framePlacementService.ViewModels;
+            
+            frameModelViews.ObserveAdd().Subscribe(e =>
             {
-                Debug.Log(" PanelTowerPlacementViewModel ");
-                if (state.GetType() == typeof(FsmTowerPlacement))
-                {
-                    
-                    IsEnable = _fsmTower.GetTowerViewModel().IsConfirmationState;
-                    Debug.Log(" FsmTowerPlacement " + IsEnable.Value + " " + _fsmTower.GetTowerViewModel().UniqueId);
+                var viewModel = e.Value;
+                var disposable = viewModel.Enable.Subscribe(v => IsEnable.Value = v);
+                _disposables.Add(disposable);
+            });
 
-                }
-
-                if (state.GetType() == typeof(FsmTowerNone))
+            frameModelViews.ObserveRemove().Subscribe(v =>
+            {
+                foreach (var disposable in _disposables)
                 {
-                    IsEnable = new ReactiveProperty<bool>(true);
+                    disposable.Dispose();
                 }
-                
             });
         }
 
@@ -50,7 +53,7 @@ namespace Game.GamePlay.View.UI.PanelTowerPlacement
 
         public void RequestCancel()
         {
-            _fsmTower.Fsm.SetState<FsmTowerSelected>();
+            _fsmTower.Fsm.SetState<FsmTowerNone>();
             RequestClose();
         }
     }

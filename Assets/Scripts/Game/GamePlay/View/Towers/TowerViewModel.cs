@@ -206,12 +206,12 @@ namespace Game.GamePlay.View.Towers
             }
         }
 
-        public bool IsInPlacement()
+        public bool IsInPlacement(Vector2Int position)
         {
             if (IsPlacement == false) return false;
 
-            return Math.Abs(Position.CurrentValue.x - Placement.CurrentValue.x) < 3 && 
-                   Math.Abs(Position.CurrentValue.y - Placement.CurrentValue.y) < 3;
+            return Math.Abs(Position.CurrentValue.x - position.x) < 3 && 
+                   Math.Abs(Position.CurrentValue.y - position.y) < 3;
         }
     }
 }

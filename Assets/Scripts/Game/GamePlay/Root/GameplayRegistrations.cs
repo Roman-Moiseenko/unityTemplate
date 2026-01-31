@@ -170,8 +170,12 @@ namespace Game.GamePlay.Root
             
             var frameService = new FrameService(gameplayState, placementService, towersService, roadsService,
                 gameSettings.TowersSettings, qrc);
+            
             container.RegisterInstance(frameService);
-
+            var framePlacementService =
+                new FramePlacementService(gameplayState, placementService, fsmTower, towersService);
+            container.RegisterInstance(framePlacementService);
+            
             container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();
             //сервис волн мобов
             var waveService = new WaveService(container, gameplayState, cmd);

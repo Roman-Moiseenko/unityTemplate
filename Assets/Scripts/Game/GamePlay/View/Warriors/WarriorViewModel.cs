@@ -51,6 +51,11 @@ namespace Game.GamePlay.View.Warriors
             if (MobTarget.CurrentValue == mobViewModel) MobTarget.OnNext(null);
         }
 
+        public void ClearTarget()
+        {
+            MobTarget.OnNext(null);
+        }
+
         public void SetDamageAfterShot()
         {
             //Доп.проверка на случай убийства моба

@@ -258,26 +258,17 @@ namespace Game.GamePlay.Services
             if (!towerEntity.IsPlacement) return;
             _warriorService.AddWarriorsTower(towerEntity);
         }
-        
-        
-        //public 
 
-
-        //
-        public void SetPlacement()
-        {
-            var command = new CommandSaveGameState();
-            _cmd.Process(command);
-        }
-
-        public void ResumePlacement(int uniqueId, Vector2Int position)
+        public void SetPlacement(int uniqueId, Vector2Int position)
         {
             foreach (var towerEntity in _gameplayState.Towers)
             {
                 if (towerEntity.UniqueId == uniqueId)
                 {
                     towerEntity.Placement.OnNext(position);
-                    break;
+                    var command = new CommandSaveGameState();
+                    _cmd.Process(command);
+                    return;
                 }
             }
         }

@@ -13,7 +13,7 @@ namespace Game.GamePlay.View.Frames
     public class FramePlacementViewModel : IDisposable
     {
         private readonly PlacementService _placementService;
-        public ReactiveProperty<Vector2Int> Position;
+        public ReactiveProperty<Vector2Int> Position = new (Vector2Int.zero);
         public ReactiveProperty<bool> StartRemoveFlag = new(false);
         public ReactiveProperty<bool> FinishRemoveFlag = new(false);
         public Vector2Int StartPosition { get; set; }
@@ -25,38 +25,29 @@ namespace Game.GamePlay.View.Frames
 
         public ReactiveProperty<bool> IsSelected;
 
-        public FramePlacementViewModel(TowerViewModel towerViewModel, PlacementService placementService)
+        public FramePlacementViewModel(TowerViewModel towerViewModel, FramePlacementService service)
         {
             //var t = towerViewModel.Placement;
             TowerUniqueId = towerViewModel.UniqueId;
-            _placementService = placementService; //для проверки расположения на дороге
+            
             StartPosition = towerViewModel.Placement.Value;
-            Position = towerViewModel.Placement;
+            Position.Value = towerViewModel.Placement.CurrentValue;
             Enable = new ReactiveProperty<bool>(true);
             
             IsSelected = new ReactiveProperty<bool>(false);
             Position.Subscribe(position =>
             {
-                var enabled = placementService.IsRoad(position);
-//                Debug.Log(position + " " + enabled);
-                if (enabled)
-                {
-                    enabled = towerViewModel.IsInPlacement();
-                }
-
-                towerViewModel.IsConfirmationState.Value = enabled;
-                Debug.Log(" towerViewModel.IsConfirmationState.Value = " + towerViewModel.IsConfirmationState.Value);
+                var enabled = service.IsRoad(position);
+                if (enabled) enabled = towerViewModel.IsInPlacement(position);
                 Enable.Value = enabled;
             });
+     
         }
         
         public void MoveFrame(Vector2Int position)
         {
             Position.Value = position;
-            
         }
-        
-        
 
         public void Selected(bool value)
         {

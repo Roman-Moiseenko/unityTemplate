@@ -128,17 +128,12 @@ namespace Game.GamePlay.Root.View
                 .AddTo(ref d);
 
             //2. Фрейм расположения войск из башни
-            viewModel.FramePlacement.Skip(1).Subscribe(framePlacement =>
-            {
-                if (framePlacement == null)
-                {
-                    DestroyFramePlacement();
-                }
-                else
-                {
-                    CreateFramePlacement(framePlacement);
-                }
-            });
+            viewModel.FramePlacementViewModels.ObserveAdd()
+                .Subscribe(e => CreateFramePlacement(e.Value))
+                .AddTo(ref d);
+            viewModel.FramePlacementViewModels.ObserveRemove()
+                .Subscribe(e => DestroyFramePlacement())
+                .AddTo(ref d);
 
             //Создаем view-модель ворот из прехаба
             CreateGateWave(_viewModel.GateWaveViewModel);

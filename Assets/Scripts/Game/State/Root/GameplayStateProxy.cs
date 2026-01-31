@@ -174,7 +174,7 @@ namespace Game.State.Root
          */
         public void SetPauseGame()
         {
-            _previousGameSpeed = Time.timeScale;
+            if (Time.timeScale != 0) _previousGameSpeed = Time.timeScale;
             Time.timeScale = 0;
         }
         

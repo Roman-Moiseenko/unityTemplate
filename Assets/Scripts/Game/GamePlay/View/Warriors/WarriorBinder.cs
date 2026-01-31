@@ -133,7 +133,13 @@ namespace Game.GamePlay.View.Warriors
             if (_viewModel.MobTarget.CurrentValue != null)
             {
                 var mobBinder = other.gameObject.GetComponent<MobBinder>();
-                _viewModel.RemoveTarget(mobBinder.ViewModel);
+                if (mobBinder != null)
+                {
+                    _viewModel.ClearTarget();
+                } else
+                {
+                    _viewModel.RemoveTarget(mobBinder.ViewModel);
+                }
             }
         }
 

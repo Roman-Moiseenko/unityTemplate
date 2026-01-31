@@ -33,7 +33,7 @@ namespace Game.GamePlay.Root.View
         public readonly IObservableCollection<BoardViewModel> AllBoards;
         public readonly IObservableCollection<RoadViewModel> AllRoads;
         public readonly IObservableCollection<FrameBlockViewModel> FrameBlockViewModels;
-        public ReactiveProperty<FramePlacementViewModel> FramePlacement = new(null);
+        public readonly IObservableCollection<FramePlacementViewModel> FramePlacementViewModels;
         public CastleViewModel CastleViewModel { get; private set; }
         public GateWaveViewModel GateWaveViewModel { get; private set; }
         public GateWaveViewModel GateWaveViewModelSecond { get; private set; }
@@ -43,6 +43,7 @@ namespace Game.GamePlay.Root.View
         private readonly FsmGameplay _fsmGameplay;
         private readonly FsmTower _fsmTower;
         private readonly FrameService _frameService;
+        private readonly FramePlacementService _framePlacementService;
         private readonly WaveService _waveService;
         private readonly GameplayCamera _cameraService;
         private readonly DamageService _damageService;
@@ -57,6 +58,7 @@ namespace Game.GamePlay.Root.View
             TowersService towersService,
             CastleService castleService,
             FrameService frameService,
+            FramePlacementService framePlacementService,
             PlacementService placementService,
             RoadsService roadsService,
             WaveService waveService,
@@ -69,6 +71,7 @@ namespace Game.GamePlay.Root.View
             _fsmGameplay = container.Resolve<FsmGameplay>();
             _fsmTower = container.Resolve<FsmTower>();
             _frameService = frameService;
+            _framePlacementService = framePlacementService;
             _waveService = waveService;
             _cameraService = cameraService;
             _damageService = damageService;
@@ -84,6 +87,7 @@ namespace Game.GamePlay.Root.View
             AllWarriors = warriorService.AllWarriors;
 
             FrameBlockViewModels = frameService.ViewModels;
+            FramePlacementViewModels = framePlacementService.ViewModels;
             CastleViewModel = castleService.CastleViewModel;
             GateWaveViewModel = waveService.GateWaveViewModel;
             GateWaveViewModelSecond = waveService.GateWaveViewModelSecond;
@@ -209,42 +213,13 @@ namespace Game.GamePlay.Root.View
 
                 if (_fsmGameplay.IsStateGaming())
                 {
-                    _cameraService.MoveCamera(Vector2Int.zero); //Центрируем карту
+                   // _cameraService.MoveCamera(Vector2Int.zero); //Центрируем карту
                 }
 
                 if (_fsmTower.IsPlacement())
                 {
-                    var tower = _fsmTower.GetTowerViewModel();
-                    tower.Placement.OnNext(newPosition);
+                    framePlacementService.MoveFrame(newPosition);
                 }
-            });
-
-            _fsmTower.Fsm.StateCurrent.Subscribe(newState =>
-            {
-                if (newState.GetType() == typeof(FsmTowerPlacement))
-                {
-                    //Создать FramePlacement
-                    var frame = new FramePlacementViewModel(_fsmTower.GetTowerViewModel(), placementService);
-                    FramePlacement.Value = frame;
-                }
-                else
-                {
-                    if (newState.GetType() == typeof(FsmTowerPlacementEnd))
-                    { 
-                        //Сохраняем новое значение
-                        towersService.SetPlacement();
-                    }
-
-                    if (newState.GetType() == typeof(FsmTowerSelected) && _fsmTower.Fsm.PreviousState.GetType() == typeof(FsmTowerPlacement))
-                    {
-                        //Возвращаем старое значение
-                        towersService.ResumePlacement(FramePlacement.CurrentValue.TowerUniqueId, FramePlacement.CurrentValue.StartPosition);
-                    }
-                    
-                    //Удалить FramePlacement, если был создан
-                    FramePlacement.Value = null;
-                }
-                
             });
         }
         
@@ -266,8 +241,6 @@ namespace Game.GamePlay.Root.View
                         //Кликнули по башне
                         if (towerViewModel.IsPosition(position))
                         {
-                            _towerClick.OnNext(towerViewModel); //TODO Удалить
-                            
                             if (_fsmTower.IsSelected()) _fsmTower.Fsm.SetState<FsmTowerNone>(); //Сбрасываем выделение.
                             _fsmTower.Fsm.SetState<FsmTowerSelected>(towerViewModel); //Башня выделена
                             _cameraService.MoveCamera(towerViewModel.Position.Value);
@@ -325,7 +298,12 @@ namespace Game.GamePlay.Root.View
                 Mathf.FloorToInt(position.y + 0.5f)
             );
             _isFrameDownClick = _frameService.IsPosition(vectorInt);
-//            Debug.Log("StartMoving " + _isFrameDownClick);
+            if (_fsmTower.IsPlacement())
+            {
+                //Попытаться выделить, если совпали координаты
+                if (_framePlacementService.TrySelectedFrame(vectorInt)) return;
+            }
+
             if (_isFrameDownClick)
             {
                 _frameService.SelectedFrame();
@@ -355,6 +333,12 @@ namespace Game.GamePlay.Root.View
 
         public void FinishMoving(Vector2 mousePosition)
         {
+            if (_fsmTower.IsPlacement())
+            {
+                //Попытаться снять выделение, если был выделен
+                if (_framePlacementService.TryUnSelectedFrame()) return;
+            }
+            
             if (_isFrameDownClick)
             {
                 _frameService.UnSelectedFrame(); //Завершаем движение фрейма //    Отпустили фрейм 
@@ -367,6 +351,17 @@ namespace Game.GamePlay.Root.View
 
         public void ProcessMoving(Vector2 mousePosition)
         {
+            if (_framePlacementService.IsSelected())
+            {
+                var position = _cameraService.GetWorldPoint(mousePosition);
+                var vectorInt = new Vector2Int(
+                    Mathf.FloorToInt(position.x + 0.5f),
+                    Mathf.FloorToInt(position.y + 0.5f)
+                );
+                
+                _framePlacementService.MoveFrame(vectorInt);
+                return;
+            }
             if (_isFrameDownClick) //Двигаем фрейм или показываем инфо 
             {
                 ClickEntity(mousePosition);

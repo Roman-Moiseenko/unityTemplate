@@ -35,6 +35,7 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<TowersService>(),
                 c.Resolve<CastleService>(),
                 c.Resolve<FrameService>(),
+                c.Resolve<FramePlacementService>(),
                 c.Resolve<PlacementService>(),
                 c.Resolve<RoadsService>(),
                 c.Resolve<WaveService>(),

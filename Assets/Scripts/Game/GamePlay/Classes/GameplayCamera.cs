@@ -186,6 +186,7 @@ namespace Game.GamePlay.Classes
 
         public void MoveCamera(Vector2 position)
         {
+//            Debug.Log(position);
             //_autoMoving = true;
             //_moveTowards = methods;
             _targetAutoMoving = new Vector3(

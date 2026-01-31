@@ -49,11 +49,12 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             IsEnable = new ReactiveProperty<bool>(true);
             IsRotate = new ReactiveProperty<bool>(true);
             
-            _frameBlocksView.ObserveAdd().Subscribe(newValue =>
+            _frameBlocksView.ObserveAdd().Subscribe(e =>
             {
-                IsEnable.Value = newValue.Value.Enable.Value;
-                newValue.Value.Enable.Subscribe(e => IsEnable.Value = e);
-                IsRotate.Value = newValue.Value.IsRotate();
+                var viewModel = e.Value; 
+                IsEnable.Value = viewModel.Enable.Value;
+                viewModel.Enable.Subscribe(ev => IsEnable.Value = ev);
+                IsRotate.Value = viewModel.IsRotate();
             }).AddTo(ref d);
 
             _frameBlocksView.ObserveRemove().Subscribe(_ =>
