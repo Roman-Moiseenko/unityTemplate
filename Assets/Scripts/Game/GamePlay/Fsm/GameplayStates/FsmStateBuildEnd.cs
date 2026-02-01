@@ -1,4 +1,5 @@
 ﻿using DI;
+using Game.GamePlay.Fsm.TowerStates;
 using Game.State.Gameplay;
 using Game.State.Root;
 using MVVM.FSM;
@@ -17,11 +18,11 @@ namespace Game.GamePlay.Fsm.GameplayStates
         public override void Enter()
         {
             //Входим в состояние Завершения строительства
-            //Все подписчики его обрабатывают.
-            //Переходим в состояние Игры
-       //     Debug.Log("FsmStateBuildEnd Enter");
-            //Fsm.SetState<FsmStateGamePlay>();
             
+            //При завершении строительства закрываем состояние башни,
+            //для состояния, минующее состояние FsmStateBuild
+            var fsmTower = _container.Resolve<FsmTower>();
+            if (!fsmTower.IsNone()) fsmTower.Fsm.SetState<FsmTowerNone>();
         }
 
         public override bool Exit(FSMState next = null)
@@ -33,7 +34,7 @@ namespace Game.GamePlay.Fsm.GameplayStates
         public override void Update()
         {
         }
-        
+
         public RewardCardData GetRewardCard()
         {
             return (RewardCardData)Params;
