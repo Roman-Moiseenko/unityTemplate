@@ -26,6 +26,7 @@ namespace Game.GamePlay.View.Towers
         [SerializeField] private Transform shot;
         [SerializeField] private Transform areaAction;
         [SerializeField] private TowerVisibleBinder visibleBinder;
+        [SerializeField] private TowerUnVisibleBinder unvisibleBinder;
 
         private List<TowerShotBinder> _shotBinders = new();
         private IDisposable _disposable;
@@ -67,7 +68,9 @@ namespace Game.GamePlay.View.Towers
             }
             else
             {
-                visibleBinder.Bind(viewModel);
+                visibleBinder.Bind(viewModel); //Подключаем коллайдер видимости
+                if (viewModel.MinDistance > 0) unvisibleBinder.Bind(viewModel); //Подключаем коллайдер зоны недоступности
+                
                 CreateShot(); //для ускорения сразу создаем 1 снаряд в пул
                 _mainCoroutine = StartCoroutine(FireUpdateTower());
             }
@@ -175,7 +178,7 @@ namespace Game.GamePlay.View.Towers
                     else
                     {
                         //Если Цель мертва, удаляем из списка целей 
-                        _viewModel.RemoveTarget(mobViewModel);
+                       // _viewModel.RemoveTarget(mobViewModel);
                     }
                 }
 
@@ -246,7 +249,7 @@ namespace Game.GamePlay.View.Towers
             {
                 shotBinder.StopShot();
             }
-            _viewModel.ClearTargets();
+           // _viewModel.ClearTargets();
         }
 
         private void OnDestroy()

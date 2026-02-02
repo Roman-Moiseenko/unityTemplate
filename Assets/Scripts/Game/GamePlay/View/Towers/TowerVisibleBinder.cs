@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Game.GamePlay.View.Mobs;
 using R3;
@@ -39,15 +40,22 @@ namespace Game.GamePlay.View.Towers
 
         private void OnCollisionEnter(Collision other)
         {
-            CheckAndAddToTarget(other);
+            if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
+            var mobBinder = other.gameObject.GetComponent<MobBinder>();
+            if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
+            _viewModel.PullTargets.Add(mobBinder.ViewModel); //Добавляем моба в пулл целей
+            
+            //TODO Выходим
+            //CheckAndAddToTarget(other);
         }
 
+        //TODO Удалить
         private void OnCollisionStay(Collision other)
         {
-            CheckAndAddToTarget(other);
+          //  CheckAndAddToTarget(other);
         }
 
-        private void CheckAndAddToTarget(Collision other)
+     /*   private void CheckAndAddToTarget(Collision other)
         {
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
             //Если мультишот или нет целей, то при движении цели
@@ -67,17 +75,28 @@ namespace Game.GamePlay.View.Towers
                 //  Debug.Log("Mob Enter " + mobBinder.ViewModel.UniqueId);
             }
             
-        }
+        }*/
         
         private void OnCollisionExit(Collision other)
         {
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
+            if (_viewModel.PullTargets.Count != 0)
+            {
+                //Когда моб выходит из зоны видимости, удаляем из Пула
+                var mobBinder = other.gameObject.GetComponent<MobBinder>();
+                if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
+                _viewModel.PullTargets.Remove(mobBinder.ViewModel);
+            }
+            
+            /*
+            //TODO Выходим
             if (_viewModel.MobTargets.Count != 0)
             {
                 var mobBinder = other.gameObject.GetComponent<MobBinder>();
 //                Debug.Log($"Mob {mobBinder.ViewModel.UniqueId} Exit {_viewModel.UniqueId}");
                 _viewModel.RemoveTarget(mobBinder.ViewModel);
             }
+            */
         }
         
 

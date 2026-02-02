@@ -53,9 +53,14 @@ namespace Game.GamePlay.View.Towers
         public ReactiveProperty<bool> ShowArea = new(false);
 
         public ReactiveProperty<Vector2Int> Placement => _towerEntity.Placement;
+        
+        public ObservableList<MobViewModel> PullTargets = new();
 
         //Флаг для передачи в Панели подтверждения из различных состояния
         public ReactiveProperty<bool> IsConfirmationState = new(true);
+        
+        //Кеш подписок на смерть моба
+        private readonly Dictionary<int, IDisposable> _mobDisposables = new();
         
         public TowerViewModel(
             TowerEntity towerEntity,
@@ -106,6 +111,33 @@ namespace Game.GamePlay.View.Towers
                     ShowArea.Value = true;
             });
 
+            //** Логика ведения целей **//
+            PullTargets.ObserveAdd().Subscribe(e =>
+            {
+                //Моб попал в пулл
+                var target = e.Value;
+                //При его смерти - удаляем из пула
+                var disposable = target.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(target));
+                _mobDisposables.Add(target.UniqueId, disposable); //Кеш подписок на смерть моба
+                SetTarget(target); //Добавляем его цель (если мультишот, то добавляется, для одиночного идет проверка)
+            });
+
+            //При удалении из пула (убит или вышел с дистанции) - удалить из цели
+            PullTargets.ObserveRemove().Subscribe(e =>
+            {
+                var target = e.Value;
+                _mobDisposables.Remove(target.UniqueId);
+                MobTargets.Remove(target.UniqueId);
+               //RemoveTarget(target);
+            });
+
+            //При удалении из цели, попытка добавить из пулла
+            MobTargets.ObserveRemove().Subscribe(e =>
+            {
+                //При мультишоте цель автоматически добавляется при попадании в Пулл
+                if (!IsMultiShot && PullTargets.Count > 0) SetTarget(PullTargets[0]); //Первый из списка
+            });
+
         }
         public bool IsPosition(Vector2 position)
         {
@@ -120,7 +152,7 @@ namespace Game.GamePlay.View.Towers
 
         public void SetPosition(Vector2Int position)
         {
-            Position.Value = position;
+            //
         }
 
         public Vector2Int GetPosition()
@@ -149,13 +181,16 @@ namespace Game.GamePlay.View.Towers
             Direction.Value = new Vector3(direction.x, 0, direction.y);
         }
         
-        public void SetTarget(MobViewModel viewModel)
+        private void SetTarget(MobViewModel viewModel)
         {
+            if (!IsMultiShot && MobTargets.Count != 0) return;
+            
             if (MobTargets.TryGetValue(viewModel.UniqueId, out var value)) return;
             MobTargets.TryAdd(viewModel.UniqueId, viewModel);
+
         }
 
-        public void RemoveTarget(MobViewModel mobBinderViewModel)
+        private void RemoveTarget(MobViewModel mobBinderViewModel)
         {
             MobTargets.Remove(mobBinderViewModel.UniqueId);
         }

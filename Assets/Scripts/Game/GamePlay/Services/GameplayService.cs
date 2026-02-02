@@ -345,7 +345,7 @@ namespace Game.GamePlay.Services
             //Очищаем атаку на всех башнях
             foreach (var towerViewModel in _towersService.AllTowers)
             {
-                towerViewModel.ClearTargets();
+             //   towerViewModel.ClearTargets();
             }
             _gameplayState.Castle.IsBusy.Value = false;
         }
