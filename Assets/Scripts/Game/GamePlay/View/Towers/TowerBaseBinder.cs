@@ -39,6 +39,7 @@ namespace Game.GamePlay.View.Towers
         private ReactiveProperty<Vector3> _firsTarget;
 
         private AreaBinder _areaBinder;
+
         private void OnEnable()
         {
             after.gameObject.SetActive(true);
@@ -55,10 +56,10 @@ namespace Game.GamePlay.View.Towers
                 transform.position.y,
                 viewModel.Position.CurrentValue.y
             );
-            
+
             CreateTower();
             CreateArea();
-            
+
             //Для башен с точкой размещения солдат не подключаем Коллайдер Видимости
             //Также сделать для Бафных башен ??
             if (viewModel.IsPlacement)
@@ -69,12 +70,13 @@ namespace Game.GamePlay.View.Towers
             else
             {
                 visibleBinder.Bind(viewModel); //Подключаем коллайдер видимости
-                if (viewModel.MinDistance > 0) unvisibleBinder.Bind(viewModel); //Подключаем коллайдер зоны недоступности
-                
+                if (viewModel.MinDistance > 0)
+                    unvisibleBinder.Bind(viewModel); //Подключаем коллайдер зоны недоступности
+
                 CreateShot(); //для ускорения сразу создаем 1 снаряд в пул
                 _mainCoroutine = StartCoroutine(FireUpdateTower());
             }
-            
+
             // ПОДПИСКИ //
             var d = Disposable.CreateBuilder();
 
@@ -92,10 +94,9 @@ namespace Game.GamePlay.View.Towers
                         _areaBinder.Hide();
                     }
                 }).AddTo(ref d);
-
             }
 
-            
+
             //Запуск эффекта обновления уровня
             _viewModel.Level.Skip(1).Subscribe(_ =>
             {
@@ -122,10 +123,7 @@ namespace Game.GamePlay.View.Towers
                         container.transform
                             .DOScale(Vector3.one, 0.5f)
                             .SetEase(Ease.InCubic).SetUpdate(true))
-                    .OnComplete(() =>
-                    {
-                        Sequence.Kill();
-                    }).SetUpdate(true);
+                    .OnComplete(() => { Sequence.Kill(); }).SetUpdate(true);
             }).AddTo(ref d);
             _disposable = d.Build();
         }
@@ -178,14 +176,14 @@ namespace Game.GamePlay.View.Towers
                     else
                     {
                         //Если Цель мертва, удаляем из списка целей 
-                       // _viewModel.RemoveTarget(mobViewModel);
+                        // _viewModel.RemoveTarget(mobViewModel);
                     }
                 }
 
                 yield return new WaitForSeconds(_viewModel.Speed);
             }
         }
-        
+
         private void DestroyTower()
         {
             Destroy(_towerBinder.gameObject);
@@ -209,11 +207,11 @@ namespace Game.GamePlay.View.Towers
         {
             //Нет области Атаки
             if (_viewModel.GetAreaRadius() == Vector3.zero) return;
-            
-            var prefabAreaPath = _viewModel.IsPlacement 
+
+            var prefabAreaPath = _viewModel.IsPlacement
                 ? "Prefabs/Gameplay/Towers/Area/AreaPlacement"
                 : "Prefabs/Gameplay/Towers/Area/AreaAttack";
-            
+
             var areaPrefab = Resources.Load<AreaBinder>(prefabAreaPath);
             _areaBinder = Instantiate(areaPrefab, areaAction.transform);
             _areaBinder.Bind();
@@ -222,11 +220,12 @@ namespace Game.GamePlay.View.Towers
         private TowerShotBinder FindFreeShot()
         {
             foreach (var shotBinder in _shotBinders)
-                if (shotBinder.IsFree) return shotBinder;
-            
+                if (shotBinder.IsFree)
+                    return shotBinder;
+
             return CreateShot();
-        }        
-        
+        }
+
         private TowerShotBinder CreateShot()
         {
             var towerType = _viewModel.ConfigId;
@@ -249,7 +248,6 @@ namespace Game.GamePlay.View.Towers
             {
                 shotBinder.StopShot();
             }
-           // _viewModel.ClearTargets();
         }
 
         private void OnDestroy()
@@ -260,6 +258,31 @@ namespace Game.GamePlay.View.Towers
                 Sequence.Kill();
                 Sequence = null;
             }
+
+            Destroy(visibleBinder.gameObject);
+            Destroy(visibleBinder);
+
+
+            Destroy(unvisibleBinder.gameObject);
+            Destroy(unvisibleBinder);
+
+
+            Destroy(_towerBinder.gameObject);
+            Destroy(_towerBinder);
+
+            if (_towerShotBinder != null)
+            {
+                Destroy(_towerShotBinder.gameObject);
+                Destroy(_towerShotBinder);
+            }
+
+            foreach (var shotBinder in _shotBinders)
+            {
+                Destroy(shotBinder.gameObject);
+                Destroy(shotBinder);
+            }
+
+
             _disposable?.Dispose();
         }
     }

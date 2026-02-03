@@ -32,7 +32,6 @@ namespace Game.GamePlay.View.Mobs
         public Vector2 StartPosition;
         public Vector2Int StartDirection;
         public List<RoadPoint> RoadPoints = new();
-        public GameplayCamera CameraService;
         //public ReactiveProperty<MobState> State; //TODO Возможно удалить или модифицировать до FSM
         public ReactiveProperty<float> CurrentHealth;
         public float MaxHealth;
@@ -53,14 +52,12 @@ namespace Game.GamePlay.View.Mobs
         
         public MobViewModel(
             MobEntity mobEntity,
-            GameplayCamera cameraService,
             GameplayStateProxy gameplayState,
             WaveService waveService
         )
         {
             _gameplayState = gameplayState;
             _mobEntity = mobEntity;
-            CameraService = cameraService;
             CurrentHealth = mobEntity.Health;
             MaxHealth = mobEntity.Health.CurrentValue;
             //State = mobEntity.State;

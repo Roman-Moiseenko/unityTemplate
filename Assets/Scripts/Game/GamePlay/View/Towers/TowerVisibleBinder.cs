@@ -37,47 +37,16 @@ namespace Game.GamePlay.View.Towers
             _disposable = d.Build();
         }
 
-
-        private void OnCollisionEnter(Collision other)
+        private void OnTriggerEnter(Collider other)
         {
+            
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
             var mobBinder = other.gameObject.GetComponent<MobBinder>();
             if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
             _viewModel.PullTargets.Add(mobBinder.ViewModel); //Добавляем моба в пулл целей
-            
-            //TODO Выходим
-            //CheckAndAddToTarget(other);
         }
 
-        //TODO Удалить
-        private void OnCollisionStay(Collision other)
-        {
-          //  CheckAndAddToTarget(other);
-        }
-
-     /*   private void CheckAndAddToTarget(Collision other)
-        {
-            if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
-            //Если мультишот или нет целей, то при движении цели
-            if (_viewModel.IsMultiShot || _viewModel.MobTargets.Count == 0)
-            {
-                var mobBinder = other.gameObject.GetComponent<MobBinder>();
-                if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
-                
-                if (_viewModel.MinDistance != 0f) //У башни есть минимальная дистанция
-                {
-                    var distance = Vector3.Distance(mobBinder.ViewModel.PositionTarget.CurrentValue, _viewModel.PositionMap.CurrentValue);
-                    if (distance - 0.5f < _viewModel.MinDistance) return;
-                }
-                
-                _viewModel.SetTarget(mobBinder.ViewModel);
-                //Debug.Log($"Mob {mobBinder.ViewModel.UniqueId} Enter {_viewModel.UniqueId}");
-                //  Debug.Log("Mob Enter " + mobBinder.ViewModel.UniqueId);
-            }
-            
-        }*/
-        
-        private void OnCollisionExit(Collision other)
+        private void OnTriggerExit(Collider other)
         {
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
             if (_viewModel.PullTargets.Count != 0)
@@ -87,23 +56,12 @@ namespace Game.GamePlay.View.Towers
                 if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
                 _viewModel.PullTargets.Remove(mobBinder.ViewModel);
             }
-            
-            /*
-            //TODO Выходим
-            if (_viewModel.MobTargets.Count != 0)
-            {
-                var mobBinder = other.gameObject.GetComponent<MobBinder>();
-//                Debug.Log($"Mob {mobBinder.ViewModel.UniqueId} Exit {_viewModel.UniqueId}");
-                _viewModel.RemoveTarget(mobBinder.ViewModel);
-            }
-            */
         }
         
 
         private void OnDestroy()
         {
             _disposable?.Dispose();
-            
         }
     }
 }

@@ -19,7 +19,6 @@ namespace Game.GamePlay.View.Castle
         public void Bind(CastleViewModel viewModel)
         {
             shot.Bind(viewModel);
-            //Запуск полета снарядов
         }
         
         public void Fire(MobViewModel mobViewModel)
@@ -51,14 +50,6 @@ namespace Game.GamePlay.View.Castle
                     barrel.localPosition = Vector3.zero;
                     Sequence.Kill();
                 });
-            
-
-        }
-
-        public void StopFire()
-        {
-            KillSequence();
-            shot.FireFinish();
         }
 
         private void OnDestroy()

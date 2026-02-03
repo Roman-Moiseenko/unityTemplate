@@ -9,21 +9,20 @@ namespace Game.GamePlay.View.Towers
 {
     public class ShotTeslaBinder : ShotBinder
     {
+        private IDisposable _disposableTesla;
         public override void FirePrepare(MobViewModel mobViewModel)
         {
             _mobViewModel = mobViewModel;
             transform.gameObject.SetActive(true);
-            
-            var d = Disposable.CreateBuilder();
-            mobViewModel.PositionTarget.Subscribe(position =>
+            _disposableTesla?.Dispose();
+            _disposableTesla = mobViewModel.PositionTarget.Subscribe(position =>
             {
                 var scale = Vector3.Distance(transform.position, position) / 0.5f;
                 transform.localScale = new Vector3(1, 1, scale);
                 var toDirection = position - transform.position;
                 var fromDirection = new Vector3(0, 0, 1f);
                 transform.rotation = Quaternion.FromToRotation(fromDirection, toDirection);
-            }).AddTo(ref d);
-            _disposable = d.Build();
+            });
         }
 
         public override IEnumerator FireStart()
@@ -34,12 +33,16 @@ namespace Game.GamePlay.View.Towers
         
         private void OnDestroy()
         {
+            _disposableTesla?.Dispose();
             _disposable?.Dispose();
+            
         }
         public override void StopShot()
         {
+            base.StopShot();
+            _disposableTesla?.Dispose();
         }
-        private void OnCollisionEnter(Collision other)
+        private void OnTriggerEnter(Collider other)
         {
             if (!other.gameObject.CompareTag("Mob")) return;
             _viewModel.SetDamageAfterShot(_mobViewModel);

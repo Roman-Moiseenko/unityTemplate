@@ -67,7 +67,7 @@ namespace Game.GamePlay.View.Castle
             }
         }
         
-        private void OnCollisionEnter(Collision other)
+        private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.CompareTag("Mob"))
             {

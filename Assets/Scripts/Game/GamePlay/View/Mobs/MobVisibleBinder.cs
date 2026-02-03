@@ -14,7 +14,8 @@ namespace Game.GamePlay.View.Mobs
             ViewModel = viewModel;
         }
         
-        private void OnCollisionEnter(Collision other)
+        
+        private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.CompareTag("Warrior"))
             {
@@ -33,7 +34,7 @@ namespace Game.GamePlay.View.Mobs
             }
         }
 
-        private void OnCollisionStay(Collision other)
+        private void OnTriggerStay(Collider other)
         {
             if (other.gameObject.CompareTag("Warrior") /* && IsMoving*/)
             {
@@ -43,7 +44,7 @@ namespace Game.GamePlay.View.Mobs
              
         }
 
-        private void OnCollisionExit(Collision other)
+        private void OnTriggerExit(Collider other)
         {
             if (other.gameObject.CompareTag("Warrior") || other.gameObject.CompareTag("Wall"))
             {

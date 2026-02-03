@@ -1,4 +1,6 @@
-﻿using Game.GamePlay.Services;
+﻿using System;
+using System.Collections.Generic;
+using Game.GamePlay.Services;
 using Game.GamePlay.View.Mobs;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Mobs;
@@ -18,6 +20,9 @@ namespace Game.GamePlay.View.Castle
         public readonly string ConfigId;
         public Vector2Int Position { get; }
         public ReactiveProperty<MobViewModel> MobTarget = new();
+        public ObservableList<MobViewModel> PullTargets = new();
+        //Кеш подписок на смерть моба
+        private readonly Dictionary<int, IDisposable> _mobDisposables = new();
         public float Speed => CastleEntity.Speed;
         
         public CastleViewModel(CastleEntity castleEntity,
@@ -27,6 +32,29 @@ namespace Game.GamePlay.View.Castle
             ConfigId = castleEntity.ConfigId;
             CastleEntity = castleEntity;
             Position = castleEntity.Position;
+            
+            
+            //** Логика ведения целей **//
+            PullTargets.ObserveAdd().Subscribe(e =>
+            {
+                //Моб попал в пулл
+                var target = e.Value;
+                //При его смерти - удаляем из пула
+                var disposable = target.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(target));
+                _mobDisposables.Add(target.UniqueId, disposable); //Кеш подписок на смерть моба
+                SetTarget(target); //Добавляем его цель (если мультишот, то добавляется, для одиночного идет проверка)
+            });            
+            //При удалении из пула (убит или вышел с дистанции) - удалить из цели
+            PullTargets.ObserveRemove().Subscribe(e =>
+            {
+                var target = e.Value;
+                _mobDisposables.Remove(target.UniqueId);
+                RemoveTarget(target);
+            });
+            MobTarget.Where(x => x == null).Subscribe(_ =>
+            {
+                if (PullTargets.Count > 0) SetTarget(PullTargets[0]);
+            });
         }
 
         public bool IsPosition(Vector2 position)
@@ -40,14 +68,14 @@ namespace Game.GamePlay.View.Castle
             return false;
         }
 
-        public void SetTarget(MobViewModel mobViewModel)
+        private void SetTarget(MobViewModel mobViewModel)
         {
             if (MobTarget.CurrentValue == null) MobTarget.OnNext(mobViewModel);
         }
 
-        public void RemoveTarget(MobViewModel mobViewModel)
+        private void RemoveTarget(MobViewModel mobViewModel)
         {
-            if (MobTarget.CurrentValue == mobViewModel) MobTarget.OnNext(null);
+            if (MobTarget.CurrentValue.UniqueId == mobViewModel.UniqueId) MobTarget.OnNext(null);
         }
 
         public void SetDamageAfterShot()

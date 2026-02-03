@@ -128,7 +128,6 @@ namespace Game.GamePlay.View.Towers
                 var target = e.Value;
                 _mobDisposables.Remove(target.UniqueId);
                 MobTargets.Remove(target.UniqueId);
-               //RemoveTarget(target);
             });
 
             //При удалении из цели, попытка добавить из пулла

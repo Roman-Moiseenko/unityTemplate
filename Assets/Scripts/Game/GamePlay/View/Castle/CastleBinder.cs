@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using Game.GamePlay.View.Mobs;
-using Game.State.Maps.Mobs;
-using ObservableCollections;
 using R3;
 using UnityEngine;
 
@@ -11,7 +8,6 @@ namespace Game.GamePlay.View.Castle
 {
     public class CastleBinder : MonoBehaviour
     {
-        //[SerializeField] private CastleShotsBinder shots;
         [SerializeField] private CastleGunBinder gunLeft;
         [SerializeField] private CastleGunBinder gunCenter;
         [SerializeField] private CastleGunBinder gunRight;
@@ -21,7 +17,8 @@ namespace Game.GamePlay.View.Castle
         private IDisposable _disposable;
         private CastleViewModel _viewModel;
         private Coroutine _coroutine;
-
+        private Coroutine _mainCoroutine;
+        
         public void Bind(CastleViewModel viewModel)
         {
             _viewModel = viewModel;
@@ -35,20 +32,6 @@ namespace Game.GamePlay.View.Castle
                 0,
                 viewModel.Position.y
             );
-
-            viewModel.MobTarget.Subscribe(mobViewModel =>
-            {
-                if (mobViewModel == null)
-                { //На случай, если моба убьет не Замок или цель вышла из зоны поражения
-                    StopFire();
-                    return;
-                }
-                _coroutine = StartCoroutine(FireOneTarget(mobViewModel));
-                //TODO Протестировать и придумать отписку после удаления моба
-                mobViewModel.IsDead
-                    .Where(x => x)
-                    .Subscribe(_ => _viewModel.RemoveTarget(mobViewModel));
-            }).AddTo(ref d);
             
             //Когда все выстрелы завершились(попали в цель)
             gunLeft.IsShotComplete
@@ -64,29 +47,27 @@ namespace Game.GamePlay.View.Castle
                     }
                 }).AddTo(ref d);
             _disposable = d.Build();
+
+            _mainCoroutine = StartCoroutine(FireUpdateCastle());
         }
 
-        private IEnumerator FireOneTarget(MobViewModel mobViewModel)
+        private IEnumerator FireUpdateCastle()
         {
-            while (!mobViewModel.IsDead.CurrentValue)
+            while (true)
             {
-                gunLeft.Fire(mobViewModel);
-                gunCenter.Fire(mobViewModel);
-                gunRight.Fire(mobViewModel);
+                yield return null;
+                //Обходим все цели в модели
+                if (_viewModel.MobTarget.CurrentValue == null) continue;
+                gunLeft.Fire(_viewModel.MobTarget.CurrentValue);
+                gunCenter.Fire(_viewModel.MobTarget.CurrentValue);
+                gunRight.Fire(_viewModel.MobTarget.CurrentValue);
                 yield return new WaitForSeconds(_viewModel.Speed);
             }
         }
-
-        private void StopFire()
-        {
-            if(_coroutine != null) StopCoroutine(_coroutine);
-            gunLeft.StopFire();
-            gunCenter.StopFire();
-            gunRight.StopFire();
-        }
-
+        
         private void OnDestroy()
         {
+            StopCoroutine(_mainCoroutine);
             _disposable?.Dispose();
         }
 

@@ -97,6 +97,7 @@ namespace Game.GamePlay.Services
 
         public void RemoveWarrior(WarriorEntity warriorEntity)
         {
+            Debug.Log("Удаляем воина " + warriorEntity.UniqueId);
             var command = new CommandRemoveWarriorTower
             {
                 UniqueId = warriorEntity.UniqueId,

@@ -48,6 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthBar: {fileID: 6358276405775238015}
+  mobVisible: {fileID: 0}
+  UnityId: 0
 --- !u!136 &2990389235198991038
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -63,7 +65,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2

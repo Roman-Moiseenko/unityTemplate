@@ -162,9 +162,9 @@ namespace Scripts.Game.GameRoot
         {
             _uiRoot.ShowLoadingFirstScreen();
             _cachedSceneContainer?.Dispose();
-            yield return LoadScene(Scenes.BOOT);
+            yield return LoadScene(Scenes.BOOT); //TODO Заменить на Scenes.FIRST_BOOT 
             yield return LoadScene(Scenes.MAINMENU);
-            yield return new WaitForSeconds(1);
+            //yield return new WaitForSeconds(1);
 
             //Загружаем пользователя
             var provider = _rootContainer.Resolve<IGameStateProvider>();

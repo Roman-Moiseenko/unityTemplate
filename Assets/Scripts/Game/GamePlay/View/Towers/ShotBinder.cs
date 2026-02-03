@@ -63,7 +63,7 @@ namespace Game.GamePlay.View.Towers
             _isMoving.OnNext(false);
         }
 
-        private void OnCollisionEnter(Collision other)
+        private void OnTriggerEnter(Collider other)
         {
             if (!other.gameObject.CompareTag("Mob")) return;
             StopShot();
@@ -85,6 +85,11 @@ namespace Game.GamePlay.View.Towers
                     }
                 }
             }
+        }
+
+        private void OnDestroy()
+        {
+            _disposable?.Dispose();
         }
     }
 }

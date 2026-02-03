@@ -18,34 +18,25 @@ namespace Game.GamePlay.View.Castle
             _viewModel = viewModel;
         }
 
-        private void OnCollisionEnter(Collision other)
+        private void OnTriggerEnter(Collider other)
         {
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
-            if (_viewModel.MobTarget.CurrentValue == null) //Если цели нет, назначаем первую вошедшую
-            {
-                var mobBinder = other.gameObject.GetComponent<MobBinder>();
-                _viewModel.SetTarget(mobBinder.ViewModel);
-            }
+            var mobBinder = other.gameObject.GetComponent<MobBinder>();
+            _viewModel.PullTargets.Add(mobBinder.ViewModel); 
         }
+        
 
-        private void OnCollisionStay(Collision other)
+        private void OnTriggerExit(Collider other)
         {
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
-            if (_viewModel.MobTarget.CurrentValue == null) //Если цели нет, назначаем первую в области поражения
+            if (_viewModel.PullTargets.Count != 0)
             {
+                //Когда моб выходит из зоны видимости, удаляем из Пула
                 var mobBinder = other.gameObject.GetComponent<MobBinder>();
-                _viewModel.SetTarget(mobBinder.ViewModel);
+                if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
+                _viewModel.PullTargets.Remove(mobBinder.ViewModel);
             }
-        }
 
-        private void OnCollisionExit(Collision other)
-        {
-            if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
-            if (_viewModel.MobTarget.CurrentValue != null)
-            {
-                var mobBinder = other.gameObject.GetComponent<MobBinder>();
-                _viewModel.RemoveTarget(mobBinder.ViewModel);
-            }
         }
     }
 }

@@ -46,7 +46,6 @@ namespace Game.GamePlay.Services
 
         public GateWaveViewModel GateWaveViewModel;
         public GateWaveViewModel GateWaveViewModelSecond; //TODO Сделать, когда будет 2 пути
-        private readonly GameplayCamera _cameraService;
         private Coroutine _coroutineTimerNewWave;
         private readonly FsmWave _fsmWave;
 
@@ -63,7 +62,6 @@ namespace Game.GamePlay.Services
             _fsmWave = container.Resolve<FsmWave>();
             _wayService = container.Resolve<WayService>();
             var roadsService = container.Resolve<RoadsService>();
-            _cameraService = container.Resolve<GameplayCamera>();
             //Подписка на новую волну, при изменении номера волны, запускаем корутин старт волны
             gameplayState.CurrentWave.Skip(1)
                 .Subscribe(newValue =>
@@ -264,7 +262,7 @@ namespace Game.GamePlay.Services
         private void CreateMobViewModel(MobEntity mobEntity)
         {
             mobEntity.IsWay = true;
-            var mobViewModel = new MobViewModel(mobEntity, _cameraService, _gameplayState, this);
+            var mobViewModel = new MobViewModel(mobEntity, _gameplayState, this);
             _allMobsOnWay.Add(mobViewModel);
         }
 

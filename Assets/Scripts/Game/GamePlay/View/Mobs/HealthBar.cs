@@ -14,22 +14,29 @@ namespace Game.GamePlay.View.Mobs
         private float _maxHealth = 1f;
         private float _currentHealth = 1f;
         private Material _material;
-        public void Bind(Camera camera, float maxHealth, ReactiveProperty<float> currentHealth, int level)
+        public void Bind(float maxHealth, ReactiveProperty<float> currentHealth, int level)
         {
-            _camera = camera;
+            _camera = Camera.main; //camera;
             _maxHealth = maxHealth;
             _currentHealth = maxHealth;
             _material = _health.GetComponent<Renderer>().material;
             var matBlock = new MaterialPropertyBlock();
-            currentHealth.Subscribe(h => _currentHealth = h);
-
-            var first = level / 10;
-            var second = level % 10;
             
+            currentHealth.Subscribe(h => _currentHealth = h);
             var meshLevel = _level.GetComponent<MeshRenderer>();
             meshLevel.GetPropertyBlock(matBlock);
+            var first = level / 10;
+            
             matBlock.SetFloat("_First", first);
-            matBlock.SetFloat("_Second", second);
+            if (level == 0)
+            {
+                _level.gameObject.SetActive(false);
+            }
+            else
+            {
+                var second = level % 10;
+                matBlock.SetFloat("_Second", second);
+            }
             meshLevel.SetPropertyBlock(matBlock);
         }
 

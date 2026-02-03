@@ -42,7 +42,6 @@ namespace Game.GamePlay.View.Mobs
 
             _healthBarBinder = _healthBar.GetComponent<HealthBar>();
             _healthBarBinder.Bind(
-                ViewModel.CameraService.Camera,
                 ViewModel.MaxHealth,
                 ViewModel.CurrentHealth,
                 ViewModel.Level
@@ -154,12 +153,13 @@ namespace Game.GamePlay.View.Mobs
         }
 
         //Для учета попадания по мобу
-        private void OnCollisionEnter(Collision other)
+        private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.CompareTag("Shot"))
             {
                 //TODO Находим Данные от Выстрела и наносим уронм мобу через viewModel.DamageService.SetDamage()
             }
         }
+        
     }
 }
