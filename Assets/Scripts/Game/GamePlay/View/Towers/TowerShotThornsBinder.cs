@@ -7,7 +7,7 @@ namespace Game.GamePlay.View.Towers
     {
         private MobViewModel _mobViewModel;
 
-        public override void Bind(TowerViewModel viewModel)
+        public override void Bind(TowerAttackViewModel viewModel)
         {
             _viewModel = viewModel;
         }

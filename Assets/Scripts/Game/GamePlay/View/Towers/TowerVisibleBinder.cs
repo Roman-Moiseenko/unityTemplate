@@ -12,7 +12,7 @@ namespace Game.GamePlay.View.Towers
     {
 
         [SerializeField] private SphereCollider visibleCollider;
-        private TowerViewModel _viewModel;
+        private TowerAttackViewModel _viewModel;
         private float _minDistance; // => _viewModel.MinDistance;
         private IDisposable _disposable;
 
@@ -23,7 +23,7 @@ namespace Game.GamePlay.View.Towers
             Physics.reuseCollisionCallbacks = true;
         }
 
-        public void Bind(TowerViewModel viewModel)
+        public void Bind(TowerAttackViewModel viewModel)
         {
             visibleCollider.gameObject.SetActive(true);
             var d = Disposable.CreateBuilder();
@@ -39,7 +39,6 @@ namespace Game.GamePlay.View.Towers
 
         private void OnTriggerEnter(Collider other)
         {
-            
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
             var mobBinder = other.gameObject.GetComponent<MobBinder>();
             if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
@@ -57,7 +56,6 @@ namespace Game.GamePlay.View.Towers
                 _viewModel.PullTargets.Remove(mobBinder.ViewModel);
             }
         }
-        
 
         private void OnDestroy()
         {

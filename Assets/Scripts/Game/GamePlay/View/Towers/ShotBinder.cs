@@ -10,14 +10,14 @@ namespace Game.GamePlay.View.Towers
 {
     public class ShotBinder : MonoBehaviour
     {
-        protected TowerViewModel _viewModel;
+        protected TowerAttackViewModel _viewModel;
         protected IDisposable _disposable;
         protected float _baseYMissile = 0f;
         protected ReactiveProperty<Vector3> _target = new();
         protected readonly ReactiveProperty<bool> _isMoving = new(false);
         protected MobViewModel _mobViewModel;
 
-        public void Bind(TowerViewModel viewModel)
+        public void Bind(TowerAttackViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
             _viewModel = viewModel;

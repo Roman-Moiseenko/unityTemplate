@@ -57,7 +57,7 @@ namespace Game.GamePlay.View.Warriors
                 var target = e.Value;
                 //При его смерти - удаляем из пула
                 var disposable = target.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(target));
-                _mobDisposables.Add(target.UniqueId, disposable); //Кеш подписок на смерть моба
+                _mobDisposables.TryAdd(target.UniqueId, disposable); //Кеш подписок на смерть моба
                 SetTarget(target); //Добавляем его цель (если мультишот, то добавляется, для одиночного идет проверка)
             });            
             //При удалении из пула (убит или вышел с дистанции) - удалить из цели

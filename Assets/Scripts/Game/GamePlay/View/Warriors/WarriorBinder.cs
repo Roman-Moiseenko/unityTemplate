@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Game.GamePlay.View.Mobs;
+using MVVM.Storage;
 using R3;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -227,6 +228,7 @@ namespace Game.GamePlay.View.Warriors
             {
                 //Когда моб выходит из зоны видимости, удаляем из Пула
                 var mobBinder = other.gameObject.GetComponent<MobBinder>();
+                if (mobBinder == null) return;
                 if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
                 _viewModel.PullTargets.Remove(mobBinder.ViewModel);
             }

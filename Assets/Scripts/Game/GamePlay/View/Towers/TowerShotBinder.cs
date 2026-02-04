@@ -14,7 +14,7 @@ namespace Game.GamePlay.View.Towers
         [SerializeField] protected ExplosionBinder explosionBinder;
 
         protected IDisposable _disposable;
-        protected TowerViewModel _viewModel;
+        protected TowerAttackViewModel _viewModel;
         
         public bool IsFree;
         protected MobViewModel MobTarget;
@@ -28,7 +28,7 @@ namespace Game.GamePlay.View.Towers
             
         }
 
-        public virtual void Bind(TowerViewModel viewModel)
+        public virtual void Bind(TowerAttackViewModel viewModel)
         {
             IsFree = true;
 

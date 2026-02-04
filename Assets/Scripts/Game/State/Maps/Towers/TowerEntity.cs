@@ -26,13 +26,9 @@ namespace Game.State.Maps.Towers
         public readonly float SpeedShot;
         public ReactiveProperty<Vector2Int> Placement; 
         
-        public ReactiveProperty<bool> IsShot = new(false);
-        public ReactiveProperty<bool> IsBusy = new(false);
         public MobDefence Defence => Origin.Defence;
         
         public Dictionary<TowerParameterType, TowerParameterData> Parameters = new();
-
-        public ReactiveProperty<Vector2> PrepareShot = new();
         
         public TowerEntity(TowerEntityData towerEntityData)
         {

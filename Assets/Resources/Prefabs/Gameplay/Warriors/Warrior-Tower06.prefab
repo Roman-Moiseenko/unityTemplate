@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.Warriors.WarriorBinder
   _healthBarBinder: {fileID: 3123537506589004216}
+  stopDistance: 0.2
 --- !u!54 &6679176893919036782
 Rigidbody:
   m_ObjectHideFlags: 0

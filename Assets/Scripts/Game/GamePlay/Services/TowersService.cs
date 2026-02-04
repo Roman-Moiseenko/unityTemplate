@@ -166,7 +166,18 @@ namespace Game.GamePlay.Services
          */
         private void CreateTowerViewModel(TowerEntity towerEntity)
         {
-            var towerViewModel = new TowerViewModel(towerEntity, _gameplayState, this, _fsmTower); //3
+            TowerViewModel towerViewModel;
+
+            if (towerEntity.IsPlacement)
+            {
+                towerViewModel = new TowerPlacementViewModel(towerEntity, _gameplayState, this, _fsmTower); //3
+            }
+            else
+            {
+                towerViewModel = new TowerAttackViewModel(towerEntity, _gameplayState, this, _fsmTower); //3
+            }
+            //TODO Баф и Дебафф башни
+            
             var directionTower = _placementService.GetDirectionTower(towerEntity.Position.CurrentValue);
             towerViewModel.SetDirection(directionTower);
             _allTowers.Add(towerViewModel); //4

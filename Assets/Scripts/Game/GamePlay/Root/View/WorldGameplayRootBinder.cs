@@ -21,7 +21,7 @@ namespace Game.GamePlay.Root.View
     {
         [SerializeField] private MapFogBinder mapFog;
 
-        private readonly Dictionary<int, TowerBaseBinder> _createTowersMap = new();
+        private readonly Dictionary<int, ITowerBaseBinder> _createTowersMap = new();
         private readonly Dictionary<int, WarriorBinder> _createWarriorsMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
         private readonly Dictionary<int, BoardBinder> _createBoardsMap = new();
@@ -234,11 +234,27 @@ namespace Game.GamePlay.Root.View
 */
         private void CreateTowerBase(TowerViewModel towerViewModel)
         {
-            var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/TowerBase"; //Перенести в настройки уровня
-            var towerPrefab = Resources.Load<TowerBaseBinder>(prefabTowerLevelPath);
-            var createdTower = Instantiate(towerPrefab, transform);
-            createdTower.Bind(towerViewModel);
-            _createTowersMap[towerViewModel.UniqueId] = createdTower;
+             
+        //    var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/TowerBase"; //Перенести в настройки уровня
+            if (towerViewModel.GetType() == typeof(TowerAttackViewModel))
+            {
+                var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/TowerBaseAttack";
+                var towerPrefab = Resources.Load<TowerBaseAttackBinder>(prefabTowerLevelPath);
+                var createdTower = Instantiate(towerPrefab, transform);
+                createdTower.Bind(towerViewModel);
+                _createTowersMap[towerViewModel.UniqueId] = createdTower;
+            }
+
+            if (towerViewModel.GetType() == typeof(TowerPlacementViewModel))
+            {
+                var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/TowerBasePlacement";
+                var towerPrefab = Resources.Load<TowerBasePlacementBinder>(prefabTowerLevelPath);
+                var createdTower = Instantiate(towerPrefab, transform);
+                createdTower.Bind(towerViewModel);
+                _createTowersMap[towerViewModel.UniqueId] = createdTower;
+            }
+
+
         }
 
         private void CreateRoad(RoadViewModel roadViewModel, Transform parentTransform = null)
@@ -324,7 +340,8 @@ namespace Game.GamePlay.Root.View
         {
             if (_createTowersMap.TryGetValue(towerViewModel.UniqueId, out var towerBinder))
             {
-                Destroy(towerBinder.gameObject);
+                towerBinder.DestroyGameObject();
+               // Destroy(towerBinder.gameObject);
                 _createTowersMap.Remove(towerViewModel.UniqueId);
             }
         }

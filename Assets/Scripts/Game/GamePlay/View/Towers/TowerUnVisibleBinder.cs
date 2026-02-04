@@ -11,7 +11,7 @@ namespace Game.GamePlay.View.Towers
     public class TowerUnVisibleBinder : MonoBehaviour
     {
         [SerializeField] private SphereCollider visibleCollider;
-        private TowerViewModel _viewModel;
+        private TowerAttackViewModel _viewModel;
         private IDisposable _disposable;
 
         private void Awake()
@@ -21,7 +21,7 @@ namespace Game.GamePlay.View.Towers
             Physics.reuseCollisionCallbacks = true;
         }
 
-        public void Bind(TowerViewModel viewModel)
+        public void Bind(TowerAttackViewModel viewModel)
         {
             visibleCollider.gameObject.SetActive(true);
             var d = Disposable.CreateBuilder();

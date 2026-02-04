@@ -38,10 +38,18 @@ namespace Game.GamePlay.View.Frames
             Position.Subscribe(position =>
             {
                 var enabled = service.IsRoad(position);
-                if (enabled) enabled = towerViewModel.IsInPlacement(position);
+                if (enabled) enabled = IsInPlacement(towerViewModel, position);
                 Enable.Value = enabled;
             });
      
+        }
+        
+        private bool IsInPlacement(TowerViewModel towerViewModel, Vector2Int position)
+        {
+            if (towerViewModel.IsPlacement == false) return false;
+
+            return Math.Abs(Position.CurrentValue.x - position.x) < 3 && 
+                   Math.Abs(Position.CurrentValue.y - position.y) < 3;
         }
         
         public void MoveFrame(Vector2Int position)
