@@ -121,11 +121,6 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _uiManager.OpenPopupPause();
         }
 
-        public void RequestOpenPopupB()
-        {
-            _uiManager.OpenPopupB();
-        }
-
         public override void Dispose()
         {
             _disposable.Dispose();

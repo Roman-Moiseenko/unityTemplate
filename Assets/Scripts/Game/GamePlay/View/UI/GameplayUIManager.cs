@@ -143,19 +143,6 @@ namespace Game.GamePlay.View.UI
             rootUI.OpenPopup(a);
             return a;
         }
-        
-        public PopupBViewModal OpenPopupB()
-        {
-            var b = new PopupBViewModal(Container);
-            var rootUI = Container.Resolve<UIGameplayRootViewModel>();
-            _fsmGameplay.Fsm.SetState<FsmStateGamePause>(); //Меняем состояние на Пауза
-            b.CloseRequested.Subscribe(e =>
-            {
-                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-            });
-            rootUI.OpenPopup(b);
-            return b;
-        }
 
         public PopupFinishGameplayViewModel OpenFinishPopup(GameplayExitParams exitParams)
         {

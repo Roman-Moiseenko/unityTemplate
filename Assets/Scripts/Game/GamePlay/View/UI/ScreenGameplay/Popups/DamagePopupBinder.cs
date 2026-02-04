@@ -1,49 +1,41 @@
 ﻿using System;
 using DG.Tweening;
 using Game.State.Maps.Shots;
+using MVVM.Storage;
 using R3;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
 {
-    public class DamagePopupBinder : MonoBehaviour
+    public class DamagePopupBinder : MonoBehaviour, IPoolElement
     {
-
         [SerializeField] private Transform _textPanel;
         [SerializeField] private TMP_Text text;
-        public ReactiveProperty<bool> Free = new();
 
         private Camera _camera;
         private Vector3 _position = Vector3.zero;
         private IDisposable _disposable;
         private Sequence Sequence;
 
-        public void Bind(Camera camera, Subject<Unit> positionCamera)
+        public void Bind()
         {
-            var d = Disposable.CreateBuilder();
+            _camera = Camera.main;
+        }
 
-            Free.Value = true;
-            transform.gameObject.SetActive(false);
-            //_animator = _textPanel.GetComponent<Animator>();
-            _camera = camera;
+        public void StartPopup(Vector3 position, int damage, DamageType damageType, Subject<Unit> positionCamera)
+        {
+            _disposable?.Dispose();
+            var d = Disposable.CreateBuilder();
             positionCamera.Subscribe(_ =>
             {
-                if (Free.Value) return; //Не обсчитываем для свободных блоков
                 transform.position = _camera.WorldToScreenPoint(_position);
             }).AddTo(ref d);
             _disposable = d.Build();
-        }
-
-        public void StartPopup(Vector3 position, int damage, DamageType damageType)
-        {
+            
             _position = position;
-            if (_camera == null)
-            {
-                //TODO Отследить, при проигрыше и закрытии запускается показ урона
-                return;
-            }
+            if (_camera == null) return;
+            
             transform.position = _camera.WorldToScreenPoint(position);
             _textPanel.GetComponent<TMP_Text>().text = damage.ToString();
             _textPanel.GetComponent<TMP_Text>().color = damageType switch
@@ -52,7 +44,6 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
                 DamageType.MassDamage => Color.yellow,
                 _ => Color.white
             };
-            Free.Value = false;
             transform.gameObject.SetActive(true);
             Sequence = DOTween.Sequence();
             
@@ -73,8 +64,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
                 .OnComplete(() =>
                 {
                     transform.gameObject.SetActive(false);
-                    Free.Value = true;
                     Sequence.Kill();
+                    _disposable?.Dispose();
                 });
         }
         private void OnDestroy()
@@ -84,7 +75,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Popups
                 Sequence.Kill();
                 Sequence = null;
             }
-            _disposable.Dispose();
+            _disposable?.Dispose();
         }
     }
 }

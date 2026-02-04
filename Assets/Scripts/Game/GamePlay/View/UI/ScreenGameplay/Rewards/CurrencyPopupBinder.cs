@@ -1,34 +1,28 @@
-﻿using System;
-using System.Collections;
-using DG.Tweening;
+﻿using DG.Tweening;
+using MVVM.Storage;
 using R3;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
 {
-    public class CurrencyPopupBinder : MonoBehaviour
+    public class CurrencyPopupBinder : MonoBehaviour, IPoolElement
     {
-        public ReactiveProperty<bool> Free;       
-         
         private Camera _camera;
-        private Vector3 _target;
-        private Vector3 _targetFinish;
+
         private Sequence Sequence { get; set; }
 
-        public void Bind(Camera camera, Subject<Unit> positionCamera, Vector3 targetFinish)
+        public void Bind()
         {
-            Free = new ReactiveProperty<bool>(true);
-            transform.gameObject.SetActive(false);
-            _camera = camera;
-            _targetFinish = targetFinish;
+            _camera = Camera.main;
         }
         
-        public void StartPopup(Vector3 position)
+        public ReactiveProperty<bool> StartPopup(Vector3 position, Vector3 targetFinish)
         {
             transform.position = _camera.WorldToScreenPoint(position);
             transform.gameObject.SetActive(true);
-            Free.Value = false;
+
+            var result = new ReactiveProperty<bool>(false);
 
             var random = Random.insideUnitSphere;
             var targetEjection = new Vector3(
@@ -37,6 +31,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
                 transform.position.z
             );
             Sequence = DOTween.Sequence();
+            
             Sequence
                 .Append(
                     transform.GetComponent<RectTransform>()
@@ -52,15 +47,16 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
                 .Append(DOTween.Sequence().SetDelay(0.1f).SetUpdate(true))
                 .Append(
                     transform
-                        .DOMove(_targetFinish, 0.7f)
+                        .DOMove(targetFinish, 0.7f)
                         .SetEase(Ease.InOutCirc)
                         .SetUpdate(true))
                 .OnComplete(() =>
                 {
                     transform.gameObject.SetActive(false);
-                    Free.Value = true;
                     Sequence.Kill();
+                    result.OnNext(true);
                 }).SetUpdate(true);
+            return result;
         }
 
         private void OnDestroy()
