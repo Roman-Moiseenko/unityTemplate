@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.GamePlay.View.Roads;
 using Game.State.Maps.Grounds;
@@ -267,6 +268,22 @@ namespace Game.GamePlay.Services
             if (position.x == target.x - 1 && position.y == target.y) return true;
             if (position.x == target.x + 1 && position.y == target.y) return true;
             return false;
+        }
+
+        public bool IsWay(Vector2Int placementCurrentValue)
+        {
+            foreach (var roadEntity in _gameplayState.Way)
+            {
+                if (roadEntity.Position.CurrentValue == placementCurrentValue)
+                    return true;
+            }
+            foreach (var roadEntity in _gameplayState.WaySecond)
+            {
+                if (roadEntity.Position.CurrentValue == placementCurrentValue)
+                    return false;
+            }
+
+            throw new Exception("Неверные данные");
         }
     }
     

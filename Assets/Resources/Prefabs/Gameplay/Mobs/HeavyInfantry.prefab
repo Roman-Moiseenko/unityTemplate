@@ -73,7 +73,7 @@ CapsuleCollider:
   m_Radius: 0.15
   m_Height: 0.5
   m_Direction: 1
-  m_Center: {x: 0, y: 0.2, z: 0}
+  m_Center: {x: 0, y: 0.15, z: 0}
 --- !u!1 &8701187608073462820
 GameObject:
   m_ObjectHideFlags: 0
@@ -338,6 +338,14 @@ PrefabInstance:
     - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7425531406358187305, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_Height
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7425531406358187305, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_Radius
+      value: 0.25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

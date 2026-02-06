@@ -8,6 +8,11 @@ namespace MVVM.FSM
         public object Params { get; set; }
         protected readonly DIContainer _container;
 
+        protected FSMState(FsmProxy fsm)
+        {
+            Fsm = fsm;
+            _container = null;
+        }
         protected FSMState(FsmProxy fsm, DIContainer container)
         {
             Fsm = fsm;

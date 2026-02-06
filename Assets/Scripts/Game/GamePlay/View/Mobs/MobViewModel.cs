@@ -5,6 +5,7 @@ using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
+using Game.GamePlay.View.Warriors;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Warriors;
@@ -31,7 +32,9 @@ namespace Game.GamePlay.View.Mobs
 
         public Vector2 StartPosition;
         public Vector2Int StartDirection;
+
         public List<RoadPoint> RoadPoints = new();
+
         //public ReactiveProperty<MobState> State; //TODO Возможно удалить или модифицировать до FSM
         public ReactiveProperty<float> CurrentHealth;
         public float MaxHealth;
@@ -45,11 +48,9 @@ namespace Game.GamePlay.View.Mobs
         public ReactiveProperty<Vector3> PositionTarget => _mobEntity.PositionTarget;
         public ReadOnlyReactiveProperty<bool> IsDead => _mobEntity.IsDead;
         public MobDefence Defence => _mobEntity.Defence;
-
+        public bool IsWay => _mobEntity.IsWay;
         private readonly GameplayStateProxy _gameplayState;
 
-        public ReactiveProperty<bool> StartGo = new(false);
-        
         public MobViewModel(
             MobEntity mobEntity,
             GameplayStateProxy gameplayState,
@@ -60,23 +61,18 @@ namespace Game.GamePlay.View.Mobs
             _mobEntity = mobEntity;
             CurrentHealth = mobEntity.Health;
             MaxHealth = mobEntity.Health.CurrentValue;
-            //State = mobEntity.State;
-            
+
             //Моб вышел на дорогу, просчитываем путь и начальные координаты, от расположения ворот
-            mobEntity.IsWentOut.Where(x => x).Subscribe(_ =>
-            {
-                var position = waveService.GateWaveViewModel.Position.Value;
-                var direction = -1 * waveService.GateWaveViewModel.Direction.Value;
-                
-                mobEntity.SetStartPosition(position, direction);
-                StartPosition = mobEntity.Position.CurrentValue;
-                StartDirection = mobEntity.Direction.CurrentValue;
-                
-                RoadPoints = waveService.GenerateRoadPoints(mobEntity);
-                //Debug.Log(JsonConvert.SerializeObject(RoadPoints, Formatting.Indented));
-                StartGo.Value = true;
-                IsMoving.Value = true;
-            });
+            var position = waveService.GateWaveViewModel.Position.Value;
+            var direction = -1 * waveService.GateWaveViewModel.Direction.Value;
+
+            mobEntity.SetStartPosition(position, direction);
+            StartPosition = mobEntity.Position.CurrentValue;
+            StartDirection = mobEntity.Direction.CurrentValue;
+
+            RoadPoints = waveService.GenerateRoadPoints(mobEntity);
+
+            IsMoving.Value = true;
         }
 
         public IEnumerator WaitFinishAnimation()
@@ -86,14 +82,14 @@ namespace Game.GamePlay.View.Mobs
                 yield return null;
             }
         }
-        
+
         public IEnumerator TimerDebuff(string configId, MobDebuff debuff)
         {
             //Пауза
             yield return new WaitForSeconds(debuff.Time);
             _mobEntity.RemoveDebuff(configId);
         }
-        
+
 
         public float GetSpeedMob()
         {
@@ -124,17 +120,32 @@ namespace Game.GamePlay.View.Mobs
             yield return AttackEntity(_gameplayState.Castle);
         }
 
-        public IEnumerator AttackWarrior(int warriorUniqueId)
+        public IEnumerator AttackWarrior(WarriorViewModel viewModel)
         {
+            /*
             WarriorEntity warrior = null;
             foreach (var warriorEntity in _gameplayState.Warriors)
                 if (warriorEntity.UniqueId == warriorUniqueId) warrior = warriorEntity;
             if (warrior == null) yield break;
-            
+            */
             IsMoving.Value = false;
             IsAttack.Value = true;
-            
-            yield return AttackEntity(warrior);
+
+            while (IsAttack.Value)
+            {
+                if (_mobEntity.IsDead.CurrentValue) yield break;
+                viewModel.DamageWarrior(Damage, _mobEntity.Defence);
+                yield return new WaitForSeconds(_mobEntity.SpeedAttack / AppConstants.MOB_SPEED_ATTACK);
+
+                //entity.DamageReceived(Damage);
+                if (!viewModel.IsDead.CurrentValue) continue;
+
+                //State.Value = MobState.Moving;
+                IsMoving.Value = true;
+                IsAttack.Value = false;
+            }
+
+            //yield return AttackEntity(warrior);
         }
 
         public IEnumerator AttackEntity(IEntityHasHealth entity)

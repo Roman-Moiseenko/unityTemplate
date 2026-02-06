@@ -19,8 +19,11 @@ namespace Game.GamePlay.View.Mobs
         {
             if (other.gameObject.CompareTag("Warrior"))
             {
-                var warrior = other.gameObject.GetComponent<WarriorBinder>();
-                _coroutine = StartCoroutine(ViewModel.AttackWarrior(warrior.UniqueId));
+                //TODO Сделать через PullTargets
+                var warrior = other.gameObject.GetComponent<WarriorAttackBinder>();
+                //warrior.
+//                Debug.Log("warrior.UniqueId = " + warrior.ViewModel.UniqueId);
+                _coroutine = StartCoroutine(ViewModel.AttackWarrior(warrior.ViewModel));
             }
 
             if (other.gameObject.CompareTag("Castle"))

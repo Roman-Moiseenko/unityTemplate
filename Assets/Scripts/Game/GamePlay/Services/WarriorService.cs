@@ -28,16 +28,16 @@ namespace Game.GamePlay.Services
         {
             _gameplayState = gameplayState;
             _cmd = cmd;
-            foreach (var warriorEntity in gameplayState.Warriors)
+         /*   foreach (var warriorEntity in gameplayState.Warriors)
             {
                 Debug.Log(" " + warriorEntity.UniqueId + " " + warriorEntity.ParentId);
                 CreateWarriorViewModel(warriorEntity);
             }
-            
+            */
             gameplayState.Warriors.ObserveAdd().Subscribe(e =>
             {
                 var warriorEntity = e.Value;
-                CreateWarriorViewModel(warriorEntity);
+        //        CreateWarriorViewModel(warriorEntity);
                 warriorEntity.IsDead.Skip(1).Where(x => x).Subscribe(
                     _ => RemoveWarrior(warriorEntity));
             });
@@ -65,8 +65,8 @@ namespace Game.GamePlay.Services
 
         private void CreateWarriorViewModel(WarriorEntity warriorEntity)
         {
-            var warriorViewModel = new WarriorViewModel(warriorEntity, _gameplayState);
-            _allWarriors.Add(warriorViewModel);
+       //     var warriorViewModel = new WarriorViewModel(warriorEntity, _gameplayState);
+       //     _allWarriors.Add(warriorViewModel);
         }
 
         public void AddWarriorsTower(TowerEntity towerEntity)

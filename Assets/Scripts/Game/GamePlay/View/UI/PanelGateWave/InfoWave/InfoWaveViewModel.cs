@@ -71,7 +71,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
         {
             var position = isWay 
                 ? _waveService.GateWaveViewModel.Position.CurrentValue 
-                : _waveService.GateWaveViewModelSecond.Position.CurrentValue;
+                : _waveService.GateWaveSecondViewModel.Position.CurrentValue;
             var p = new Vector3(position.x, 0, position.y);
             var v= _cameraService.Camera.WorldToScreenPoint(p);
             v.z = 0;

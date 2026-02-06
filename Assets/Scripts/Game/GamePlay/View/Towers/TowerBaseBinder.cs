@@ -18,17 +18,13 @@ namespace Game.GamePlay.View.Towers
         [SerializeField] protected VisualEffect before;
         [SerializeField] protected AreaBinder areaBinder;
         
-        
-        private IDisposable _disposable;
         protected Coroutine MainCoroutine;
         protected T ViewModel;
         protected TowerBinder TowerBinder;
 
         private Sequence Sequence { get; set; }
-
         private ReactiveProperty<Vector3> _firsTarget;
-
-     //   private AreaBinder _areaBinder;
+        private IDisposable _disposable;
 
         private void OnEnable()
         {
@@ -49,8 +45,7 @@ namespace Game.GamePlay.View.Towers
 
             CreateTower();
             CreateArea();
-
-
+            
             // ПОДПИСКИ //
             var d = Disposable.CreateBuilder();
 
@@ -69,8 +64,7 @@ namespace Game.GamePlay.View.Towers
                     }
                 }).AddTo(ref d);
             }
-
-
+            
             //Запуск эффекта обновления уровня
             ViewModel.Level.Skip(1).Subscribe(_ =>
             {
@@ -107,7 +101,6 @@ namespace Game.GamePlay.View.Towers
         
         private IEnumerator EffectsUpgradeTower()
         {
-            //_viewModel.FinishEffectLevelUp.Value = false;
             before.playRate = 1.5f;
             after.playRate = 1.5f;
             before.Play();
@@ -118,11 +111,7 @@ namespace Game.GamePlay.View.Towers
             after.Stop();
             ViewModel.FinishEffectLevelUp.OnNext(true);
         }
-
-
-
-
-
+        
         private void DestroyTower()
         {
             Destroy(TowerBinder.gameObject);
@@ -145,20 +134,9 @@ namespace Game.GamePlay.View.Towers
         private void CreateArea()
         {
             //Нет области Атаки
-            if (areaBinder != null)
-            {
-                areaBinder.Bind();
-            }
-            
-       /*     if (ViewModel.GetAreaRadius() == Vector3.zero) return;
-
-            var areaPrefab = Resources.Load<AreaBinder>(PrefabAreaPath);
-            _areaBinder = Instantiate(areaPrefab, areaAction.transform);
-            _areaBinder.Bind();*/
+            if (areaBinder != null) areaBinder.Bind();
         }
-
-
-
+        
         /**
          * Перезапуск атаки после обновления башни
          */
@@ -166,7 +144,7 @@ namespace Game.GamePlay.View.Towers
 
         private void OnDestroy()
         {
-            StopCoroutine(MainCoroutine);
+            //StopCoroutine(MainCoroutine);
             if (Sequence.IsActive())
             {
                 Sequence.Kill();

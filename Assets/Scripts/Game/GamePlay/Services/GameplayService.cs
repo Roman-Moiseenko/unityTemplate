@@ -339,7 +339,8 @@ namespace Game.GamePlay.Services
             foreach (var entity in _gameplayState.Mobs.ToArray())
             {
                 //Если моб на дороге, наносим урон
-                if (entity.IsWentOut.CurrentValue) entity.SetDamage(_gameplayState.Castle.FullHealth);    
+              //  if (entity.IsWentOut.CurrentValue) 
+                    entity.SetDamage(_gameplayState.Castle.FullHealth);    
             }
 
             //Очищаем атаку на всех башнях

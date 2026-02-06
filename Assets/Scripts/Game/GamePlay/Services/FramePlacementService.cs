@@ -28,7 +28,7 @@ namespace Game.GamePlay.Services
             {
                 if (newState.GetType() == typeof(FsmTowerPlacement))
                 {
-                    CreatePlacement(fsmTower.GetTowerViewModel());
+                    CreatePlacement((TowerPlacementViewModel)fsmTower.GetTowerViewModel());
                 }
                 else
                 { 
@@ -74,7 +74,7 @@ namespace Game.GamePlay.Services
 
         }
 
-        public void CreatePlacement(TowerViewModel towerViewModel)
+        public void CreatePlacement(TowerPlacementViewModel towerViewModel)
         {
             _viewModel = new FramePlacementViewModel(towerViewModel , this);
             _viewModels.Add(_viewModel);

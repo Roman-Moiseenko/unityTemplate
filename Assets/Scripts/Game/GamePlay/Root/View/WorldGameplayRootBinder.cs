@@ -137,7 +137,7 @@ namespace Game.GamePlay.Root.View
 
             //Создаем view-модель ворот из прехаба
             CreateGateWave(_viewModel.GateWaveViewModel);
-            CreateGateWave(_viewModel.GateWaveViewModelSecond);
+            CreateGateWave(_viewModel.GateWaveSecondViewModel);
             //CreateAttackArea(_viewModel.AreaViewModel);
 
             //Создаем Туман Войны

@@ -44,6 +44,7 @@ namespace Game.State.Root
         public ObservableList<RoadEntity> WayDisabled { get; } = new();
         public ObservableList<WarriorEntity> Warriors { get; } = new();
         public ObservableList<MobEntity> Mobs { get; } = new();
+        public ObservableList<MobEntity> BufferMobs { get; } = new();
 
         public ReactiveProperty<bool> MapFinished = new(false);
         public ObservableList<ShotData> Shots { get; } = new();

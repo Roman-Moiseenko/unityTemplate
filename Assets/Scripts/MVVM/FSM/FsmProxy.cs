@@ -60,5 +60,11 @@ namespace MVVM.FSM
         {
             StateCurrent.Value?.Update();
         }
+
+
+        public void ClearParams()
+        {
+            Params = null;
+        }
     }
 }

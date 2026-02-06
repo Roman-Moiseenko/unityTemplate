@@ -31,8 +31,8 @@ namespace Game.GamePlay.Services
         private readonly List<TowerCardData> _baseTowerCards; //
         private readonly ICommandProcessor _cmd;
         private readonly PlacementService _placementService;
-        private readonly WarriorService _warriorService;
         private readonly FsmTower _fsmTower;
+        private readonly FsmWave _fsmWave;
         private readonly ObservableList<TowerViewModel> _allTowers = new();
         private readonly Dictionary<int, TowerViewModel> _towersMap = new();
         //Кешируем параметры башен на карте
@@ -50,8 +50,8 @@ namespace Game.GamePlay.Services
             List<TowerCardData> baseTowerCards, //Базовые настройки колоды
             ICommandProcessor cmd,
             PlacementService placementService,
-            WarriorService warriorService,
-            FsmTower fsmTower
+            FsmTower fsmTower,
+            FsmWave fsmWave
         )
         {
             _gameplayState = gameplayState;
@@ -59,8 +59,9 @@ namespace Game.GamePlay.Services
             _baseTowerCards = baseTowerCards;
             _cmd = cmd;
             _placementService = placementService;
-            _warriorService = warriorService;
+
             _fsmTower = fsmTower;
+            _fsmWave = fsmWave;
 
             //Кешируем настройки зданий / объектов
             foreach (var towerSettings in towersSettings.AllTowers)
@@ -120,8 +121,6 @@ namespace Game.GamePlay.Services
             });
         }
 
-        
-
         private void UpdateParams(string configId, int level)
         {
             var levelSettings = _towerSettingsMap[configId].FirstOrDefault(l => l.Level == level);
@@ -170,7 +169,13 @@ namespace Game.GamePlay.Services
 
             if (towerEntity.IsPlacement)
             {
-                towerViewModel = new TowerPlacementViewModel(towerEntity, _gameplayState, this, _fsmTower); //3
+                towerViewModel = new TowerPlacementViewModel(
+                    towerEntity, 
+                    _gameplayState, 
+                    this, 
+                    _fsmTower, 
+                    _fsmWave, 
+                    _placementService); //3
             }
             else
             {
@@ -253,23 +258,7 @@ namespace Game.GamePlay.Services
             }
             return towers;
         }
-
-        /**
-         * Методы для башен Placement с Warriors
-         */   
         
-        public bool IsDeadAllWarriors(TowerEntity towerEntity)
-        {
-            if (!towerEntity.IsPlacement) return false;
-            return _warriorService.IsDeadAllWarriors(towerEntity.UniqueId);
-        }
-        
-        public void AddWarriorsTower(TowerEntity towerEntity)
-        {
-            if (!towerEntity.IsPlacement) return;
-            _warriorService.AddWarriorsTower(towerEntity);
-        }
-
         public void SetPlacement(int uniqueId, Vector2Int position)
         {
             foreach (var towerEntity in _gameplayState.Towers)

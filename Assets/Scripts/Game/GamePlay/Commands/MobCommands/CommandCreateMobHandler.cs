@@ -68,7 +68,7 @@ namespace Game.GamePlay.Commands.MobCommands
                     DamageSecondType = damageSecondType,
                 };
                 
-                _gameplayState.Mobs.Add(new MobEntity(mob));
+                _gameplayState.BufferMobs.Add(new MobEntity(mob));
             }
 
             return false;

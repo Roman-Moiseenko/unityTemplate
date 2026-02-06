@@ -159,8 +159,8 @@ namespace Game.GamePlay.Root
                 gameplayEnterParams.Towers,
                 cmd,
                 placementService,
-                warriorService,
-                fsmTower
+                fsmTower,
+                fsmWave
             );
 
             container.RegisterInstance(towersService);

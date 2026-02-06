@@ -25,7 +25,7 @@ namespace Game.GamePlay.View.Frames
 
         public ReactiveProperty<bool> IsSelected;
 
-        public FramePlacementViewModel(TowerViewModel towerViewModel, FramePlacementService service)
+        public FramePlacementViewModel(TowerPlacementViewModel towerViewModel, FramePlacementService service)
         {
             //var t = towerViewModel.Placement;
             TowerUniqueId = towerViewModel.UniqueId;

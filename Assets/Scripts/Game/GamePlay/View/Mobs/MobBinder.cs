@@ -25,10 +25,15 @@ namespace Game.GamePlay.View.Mobs
         private float _mobY;
         private int _currentIndexListPoint;
 
-        public int UnityId;
+        [FormerlySerializedAs("UnityId")] public int UniqueId;
 
         IDisposable disposable;
         public ReactiveProperty<bool> Free = new(true); //Доступность в пуле
+
+        private void Awake()
+        {
+            gameObject.SetActive(false);
+        }
 
         public void Bind(MobViewModel viewModel)
         {
@@ -36,10 +41,9 @@ namespace Game.GamePlay.View.Mobs
             Free.Value = false;
 
             ViewModel = viewModel;
-            UnityId = viewModel.UniqueId;
+            UniqueId = viewModel.UniqueId;
             _mobY = ViewModel.IsFly ? 0.9f : 0.0f;
             
-
             _healthBarBinder = _healthBar.GetComponent<HealthBar>();
             _healthBarBinder.Bind(
                 ViewModel.MaxHealth,
@@ -54,7 +58,7 @@ namespace Game.GamePlay.View.Mobs
 
             viewModel.IsMoving.Subscribe(v =>
             {
-                //Debug.Log(v);
+                
             }).AddTo(ref d);
             viewModel.IsAttack.Subscribe().AddTo(ref d);
             viewModel.AnimationDelete.Where(v => v == true).Subscribe(_ =>
@@ -72,30 +76,22 @@ namespace Game.GamePlay.View.Mobs
                 }
             }).AddTo(ref d);
             */
-            gameObject.SetActive(false);
-            viewModel.StartGo.Where(x => x).Subscribe(_ =>
-            {
-                transform.position = new Vector3(viewModel.StartPosition.x, _mobY, viewModel.StartPosition.y);
-                //TODO Включение анимации или эффекта длп старта
-                //Начальная позиция - координата первой дороги от портала
-                _targetPosition = viewModel.GetTargetPosition(_currentIndexListPoint);
 
-                
-                //поворачиваем модель
-                transform.rotation = Quaternion.LookRotation(new Vector3(viewModel.StartDirection.x, 0,
-                    viewModel.StartDirection.y));
-                gameObject.SetActive(true);
-            }).AddTo(ref d);
+            transform.position = new Vector3(viewModel.StartPosition.x, _mobY, viewModel.StartPosition.y);
+            //TODO Включение анимации или эффекта длп старта
+            //Начальная позиция - координата первой дороги от портала
+            _targetPosition = viewModel.GetTargetPosition(_currentIndexListPoint);
             
+            //поворачиваем модель
+            transform.rotation = Quaternion.LookRotation(new Vector3(viewModel.StartDirection.x, 0,
+                viewModel.StartDirection.y));
+            gameObject.SetActive(true);
+
             //TODO Проверить 
             //При проигрывании анимации удаляем все подписки, чтоб не сработали, т.е. сущность уже удалена
             viewModel.AnimationDelete.Where(x => x).Subscribe(_ => disposable.Dispose()).AddTo(ref d);
-            
+
             disposable = d.Build();
-
-
-            
-            //gameObject.SetActive(true);
         }
 
         public void Update()
@@ -119,8 +115,6 @@ namespace Game.GamePlay.View.Mobs
                     {
                         _targetPosition = ViewModel.GetTargetPosition(_currentIndexListPoint);
                     }
-
-                    //Debug.Log(" _currentIndexListPoint = " + _currentIndexListPoint + " " + ViewModel.RoadPoints.);
                 }
 
                 var speedMob = AppConstants.MOB_BASE_SPEED * ViewModel.GetSpeedMob();
@@ -160,6 +154,5 @@ namespace Game.GamePlay.View.Mobs
                 //TODO Находим Данные от Выстрела и наносим уронм мобу через viewModel.DamageService.SetDamage()
             }
         }
-        
     }
 }

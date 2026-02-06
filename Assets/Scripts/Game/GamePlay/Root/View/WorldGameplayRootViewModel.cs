@@ -36,7 +36,7 @@ namespace Game.GamePlay.Root.View
         public readonly IObservableCollection<FramePlacementViewModel> FramePlacementViewModels;
         public CastleViewModel CastleViewModel { get; private set; }
         public GateWaveViewModel GateWaveViewModel { get; private set; }
-        public GateWaveViewModel GateWaveViewModelSecond { get; private set; }
+        public GateWaveViewModel GateWaveSecondViewModel { get; private set; }
         //public AttackAreaViewModel AreaViewModel { get; }
         public MapFogViewModel MapFogViewModel { get; }
 
@@ -90,7 +90,7 @@ namespace Game.GamePlay.Root.View
             FramePlacementViewModels = framePlacementService.ViewModels;
             CastleViewModel = castleService.CastleViewModel;
             GateWaveViewModel = waveService.GateWaveViewModel;
-            GateWaveViewModelSecond = waveService.GateWaveViewModelSecond;
+            GateWaveSecondViewModel = waveService.GateWaveSecondViewModel;
 
             //AreaViewModel = new AttackAreaViewModel();
             MapFogViewModel = new MapFogViewModel(groundsService);

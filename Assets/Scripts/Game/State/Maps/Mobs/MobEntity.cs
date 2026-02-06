@@ -35,7 +35,7 @@ namespace Game.State.Maps.Mobs
         public ReactiveProperty<Vector2Int> Direction; //Данные не сохраняются в MobEntityData
         public ReadOnlyReactiveProperty<bool> IsDead; // = new(false);
         public readonly ReactiveProperty<Vector3> PositionTarget = new();
-        public ReactiveProperty<bool> IsWentOut = new(false); //Пошел по дороге    
+        //public ReactiveProperty<bool> IsWentOut = new(false); //Пошел по дороге    
         public ObservableDictionary<string, MobDebuff> Debuffs = new();        
         
         //public ReactiveProperty<MobState> State;
