@@ -61,7 +61,7 @@ namespace Game.GamePlay.View.Castle
             }
             else
             {
-                Debug.Log("Принудительное попадание");
+//                Debug.Log("Принудительное попадание");
                 FireFinish();
                 IsShotComplete.OnNext(true);
             }

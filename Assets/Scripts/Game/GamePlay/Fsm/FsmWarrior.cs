@@ -2,16 +2,19 @@
 using Game.GamePlay.Fsm.WarriorStates;
 using Game.GamePlay.View.Mobs;
 using MVVM.FSM;
+using R3;
 
 namespace Game.GamePlay.Fsm
 {
     public class FsmWarrior
     {
         public FsmProxy Fsm;
+
+        public bool IsMoving;
         public FsmWarrior()
         {
             Fsm = new FsmProxy();
-            
+
             Fsm.AddState(new FsmWarriorNew(Fsm));
             Fsm.AddState(new FsmWarriorAttack(Fsm));
             Fsm.AddState(new FsmWarriorAwait(Fsm));
@@ -19,15 +22,26 @@ namespace Game.GamePlay.Fsm
             Fsm.AddState(new FsmWarriorGoToMob(Fsm));
             Fsm.AddState(new FsmWarriorGoToRepair(Fsm));
             Fsm.AddState(new FsmWarriorRepair(Fsm));
-            Fsm.AddState(new FsmWarriorToPlacement(Fsm));
-            
+            Fsm.AddState(new FsmWarriorGoToPlacement(Fsm));
             Fsm.SetState<FsmWarriorNew>();
+
+            Fsm.StateCurrent.Subscribe(state =>
+            {
+                if (state.GetType() == typeof(FsmWarriorGoToMob) || state.GetType() == typeof(FsmWarriorGoToRepair) || state.GetType() == typeof(FsmWarriorGoToPlacement))
+                {
+                    IsMoving = true;
+                }
+                else
+                {
+                    IsMoving = false;
+                }
+            });
         }
 
 
         public bool IsPlacement()
         {
-            return Fsm.StateCurrent.CurrentValue.GetType() == typeof(FsmWarriorToPlacement);
+            return Fsm.StateCurrent.CurrentValue.GetType() == typeof(FsmWarriorGoToPlacement);
         }
 
         public bool IsGoToMob()
@@ -37,7 +51,7 @@ namespace Game.GamePlay.Fsm
 
         public MobViewModel GetTarget()
         {
-            return (MobViewModel)Fsm.Params;
+            return (MobViewModel)Fsm.GetParamsState();
         }
 
         public bool IsGoToRepair()
@@ -49,10 +63,24 @@ namespace Game.GamePlay.Fsm
         {
             return Fsm.StateCurrent.CurrentValue.GetType() == typeof(FsmWarriorAwait);
         }
-        public void ClearParams()
+        private bool IsToPlacement()
         {
-            Fsm.ClearParams();
+            return Fsm.StateCurrent.CurrentValue.GetType() == typeof(FsmWarriorGoToPlacement);
+
         }
+        public bool IsDead()
+        {
+            return Fsm.StateCurrent.CurrentValue.GetType() == typeof(FsmWarriorDead);
+        }
+        /**
+         * Состояния при которых Warrior движется
+         */
+        public bool IsMovingState()
+        {
+            return IsGoToMob() || IsGoToRepair() || IsToPlacement();
+        }
+
+
 
     }
 }

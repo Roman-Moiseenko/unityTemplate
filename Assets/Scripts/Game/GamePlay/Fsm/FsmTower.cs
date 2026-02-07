@@ -39,7 +39,7 @@ namespace Game.GamePlay.Fsm
 
         public TowerViewModel GetTowerViewModel()
         {
-            return (TowerViewModel)Fsm.Params;
+            return (TowerViewModel)Fsm.Params; 
         }
 
         public bool IsPlacement()

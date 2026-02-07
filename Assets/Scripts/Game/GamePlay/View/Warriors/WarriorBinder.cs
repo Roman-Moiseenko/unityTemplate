@@ -1,68 +1,54 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+using DG.Tweening;
 using Game.GamePlay.Fsm.WarriorStates;
 using Game.GamePlay.View.Mobs;
-using MVVM.Storage;
 using R3;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game.GamePlay.View.Warriors
 {
     public class WarriorBinder : MonoBehaviour
     {
         [SerializeField] private HealthBar healthBarBinder;
-
-        //[SerializeField] private WarriorVisibleBinder visibleBinder;
+        [SerializeField] private ParticleSystem fire;
+        
         [SerializeField] private WarriorAttackBinder attackBinder;
         private ReactiveProperty<Vector3> _targetPosition = new();
-        private bool _isMoving;
 
         private IDisposable _disposable;
-        private Coroutine _mainCoroutine;
         public WarriorViewModel ViewModel;
-        private Coroutine _coroutine;
-        private float _speedMove;
-        private bool _isAttack;
-
-
+        
         public int UniqueId => ViewModel.UniqueId;
-
-
+        
         public void Bind(WarriorViewModel viewModel)
         {
             //Подготавливаем все данные для модели
-
             ViewModel = viewModel;
-            //visibleBinder.Bind(viewModel);
             attackBinder.Bind(viewModel);
             healthBarBinder.Bind(
                 viewModel.MaxHealth,
                 viewModel.CurrentHealth,
                 0
             );
-
-            _speedMove = viewModel.Speed;
             transform.position = viewModel.Position.CurrentValue;
-
-            //Debug.Log("Warrior binded " + viewModel.UniqueId + " " + viewModel.StartPosition + " => " + viewModel.PlacementPosition);
-
+            
             var d = Disposable.CreateBuilder();
             //Анимация, движение и атака от состояния
             viewModel.FsmWarrior.Fsm.StateCurrent.Subscribe(state =>
             {
-                //Идем к точке спавна, включить анимацию движения
-                if (state.GetType() == typeof(FsmWarriorToPlacement))
+                if (state.GetType() == typeof(FsmWarriorNew))
                 {
-                    //var position = viewModel.AvailablePath[0].Point; //Первая позиция в списке, это Placement
-                    //Debug.Log(viewModel.Placement);
-                    _targetPosition.Value = viewModel.Placement; //new Vector3(position.x, 0, position.y);
-                    //Повернуться в сторону Placement
+                    Debug.Log("FsmWarriorNew " + viewModel.UniqueId);
+                }
+
+                //Идем к точке спавна, включить анимацию движения
+                if (state.GetType() == typeof(FsmWarriorGoToPlacement))
+                {
+                    Debug.Log("FsmWarriorToPlacement " + viewModel.UniqueId);
+
+                    _targetPosition.Value = viewModel.Placement;
                     transform.rotation = Quaternion.LookRotation(_targetPosition.Value - transform.position);
-                    _isMoving = true;
-                    _isAttack = false;
                 }
 
                 if (state.GetType() == typeof(FsmWarriorAwait)) //Повернуться к дороге и вкл.анимацию ожидания
@@ -70,68 +56,52 @@ namespace Game.GamePlay.View.Warriors
                     Debug.Log("FsmWarriorAwait " + ViewModel.UniqueId);
                     var direction = viewModel.AvailablePath[0].Direction;
                     transform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y));
-                    _isMoving = false;
                 }
 
                 if (state.GetType() == typeof(FsmWarriorGoToMob))
                 {
+                    Debug.Log("FsmWarriorGoToMob " + viewModel.UniqueId);
                     var target = ViewModel.FsmWarrior.GetTarget();
-                    Debug.Log($"{ViewModel.UniqueId} Начали движение к мобу {target.UniqueId}");
+
                     //TODO Заменить на движение по AvailablePath
                     _targetPosition = target.PositionTarget;
-                    _isMoving = true;
-                    _isAttack = false;
-                    //Получить модель моба через Fsm
-                    //Идти к мобу 
                 }
 
                 if (state.GetType() == typeof(FsmWarriorAttack))
                 {
-                    var target = ViewModel.FsmWarrior.GetTarget();
-
-                    Debug.Log($"{ViewModel.UniqueId} Начинаем Атаку по Мобу {target.UniqueId}");
-                    _isMoving = false;
-                    _isAttack = true;
-                  //  StartCoroutine(FireUpdateWarrior());
-                    //Получить модель моба через Fsm
-                    //Атакуем моба
+                    Debug.Log("FsmWarriorAttack " + viewModel.UniqueId);
+                    StartCoroutine(FireUpdateWarrior());
                 }
 
                 if (state.GetType() == typeof(FsmWarriorGoToRepair))
                 {
-                    Debug.Log("Идем восстанавливаться к башне " + ViewModel.UniqueId);
+                    Debug.Log("FsmWarriorGoToRepair " + viewModel.UniqueId);
                     _targetPosition.Value = new Vector3(ViewModel.StartPosition.CurrentValue.x, 0,
                         ViewModel.StartPosition.CurrentValue.y);
-                    _isMoving = true;
-                    //Идем к башне
                 }
 
                 if (state.GetType() == typeof(FsmWarriorRepair))
                 {
-                    _isMoving = false;
+                    Debug.Log("FsmWarriorRepair " + viewModel.UniqueId);
                 }
 
                 if (state.GetType() == typeof(FsmWarriorDead))
                 {
-                    _isMoving = false;
-                    _isAttack = false;
-                    //Включаем анимацию смерти
+                    Debug.Log("FsmWarriorDead " + viewModel.UniqueId);
                 }
             }).AddTo(ref d);
-
             _disposable = d.Build();
 
             //Запускаем warrior
-            ViewModel.FsmWarrior.Fsm.SetState<FsmWarriorToPlacement>();
+            ViewModel.FsmWarrior.Fsm.SetState<FsmWarriorGoToPlacement>();
         }
 
         private IEnumerator FireUpdateWarrior()
         {
-           // while (ViewModel.MobTarget.CurrentValue != null)
-           // {
-                ViewModel.SetDamageAfterShot(); //Без отображения полета пули
-                yield return new WaitForSeconds(ViewModel.Speed);
-          //  }
+            fire.Play();
+            ViewModel.SetDamageAfterShot(); //Наносим урон, без отображения полета пули
+            yield return new WaitForSeconds(ViewModel.Speed);
+            if (ViewModel.MobTarget.CurrentValue != null) StartCoroutine(FireUpdateWarrior());
         }
 
         public void LateUpdate()
@@ -141,41 +111,17 @@ namespace Game.GamePlay.View.Warriors
 
         private void Update()
         {
-            if (_isMoving)
-            {
-//                if (ViewModel.FsmWarrior.IsGoToMob()) Debug.Log($" {ViewModel.UniqueId} Идем к " + _targetPosition.CurrentValue);
-
-                transform.position =
-                    Vector3.MoveTowards(transform.position, _targetPosition.Value, 1.3f * Time.deltaTime);
-                if (Vector3.Distance(transform.position, _targetPosition.Value) < 0.02f)
-                {
-                    _isMoving = false; //Авто выключение
-                    //Нет коллайдера определения, переключаем вручную
-                    if (ViewModel.FsmWarrior.IsPlacement()) ViewModel.FsmWarrior.Fsm.SetState<FsmWarriorAwait>();
-                    if (ViewModel.FsmWarrior.IsGoToRepair()) ViewModel.FsmWarrior.Fsm.SetState<FsmWarriorRepair>();
-                }
-            }
+            if (!ViewModel.FsmWarrior.IsMoving) return;
+            
+            transform.position =
+                Vector3.MoveTowards(transform.position, _targetPosition.Value, 1.3f * Time.deltaTime);
+            if (Vector3.Distance(transform.position, _targetPosition.Value) < 0.02f)
+                ViewModel.IsMovingFinish(); //Нет коллайдера определения, переключаем вручную
+            
         }
-
 
         private void OnDestroy()
         {
-            //StopCoroutine(_mainCoroutine);
-            //if (_coroutine != null) StopCoroutine(_coroutine);
-/*
-            foreach (var (key, disposable) in ViewModel.MobPullDisposables.ToList())
-            {
-                disposable?.Dispose();
-                ViewModel.MobDisposables.Remove(key);
-            }
-
-            foreach (var (key, disposable) in ViewModel.MobDisposables.ToList())
-            {
-                disposable?.Dispose();
-                ViewModel.MobDisposables.Remove(key);
-            }      
-*/
-            
             ViewModel.Dispose();
             _disposable?.Dispose();
         }
@@ -183,15 +129,17 @@ namespace Game.GamePlay.View.Warriors
         public ReactiveProperty<bool> StartDeadAnimation()
         {
             var result = new ReactiveProperty<bool>(false);
-            StartCoroutine(AnimationDead(result));
-            //result.OnNext(true);
+            transform.DOScale(Vector3.zero, 0.2f)
+                .From(Vector3.one)
+                .OnComplete(() => { result.OnNext(true); });
+            //StartCoroutine(AnimationDead(result));
             return result;
         }
 
         private IEnumerator AnimationDead(ReactiveProperty<bool> result)
         {
             //TODO Запускаем анимацию по заврешению
-            yield return new WaitForSecondsRealtime(0.3f);
+            yield return new WaitForSecondsRealtime(0.2f);
             result.OnNext(true);
         }
     }

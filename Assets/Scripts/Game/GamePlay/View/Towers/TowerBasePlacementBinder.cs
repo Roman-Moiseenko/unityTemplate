@@ -14,10 +14,12 @@ namespace Game.GamePlay.View.Towers
     {
         [SerializeField] private TowerPlacementVisibleBinder visibleBinder;
         private ObservableDictionary<int, WarriorBinder> warriors = new();
-        
- 
+
+
+        private IDisposable _disposable;
         protected override void OnBind(TowerPlacementViewModel viewModel)
         {
+            var d = Disposable.CreateBuilder();
             visibleBinder.Bind(viewModel);
             foreach (var warriorViewModel in viewModel.Warriors)
                 CreateWarrior(warriorViewModel);
@@ -27,7 +29,7 @@ namespace Game.GamePlay.View.Towers
             {
                 var warriorViewModel = e.Value;
                 CreateWarrior(warriorViewModel);
-            });
+            }).AddTo(ref d);
             //При удалении модели запускаем анимацию и подписываемся на ее завершение, после удаляем из списка Binders
             viewModel.Warriors.ObserveRemove().Subscribe(e =>
             {
@@ -36,7 +38,7 @@ namespace Game.GamePlay.View.Towers
                 warriorBinder.StartDeadAnimation()
                     .Where(x => x)
                     .Subscribe(_ => warriors.Remove(warriorViewModel.UniqueId));
-            });
+            }).AddTo(ref d);
 
             //Отдельно на удаление Binder, т.к. возможно будут удалятся в другом месте (при удалении башни и т.п.) 
             warriors.ObserveRemove().Subscribe(e =>
@@ -44,8 +46,9 @@ namespace Game.GamePlay.View.Towers
                 var warriorBinder = e.Value.Value;
                 Destroy(warriorBinder.gameObject);
                 Destroy(warriorBinder);
-            });
+            }).AddTo(ref d);
 
+            _disposable = d.Build();
             //MainCoroutine = StartCoroutine(PlacementUpdateTower());
         }
         
@@ -54,22 +57,6 @@ namespace Game.GamePlay.View.Towers
             //TODO Обновляем воинов
             ViewModel.UpdateAndRestartWarriors();
         }
-        
-        private IEnumerator PlacementUpdateTower()
-        {
-            yield return null;
-            /*  while (true)
-              {
-                  if (ViewModel.IsDeadAllWarriors())
-                  {
-                      //TODO Ускорение при быстром вызове волны
-                      yield return new WaitForSeconds(10f);
-                      ViewModel.AddWarriorsTower();
-                  }
-                  yield return null;
-              }*/
-        }
-        
         
         private void CreateWarrior(WarriorViewModel warriorViewModel)
         {
@@ -80,6 +67,12 @@ namespace Game.GamePlay.View.Towers
             createdWarrior.Bind(warriorViewModel);
             
             warriors.Add(warriorViewModel.UniqueId, createdWarrior);
+        }
+
+        protected override void OnAfterDestroy()
+        {
+            ViewModel.Dispose();
+            _disposable?.Dispose();
         }
     }
 }

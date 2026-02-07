@@ -98,6 +98,7 @@ namespace Game.GamePlay.View.Towers
         }
         
         protected virtual void OnBind(T viewModel) { }
+        protected virtual void OnAfterDestroy() {}
         
         private IEnumerator EffectsUpgradeTower()
         {
@@ -154,8 +155,8 @@ namespace Game.GamePlay.View.Towers
             Destroy(TowerBinder.gameObject);
             Destroy(TowerBinder);
             
-
             _disposable?.Dispose();
+            OnAfterDestroy();
         }
 
         public void DestroyGameObject()

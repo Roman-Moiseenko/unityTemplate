@@ -27,7 +27,7 @@ namespace Game.GamePlay.Root.View
     public class WorldGameplayRootViewModel
     {
         public readonly IObservableCollection<TowerViewModel> AllTowers;
-        public readonly IObservableCollection<WarriorViewModel> AllWarriors;
+        //public readonly IObservableCollection<WarriorViewModel> AllWarriors;
         public readonly IObservableCollection<MobViewModel> AllMobs;
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
         public readonly IObservableCollection<BoardViewModel> AllBoards;
@@ -64,7 +64,7 @@ namespace Game.GamePlay.Root.View
             WaveService waveService,
             GameplayCamera cameraService,
             DamageService damageService,
-            WarriorService warriorService,
+            //WarriorService warriorService,
             DIContainer container
         )
         {
@@ -84,7 +84,7 @@ namespace Game.GamePlay.Root.View
             AllBoards = groundsService.AllBoards;
             AllTowers = towersService.AllTowers;
             AllMobs = waveService.AllMobsOnWay;
-            AllWarriors = warriorService.AllWarriors;
+            //AllWarriors = warriorService.AllWarriors;
 
             FrameBlockViewModels = frameService.ViewModels;
             FramePlacementViewModels = framePlacementService.ViewModels;
@@ -279,10 +279,11 @@ namespace Game.GamePlay.Root.View
                     Mathf.FloorToInt(position.x + 0.5f),
                     Mathf.FloorToInt(position.y + 0.5f)
                 ));
-                var card = (RewardCardData)(_fsmGameplay.Fsm.StateCurrent.Value.Params);
+                var card = (RewardCardData)_fsmGameplay.Fsm.GetParamsState();
                 card.Position.x = Mathf.FloorToInt(position.x + 0.5f);
                 card.Position.y = Mathf.FloorToInt(position.y + 0.5f);
-                _fsmGameplay.Fsm.StateCurrent.Value.Params = card;
+                _fsmGameplay.Fsm.SetParamsState(card);
+                //_fsmGameplay.Fsm.StateCurrent.Value.Params = card;
             }
 
             _entityClick.OnNext(Unit.Default);

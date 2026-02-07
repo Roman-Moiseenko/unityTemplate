@@ -2,7 +2,9 @@
 {
     public static class AppConstants
     {
-       // public const string EXIT_SCENE_REQUEST_TAG = nameof(EXIT_SCENE_REQUEST_TAG);
+        
+
+        // public const string EXIT_SCENE_REQUEST_TAG = nameof(EXIT_SCENE_REQUEST_TAG);
         public const string GAME_PLAY_STATE = nameof(GAME_PLAY_STATE);
         public const string CAMERA_MOVING = nameof(CAMERA_MOVING);
         
@@ -43,5 +45,8 @@
         public const float CAMERA_SCALE_SPEED = 0.3f;
         public const float CAMERA_SCALE_MIN = 3.5f;
         public const float CAMERA_SCALE_MAX = 7f;
+        
+        //WARRIO
+        public static float WARRIOR_VISIBLE = 2.5f; //Радиус видимости 
     }
 }

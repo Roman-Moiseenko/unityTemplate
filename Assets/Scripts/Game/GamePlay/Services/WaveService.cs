@@ -109,7 +109,10 @@ namespace Game.GamePlay.Services
             
             //Создаем модель ворот
             CreateGateWaveViewModel();
+            
+            //Если 2 пути
             CreateGateWaveSecondViewModel();
+            
             //При добавлении дороги на путь, перемещаем модель ворот
             roadsService.Way.ObserveAdd().Subscribe(_ => MoveGateWaveViewModel());
             roadsService.WaySecond.ObserveAdd().Subscribe(_ => MoveGateWaveSecondViewModel());
@@ -214,8 +217,8 @@ namespace Game.GamePlay.Services
 
             Vector2 position = new Vector2((lastPoint.x + exitPoint.x) / 2f, (lastPoint.y + exitPoint.y) / 2f);
             var direction = exitPoint - lastPoint;
-            
-            _gameplayState.GateWave.OnNext(position);
+            Debug.Log("CreateGateWaveViewModel " + position);
+            //_gameplayState.GateWave.OnNext(position);
 
             GateWaveViewModel = new GateWaveViewModel(_fsmWave)
             {
@@ -228,6 +231,7 @@ namespace Game.GamePlay.Services
                     Value = direction
                 }
             };
+            _gameplayState.GateWave = GateWaveViewModel.Position;
         }
         
             private void CreateGateWaveSecondViewModel()
@@ -238,7 +242,7 @@ namespace Game.GamePlay.Services
                 Vector2 position = new Vector2((lastPoint.x + exitPoint.x) / 2f, (lastPoint.y + exitPoint.y) / 2f);
                 var direction = exitPoint - lastPoint;
                 
-                _gameplayState.GateWaveSecond.OnNext(position);
+                //_gameplayState.GateWaveSecond.OnNext(position);
     
                 GateWaveSecondViewModel = new GateWaveViewModel(_fsmWave)
                 {
@@ -251,6 +255,7 @@ namespace Game.GamePlay.Services
                         Value = direction
                     }
                 };
+                _gameplayState.GateWaveSecond = GateWaveSecondViewModel.Position;
             }    
         
 

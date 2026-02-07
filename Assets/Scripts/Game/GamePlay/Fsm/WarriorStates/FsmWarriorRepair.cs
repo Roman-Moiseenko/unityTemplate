@@ -1,5 +1,6 @@
 ﻿using DI;
 using MVVM.FSM;
+using UnityEngine;
 
 namespace Game.GamePlay.Fsm.WarriorStates
 {
@@ -17,7 +18,9 @@ namespace Game.GamePlay.Fsm.WarriorStates
 
         public override bool Exit(FSMState next = null)
         {
-            return true;
+            if (next?.GetType() == typeof(FsmWarriorGoToPlacement)) return true;
+            Debug.Log("Ошибка выхода");
+            return false;
         }
 
         public override void Update()

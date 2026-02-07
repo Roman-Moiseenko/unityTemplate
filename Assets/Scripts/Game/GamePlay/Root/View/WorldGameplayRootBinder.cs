@@ -75,7 +75,7 @@ namespace Game.GamePlay.Root.View
                 .AddTo(ref d);
 
             //Воины
-            foreach (var warriorViewModel in viewModel.AllWarriors)
+      /*      foreach (var warriorViewModel in viewModel.AllWarriors)
             {
                 CreateWarrior(warriorViewModel);
             }
@@ -84,7 +84,7 @@ namespace Game.GamePlay.Root.View
             viewModel.AllWarriors.ObserveRemove()
                 .Subscribe(e => DestroyWarrior(e.Value))
                 .AddTo(ref d);
-
+*/
             //
 
             //Мобы
@@ -167,7 +167,7 @@ namespace Game.GamePlay.Root.View
             createdGate.Bind(viewModel);
             _createGateMap.Add(createdGate);
         }
-
+/*
         private void CreateWarrior(WarriorViewModel warriorViewModel)
         {
             var prefabWarriorPath =
@@ -177,7 +177,7 @@ namespace Game.GamePlay.Root.View
             createdWarrior.Bind(warriorViewModel);
             _createWarriorsMap[warriorViewModel.UniqueId] = createdWarrior;
         }
-
+*/
         private void CreateMob(MobViewModel mobViewModel)
         {
             var prefabPath = $"Prefabs/Gameplay/Mobs/{mobViewModel.ConfigId}"; //Перенести в настройки уровня
@@ -306,7 +306,7 @@ namespace Game.GamePlay.Root.View
         }
 
         //DESTROY
-        private void DestroyWarrior(WarriorViewModel warriorViewModel)
+     /*   private void DestroyWarrior(WarriorViewModel warriorViewModel)
         {
             if (_createWarriorsMap.TryGetValue(warriorViewModel.UniqueId, out var warriorBinder))
             {
@@ -314,7 +314,7 @@ namespace Game.GamePlay.Root.View
                 _createWarriorsMap.Remove(warriorViewModel.UniqueId);
             }
         }
-
+*/
         private void DestroyRoad(RoadViewModel roadViewModel)
         {
             if (_createdRoadsMap.TryGetValue(roadViewModel.RoadEntityId, out var roadBinder))

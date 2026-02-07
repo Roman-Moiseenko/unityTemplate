@@ -21,13 +21,13 @@ namespace Game.GamePlay.View.Warriors
             var mobBinder = other.gameObject.GetComponent<MobBinder>();
             if (mobBinder.ViewModel.IsFly != _viewModel.IsFly) return; 
             Debug.Log($"Моб {mobBinder.UniqueId} в области видимости воина {_viewModel.UniqueId}");
-            _viewModel.PullTargets.Add(mobBinder.ViewModel);
+           // _viewModel.PullTargets.Add(mobBinder.ViewModel);
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (!other.gameObject.CompareTag("Mob")) return;
-            if (_viewModel.PullTargets.Count != 0)
+          /*  if (_viewModel.PullTargets.Count != 0)
             {
                 //Когда моб выходит из зоны видимости, удаляем из Пула
                 var mobBinder = other.gameObject.GetComponent<MobBinder>();
@@ -35,6 +35,7 @@ namespace Game.GamePlay.View.Warriors
                 if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
                 _viewModel.PullTargets.Remove(mobBinder.ViewModel);
             }
+            */
         }
     }
 }

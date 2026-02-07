@@ -26,7 +26,7 @@ namespace Game.GamePlay.View.Towers
      * Базовый клас для моделей башни, напрямую используется только во Frame
      * Вся логика (Атака, Воины, Баф/Дебаф) определена в дочерних классах
      */
-    public class TowerViewModel : IMovingEntityViewModel
+    public class TowerViewModel : IMovingEntityViewModel, IDisposable
     {
         protected readonly GameplayStateProxy _gameplayState;
         protected readonly TowersService _towersService;
@@ -51,9 +51,7 @@ namespace Game.GamePlay.View.Towers
         //Флаг для передачи в Панели подтверждения из различных состояния
     //    public ReactiveProperty<bool> IsConfirmationState = new(true);
         
-      
-
-        
+    
         public TowerViewModel(
             TowerEntity towerEntity,
             GameplayStateProxy gameplayState,
@@ -72,7 +70,6 @@ namespace Game.GamePlay.View.Towers
 
             Position.Subscribe(v => PositionMap.Value = new Vector3(v.x, 0, v.y));
             
-
             
             Level.Subscribe(level =>
             { //Смена модели
@@ -133,6 +130,16 @@ namespace Game.GamePlay.View.Towers
         {
             Direction.Value = new Vector3(direction.x, 0, direction.y);
         }
-        
+
+        public virtual void Dispose()
+        {
+            PositionMap?.Dispose();
+            Direction?.Dispose();
+            NumberModel?.Dispose();
+            FinishEffectLevelUp?.Dispose();
+            ShowArea?.Dispose();
+            Level?.Dispose();
+            Position?.Dispose();
+        }
     }
 }

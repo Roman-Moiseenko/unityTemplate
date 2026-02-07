@@ -18,6 +18,7 @@ namespace Game.GamePlay.Fsm.WarriorStates
         public override bool Exit(FSMState next = null)
         {
             Params = null;
+            
             return true;
         }
 

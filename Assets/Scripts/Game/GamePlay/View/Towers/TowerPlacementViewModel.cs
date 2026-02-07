@@ -10,7 +10,6 @@ using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
 using Game.State.Root;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -19,10 +18,11 @@ namespace Game.GamePlay.View.Towers
 {
     public class TowerPlacementViewModel : TowerViewModel
     {
+        private const int CountWarriors = 3;
         private readonly PlacementService _placementService;
         public ObservableList<WarriorViewModel> Warriors = new();
         private readonly ObservableList<WarriorEntity> _warriorEntities = new();
-        
+
         public ObservableList<MobViewModel> PullTargets = new();
         public float Range { get; set; }
         public float Health { get; set; }
@@ -32,10 +32,13 @@ namespace Game.GamePlay.View.Towers
 
         public bool IsWay;
         public float DeltaWarrior = 0.15f;
-
+        
         public Dictionary<int, List<RoadPoint>> AvailablePath = new();
+
+        private List<IDisposable> _disposables = new();
+
         //Кеш подписок на смерть моба
-        private readonly Dictionary<int, IDisposable> _mobDisposables = new(); 
+        private readonly Dictionary<int, IDisposable> _mobDisposables = new();
         public ReactiveProperty<Vector2Int> Placement => _towerEntity.Placement;
 
         public TowerPlacementViewModel(TowerEntity towerEntity, GameplayStateProxy gameplayState,
@@ -44,13 +47,15 @@ namespace Game.GamePlay.View.Towers
         {
             _placementService = placementService;
             UpdateParameterWarrior();
-            for (var i = 1; i <= 3; i++)
+            for (var i = 1; i <= CountWarriors; i++)
                 CreateWarriorEntity(i - 2);
 
             //При изменении точки спавна и обновлении дорог, меняем доступный путь Warriors
             Placement.Subscribe(_ => UpdateWayPath());
-            _gameplayState.Way.ObserveAdd().Subscribe(_ => UpdateWayPath());
-            _gameplayState.WaySecond.ObserveAdd().Subscribe(_ => UpdateWayPath());
+            var d1 = _gameplayState.Way.ObserveAdd().Subscribe(_ => UpdateWayPath());
+            _disposables.Add(d1);
+            var d2 = _gameplayState.WaySecond.ObserveAdd().Subscribe(_ => UpdateWayPath());
+            _disposables.Add(d2);
 
             foreach (var warriorEntity in _warriorEntities)
             {
@@ -59,29 +64,27 @@ namespace Game.GamePlay.View.Towers
                 Warriors.Add(warriorViewModel);
             }
 
-            fsmWave.Fsm.StateCurrent
-                .Where(state => state.GetType() == typeof(FsmStateWaveGo))
+            var d3 = fsmWave.Fsm.StateCurrent
+                .Where(state => state.GetType() == typeof(FsmStateWaveBegin))
                 .Subscribe(state =>
                 {
                     var count = _warriorEntities.Count;
-                    //Debug.Log(state.GetType() + " " + count);
+
                     //Воскрешаем убитых Warrior
-                    for (var i = count; i < 3; i++)
+                    for (var i = count; i < CountWarriors; i++)
                     {
                         CreateWarriorEntity(_freeIndex[0]);
                         _freeIndex.RemoveAt(0);
                     }
-                    //TODO Если мобы не под атакой, лечить - в самом WarriorViewModel
                 });
-
+            _disposables.Add(d3);
             //Инициализация ViewModels
-
-
+            
             _warriorEntities.ObserveAdd().Subscribe(e =>
             {
                 var warriorEntity = e.Value;
                 var warriorViewModel = new WarriorViewModel(
-                    warriorEntity, _gameplayState, _towerEntity, 
+                    warriorEntity, _gameplayState, _towerEntity,
                     AvailablePath[warriorEntity.Index], PullTargets);
                 Warriors.Add(warriorViewModel);
             });
@@ -96,33 +99,38 @@ namespace Game.GamePlay.View.Towers
                     break;
                 }
             });
-            
-                        
+
+
             PullTargets.ObserveAdd().Subscribe(e =>
             {
                 //Моб попал в пулл
                 var target = e.Value;
+                //  Debug.Log($"Добавили моба в пулл Башни {target.UniqueId}");
                 //При его смерти - удаляем из пула
                 var disposable = target.IsDead.Where(x => x).Subscribe(_ =>
                 {
-                    Debug.Log($"Моб умер {target.UniqueId}");
+                    // Debug.Log($"Моб умер {target.UniqueId}");
                     PullTargets.Remove(target);
                 });
                 _mobDisposables.TryAdd(target.UniqueId, disposable); //Кеш подписок на смерть моба
-                Debug.Log($"Добавили моба в пулл Башни {target.UniqueId}");
             });
             //При удалении из пула (убит или вышел с дистанции) - удалить из цели
             PullTargets.ObserveRemove().Subscribe(e =>
             {
                 var target = e.Value;
-                Debug.Log($"Моб удален из Башни {target.UniqueId}");
+                // Debug.Log($"Моб удален из Башни {target.UniqueId}");
                 if (_mobDisposables.TryGetValue(target.UniqueId, out var disposable))
                 {
-                    Debug.Log($"disposable {target.UniqueId}");
                     disposable.Dispose();
+                    _mobDisposables.Remove(target.UniqueId);
                 }
-                _mobDisposables.Remove(target.UniqueId);
             });
+            var d4 = Level.Subscribe(level =>
+            {
+                UpdateParameterWarrior();
+                Debug.Log($"Обновили параметры {level} Damage {Damage}");
+            });
+            _disposables.Add(d4);
         }
 
         private void UpdateParameterWarrior()
@@ -148,7 +156,7 @@ namespace Game.GamePlay.View.Towers
             {
                 AvailablePath[i] = GenerateRoadPoints(i);
             }
-            
+
             //Debug.Log(JsonConvert.SerializeObject(AvailablePath, Formatting.Indented));
         }
 
@@ -182,7 +190,7 @@ namespace Game.GamePlay.View.Towers
             warriorEntity.IsDead.Where(x => x).Subscribe(_ =>
             {
                 _warriorEntities.Remove(warriorEntity);
-                Debug.Log("warriorEntity.IsDead " + warriorEntity.Index);
+                // Debug.Log("warriorEntity.IsDead " + warriorEntity.Index);
             });
             _warriorEntities.Add(warriorEntity);
         }
@@ -212,7 +220,7 @@ namespace Game.GamePlay.View.Towers
             {
                 if (way[i].Position == Placement.CurrentValue) isAvailable = true;
                 if (!isAvailable) continue;
-                
+
                 Vector2 position = way[i].Position; //Определяем новые координаты моба
 
                 //Если координаты дороги выходят за пределы AreaPlacement
@@ -221,7 +229,7 @@ namespace Game.GamePlay.View.Towers
                     position.y > Position.CurrentValue.y + 2 ||
                     position.y < Position.CurrentValue.y - 2)
                     break;
-                
+
                 if (way[i].IsTurn)
                 {
                     position.x += delta;
@@ -240,14 +248,24 @@ namespace Game.GamePlay.View.Towers
                 }
 
                 var direction = way[i + 1].Position - way[i].Position;
+                //Debug.Log(position + " " + direction + " (" + way[i + 1].Position + "-" + way[i].Position);
                 roads.Add(new RoadPoint(position, direction));
-        //        if (index == 0)
-       //         {
+                //        if (index == 0)
+                //         {
 //                    Debug.Log(position + " => " + direction);
-        //        }
+                //        }
             }
-            
+
             return roads;
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            foreach (var disposable in _disposables)
+            {
+                disposable?.Dispose();
+            }
         }
     }
 }

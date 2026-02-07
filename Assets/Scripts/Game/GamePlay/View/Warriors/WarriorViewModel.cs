@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.WarriorStates;
 using Game.GamePlay.View.Mobs;
@@ -34,10 +35,12 @@ namespace Game.GamePlay.View.Warriors
         public ReactiveProperty<Vector2Int> PlacementPosition;
         public Vector3 Placement = Vector3.zero;
         public ReactiveProperty<MobViewModel> MobTarget = new();
-        public ObservableList<MobViewModel> PullAttacks = new(); //Пул мобов до которых надо дойти
-        public ObservableList<MobViewModel> PullTargets = new(); //Пул мобов которых надо атаковать
+
+        public ObservableList<MobViewModel>
+            PullAttacks = new(); //Пул мобов которые можно атаковать без поиска из _pullTargets
+
         public readonly Dictionary<int, IDisposable> MobPullDisposables = new();
-        public readonly Dictionary<int, IDisposable> MobDisposables = new();
+
         public ReactiveProperty<Vector3> Position = new(Vector3.zero);
 
         private readonly GameplayStateProxy _gameplayState;
@@ -49,8 +52,8 @@ namespace Game.GamePlay.View.Warriors
 
         public List<RoadPoint> AvailablePath;
         private readonly ObservableList<MobViewModel> _pullTargets;
-        private IDisposable _disposablePullAdd;
-        private IDisposable _disposablePullRemove;
+        private readonly IDisposable _disposablePullAdd;
+        private readonly IDisposable _disposablePullRemove;
 
         public WarriorViewModel(WarriorEntity warriorEntity, GameplayStateProxy gameplayState, TowerEntity towerEntity,
             List<RoadPoint> availablePath, ObservableList<MobViewModel> pullTargets)
@@ -76,25 +79,12 @@ namespace Game.GamePlay.View.Warriors
             _disposablePullAdd = _pullTargets.ObserveAdd().Subscribe(e =>
             {
                 var target = e.Value;
-                if (FsmWarrior.IsAwait())
-                {
-                    //   FsmWarrior.Fsm.SetState<FsmWarriorGoToMob>(target);//Движемся к цели
-                }
-
                 var disposable = target.PositionTarget.Subscribe(v =>
                 {
-                   // Debug.Log(Vector3.Distance(v, Position.CurrentValue) + " " + v + " => " + Position.CurrentValue);
-                    //  SetTargetMove();
-                    //Радиус видимости
-                    if (Vector3.Distance(v, Position.CurrentValue) < 2.5f && FsmWarrior.IsAwait())
-                    {
-                        Debug.Log($"Моб {target.UniqueId} В зоне видимости {UniqueId}");
-                        //К мобу
+                    //Для воинов которые ожидают, проверяем радиус видимости.
+                    if (Vector3.Distance(v, Position.CurrentValue) < AppConstants.WARRIOR_VISIBLE && FsmWarrior.IsAwait())
                         FsmWarrior.Fsm.SetState<FsmWarriorGoToMob>(target); //Движемся к цели
-                        // MobTarget.OnNext(target); 
-                    }
                 });
-
                 MobPullDisposables.Add(target.UniqueId, disposable);
             });
 
@@ -102,106 +92,81 @@ namespace Game.GamePlay.View.Warriors
             _disposablePullRemove = _pullTargets.ObserveRemove().Subscribe(e =>
             {
                 var target = e.Value;
-                Debug.Log($"Моб {target.UniqueId} Вышел из зоны видимости {UniqueId}");
+//                Debug.Log($"Моб {target.UniqueId} Вышел из зоны видимости {UniqueId}");
                 if (MobPullDisposables.TryGetValue(target.UniqueId, out var disposable))
                 {
                     disposable?.Dispose();
                     MobPullDisposables.Remove(target.UniqueId);
                 }
 
-                PullAttacks.Remove(target);
-                if (FsmWarrior.GetTarget().UniqueId == target.UniqueId)
-                {
-                    SetTargetMove();
-                }
+                Debug.Log($"Моб {target.UniqueId} удален из _pullTargets"); //Убит
+                PullAttacks.Remove(target); //Удаляем из списка атак, чтоб не взять следующей целью
 
-                Debug.Log("Удалили из PullAttacks");
+                //При движении к мобу, если цель была убита, ищем новую или возвращаемся
+                if (FsmWarrior.IsGoToMob() && FsmWarrior.GetTarget() != null &&
+                    FsmWarrior.GetTarget().UniqueId == target.UniqueId)
+                    SetTargetMove();
+
+                //Если при атаки данная цель убита, то сбрасываем Цель
+                if (MobTarget.CurrentValue != null && MobTarget.CurrentValue.UniqueId == target.UniqueId)
+                    MobTarget.OnNext(null);
             });
 
             PullAttacks.ObserveAdd().Subscribe(e =>
             {
                 var target = e.Value;
-                Debug.Log($"Моб {target.UniqueId} В зоне поражения {UniqueId}");
-
-                //Удаляем из целей для Атаки (те, кто уже вошел в область атаки)
-                var disposable = target.IsDead
-                    .Where(x => x)
-                    .Subscribe(_ =>
-                    {
-                        Debug.Log("моб мертв " + target.UniqueId);
-                        PullAttacks.Remove(target);
-                        //Если моб был целью тек.атаки, обнуляем цель
-                        if (MobTarget.CurrentValue.UniqueId == target.UniqueId) MobTarget.OnNext(null);
-                    });
-                MobDisposables.TryAdd(target.UniqueId, disposable); //Кеш подписок на смерть моба
-                if (MobTarget.CurrentValue == null) MobTarget.OnNext(target); //Первая цель
-            });
-
-            PullAttacks.ObserveRemove().Subscribe(e =>
-            {
-                var target = e.Value;
-                Debug.Log($"Моб {target.UniqueId} Вышел из зоны поражения {UniqueId}");
-                if (MobDisposables.TryGetValue(target.UniqueId, out var disposable))
+                
+                if (MobTarget.CurrentValue == null) //Первая цель, когда при движении столкнулись с Collider
                 {
-                    disposable?.Dispose();
-                    MobDisposables.Remove(target.UniqueId);
+                    MobTarget.OnNext(target);
+                    FsmWarrior.Fsm.SetState<FsmWarriorAttack>(target);
                 }
             });
 
-
+            //Принудительная смена состояния, при достижении определенных точек
             FsmWarrior.Fsm.StateCurrent.Subscribe(state =>
             {
-                //Когда прибыл на точку спавна, проверяем здоровье, если не хватает - в башню
-                if (state.GetType() == typeof(FsmWarriorAwait) && CurrentHealth.CurrentValue < MaxHealth)
-                    FsmWarrior.Fsm.SetState<FsmWarriorGoToRepair>();
-
-                //
+                //Прибыли на базу восстанавливаться
                 if (state.GetType() == typeof(FsmWarriorRepair))
                 {
-                    Debug.Log($"{UniqueId} Восстановились");
                     _warriorEntity.Health.OnNext(MaxHealth);
-                    FsmWarrior.Fsm.SetState<FsmWarriorToPlacement>();
+                    FsmWarrior.Fsm.SetState<FsmWarriorGoToPlacement>();
                 }
             });
-
-
-            MobTarget.Skip(1).Subscribe(mobTarget =>
+            
+            //Проверяем только, когда цель удалена, чтоб назначить новую или вернуться
+            MobTarget.Skip(1).Where(x => x == null).Subscribe(mobTarget =>
             {
-                if (mobTarget == null) //Цель убита
+                if (FsmWarrior.IsDead()) return; //На всякий случай
+                
+                Debug.Log("Цель Убита " + FsmWarrior.Fsm.StateCurrent.CurrentValue.GetType());
+                //Сначала берем цели из ближащих и их атакуем
+                if (PullAttacks.Count > 0)
                 {
-                    Debug.Log("Цель Убита " + FsmWarrior.Fsm.StateCurrent.CurrentValue.GetType());
-                    //Сначала берем цели из ближащих и атакуем
-                    if (PullAttacks.Count > 0)
-                    {
-                        Debug.Log($"Новая цель для {UniqueId} из PullAttacks");
-                        MobTarget.OnNext(PullAttacks[0]); //, устанавливаем новую цель
-                        return;
-                    }
-
-                    Debug.Log("SetTargetMove");
-                    SetTargetMove();
-                }
-                else //Цель назначена, движемся к цели
-                {
-                    Debug.Log($"Включаем атаку на моба {mobTarget.UniqueId}");
+                    MobTarget.OnNext(PullAttacks[0]); //устанавливаем новую цель
                     FsmWarrior.Fsm.SetState<FsmWarriorAttack>(mobTarget);
+                    return;
                 }
+
+                //Целей нет, ищем из доступных башни или возвращаемся
+                SetTargetMove();
             });
 
             _warriorEntity.IsDead.Where(x => x).Subscribe(_ =>
             {
                 FsmWarrior.Fsm.SetState<FsmWarriorDead>();
-
-
-                if (FsmWarrior.Fsm.Params == null)
-                {
-                    Debug.Log("FsmWarrior.Fsm.Params == null");
-                }
-                else
-                {
-                    Debug.Log(FsmWarrior.GetTarget().UniqueId);
-                }
+                MobTarget.OnNext(null);
             });
+        }
+
+        /**
+         * Движение закончилось (из Binder), меняем состояние от текущего
+         */
+        public void IsMovingFinish()
+        {
+            if (FsmWarrior.IsPlacement()) FsmWarrior.Fsm.SetState<FsmWarriorAwait>();
+            if (FsmWarrior.IsGoToRepair()) FsmWarrior.Fsm.SetState<FsmWarriorRepair>();
+            if (FsmWarrior.IsGoToMob()) Debug.Log("Исключительная ситуация");
         }
 
         //При потери цели движения или отсутствии ищем новую или возвращаемся
@@ -210,21 +175,24 @@ namespace Game.GamePlay.View.Warriors
             //Обходим цели башни и движемся к первой из них
             if (_pullTargets.Count > 0)
             {
-                foreach (var pullTarget in _pullTargets.ToList())
+                foreach (var target in _pullTargets.ToList())
                 {
-                    if (Vector3.Distance(pullTarget.PositionTarget.CurrentValue, Placement) < 2.5f)
-                    {
-                        Debug.Log($"Новая цель для {UniqueId} из pullTargets {pullTarget.UniqueId}");
-                        FsmWarrior.Fsm.SetState<FsmWarriorAwait>();
-                        FsmWarrior.Fsm.SetState<FsmWarriorGoToMob>(pullTarget);
-                        return;
-                    }
+                    if (Vector3.Distance(target.PositionTarget.CurrentValue, Placement) >= AppConstants.WARRIOR_VISIBLE) 
+                        continue;
+                    FsmWarrior.Fsm.SetState<FsmWarriorGoToMob>(target);
+                    return;
                 }
             }
 
-            //Целей больше нет, возвращаемся
-            Debug.Log($"Возвращаемся {UniqueId}");
-            FsmWarrior.Fsm.SetState<FsmWarriorToPlacement>();
+            //Целей больше нет, возвращаемся ...
+            if (CurrentHealth.CurrentValue < MaxHealth) // лечиться
+            {
+                FsmWarrior.Fsm.SetState<FsmWarriorGoToRepair>();
+            }
+            else //На базу Placement
+            {
+                FsmWarrior.Fsm.SetState<FsmWarriorGoToPlacement>();
+            }
         }
 
         private void RemoveTarget(MobViewModel mobViewModel)
@@ -249,6 +217,7 @@ namespace Game.GamePlay.View.Warriors
                 Single = true,
                 MobEntityId = MobTarget.CurrentValue.UniqueId,
             };
+            
 //            Debug.Log("Урон от Warrior " + UniqueId + " Мобу " + MobTarget.CurrentValue.UniqueId);
             _gameplayState.Shots.Add(shot);
         }
@@ -261,33 +230,23 @@ namespace Game.GamePlay.View.Warriors
             _warriorEntity.DamageReceived(damage);
         }
 
-        //public void 
-
         public void Dispose()
         {
             //StartPosition?.Dispose();
             //PlacementPosition?.Dispose();
             //MobTarget?.Dispose();
             //Position?.Dispose();
+            MobTarget?.Dispose();
             _disposablePullAdd.Dispose();
             _disposablePullRemove.Dispose();
             //CurrentHealth?.Dispose();
-            Debug.Log("_warriorEntity IsDead " + MobPullDisposables.Count);
             foreach (var (key, disposable) in MobPullDisposables.ToList())
             {
                 disposable?.Dispose();
                 MobPullDisposables.Remove(key);
             }
 
-            Debug.Log("_warriorEntity MobPullDisposables " + MobDisposables.Count);
-            foreach (var (key, disposable) in MobDisposables.ToList())
-            {
-                disposable?.Dispose();
-                MobDisposables.Remove(key);
-            }
-
-            Debug.Log("_warriorEntity MobDisposables");
-            FsmWarrior.ClearParams();
+            FsmWarrior.Fsm.Dispose();
         }
     }
 }

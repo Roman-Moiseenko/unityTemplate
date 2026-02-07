@@ -1,11 +1,12 @@
 ﻿using DI;
 using MVVM.FSM;
+using UnityEngine;
 
 namespace Game.GamePlay.Fsm.WarriorStates
 {
-    public class FsmWarriorToPlacement : FSMState
+    public class FsmWarriorGoToPlacement : FSMState
     {
-        public FsmWarriorToPlacement(FsmProxy fsm) : base(fsm)
+        public FsmWarriorGoToPlacement(FsmProxy fsm) : base(fsm)
         {
             
         }
@@ -17,7 +18,10 @@ namespace Game.GamePlay.Fsm.WarriorStates
 
         public override bool Exit(FSMState next = null)
         {
-            return true;
+            if (next?.GetType() == typeof(FsmWarriorAwait)) return true;
+            Debug.Log("Ошибка выхода");
+            return false;
+            
         }
 
         public override void Update()
