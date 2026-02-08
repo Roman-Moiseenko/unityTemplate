@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Game.Common;
 using Game.GameRoot.ImageManager;
@@ -7,6 +9,7 @@ using Game.State.Maps.Towers;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
 {
@@ -14,6 +17,9 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
     {
         [SerializeField] private Transform baseParameters;
         [SerializeField] private Transform upgradeParameters;
+
+        [SerializeField] private Image header;
+        
         
         private readonly List<BaseParameterBinder> _baseParameterBinders = new();
         private readonly List<UpgradeParameterBinder> _upgradeParameterBinders = new();
@@ -26,6 +32,12 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
             _viewModel = viewModel;
             transform.gameObject.SetActive(false);
             _imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
+            
+            //Загружаем фон из _imageManager
+            //Меняем название и эпичность
+            
+            
+            
             
             var d = Disposable.CreateBuilder();
             viewModel.ShowInfoTower.Subscribe(showTower =>
@@ -57,6 +69,15 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
                         .SetUpdate(true)
                         .OnComplete(() => transform.gameObject.SetActive(false));
                 }
+            }).AddTo(ref d);
+            viewModel.UpdateInfoBackgroundTower.Where(x => x).Subscribe(_ =>
+            {
+                Debug.Log("UpdateInfoBackgroundTower");
+                Debug.Log(viewModel.NameTower);
+                Debug.Log(viewModel.Level);
+                Debug.Log(viewModel.EpicLevel);
+                Debug.Log(viewModel.Defence);
+                
             }).AddTo(ref d);
 
             viewModel.PositionInfoTower.Subscribe(p => transform.transform.position = p).AddTo(ref d);

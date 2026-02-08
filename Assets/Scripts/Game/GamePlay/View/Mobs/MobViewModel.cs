@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Common;
@@ -54,6 +55,7 @@ namespace Game.GamePlay.View.Mobs
         private readonly GameplayStateProxy _gameplayState;
         private readonly Coroutines _coroutines;
 
+        private Dictionary<int, IDisposable> PullTargetsDisposables = new();
         public MobViewModel(
             MobEntity mobEntity,
             GameplayStateProxy gameplayState,
@@ -83,7 +85,7 @@ namespace Game.GamePlay.View.Mobs
             PullTargets.ObserveAdd().Subscribe(e =>
             {
                 var warrior = e.Value;
-                warrior.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(warrior));
+                var disposable = warrior.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(warrior));
 
                 if (Target.CurrentValue == null)
                 {
@@ -91,13 +93,22 @@ namespace Game.GamePlay.View.Mobs
                     IsMoving.OnNext(false);
                     IsAttack.OnNext(true);
                 }
+
+                PullTargetsDisposables.Add(warrior.UniqueId, disposable);
             });
 
             PullTargets.ObserveRemove().Subscribe(e =>
             {
-                if (Target.CurrentValue != null && e.Value.UniqueId == Target.CurrentValue.UniqueId)
+                var warrior = e.Value;
+                if (Target.CurrentValue != null && warrior.UniqueId == Target.CurrentValue.UniqueId)
                 {
                     Target.OnNext(null);
+                }
+
+                if (PullTargetsDisposables.TryGetValue(warrior.UniqueId, out var disposable))
+                {
+                    disposable?.Dispose();
+                    PullTargetsDisposables.Remove(warrior.UniqueId);
                 }
 
                 if (PullTargets.Count == 0)

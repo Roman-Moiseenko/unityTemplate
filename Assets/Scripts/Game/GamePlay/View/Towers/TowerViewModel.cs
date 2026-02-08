@@ -9,6 +9,7 @@ using Game.GamePlay.Services;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Mobs;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.State.Inventory;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
@@ -21,7 +22,6 @@ using UnityEngine;
 
 namespace Game.GamePlay.View.Towers
 {
-    
     /**
      * Базовый клас для моделей башни, напрямую используется только во Frame
      * Вся логика (Атака, Воины, Баф/Дебаф) определена в дочерних классах
@@ -31,7 +31,7 @@ namespace Game.GamePlay.View.Towers
         protected readonly GameplayStateProxy _gameplayState;
         protected readonly TowersService _towersService;
         protected readonly TowerEntity _towerEntity;
-        public bool IsPlacement => _towerEntity.IsPlacement; 
+        public bool IsPlacement => _towerEntity.IsPlacement;
         public Dictionary<TowerParameterType, TowerParameterData> Parameters => _towerEntity.Parameters;
         public readonly int UniqueId;
         public ReactiveProperty<int> Level { get; set; }
@@ -40,18 +40,20 @@ namespace Game.GamePlay.View.Towers
         public ReactiveProperty<Vector3> PositionMap = new();
         public bool IsOnRoad => _towerEntity.IsOnRoad;
         public ReactiveProperty<Vector3> Direction = new();
-        
+
         public ReactiveProperty<int> NumberModel = new(0);
         public float SpeedShot => _towerEntity.SpeedShot;
+        public TypeEpicCard EpicLevel { get; set; }
         public ReactiveProperty<bool> FinishEffectLevelUp = new(false);
         public ReactiveProperty<bool> ShowArea = new(false);
 
+        public string NameTower;
 
-        
+
         //Флаг для передачи в Панели подтверждения из различных состояния
-    //    public ReactiveProperty<bool> IsConfirmationState = new(true);
-        
-    
+        //    public ReactiveProperty<bool> IsConfirmationState = new(true);
+
+
         public TowerViewModel(
             TowerEntity towerEntity,
             GameplayStateProxy gameplayState,
@@ -61,18 +63,24 @@ namespace Game.GamePlay.View.Towers
         {
             _gameplayState = gameplayState;
             _towersService = towersService;
-            _towerEntity = towerEntity;   
-            
+            _towerEntity = towerEntity;
+            if (towersService != null)
+            {
+                var availableTowers = towersService.GetAvailableTowers();
+                EpicLevel = availableTowers[_towerEntity.ConfigId];
+            }
+
             UniqueId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
             Position = towerEntity.Position;
 
             Position.Subscribe(v => PositionMap.Value = new Vector3(v.x, 0, v.y));
-            
-            
+
+
             Level.Subscribe(level =>
-            { //Смена модели
+            {
+                //Смена модели
                 NumberModel.Value = level switch
                 {
                     1 or 2 => 1,
@@ -88,7 +96,7 @@ namespace Game.GamePlay.View.Towers
                     ShowArea.Value = true;
             });
         }
-        
+
         public bool IsPosition(Vector2 position)
         {
             const float delta = 0.5f; //Половина ширины клетки
@@ -113,7 +121,7 @@ namespace Game.GamePlay.View.Towers
         public Vector3 GetAreaRadius()
         {
             if (_towerEntity.IsPlacement) return new Vector3(5, 5, 1); //Scale для модели
-            
+
             var radius = Vector3.zero; //Zero для башен без области
             if (_towerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var min))
                 radius.y = min.Value;
@@ -121,7 +129,7 @@ namespace Game.GamePlay.View.Towers
                 radius.x = max.Value;
             if (_towerEntity.Parameters.TryGetValue(TowerParameterType.Distance, out var parameter))
                 radius.x = parameter.Value;
-            
+
             //TODO Если к башне применен параметр Высота (+дистанции) то вычисляем radius.z = %% от radius.x
             return radius;
         }

@@ -26,7 +26,7 @@ namespace Game.GamePlay.Services
         private readonly DIContainer _container;
         private readonly GameSettings _gameSettings;
         private readonly TowersSettings _towersSettings;
-        private readonly TowersService _towerService;
+        private readonly TowersService _towersService;
         private Dictionary<int, bool> _rewardsMap = new();
         
         public RewardProgressService(
@@ -39,7 +39,7 @@ namespace Game.GamePlay.Services
             _gameplayState = gameplayState;
             _container = container;
             _gameSettings = gameSettings;
-            _towerService = container.Resolve<TowersService>();
+            _towersService = container.Resolve<TowersService>();
             _towersSettings = gameSettings.TowersSettings;
             
             //gameplayState.Waves.
@@ -263,7 +263,7 @@ namespace Game.GamePlay.Services
 
         private RewardCardData GetTower(RewardsProgress progress)
         {
-            var availableTowers = _towerService.GetAvailableTowers(); //Список доступных башен по колоде
+            var availableTowers = _towersService.GetAvailableTowers(); //Список доступных башен по колоде
             //Исключить повторения
             foreach (var rewardCardData in progress.Cards.Where(rewardCardData =>
                          rewardCardData.Value.RewardType == RewardType.Tower))
@@ -287,7 +287,7 @@ namespace Game.GamePlay.Services
                     {
                         RewardType = RewardType.Tower,
                         ConfigId = tower.Key,
-                        Level = _towerService.Levels[tower.Key], //текущий уровень, для звездочек
+                        Level = _towersService.Levels[tower.Key], //текущий уровень, для звездочек
                         OnRoad = towerSetting.OnRoad,
                         EpicLevel = tower.Value,
                     };
@@ -300,7 +300,7 @@ namespace Game.GamePlay.Services
 
         private RewardCardData GetTowerUpgrade(RewardsProgress progress)
         {
-            var availableUpgradeTowers = _towerService.GetAvailableUpgradeTowers(); //Список доступных улучшений
+            var availableUpgradeTowers = _towersService.GetAvailableUpgradeTowers(); //Список доступных улучшений
             //Исключить повторения
             foreach (var rewardCardData in progress.Cards.Where(rewardCardData =>
                          rewardCardData.Value.RewardType == RewardType.TowerLevelUp))
