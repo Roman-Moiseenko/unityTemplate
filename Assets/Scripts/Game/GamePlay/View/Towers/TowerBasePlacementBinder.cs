@@ -54,8 +54,8 @@ namespace Game.GamePlay.View.Towers
         
         protected override void RestartAfterUpdate()
         {
-            //TODO Обновляем воинов
-            ViewModel.UpdateAndRestartWarriors();
+            //TODO Обновляем внешний вид воинов и запускаем эффекты
+            
         }
         
         private void CreateWarrior(WarriorViewModel warriorViewModel)

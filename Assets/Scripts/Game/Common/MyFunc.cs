@@ -1,4 +1,6 @@
-﻿namespace Game.Common
+﻿using UnityEngine;
+
+namespace Game.Common
 {
     public static class MyFunc
     {
@@ -21,5 +23,20 @@
                     return value.ToString();
             }
         }
+
+        public static Vector3 Vector2To3(Vector2 vector)
+        {
+            return new Vector3(vector.x, 0, vector.y);
+        }
+        public static Vector3 Vector2To3(Vector2Int vector)
+        {
+            return new Vector3(vector.x, 0, vector.y);
+        }
+        
+        public static Vector2 Vector3To2(Vector3 vector)
+        {
+            return new Vector2(vector.x, vector.z);
+        }
+        
     }
 }

@@ -35,21 +35,17 @@ namespace Game.State.Maps.Mobs
         public ReactiveProperty<Vector2Int> Direction; //Данные не сохраняются в MobEntityData
         public ReadOnlyReactiveProperty<bool> IsDead; // = new(false);
         public readonly ReactiveProperty<Vector3> PositionTarget = new();
-        //public ReactiveProperty<bool> IsWentOut = new(false); //Пошел по дороге    
         public ObservableDictionary<string, MobDebuff> Debuffs = new();        
         
-        //public ReactiveProperty<MobState> State;
         
         public MobEntity(MobEntityData mobEntityData)
         {
             var h = mobEntityData.IsFly ? 0.55f : 0.1f;
             Origin = mobEntityData;
             
-            //State = new ReactiveProperty<MobState>(mobEntityData.State);
-            //State.Subscribe(s => mobEntityData.State = s);
             
             Position = new ReactiveProperty<Vector2>(new Vector2(0,0));
-            Position.Subscribe(newValue => PositionTarget.Value = new Vector3(newValue.x, h , newValue.y));
+            Position.Subscribe(newValue => PositionTarget.Value = new Vector3(newValue.x, 0 , newValue.y));
             Direction = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));
             
             Health = new ReactiveProperty<float>(mobEntityData.Health);

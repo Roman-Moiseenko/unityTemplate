@@ -6,6 +6,7 @@ using Game.State.Maps.Rewards;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
+using UnityEngine;
 
 namespace Game.State.Root
 {
@@ -29,7 +30,10 @@ namespace Game.State.Root
         public CastleEntityData CastleData { get; set; } 
         
         public int Id { get; set; }
-        
+   //     public Vector2 GateWave { get; set; }
+     //   public Vector2 GateWaveSecond { get; set; }
+        public bool HasWaySecond { get; set; }
+
         public List<RewardEntityData> RewardEntities = new(); 
         public List<TowerEntityData> Towers;  //Либо разделить на Tower и Ground 
 

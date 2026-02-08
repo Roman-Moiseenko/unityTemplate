@@ -140,7 +140,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthBar: {fileID: 4540669003048358524}
   mobVisible: {fileID: 4434121709225187577}
-  UnityId: 0
+  UniqueId: 0
 --- !u!136 &6025820642642656249
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ Transform:
   m_GameObject: {fileID: 7542431532477943838}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -400,6 +400,14 @@ PrefabInstance:
     - target: {fileID: 5138380573707538485, guid: 162a82a4eb48388499d95390578dee58, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7425531406358187305, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_Height
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7425531406358187305, guid: 162a82a4eb48388499d95390578dee58, type: 3}
+      propertyPath: m_Radius
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 8379243312631603245, guid: 162a82a4eb48388499d95390578dee58, type: 3}
       propertyPath: m_Radius

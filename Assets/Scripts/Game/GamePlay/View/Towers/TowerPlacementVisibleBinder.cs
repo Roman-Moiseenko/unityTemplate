@@ -31,7 +31,8 @@ namespace Game.GamePlay.View.Towers
         {
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
             var mobBinder = other.gameObject.GetComponent<MobBinder>();
-            if (_viewModel.IsWay != mobBinder.ViewModel.IsWay) return; //Разные пути 
+            if (_viewModel.IsWay != mobBinder.ViewModel.IsWay) return; //Разные пути
+            if (_viewModel.IsFly != mobBinder.ViewModel.IsFly) return; //Не совпадают тип мобов (наземные/воздушны)
             if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
             _viewModel.PullTargets.Add(mobBinder.ViewModel); //Добавляем моба в пулл целей
         }

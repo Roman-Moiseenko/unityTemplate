@@ -45,7 +45,7 @@ namespace MVVM.FSM
             if (enterParams != null) Params = enterParams;
 
             var type = typeof(T);
-            if (StateCurrent.Value != null && StateCurrent.Value.GetType() == type) return;
+            //if (StateCurrent.Value != null && StateCurrent.Value.GetType() == type) return;
 
             if (_states.TryGetValue(type, out var newState))
             {
@@ -54,6 +54,7 @@ namespace MVVM.FSM
                 }
 
                 //Проверка на выход из состояния, можно ли перейти к следующему состоянию
+                //Проверку опускаем, в случае совпадения состояний  && StateCurrent.Value.GetType() == type
                 if (StateCurrent.Value != null) //Текущее состояние уже есть, то проверяем, 
                 {
                     if (!StateCurrent.Value.Exit(newState)) return; //- можно ли из него выйти
@@ -65,6 +66,7 @@ namespace MVVM.FSM
                     newState.Params = enterParams; //Чтоб не перезаписать, при возврате к BuildBegin
 
                 newState.Enter(); //Сначала входим в новое состояние
+//                Debug.Log("SetState " + newState.GetType());
                 StateCurrent.OnNext(newState); //Затем запоминаем, для подписок, принудительно
             }
         }

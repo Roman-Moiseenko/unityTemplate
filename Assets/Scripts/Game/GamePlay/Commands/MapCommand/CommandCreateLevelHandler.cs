@@ -58,34 +58,20 @@ namespace Game.GamePlay.Commands.MapCommand
             };
             _cmd.Process(commandRoads, false);
             
-            //Добавляем Волны мобов
-            /*
-            for (var index = 0; index < newMapInitialStateSettings.Waves.Count; index++)
-            {
-                var commandWave = new CommandCreateWave
-                {
-                    Index = index,
-                    //WaveItems = newMapInitialStateSettings.Waves[index].WaveItems
-                };
-                _cmd.Process(commandWave, false);
-            }
-            
-            */
             //Размещаем крепость
             var commandCastle = new CommandCastleCreate();
             _cmd.Process(commandCastle, false);
-
-
+            
             //Размещаем базовые башни, если имеются
             foreach (var towerSettings in newMapInitialStateSettings.Towers)
             {
                 var commandTower = new CommandPlaceTower(towerSettings.ConfigId, towerSettings.Position);
                 _cmd.Process(commandTower, false);
             }
-
             _gameplayState.CurrentWave.Value = 0;
             _gameplayState.CountWaves = newMapInitialStateSettings.Waves.Count;
             _gameplayState.MapId.Value = command.MapId;
+            _gameplayState.HasWaySecond.Value = newMapInitialStateSettings.hasWaySecond;
             _gameplayState.SetTypeGameplay(TypeGameplay.Levels);
             return true;
         }

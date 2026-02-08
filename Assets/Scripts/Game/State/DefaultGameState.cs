@@ -5,6 +5,7 @@ using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using R3;
+using UnityEngine;
 
 namespace Game.State
 {
@@ -29,9 +30,8 @@ namespace Game.State
                 WaySecond = new List<RoadEntityData>(),
                 WayDisabled = new List<RoadEntityData>(),
                 Grounds = new List<GroundEntityData>(),
-                //Waves = new Dictionary<int, WaveEntityData>(),
-                //TODO Ресурсы игры
-                
+                //GateWave = Vector2.zero,
+                //GateWaveSecond = Vector2.zero,
             };
             return new GameplayStateProxy(_gameplayStateOrigin);
         }
@@ -50,7 +50,6 @@ namespace Game.State
         public GameStateProxy CreateGameStateFromSettings()
         {
             //Заполняем карты по умолчанию, и другие бонусы
-            //  var inventory = new List<InventoryData>(); //TODO Загрузить из настроек
             _gameStateOrigin = new GameState
             {
                 GameSpeed = 1

@@ -24,6 +24,7 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> ProgressLevel;
         public readonly ReactiveProperty<long> SoftCurrency;
         public readonly ReactiveProperty<int> MapId;
+        public readonly ReactiveProperty<bool> HasWaySecond;
         public readonly ReactiveProperty<int> CurrentWave;
         public readonly ReactiveProperty<int> UpdateCards;
         
@@ -49,8 +50,8 @@ namespace Game.State.Root
         public ReactiveProperty<bool> MapFinished = new(false);
         public ObservableList<ShotData> Shots { get; } = new();
 
-        public ReactiveProperty<Vector2> GateWave = new();
-        public ReactiveProperty<Vector2> GateWaveSecond = new();
+        public ReactiveProperty<Vector2> GateWave { get; set; } = new(Vector2.zero);
+        public ReactiveProperty<Vector2> GateWaveSecond { get; set; } = new(Vector2.zero);
 
         public GameplayStateProxy(GameplayState origin)
         {
@@ -81,6 +82,14 @@ namespace Game.State.Root
             TypeGameplay = new ReactiveProperty<TypeGameplay>(origin.TypeGameplay);
             TypeGameplay.Subscribe(newValue => origin.TypeGameplay = newValue);
 
+        //    GateWave = new ReactiveProperty<Vector2>(origin.GateWave);
+        //    GateWave.Subscribe(newValue => origin.GateWave = newValue);
+            
+        //    GateWaveSecond = new ReactiveProperty<Vector2>(origin.GateWaveSecond);
+        //    GateWaveSecond.Subscribe(newValue => origin.GateWaveSecond = newValue);
+            
+            HasWaySecond = new ReactiveProperty<bool>(origin.HasWaySecond);
+            HasWaySecond.Subscribe(newValue => origin.HasWaySecond = newValue);
 
             //Награды
             origin.RewardEntities.ForEach(
@@ -218,7 +227,7 @@ namespace Game.State.Root
                     break;
                 case 2: newSpeed = 4;
                     break;
-                case 4: newSpeed = 1f;
+                case 4: newSpeed = 0.5f;
                     break;
             }
           

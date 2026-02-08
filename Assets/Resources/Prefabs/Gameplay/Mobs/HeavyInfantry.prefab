@@ -50,7 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthBar: {fileID: 7374007172048882459}
   mobVisible: {fileID: 6371195039103499581}
-  UnityId: 0
+  UniqueId: 0
 --- !u!136 &9172985174820594965
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -341,11 +341,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7425531406358187305, guid: 162a82a4eb48388499d95390578dee58, type: 3}
       propertyPath: m_Height
-      value: 0.6
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 7425531406358187305, guid: 162a82a4eb48388499d95390578dee58, type: 3}
       propertyPath: m_Radius
-      value: 0.25
+      value: 0.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

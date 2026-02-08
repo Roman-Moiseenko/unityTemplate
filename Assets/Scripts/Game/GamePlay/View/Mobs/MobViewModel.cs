@@ -22,6 +22,8 @@ namespace Game.GamePlay.View.Mobs
     {
         private MobEntity _mobEntity;
 
+        public ObservableList<WarriorViewModel> PullTargets = new();
+        public ReactiveProperty<WarriorViewModel> Target = new(null); //Текущая цель
 
         public int UniqueId => _mobEntity.UniqueId;
         public bool IsFly => _mobEntity.IsFly;
@@ -50,6 +52,7 @@ namespace Game.GamePlay.View.Mobs
         public MobDefence Defence => _mobEntity.Defence;
         public bool IsWay => _mobEntity.IsWay;
         private readonly GameplayStateProxy _gameplayState;
+        private readonly Coroutines _coroutines;
 
         public MobViewModel(
             MobEntity mobEntity,
@@ -57,6 +60,9 @@ namespace Game.GamePlay.View.Mobs
             WaveService waveService
         )
         {
+            //TODO Перенести в Binder как у Warriors, возможно через FSM
+            _coroutines = GameObject.Find(AppConstants.COROUTINES).GetComponent<Coroutines>();
+
             _gameplayState = gameplayState;
             _mobEntity = mobEntity;
             CurrentHealth = mobEntity.Health;
@@ -73,6 +79,54 @@ namespace Game.GamePlay.View.Mobs
             RoadPoints = waveService.GenerateRoadPoints(mobEntity);
 
             IsMoving.Value = true;
+
+            PullTargets.ObserveAdd().Subscribe(e =>
+            {
+                var warrior = e.Value;
+                warrior.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(warrior));
+
+                if (Target.CurrentValue == null)
+                {
+                    Target.OnNext(warrior);
+                    IsMoving.OnNext(false);
+                    IsAttack.OnNext(true);
+                }
+            });
+
+            PullTargets.ObserveRemove().Subscribe(e =>
+            {
+                if (Target.CurrentValue != null && e.Value.UniqueId == Target.CurrentValue.UniqueId)
+                {
+                    Target.OnNext(null);
+                }
+
+                if (PullTargets.Count == 0)
+                {
+                    IsMoving.Value = true;
+                    IsAttack.Value = false;
+                    Target.Value = null;
+                }
+            });
+
+            Target.Skip(1).Subscribe(target =>
+            {
+                if (target == null)
+                {
+                    foreach (var warriorViewModel in PullTargets)
+                    {
+                        Target.OnNext(warriorViewModel);
+                        IsMoving.Value = false;
+                        IsAttack.Value = true;
+                        return;
+                    }
+
+                    IsMoving.Value = true;
+                    IsAttack.Value = false;
+                    return;
+                }
+
+                _coroutines.StartCoroutine(AttackWarrior());
+            });
         }
 
         public IEnumerator WaitFinishAnimation()
@@ -120,32 +174,14 @@ namespace Game.GamePlay.View.Mobs
             yield return AttackEntity(_gameplayState.Castle);
         }
 
-        public IEnumerator AttackWarrior(WarriorViewModel viewModel)
+        public IEnumerator AttackWarrior()
         {
-            /*
-            WarriorEntity warrior = null;
-            foreach (var warriorEntity in _gameplayState.Warriors)
-                if (warriorEntity.UniqueId == warriorUniqueId) warrior = warriorEntity;
-            if (warrior == null) yield break;
-            */
-            IsMoving.Value = false;
-            IsAttack.Value = true;
+            if (_mobEntity.IsDead.CurrentValue) yield break;
+            Target.CurrentValue.DamageWarrior(Damage, _mobEntity.Defence);
+            yield return new WaitForSeconds(_mobEntity.SpeedAttack / AppConstants.MOB_SPEED_ATTACK);
 
-            while (IsAttack.Value)
-            {
-                if (_mobEntity.IsDead.CurrentValue) yield break;
-                viewModel.DamageWarrior(Damage, _mobEntity.Defence);
-                yield return new WaitForSeconds(_mobEntity.SpeedAttack / AppConstants.MOB_SPEED_ATTACK);
-
-                //entity.DamageReceived(Damage);
-                if (!viewModel.IsDead.CurrentValue) continue;
-
-                //State.Value = MobState.Moving;
-                IsMoving.Value = true;
-                IsAttack.Value = false;
-            }
-
-            //yield return AttackEntity(warrior);
+            if (Target.CurrentValue == null) yield break;
+            if (!Target.CurrentValue.IsDead.CurrentValue) _coroutines.StartCoroutine(AttackWarrior());
         }
 
         public IEnumerator AttackEntity(IEntityHasHealth entity)
@@ -162,6 +198,16 @@ namespace Game.GamePlay.View.Mobs
                 IsMoving.Value = true;
                 IsAttack.Value = false;
             }
+        }
+
+        /**
+         * Добавить модель Стены
+         */
+        public IEnumerator AttackWall()
+        {
+            IsMoving.Value = false;
+            IsAttack.Value = true;
+            yield return null;
         }
     }
 }

@@ -13,14 +13,13 @@ namespace Game.GamePlay.Fsm.WarriorStates
         
         public override void Enter()
         {
-            Params = null;
         }
 
         public override bool Exit(FSMState next = null)
         {
-            if (next?.GetType() == typeof(FsmWarriorAwait)) return true;
-            Debug.Log("Ошибка выхода");
-            return false;
+      //      if (next?.GetType() == typeof(FsmWarriorAwait) || next?.GetType() == typeof(FsmWarriorGoToPlacement)) return true;
+//            Debug.Log("Ошибка выхода");
+            return true;
             
         }
 

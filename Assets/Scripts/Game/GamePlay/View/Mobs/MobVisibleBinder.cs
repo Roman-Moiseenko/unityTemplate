@@ -21,9 +21,10 @@ namespace Game.GamePlay.View.Mobs
             {
                 //TODO Сделать через PullTargets
                 var warrior = other.gameObject.GetComponent<WarriorAttackBinder>();
+                ViewModel.PullTargets.Add(warrior.ViewModel);
                 //warrior.
 //                Debug.Log("warrior.UniqueId = " + warrior.ViewModel.UniqueId);
-                _coroutine = StartCoroutine(ViewModel.AttackWarrior(warrior.ViewModel));
+//                _coroutine = StartCoroutine(ViewModel.AttackWarrior(warrior.ViewModel));
             }
 
             if (other.gameObject.CompareTag("Castle"))
@@ -33,15 +34,17 @@ namespace Game.GamePlay.View.Mobs
 
             if (other.gameObject.CompareTag("Wall"))
             {
+                //Передать модель стены
+                _coroutine = StartCoroutine(ViewModel.AttackWall());
                 //TODO Наносим урон стене
             }
         }
-
+/*
         private void OnTriggerStay(Collider other)
         {
-            if (other.gameObject.CompareTag("Warrior") /* && IsMoving*/)
+            if (other.gameObject.CompareTag("Warrior"))
             {
-                //TODO Проверка на other.gameObject.CompareTag("Warrior") и IsMoving ()
+                
                 //Исключительный случай, когда 1й воин убит, но моб уже внутри коллайдера 2-го воина    
             }
              
@@ -51,10 +54,12 @@ namespace Game.GamePlay.View.Mobs
         {
             if (other.gameObject.CompareTag("Warrior") || other.gameObject.CompareTag("Wall"))
             {
-                //TODO Продолжаем движение
+               
             }
         }
 
+        */
+        
         private void OnDestroy()
         {
             if (_coroutine != null) StopCoroutine(_coroutine);

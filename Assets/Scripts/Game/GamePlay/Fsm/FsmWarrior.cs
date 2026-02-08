@@ -1,8 +1,10 @@
 ﻿using DI;
 using Game.GamePlay.Fsm.WarriorStates;
 using Game.GamePlay.View.Mobs;
+using Game.State.Maps.Roads;
 using MVVM.FSM;
 using R3;
+using UnityEngine;
 
 namespace Game.GamePlay.Fsm
 {
@@ -49,9 +51,9 @@ namespace Game.GamePlay.Fsm
             return Fsm.StateCurrent.CurrentValue.GetType() == typeof(FsmWarriorGoToMob);
         }
 
-        public MobViewModel GetTarget()
+        public Vector3 GetPosition()
         {
-            return (MobViewModel)Fsm.GetParamsState();
+            return (Vector3)Fsm.GetParamsState();
         }
 
         public bool IsGoToRepair()
@@ -81,6 +83,9 @@ namespace Game.GamePlay.Fsm
         }
 
 
-
+        public bool IsAttack()
+        {
+            return Fsm.StateCurrent.CurrentValue.GetType() == typeof(FsmWarriorAttack);
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace Game.GamePlay.View.Warriors
             ViewModel = viewModel;
         }
 
-
+/*
         private void OnTriggerEnter(Collider other)
         {
             if (!ViewModel.FsmWarrior.IsGoToMob()) return;
@@ -24,8 +24,9 @@ namespace Game.GamePlay.View.Warriors
             ViewModel.PullAttacks.Add(mobBinder.ViewModel);
             //Атакуем моба, который в цели
 //            if (mobBinder.ViewModel.UniqueId == ViewModel.MobTarget.CurrentValue.UniqueId)
-                ViewModel.FsmWarrior.Fsm.SetState<FsmWarriorAttack>(mobBinder.ViewModel); 
+            //ViewModel.FsmWarrior.Fsm.SetState<FsmWarriorAttack>(mobBinder.ViewModel); 
         }
+        
 
         private void OnTriggerExit(Collider other)
         {
@@ -33,7 +34,7 @@ namespace Game.GamePlay.View.Warriors
             var mobBinder = other.gameObject.GetComponent<MobVisibleBinder>();
             ViewModel.PullAttacks.Remove(mobBinder.ViewModel); //Если моб случайно вышел из области атаки, удаляем из пула
         }
-
+*/
         private void OnTriggerStay(Collider other)
         {
             

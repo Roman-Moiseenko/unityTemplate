@@ -19,7 +19,7 @@
         public const int TIME_WAVE_NEW = 60; //Кол-во кадров на таймере волны
         public const float TIME_PAUSE_WAVE_NEW = 0.04f; //Время между кадрами таймера волны
         
-        public const float MOB_BASE_SPEED = 0.5f;
+        public const float MOB_BASE_SPEED = 0.4f;
         public const float SHOT_BASE_SPEED = 10f;
         public const float MOB_SPEED_ATTACK = 60f; //Коэф.деления, 60 = 1с
         public const float SPEED_REDICE_CASTLE = 1f;

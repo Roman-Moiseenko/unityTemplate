@@ -14,11 +14,12 @@ namespace Game.State.Maps.Warriors
         public bool IsFly => Origin.IsFly;
         
         public ReactiveProperty<float> Health;
+        public ReactiveProperty<float> MaxHealth;
         public ReadOnlyReactiveProperty<bool> IsDead;
         
         public int ParentId => Origin.ParentId;
-        public float Speed => Origin.Speed;
-        public float Damage => Origin.Damage;
+        public ReactiveProperty<float> Speed; // => Origin.Speed;
+        public ReactiveProperty<float> Damage; // => Origin.Damage;
         public MobDefence Defence => Origin.Defence;
 
         public WarriorEntity(WarriorEntityData warriorEntityData)
@@ -27,6 +28,14 @@ namespace Game.State.Maps.Warriors
             Health = new ReactiveProperty<float>(warriorEntityData.Health);
             Health.Subscribe(v => Origin.Health = v);
             IsDead = Health.Select(v => v <= 0).ToReadOnlyReactiveProperty();
+            
+            Speed = new ReactiveProperty<float>(warriorEntityData.Speed);
+            Speed.Subscribe(v => Origin.Speed = v);
+            
+            Damage = new ReactiveProperty<float>(warriorEntityData.Damage);
+            Damage.Subscribe(v => Origin.Damage = v);
+            
+            MaxHealth = new ReactiveProperty<float>(warriorEntityData.Health);
         }
 
         public void DamageReceived(float damage)

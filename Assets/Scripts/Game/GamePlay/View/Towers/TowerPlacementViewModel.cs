@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.WaveStates;
 using Game.GamePlay.Services;
@@ -33,18 +34,20 @@ namespace Game.GamePlay.View.Towers
         public bool IsWay;
         public float DeltaWarrior = 0.15f;
         
-        public Dictionary<int, List<RoadPoint>> AvailablePath = new();
+        public Dictionary<int, RoadPoint3> AvailablePath = new();
 
         private List<IDisposable> _disposables = new();
 
         //Кеш подписок на смерть моба
         private readonly Dictionary<int, IDisposable> _mobDisposables = new();
         public ReactiveProperty<Vector2Int> Placement => _towerEntity.Placement;
+        public bool IsFly { get; set; }
 
         public TowerPlacementViewModel(TowerEntity towerEntity, GameplayStateProxy gameplayState,
             TowersService towersService, FsmTower fsmTower, FsmWave fsmWave, PlacementService placementService) : base(
             towerEntity, gameplayState, towersService, fsmTower)
         {
+            IsFly = _towerEntity.TypeEnemy == TowerTypeEnemy.Air;
             _placementService = placementService;
             UpdateParameterWarrior();
             for (var i = 1; i <= CountWarriors; i++)
@@ -128,7 +131,7 @@ namespace Game.GamePlay.View.Towers
             var d4 = Level.Subscribe(level =>
             {
                 UpdateParameterWarrior();
-                Debug.Log($"Обновили параметры {level} Damage {Damage}");
+                UpdateAndRestartWarriors();
             });
             _disposables.Add(d4);
         }
@@ -160,9 +163,16 @@ namespace Game.GamePlay.View.Towers
             //Debug.Log(JsonConvert.SerializeObject(AvailablePath, Formatting.Indented));
         }
 
-        public void UpdateAndRestartWarriors()
+        private void UpdateAndRestartWarriors()
         {
-            //TODO Обновить солдат
+            //Обновить солдат
+            foreach (var warriorEntity in _warriorEntities)
+            {
+                warriorEntity.Damage.OnNext(Damage);
+                warriorEntity.Health.OnNext(Health);
+                warriorEntity.Speed.OnNext(Speed);
+                warriorEntity.MaxHealth.OnNext(Health);
+            }
         }
 
         private void CreateWarriorEntity(int index)
@@ -187,15 +197,11 @@ namespace Game.GamePlay.View.Towers
                 Index = index
             };
             //При смерти Сущности, сразу удаляем из списка сущностей
-            warriorEntity.IsDead.Where(x => x).Subscribe(_ =>
-            {
-                _warriorEntities.Remove(warriorEntity);
-                // Debug.Log("warriorEntity.IsDead " + warriorEntity.Index);
-            });
+            warriorEntity.IsDead.Where(x => x).Subscribe(_ => _warriorEntities.Remove(warriorEntity));
             _warriorEntities.Add(warriorEntity);
         }
 
-        public List<RoadPoint> GenerateRoadPoints(int index)
+        public RoadPoint3 GenerateRoadPoints(int index)
         {
             var delta = DeltaWarrior * index;
             var way = IsWay ? _gameplayState.Origin.Way.ToList() : _gameplayState.Origin.WaySecond.ToList();
@@ -212,51 +218,49 @@ namespace Game.GamePlay.View.Towers
             };
             way.Add(rd);
 
-            var isAvailable = false;
-            List<RoadPoint> roads = new();
 
             //Формируем список точек движения моба
             for (var i = 0; i < way.Count - 1; i++)
             {
-                if (way[i].Position == Placement.CurrentValue) isAvailable = true;
-                if (!isAvailable) continue;
-
-                Vector2 position = way[i].Position; //Определяем новые координаты моба
-
-                //Если координаты дороги выходят за пределы AreaPlacement
-                if (position.x > Position.CurrentValue.x + 2 ||
-                    position.x < Position.CurrentValue.x - 2 ||
-                    position.y > Position.CurrentValue.y + 2 ||
-                    position.y < Position.CurrentValue.y - 2)
-                    break;
-
-                if (way[i].IsTurn)
+                if (way[i].Position == Placement.CurrentValue)
                 {
-                    position.x += delta;
-                    position.y += delta;
-                }
-                else
-                {
-                    if (way[i].Rotate % 2 == 0)
+                    var result = new RoadPoint3();
+
+                    var direction = MyFunc.Vector2To3(way[i + 1].Position) - MyFunc.Vector2To3(way[i].Position); 
+                    result.Direction = direction.normalized;
+/*
+                    if (direction.y == 0)
                     {
-                        position.y += delta;
+                        
+                    }
+                    else if(direction.x == 0)
+                    {
+                        
+                    }
+                    
+                    Debug.Log(way[i + 1].Position + " " + way[i].Position);
+                    Debug.Log(result.Direction.normalized);*/
+                    Vector2 position = way[i + 1].Position;
+                    
+                    if (position.x > Position.CurrentValue.x + 2 ||
+                        position.x < Position.CurrentValue.x - 2 ||
+                        position.y > Position.CurrentValue.y + 2 ||
+                        position.y < Position.CurrentValue.y - 2)
+                    {
+                        result.Point = null;
                     }
                     else
                     {
                         position.x += delta;
+                        position.y += delta;
+                        result.Point = MyFunc.Vector2To3(position);
                     }
-                }
 
-                var direction = way[i + 1].Position - way[i].Position;
-                //Debug.Log(position + " " + direction + " (" + way[i + 1].Position + "-" + way[i].Position);
-                roads.Add(new RoadPoint(position, direction));
-                //        if (index == 0)
-                //         {
-//                    Debug.Log(position + " => " + direction);
-                //        }
+                    return result;
+                }
             }
 
-            return roads;
+            throw new Exception("Точкеа на дороге не нашлась");
         }
 
         public override void Dispose()

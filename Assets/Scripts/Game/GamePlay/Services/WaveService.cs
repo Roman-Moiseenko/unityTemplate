@@ -109,14 +109,15 @@ namespace Game.GamePlay.Services
             
             //Создаем модель ворот
             CreateGateWaveViewModel();
-            
+            roadsService.Way.ObserveAdd().Subscribe(_ => MoveGateWaveViewModel());
             //Если 2 пути
-            CreateGateWaveSecondViewModel();
+            if (_gameplayState.HasWaySecond.Value)
+            {
+                CreateGateWaveSecondViewModel();    
+                roadsService.WaySecond.ObserveAdd().Subscribe(_ => MoveGateWaveSecondViewModel());
+            }
             
             //При добавлении дороги на путь, перемещаем модель ворот
-            roadsService.Way.ObserveAdd().Subscribe(_ => MoveGateWaveViewModel());
-            roadsService.WaySecond.ObserveAdd().Subscribe(_ => MoveGateWaveSecondViewModel());
-
             _fsmWave.Fsm.StateCurrent.Subscribe(v =>
             {
                 if (v.GetType() == typeof(FsmStateWaveGo))
@@ -217,7 +218,6 @@ namespace Game.GamePlay.Services
 
             Vector2 position = new Vector2((lastPoint.x + exitPoint.x) / 2f, (lastPoint.y + exitPoint.y) / 2f);
             var direction = exitPoint - lastPoint;
-            Debug.Log("CreateGateWaveViewModel " + position);
             //_gameplayState.GateWave.OnNext(position);
 
             GateWaveViewModel = new GateWaveViewModel(_fsmWave)

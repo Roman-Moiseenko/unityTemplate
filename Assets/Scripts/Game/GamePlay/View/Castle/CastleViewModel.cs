@@ -50,6 +50,10 @@ namespace Game.GamePlay.View.Castle
                 var target = e.Value;
                 _mobDisposables.Remove(target.UniqueId);
                 RemoveTarget(target);
+                if (PullTargets.Count == 0)
+                {
+                    MobTarget.OnNext(null);
+                }
             });
             MobTarget.Where(x => x == null).Subscribe(_ =>
             {
