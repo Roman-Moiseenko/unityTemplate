@@ -118,10 +118,11 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
             var prefabPath = $"Prefabs/UI/Gameplay/Panels/GateWaveInfo/EnemyInfo"; //Перенести в настройки уровня
             var enemyPrefab = Resources.Load<EnemyInfoBinder>(prefabPath);
             var createdInfoString = Instantiate(enemyPrefab, containerEnemies);
-            var image = _imageManager.GetDefence(enemyDataInfo.Defence);
+            
+            var imageData = _imageManager.GetDefenceData(enemyDataInfo.Defence);
 
             createdInfoString.Bind(
-                image,
+                imageData.Icon,
                 enemyDataInfo.TitleLid,
                 enemyDataInfo.Quantity,
                 _enemyInfoBinders.Count,

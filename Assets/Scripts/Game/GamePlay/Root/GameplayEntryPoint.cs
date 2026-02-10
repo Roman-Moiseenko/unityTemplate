@@ -35,6 +35,8 @@ namespace Game.GamePlay.Root
             gameplayContainer.RegisterInstance(AppConstants.CAMERA_MOVING, positionGameplayCamera);
            // var hardCurrencyService = new HardCurrencyService();
             //gameplayContainer.RegisterInstance(hardCurrencyService);
+            gameplayContainer.RegisterInstance(enterParams); //На всякий случай сохраняем в контейнере входные данные
+            
             GameplayRegistrations.Register(gameplayContainer, enterParams); //Регистрируем все сервисы сцены
             var gameplayViewModelsContainer = new DIContainer(gameplayContainer); //Создаем контейнер для view-моделей
             GameplayViewModelsRegistrations.Register(gameplayViewModelsContainer); //Регистрируем все View-модели сцены Gameplay

@@ -2,17 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DI;
 using Game.GamePlay.Commands.WarriorCommands;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.TowerStates;
+using Game.GamePlay.Root;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Mobs;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.State;
 using Game.State.Inventory;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
+using Game.State.Research;
 using Game.State.Root;
 using MVVM.CMD;
 using Newtonsoft.Json;
@@ -28,21 +32,23 @@ namespace Game.GamePlay.View.Towers
      */
     public class TowerViewModel : IMovingEntityViewModel, IDisposable
     {
-        protected readonly GameplayStateProxy _gameplayState;
-        protected readonly TowersService _towersService;
-        protected readonly TowerEntity _towerEntity;
-        public bool IsPlacement => _towerEntity.IsPlacement;
-        public Dictionary<TowerParameterType, TowerParameterData> Parameters => _towerEntity.Parameters;
+        protected GameplayStateProxy GameplayState;
+        protected TowersService TowersService;
+        protected readonly TowerEntity TowerEntity;
+        protected GameplayBoosters GameplayBoosters;
+        private readonly DIContainer _container;
+        public bool IsPlacement => TowerEntity.IsPlacement;
+        public Dictionary<TowerParameterType, TowerParameterData> Parameters => TowerEntity.Parameters;
         public readonly int UniqueId;
         public ReactiveProperty<int> Level { get; set; }
         public readonly string ConfigId;
         public ReactiveProperty<Vector2Int> Position { get; set; }
         public ReactiveProperty<Vector3> PositionMap = new();
-        public bool IsOnRoad => _towerEntity.IsOnRoad;
+        public bool IsOnRoad => TowerEntity.IsOnRoad;
         public ReactiveProperty<Vector3> Direction = new();
 
         public ReactiveProperty<int> NumberModel = new(0);
-        public float SpeedShot => _towerEntity.SpeedShot;
+        public float SpeedShot => TowerEntity.SpeedShot;
         public TypeEpicCard EpicLevel { get; set; }
         public ReactiveProperty<bool> FinishEffectLevelUp = new(false);
         public ReactiveProperty<bool> ShowArea = new(false);
@@ -56,27 +62,18 @@ namespace Game.GamePlay.View.Towers
 
         public TowerViewModel(
             TowerEntity towerEntity,
-            GameplayStateProxy gameplayState,
-            TowersService towersService,
-            FsmTower fsmTower
+            DIContainer container
+            //GameplayStateProxy gameplayState,
+            //TowersService towersService,
+            //FsmTower fsmTower
         )
         {
-            _gameplayState = gameplayState;
-            _towersService = towersService;
-            _towerEntity = towerEntity;
-            if (towersService != null)
-            {
-                var availableTowers = towersService.GetAvailableTowers();
-                EpicLevel = availableTowers[_towerEntity.ConfigId];
-            }
-
+            TowerEntity = towerEntity;
             UniqueId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
             Position = towerEntity.Position;
-
             Position.Subscribe(v => PositionMap.Value = new Vector3(v.x, 0, v.y));
-
 
             Level.Subscribe(level =>
             {
@@ -89,6 +86,20 @@ namespace Game.GamePlay.View.Towers
                     _ => throw new Exception("Неизвестный уровень")
                 };
             });
+
+            //if (container == null) return;
+
+            var fsmTower = container.Resolve<FsmTower>();
+            GameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            TowersService = container.Resolve<TowersService>();
+            GameplayBoosters = container.Resolve<GameplayEnterParams>().GameplayBoosters;
+
+            _container = container;
+
+            var availableTowers = TowersService.GetAvailableTowers();
+            EpicLevel = availableTowers[TowerEntity.ConfigId];
+
+
             fsmTower?.Fsm.StateCurrent.Subscribe(state =>
             {
                 if (state.GetType() == typeof(FsmTowerNone)) ShowArea.Value = false;
@@ -120,17 +131,22 @@ namespace Game.GamePlay.View.Towers
 
         public Vector3 GetAreaRadius()
         {
-            if (_towerEntity.IsPlacement) return new Vector3(5, 5, 1); //Scale для модели
+            if (TowerEntity.IsPlacement) return new Vector3(5, 5, 1); //Scale для модели
 
             var radius = Vector3.zero; //Zero для башен без области
-            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var min))
+            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var min))
                 radius.y = min.Value;
-            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var max))
+            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var max))
                 radius.x = max.Value;
-            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.Distance, out var parameter))
+            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Distance, out var parameter))
                 radius.x = parameter.Value;
 
             //TODO Если к башне применен параметр Высота (+дистанции) то вычисляем radius.z = %% от radius.x
+
+            radius.z += radius.x * GameplayBoosters.TowerDistance /
+                        100; //Если есть бустер на дистанцию, то добавить в radius.z
+            //TODO Добавить бустер от Героя, если есть на дистанцию для определенного типа башен
+
             return radius;
         }
 

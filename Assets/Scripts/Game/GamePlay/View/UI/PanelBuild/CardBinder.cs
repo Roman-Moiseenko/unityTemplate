@@ -5,6 +5,7 @@ using Game.Common;
 using Game.GameRoot.ImageManager;
 using Game.Settings;
 using Game.State.Gameplay;
+using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
 using R3;
 using TMPro;
@@ -84,7 +85,8 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 textDescription.text = _viewModel.Description;
                 if (_viewModel.Defence != null)
                 {
-                    imageDefence.sprite = _imageManager.GetDefence(_viewModel.Defence);
+                    //Debug.Log();
+                    imageDefence.sprite = _imageManager.GetDefenceData((MobDefence)_viewModel.Defence).Icon;
                     imageDefence?.gameObject.SetActive(true);
                 }
                 else

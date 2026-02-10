@@ -5,12 +5,16 @@ using DI;
 using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Commands.WarriorCommands;
 using Game.GamePlay.Fsm;
+using Game.GamePlay.Root;
 using Game.GamePlay.View.Towers;
 using Game.GameRoot.Commands;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
+using Game.State.Maps.Mobs;
+using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
+using Game.State.Research;
 using Game.State.Root;
 using MVVM.CMD;
 using ObservableCollections;
@@ -38,7 +42,10 @@ namespace Game.GamePlay.Services
         //Кешируем параметры башен на карте
         private readonly Dictionary<string, List<TowerLevelSettings>> _towerSettingsMap = new();
         private readonly GameplayStateProxy _gameplayState;
+        private readonly DIContainer _container;
+        private readonly GameplayBoosters _gameplayBoosters;
 
+        public Dictionary<string, Dictionary<TowerParameterType, float>> TowerBoosters = new();
 
         /**
          * При загрузке создаем все view-модели из реактивного списка всех строений.
@@ -47,22 +54,23 @@ namespace Game.GamePlay.Services
         public TowersService(
             GameplayStateProxy gameplayState,
             TowersSettings towersSettings,
-            List<TowerCardData> baseTowerCards, //Базовые настройки колоды
-            ICommandProcessor cmd,
-            PlacementService placementService,
-            FsmTower fsmTower,
-            FsmWave fsmWave
+            GameplayEnterParams gameplayEnterParams,
+            DIContainer container
         )
         {
+            _container = container;
             _gameplayState = gameplayState;
+            
+            _fsmTower = container.Resolve<FsmTower>();
+            _fsmWave = container.Resolve<FsmWave>();
+            _placementService = container.Resolve<PlacementService>();
+            _cmd = container.Resolve<ICommandProcessor>();
+            
             var towerEntities = gameplayState.Towers;
-            _baseTowerCards = baseTowerCards;
-            _cmd = cmd;
-            _placementService = placementService;
-
-            _fsmTower = fsmTower;
-            _fsmWave = fsmWave;
-
+            _baseTowerCards = gameplayEnterParams.Towers; //Базовые настройки колоды
+            _gameplayBoosters = gameplayEnterParams.GameplayBoosters; //TODO Передать в башни _castleResearch.TowerDamage 
+            
+            
             //Кешируем настройки зданий / объектов
             foreach (var towerSettings in towersSettings.AllTowers)
             {
@@ -75,7 +83,7 @@ namespace Game.GamePlay.Services
                 Levels[towerEntity.ConfigId] = towerEntity.Level.CurrentValue;
             }
 
-            foreach (var towerCardData in baseTowerCards)
+            foreach (var towerCardData in _baseTowerCards)
             {
                 var param = new Dictionary<TowerParameterType, TowerParameterData>(); //Базовые параметры из колоды
                 //Делаем копию параметров
@@ -119,6 +127,8 @@ namespace Game.GamePlay.Services
                     towerEntity.Level.OnNext(newLevel);
                 }
             });
+            //Кешируем бустеры для башен по типам Defence
+            CalculateBoosters();
         }
 
         private void UpdateParams(string configId, int level)
@@ -171,15 +181,13 @@ namespace Game.GamePlay.Services
             {
                 towerViewModel = new TowerPlacementViewModel(
                     towerEntity, 
-                    _gameplayState, 
-                    this, 
-                    _fsmTower, 
+                    _container,
                     _fsmWave, 
                     _placementService); //3
             }
             else
             {
-                towerViewModel = new TowerAttackViewModel(towerEntity, _gameplayState, this, _fsmTower); //3
+                towerViewModel = new TowerAttackViewModel(towerEntity, _container); //3
             }
             //TODO Баф и Дебафф башни
             
@@ -270,6 +278,77 @@ namespace Game.GamePlay.Services
                     _cmd.Process(command);
                     return;
                 }
+            }
+        }
+
+
+        public ShotData ShotCalculation(TowerEntity towerEntity, MobDefence mobDefence)
+        {
+            var damageBooster = 0f;
+            var criticalBooster = 0f;
+            var boosters = TowerBoosters[towerEntity.ConfigId];
+
+            if (boosters.TryGetValue(TowerParameterType.Damage, out var damage)) damageBooster = damage;
+            if (boosters.TryGetValue(TowerParameterType.Critical, out var critical)) criticalBooster = critical;
+            
+            return towerEntity.ShotCalculation(mobDefence, damageBooster, criticalBooster);
+        }
+
+
+        private void CalculateBoosters()
+        {
+
+            //бустеры общие
+            var damageBooster = _gameplayBoosters.TowerDamage;
+            var criticalBooster = _gameplayBoosters.TowerCritical;
+            var speedBooster = _gameplayBoosters.TowerSpeed;
+            var distanceBooster = _gameplayBoosters.TowerDistance;
+            //бустеры общие от героя
+            if (_gameplayBoosters.HeroTowerBust.TryGetValue(TowerParameterType.Damage, out var damage))
+                damageBooster += damage;
+            if (_gameplayBoosters.HeroTowerBust.TryGetValue(TowerParameterType.Critical, out var critical))
+                criticalBooster += critical;
+            if (_gameplayBoosters.HeroTowerBust.TryGetValue(TowerParameterType.Speed, out var speed))
+                speedBooster += speed;
+            if (_gameplayBoosters.HeroTowerBust.TryGetValue(TowerParameterType.Distance, out var distance))
+                distanceBooster += distance;
+            
+            //бустеры от типа защиты и от наличия параметра в карточке
+            foreach (var towerCard in _baseTowerCards)
+            {
+                //Фильтруем по наличию параметра в карточке башни
+                var isDamage = towerCard.Parameters.TryGetValue(TowerParameterType.Damage, out _) ||
+                               towerCard.Parameters.TryGetValue(TowerParameterType.DamageArea, out _);
+                var isCritical = towerCard.Parameters.TryGetValue(TowerParameterType.Critical, out _);
+                var isSpeed = towerCard.Parameters.TryGetValue(TowerParameterType.Speed, out _);
+                var isDistance = towerCard.Parameters.TryGetValue(TowerParameterType.Distance, out _) || 
+                                 towerCard.Parameters.TryGetValue(TowerParameterType.MaxDistance, out _);
+                
+                var damageBoosterTower = damageBooster;
+                var criticalBoosterTower = criticalBooster;
+                var speedBoosterTower = speedBooster;
+                var distanceBoosterTower = distanceBooster;
+                
+                //бустеры от типа Defence о героя
+                if (_gameplayBoosters.HeroTowerDefenceBust.TryGetValue(towerCard.Defence, out var parameterDatas))
+                {
+                    if (parameterDatas.TryGetValue(TowerParameterType.Damage, out var damageDefence))
+                        damageBoosterTower += damageDefence;
+                    if (parameterDatas.TryGetValue(TowerParameterType.Critical, out var criticalDefence))
+                        criticalBoosterTower += criticalDefence;   
+                    if (parameterDatas.TryGetValue(TowerParameterType.Speed, out var speedDefence))
+                        speedBoosterTower += speedDefence;
+                    if (parameterDatas.TryGetValue(TowerParameterType.Distance, out var distanceDefence))
+                        distanceBoosterTower += distanceDefence;
+                }
+
+                Dictionary<TowerParameterType, float> boosters = new(); 
+                
+                if (isDamage && damageBoosterTower != 0) boosters.Add(TowerParameterType.Damage, damageBoosterTower);    
+                if (isCritical && criticalBoosterTower != 0) boosters.Add(TowerParameterType.Critical, criticalBoosterTower);
+                if (isSpeed && speedBoosterTower != 0) boosters.Add(TowerParameterType.Speed, speedBoosterTower);
+                if (isDistance && distanceBoosterTower != 0) boosters.Add(TowerParameterType.Distance, distanceBoosterTower);
+                TowerBoosters.Add(towerCard.ConfigId, boosters);
             }
         }
     }

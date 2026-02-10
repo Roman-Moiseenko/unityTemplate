@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DI;
 using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.WaveStates;
@@ -40,14 +41,12 @@ namespace Game.GamePlay.View.Towers
 
         //Кеш подписок на смерть моба
         private readonly Dictionary<int, IDisposable> _mobDisposables = new();
-        public ReactiveProperty<Vector2Int> Placement => _towerEntity.Placement;
+        public ReactiveProperty<Vector2Int> Placement => TowerEntity.Placement;
         public bool IsFly { get; set; }
 
-        public TowerPlacementViewModel(TowerEntity towerEntity, GameplayStateProxy gameplayState,
-            TowersService towersService, FsmTower fsmTower, FsmWave fsmWave, PlacementService placementService) : base(
-            towerEntity, gameplayState, towersService, fsmTower)
+        public TowerPlacementViewModel(TowerEntity towerEntity, DIContainer container, FsmWave fsmWave, PlacementService placementService) : base(towerEntity, container)
         {
-            IsFly = _towerEntity.TypeEnemy == TowerTypeEnemy.Air;
+            IsFly = TowerEntity.TypeEnemy == TowerTypeEnemy.Air;
             _placementService = placementService;
             UpdateParameterWarrior();
             for (var i = 1; i <= CountWarriors; i++)
@@ -55,15 +54,15 @@ namespace Game.GamePlay.View.Towers
 
             //При изменении точки спавна и обновлении дорог, меняем доступный путь Warriors
             Placement.Subscribe(_ => UpdateWayPath());
-            var d1 = _gameplayState.Way.ObserveAdd().Subscribe(_ => UpdateWayPath());
+            var d1 = GameplayState.Way.ObserveAdd().Subscribe(_ => UpdateWayPath());
             _disposables.Add(d1);
-            var d2 = _gameplayState.WaySecond.ObserveAdd().Subscribe(_ => UpdateWayPath());
+            var d2 = GameplayState.WaySecond.ObserveAdd().Subscribe(_ => UpdateWayPath());
             _disposables.Add(d2);
 
             foreach (var warriorEntity in _warriorEntities)
             {
                 var warriorViewModel = new WarriorViewModel(
-                    warriorEntity, _gameplayState, _towerEntity, AvailablePath[warriorEntity.Index], PullTargets);
+                    warriorEntity, GameplayState, TowerEntity, AvailablePath[warriorEntity.Index], PullTargets);
                 Warriors.Add(warriorViewModel);
             }
 
@@ -87,7 +86,7 @@ namespace Game.GamePlay.View.Towers
             {
                 var warriorEntity = e.Value;
                 var warriorViewModel = new WarriorViewModel(
-                    warriorEntity, _gameplayState, _towerEntity,
+                    warriorEntity, GameplayState, TowerEntity,
                     AvailablePath[warriorEntity.Index], PullTargets);
                 Warriors.Add(warriorViewModel);
             });
@@ -138,13 +137,13 @@ namespace Game.GamePlay.View.Towers
 
         private void UpdateParameterWarrior()
         {
-            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
+            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
                 Speed = towerSpeed.Value;
-            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.Damage, out var towerDamage))
+            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Damage, out var towerDamage))
                 Damage = towerDamage.Value;
-            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.Health, out var towerHealth))
+            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Health, out var towerHealth))
                 Health = towerHealth.Value;
-            if (_towerEntity.Parameters.TryGetValue(TowerParameterType.Range, out var towerRange))
+            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Range, out var towerRange))
                 Range = towerRange.Value;
         }
 
@@ -179,18 +178,18 @@ namespace Game.GamePlay.View.Towers
         {
             var warriorEntityData = new WarriorEntityData()
             {
-                ParentId = _towerEntity.UniqueId,
-                ConfigId = _towerEntity.ConfigId,
+                ParentId = TowerEntity.UniqueId,
+                ConfigId = TowerEntity.ConfigId,
                 Damage = Damage,
                 Health = Health,
                 MaxHealth = Health,
                 Speed = Speed,
                 Range = Range,
-                Defence = _towerEntity.Defence,
-                IsFly = _towerEntity.TypeEnemy == TowerTypeEnemy.Air,
-                PlacementPosition = _towerEntity.Placement.CurrentValue, //Позиция, куда идт warrior первоначально
-                StartPosition = _towerEntity.Position.CurrentValue, //Позиция башни, откуда идут warrior
-                UniqueId = _gameplayState.CreateEntityID(),
+                Defence = TowerEntity.Defence,
+                IsFly = TowerEntity.TypeEnemy == TowerTypeEnemy.Air,
+                PlacementPosition = TowerEntity.Placement.CurrentValue, //Позиция, куда идт warrior первоначально
+                StartPosition = TowerEntity.Position.CurrentValue, //Позиция башни, откуда идут warrior
+                UniqueId = GameplayState.CreateEntityID(),
             };
             var warriorEntity = new WarriorEntity(warriorEntityData)
             {
@@ -204,9 +203,9 @@ namespace Game.GamePlay.View.Towers
         public RoadPoint3 GenerateRoadPoints(int index)
         {
             var delta = DeltaWarrior * index;
-            var way = IsWay ? _gameplayState.Origin.Way.ToList() : _gameplayState.Origin.WaySecond.ToList();
+            var way = IsWay ? GameplayState.Origin.Way.ToList() : GameplayState.Origin.WaySecond.ToList();
 
-            var gate = IsWay ? _gameplayState.GateWave.CurrentValue : _gameplayState.GateWaveSecond.CurrentValue;
+            var gate = IsWay ? GameplayState.GateWave.CurrentValue : GameplayState.GateWaveSecond.CurrentValue;
 
             //Последней точкой добавляем Ворота (для direction)
             var rd = new RoadEntityData

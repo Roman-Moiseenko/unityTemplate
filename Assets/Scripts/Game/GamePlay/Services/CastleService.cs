@@ -2,8 +2,10 @@
 using DI;
 using Game.Common;
 using Game.GamePlay.Fsm;
+using Game.GamePlay.Root;
 using Game.GamePlay.View.Castle;
 using Game.State.Maps.Castle;
+using Game.State.Research;
 using Game.State.Root;
 using MVVM.CMD;
 using ObservableCollections;
@@ -23,6 +25,7 @@ namespace Game.GamePlay.Services
         private readonly CastleEntity _castleEntity;
         private readonly Coroutines _coroutines;
         private readonly FsmGameplay _fsmGameplay;
+        private readonly GameplayBoosters _gameplayBoosters;
 
         /**
            * При загрузке создаем все view-модели из реактивного списка всех строений
@@ -31,7 +34,8 @@ namespace Game.GamePlay.Services
         public CastleService(
             DIContainer container,
             CastleEntity castleEntity,
-            GameplayStateProxy gameplayState
+            GameplayStateProxy gameplayState,
+            GameplayEnterParams gameplayEnterParams
         )
         {
             _coroutines = GameObject.Find(AppConstants.COROUTINES).GetComponent<Coroutines>();
@@ -39,6 +43,8 @@ namespace Game.GamePlay.Services
             _fsmGameplay = container.Resolve<FsmGameplay>();
             CurrenHealth = castleEntity.CurrenHealth;
             CastleViewModel = new CastleViewModel(castleEntity, gameplayState);
+            //TODO Увеличить урон, скорость и HP от CastleResearch
+            _gameplayBoosters = gameplayEnterParams.GameplayBoosters;
 
             _castleEntity.CurrenHealth.Subscribe(h =>
             {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DI;
 using Game.GamePlay.Queries.TowerQueries;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Grounds;
@@ -30,6 +31,7 @@ namespace Game.GamePlay.Services
         private Dictionary<string, bool> _towerOnRoadMap = new();
         private Dictionary<string, bool> _towerParametersMap = new();
         private Dictionary<int, Vector2Int> matrixRoads = new();
+        private readonly DIContainer _container;
 
         public FrameService(
             GameplayStateProxy gameplayState,
@@ -37,9 +39,11 @@ namespace Game.GamePlay.Services
             TowersService towerService,
             RoadsService roadsService,
             TowersSettings towersSettings,
-            IQueryProcessor qrc
+            IQueryProcessor qrc,
+            DIContainer container
         )
         {
+            _container = container;
             _gameplayState = gameplayState;
             _placementService = placementService;
             _towerService = towerService;
@@ -133,7 +137,7 @@ namespace Game.GamePlay.Services
                 IsPlacement = settings.Placement,
             });
             towerEntity.Parameters = _towerService.TowerParametersMap[configId];
-            var towerViewModel = new TowerViewModel(towerEntity, null, null, null);
+            var towerViewModel = new TowerViewModel(towerEntity, _container);
 
             _viewModel = new FrameBlockViewModel(position, _placementService);
             _viewModel.AddItem(towerViewModel);

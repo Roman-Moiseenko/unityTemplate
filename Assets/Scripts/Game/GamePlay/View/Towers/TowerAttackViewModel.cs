@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Mobs;
@@ -14,8 +15,8 @@ namespace Game.GamePlay.View.Towers
     {
         public ObservableDictionary<int, MobViewModel> MobTargets = new();
         public ObservableList<MobViewModel> PullTargets = new();
-        public bool IsMultiShot => _towerEntity.IsMultiShot;
-        public bool IsSingleTarget => _towerEntity.IsSingleTarget;
+        public bool IsMultiShot => TowerEntity.IsMultiShot;
+        public bool IsSingleTarget => TowerEntity.IsSingleTarget;
         public float Speed = 0f;
         
         public ReactiveProperty<float> MaxDistance = new(0f);
@@ -24,12 +25,15 @@ namespace Game.GamePlay.View.Towers
         //Кеш подписок на смерть моба
         private readonly Dictionary<int, IDisposable> _mobDisposables = new();        
 
-        public TowerAttackViewModel(TowerEntity towerEntity, GameplayStateProxy gameplayState,
-            TowersService towersService, FsmTower fsmTower) : base(towerEntity, gameplayState, towersService, fsmTower)
+        public TowerAttackViewModel(TowerEntity towerEntity, DIContainer container) : base(towerEntity, container)
         {
             if (towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
                 Speed = towerSpeed.Value;
-            
+
+            if (Speed != 0f)
+            {
+                //TODO Бустер на скорость
+            }
             if (towerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var towerMinDistance))
                 MinDistance = towerMinDistance.Value;
             Level.Subscribe(level =>
@@ -39,7 +43,7 @@ namespace Game.GamePlay.View.Towers
                 if (towerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var towerMaxDistance))
                     MaxDistance.Value = towerMaxDistance.Value;
             });
-            //Для TowerAttack
+            
             //** Логика ведения целей **//
             PullTargets.ObserveAdd().Subscribe(e =>
             {
@@ -87,9 +91,10 @@ namespace Game.GamePlay.View.Towers
          */
         public void SetDamageAfterShot(MobViewModel mobViewModel)
         {
-            var shot = _towerEntity.GetShotParameters(mobViewModel.Defence);
+            var shot = TowersService.ShotCalculation(TowerEntity, mobViewModel.Defence);
+            //var shot = TowerEntity.GetShotParameters(mobViewModel.Defence);
             shot.MobEntityId = mobViewModel.UniqueId;
-            _gameplayState.Shots.Add(shot);
+            GameplayState.Shots.Add(shot);
         }
 
         /**
@@ -97,7 +102,7 @@ namespace Game.GamePlay.View.Towers
          */
         public bool IsTargetForDamage(bool mobIsFly)
         {
-            switch (_towerEntity.TypeEnemy)
+            switch (TowerEntity.TypeEnemy)
             {
                 case TowerTypeEnemy.Universal:
                 case TowerTypeEnemy.Air when mobIsFly:

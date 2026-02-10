@@ -11,7 +11,7 @@
             return type switch
             {
                 TowerParameterType.Damage => "Урон",
-                TowerParameterType.Critical => "Шанс критического урона",
+                TowerParameterType.Critical => "Шанс крита",
                 TowerParameterType.Distance => "Дальность атаки",
                 TowerParameterType.Health => "Здоровье",
                 TowerParameterType.DamageArea => "Урон по области",

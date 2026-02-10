@@ -156,11 +156,8 @@ namespace Game.GamePlay.Root
             var towersService = new TowersService(
                 gameplayState,
                 gameSettings.TowersSettings,
-                gameplayEnterParams.Towers,
-                cmd,
-                placementService,
-                fsmTower,
-                fsmWave
+                gameplayEnterParams,
+                container
             );
 
             container.RegisterInstance(towersService);
@@ -169,7 +166,7 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandRemoveWarriorTowerHandler(gameplayState));
             
             var frameService = new FrameService(gameplayState, placementService, towersService, roadsService,
-                gameSettings.TowersSettings, qrc);
+                gameSettings.TowersSettings, qrc, container);
             
             container.RegisterInstance(frameService);
             var framePlacementService =
@@ -182,11 +179,11 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(waveService);
 
             container.RegisterFactory(_ => new CastleService(container,
-                gameplayState.Castle, gameplayState)).AsSingle();
+                gameplayState.Castle, gameplayState, gameplayEnterParams)).AsSingle();
 
 
             //Сервис наград
-            var rewardService = new RewardProgressService(gameplayState, container, gameSettings);
+            var rewardService = new RewardProgressService(gameplayState, container, gameSettings, gameplayEnterParams);
             container.RegisterInstance(rewardService);
 
             var gameplayService = new GameplayService(

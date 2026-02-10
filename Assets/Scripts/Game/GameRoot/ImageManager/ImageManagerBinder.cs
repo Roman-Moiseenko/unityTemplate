@@ -15,22 +15,29 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByConfig> towerPlan;
         [SerializeField] private List<ImageItemByConfigLevel> towerCard;
         [SerializeField] private List<ImageItemByParameter> parameters;
-        [SerializeField] private List<ImageItemByDefence> defences;
+        //[SerializeField] private List<ImageItemByDefence> defences;
         [SerializeField] private List<ImageItemByConfig> otherSprite;
         [SerializeField] private List<ImageItemByConfig> roads;
         [SerializeField] private List<ImageItemByChest> chests;
         [SerializeField] private List<ImageItemByConfig> grounds;
         [SerializeField] private List<ImageEpicData> epicMaps;
+        [SerializeField] private List<ImageDefenceData> defenceMaps;
+
+
+        public ImageDefenceData GetDefenceData(MobDefence defence)
+        {
+            return defenceMaps.FirstOrDefault(t => t.Defence == defence);
+        }
         
+        public ImageEpicData GetEpicData(TypeEpicCard typeEpicCard)
+        {
+            return epicMaps.FirstOrDefault(t => t.Epic == typeEpicCard);
+        }
+        
+        //TODO Удалить 
         public Sprite GetEpicLevel(TypeEpicCard typeEpicCard)
         {
             return epicLevels.FirstOrDefault(t => t.TypeEpic == typeEpicCard)!.Sprite;
-        }
-        public Sprite GetChest(TypeChest? typeChest)
-        {
-            if (typeChest == null) return GetOther("ChestNot");
-            
-            return chests.FirstOrDefault(t => t.TypeChest == typeChest)!.Sprite;
         }
         
         public Sprite GetEpicLevel(string indexEpic)
@@ -41,6 +48,13 @@ namespace Game.GameRoot.ImageManager
                     return epicLevels.FirstOrDefault(t => t.TypeEpic == typeEpic)!.Sprite;
             }
             return null;
+        }        
+        
+        public Sprite GetChest(TypeChest? typeChest)
+        {
+            if (typeChest == null) return GetOther("ChestNot");
+            
+            return chests.FirstOrDefault(t => t.TypeChest == typeChest)!.Sprite;
         }
         
         //public Dictionary<string> 
@@ -59,13 +73,6 @@ namespace Game.GameRoot.ImageManager
         public Sprite GetTowerPlan(string configId)
         {
             return towerPlan.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
-        }
-
-        public Sprite GetDefence(MobDefence? defence)
-        {
-            return defence == null
-                ? null
-                : defences.FirstOrDefault(t => t.Defence == defence)!.Sprite;
         }
 
         public Sprite GetOther(string configId)

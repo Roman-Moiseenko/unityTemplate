@@ -5,12 +5,15 @@ using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.TowerStates;
+using Game.GamePlay.Root;
+using Game.GamePlay.Services;
 using Game.GamePlay.View.Towers;
 using Game.Settings;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
+using Game.State.Research;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -24,8 +27,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
         public ReactiveProperty<Vector3> PositionInfoTower = new(Vector3.zero);
         private readonly GameplayCamera _cameraService;
         
-        public ObservableDictionary<TowerParameterType, float> BaseParameters = new(); 
-        public ObservableDictionary<TowerParameterType, float> UpgradeParameters = new();
+        public Dictionary<TowerParameterType, float> BaseParameters = new(); 
+        public Dictionary<TowerParameterType, float> BoosterParameters = new();
         
         private Vector2Int _towerPrevious = Vector2Int.zero;
         public TowerViewModel TowerViewModel;
@@ -37,6 +40,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
         
         private readonly GameSettings _gameSettings;
         private readonly List<TowerSettings> _settingsTowers;
+        private readonly GameplayBoosters _gameplayBooster;
+        private readonly Dictionary<string,Dictionary<TowerParameterType,float>> _towerBoosters;
 
         public InfoTowerViewModel(DIContainer container)
         {
@@ -44,6 +49,9 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
             var fsmTower = container.Resolve<FsmTower>();
             var gameSettings = container.Resolve<ISettingsProvider>().GameSettings;
             _settingsTowers = gameSettings.TowersSettings.AllTowers;
+            
+            _gameplayBooster = container.Resolve<GameplayEnterParams>().GameplayBoosters;
+            _towerBoosters = container.Resolve<TowersService>().TowerBoosters;
                 
             fsmTower.Fsm.StateCurrent.Subscribe(state =>
             {
@@ -72,10 +80,10 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
         
         private void NewPositionTowerInfo()
         {
-            var p = new Vector3(_towerPrevious.x, 0, _towerPrevious.y);
+            var p = new Vector3(_towerPrevious.x - 0.5f, 1f, _towerPrevious.y - 0.5f);
             var v= _cameraService.Camera.WorldToScreenPoint(p);
-            v.z = 0;
-            v.y += 100;
+            //v.z = 0;
+            //v.y += 100;
             PositionInfoTower.Value = v;
         }
 
@@ -99,12 +107,52 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
                 
                 _towerPrevious = towerViewModel.GetPosition();
                 BaseParameters.Clear();
-                UpgradeParameters.Clear();
-                    
-                foreach (var parameterData in towerViewModel.Parameters)
+                BoosterParameters.Clear();
+//                Debug.Log(" **** " + _towerBoosters[towerViewModel.ConfigId].Count);
+                foreach (var (parameterType, value) in _towerBoosters[towerViewModel.ConfigId])
                 {
-                    BaseParameters.Add(parameterData.Key, parameterData.Value.Value);
+                    //TODO Для всех Damage сделать проверка
+                    if (parameterType == TowerParameterType.Damage)
+                    {
+                        if (towerViewModel.Parameters.TryGetValue(TowerParameterType.Damage, out _))
+                            BoosterParameters.Add(TowerParameterType.Damage, value);
+                        if (towerViewModel.Parameters.TryGetValue(TowerParameterType.DamageArea, out _))
+                            BoosterParameters.Add(TowerParameterType.DamageArea, value);
+                    }
+                    else
+                    {
+                        BoosterParameters.Add(parameterType, value);    
+                    }
+                    
                 }
+                
+                
+                //Урон, все 3
+                if (towerViewModel.Parameters.TryGetValue(TowerParameterType.Damage, out var damage))
+                    BaseParameters.Add(TowerParameterType.Damage, damage.Value);
+                if (towerViewModel.Parameters.TryGetValue(TowerParameterType.DamageArea, out var damageArea))
+                    BaseParameters.Add(TowerParameterType.DamageArea, damageArea.Value);
+                //TODO Добавить Высокий урон, низкий урон
+                
+                //Частота
+                if (towerViewModel.Parameters.TryGetValue(TowerParameterType.Speed, out var speed))
+                    BaseParameters.Add(TowerParameterType.Speed, speed.Value);
+                
+                //Крит, Замедление, Оглушение, Здоровье, Перезарядка  если кол-во иконок меньше 3х
+                if (BaseParameters.Count < 3 
+                    && towerViewModel.Parameters.TryGetValue(TowerParameterType.Critical, out var critical))
+                    BaseParameters.Add(TowerParameterType.Critical, critical.Value);
+                
+                if (BaseParameters.Count < 3 
+                    && towerViewModel.Parameters.TryGetValue(TowerParameterType.SlowingDown, out var slow))
+                    BaseParameters.Add(TowerParameterType.SlowingDown, slow.Value);
+                if (BaseParameters.Count < 3 
+                    && towerViewModel.Parameters.TryGetValue(TowerParameterType.Health, out var health))
+                    BaseParameters.Add(TowerParameterType.Health, health.Value);
+                //TODO Добавить Оглушение, Перезарядка
+
+
+                
                 UpdateInfoBackgroundTower.OnNext(true);
                 NewPositionTowerInfo();
                 ShowInfoTower.OnNext(true);

@@ -4,11 +4,13 @@ using System.Linq;
 using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
+using Game.GamePlay.Root;
 using Game.Settings;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Gameplay;
 using Game.State.Inventory;
 using Game.State.Maps.Rewards;
+using Game.State.Research;
 using Game.State.Root;
 using ObservableCollections;
 using R3;
@@ -28,17 +30,20 @@ namespace Game.GamePlay.Services
         private readonly TowersSettings _towersSettings;
         private readonly TowersService _towersService;
         private Dictionary<int, bool> _rewardsMap = new();
-        
+        private readonly GameplayBoosters _gameplayBoosters;
+
         public RewardProgressService(
             GameplayStateProxy gameplayState,
             DIContainer container,
-            GameSettings gameSettings
+            GameSettings gameSettings,
+            GameplayEnterParams gameplayEnterParams
             //TODO Добавить SkillsSettings, HeroesSettings
         )
         {
             _gameplayState = gameplayState;
             _container = container;
             _gameSettings = gameSettings;
+            _gameplayBoosters = gameplayEnterParams.GameplayBoosters;
             _towersService = container.Resolve<TowersService>();
             _towersSettings = gameSettings.TowersSettings;
             
@@ -114,8 +119,8 @@ namespace Game.GamePlay.Services
             RewardMaps.Add(new RewardCurrencyEntity
             {
                 Position = position,
-                Currency = currency,
-                
+                Currency = (int)Mathf.Round(currency * (1 + _gameplayBoosters.RewardCurrency /100f)),
+                //Доп.награда от исследования
             });
             //Алгоритм настройки получения награды
             //Частота получения награды из настроек - каждую 5 волну

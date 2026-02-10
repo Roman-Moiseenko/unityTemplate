@@ -201,15 +201,6 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 096ba8dd29f47254faa172f672b14ad7, type: 3}
   - TypeParameter: 9
     Sprite: {fileID: 21300000, guid: b3a4f4e8703c94d40ae435a8193040bc, type: 3}
-  defences:
-  - Defence: 0
-    Sprite: {fileID: 21300000, guid: 641bd4885d92a674c8f423789fc240b3, type: 3}
-  - Defence: 1
-    Sprite: {fileID: 21300000, guid: f9e756ba7e470304290cc8ddc204ea36, type: 3}
-  - Defence: 2
-    Sprite: {fileID: 21300000, guid: 2ddc91e98b3fac24f83aebbf985af79e, type: 3}
-  - Defence: 3
-    Sprite: {fileID: 21300000, guid: 160b1d5fbd8f5db4badbc59d4abcd1b3, type: 3}
   otherSprite:
   - ConfigId: TowerUpCard
     Sprite: {fileID: 21300000, guid: 80fd7e715a58c58419284abc35cbbd90, type: 3}
@@ -290,3 +281,67 @@ MonoBehaviour:
   - ConfigId: Grass02
     Sprite: {fileID: 21300000, guid: 4971b8a32295be249ba893b6ea8668d8, type: 3}
     Texture: {fileID: 2800000, guid: 4971b8a32295be249ba893b6ea8668d8, type: 3}
+  epicMaps:
+  - Epic: 0
+    Card: {fileID: 21300000, guid: 2baf229df94b50f4c9d52749db11edb0, type: 3}
+    Header: {fileID: 21300000, guid: 8943d43e5587ac2489f0e716bebb1ddb, type: 3}
+    Output: {fileID: 21300000, guid: bbd0e181ceb507c4d9bb545a0ac4470e, type: 3}
+    Background: {fileID: 21300000, guid: 49f437b3c80ba2941b78ac1649dcff29, type: 3}
+  - Epic: 1
+    Card: {fileID: 21300000, guid: 58b6aa01cd461dd478d4bb8b3947a6ac, type: 3}
+    Header: {fileID: 21300000, guid: eec72d25d21b91e4ab56bb35a3f7e90e, type: 3}
+    Output: {fileID: 21300000, guid: 262cbd53c53d7a54081fbc32dcd5dd53, type: 3}
+    Background: {fileID: 21300000, guid: 831334f5ffbfa824ba8640234d3997e5, type: 3}
+  - Epic: 2
+    Card: {fileID: 21300000, guid: 915caa8b66ea12144b3510c23bde5a62, type: 3}
+    Header: {fileID: 21300000, guid: 4e861a6f3ba33af41baa06bfd80d7213, type: 3}
+    Output: {fileID: 21300000, guid: 823340d5a0bf15d4283969e68af462cc, type: 3}
+    Background: {fileID: 21300000, guid: 1075c29624ae0cd4494e5d2c133870ad, type: 3}
+  - Epic: 3
+    Card: {fileID: 21300000, guid: 3ace2b293fa896940affecf900dc39cb, type: 3}
+    Header: {fileID: 21300000, guid: 4a4632e0cb2599e4a8d30cf820ca668b, type: 3}
+    Output: {fileID: 21300000, guid: 676cbeac5950073419804e7299f18f1f, type: 3}
+    Background: {fileID: 21300000, guid: 86be7c5fe6491df449b186088c0550bf, type: 3}
+  - Epic: 4
+    Card: {fileID: 21300000, guid: 3ef42e304d9180347a4c01b641753df9, type: 3}
+    Header: {fileID: 21300000, guid: 4a4632e0cb2599e4a8d30cf820ca668b, type: 3}
+    Output: {fileID: 21300000, guid: 676cbeac5950073419804e7299f18f1f, type: 3}
+    Background: {fileID: 21300000, guid: 86be7c5fe6491df449b186088c0550bf, type: 3}
+  - Epic: 5
+    Card: {fileID: 21300000, guid: fd7c9b94c4967ab438988269138b6a61, type: 3}
+    Header: {fileID: 21300000, guid: 002f1b9d7949ab047aafaea081649825, type: 3}
+    Output: {fileID: 21300000, guid: 219e3e7b95f65c1459368843106befdf, type: 3}
+    Background: {fileID: 21300000, guid: 58d496db00d4de349a1fe3c266b95e59, type: 3}
+  - Epic: 6
+    Card: {fileID: 21300000, guid: f6fca000b6e25c241980ce68b8070d28, type: 3}
+    Header: {fileID: 21300000, guid: 002f1b9d7949ab047aafaea081649825, type: 3}
+    Output: {fileID: 21300000, guid: 219e3e7b95f65c1459368843106befdf, type: 3}
+    Background: {fileID: 21300000, guid: 58d496db00d4de349a1fe3c266b95e59, type: 3}
+  - Epic: 7
+    Card: {fileID: 21300000, guid: b439678486616db49bad958db2d0d031, type: 3}
+    Header: {fileID: 21300000, guid: 70ab79a94a1f0694a9a675fc6140e882, type: 3}
+    Output: {fileID: 21300000, guid: 851c191abc4b4624c8a2efd97d34d265, type: 3}
+    Background: {fileID: 21300000, guid: 1c49bd898a6c7084d91b1b26c53b0dd6, type: 3}
+  - Epic: 8
+    Card: {fileID: 21300000, guid: cf618e545c6bfbd4bba7ef96939dfc7c, type: 3}
+    Header: {fileID: 21300000, guid: 70ab79a94a1f0694a9a675fc6140e882, type: 3}
+    Output: {fileID: 21300000, guid: 851c191abc4b4624c8a2efd97d34d265, type: 3}
+    Background: {fileID: 21300000, guid: 1c49bd898a6c7084d91b1b26c53b0dd6, type: 3}
+  - Epic: 6
+    Card: {fileID: 21300000, guid: bf7e213deff3e1740800ab10288f2c35, type: 3}
+    Header: {fileID: 21300000, guid: 70ab79a94a1f0694a9a675fc6140e882, type: 3}
+    Output: {fileID: 21300000, guid: 851c191abc4b4624c8a2efd97d34d265, type: 3}
+    Background: {fileID: 21300000, guid: 1c49bd898a6c7084d91b1b26c53b0dd6, type: 3}
+  defenceMaps:
+  - Defence: 1
+    Icon: {fileID: 21300000, guid: 641bd4885d92a674c8f423789fc240b3, type: 3}
+    Background: {fileID: 21300000, guid: b1926f239fb0cff4095f62333f5f119b, type: 3}
+  - Defence: 0
+    Icon: {fileID: 21300000, guid: f9e756ba7e470304290cc8ddc204ea36, type: 3}
+    Background: {fileID: 21300000, guid: 5ae9eeda1f8b1ca448efb2806d4d0b94, type: 3}
+  - Defence: 2
+    Icon: {fileID: 21300000, guid: 2ddc91e98b3fac24f83aebbf985af79e, type: 3}
+    Background: {fileID: 21300000, guid: 6049cf9c57737fc4c94537823d19cbb1, type: 3}
+  - Defence: 3
+    Icon: {fileID: 21300000, guid: 160b1d5fbd8f5db4badbc59d4abcd1b3, type: 3}
+    Background: {fileID: 21300000, guid: 4566346da7bebbd46951b84957fd9897, type: 3}

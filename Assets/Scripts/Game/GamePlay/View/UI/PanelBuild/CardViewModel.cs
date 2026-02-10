@@ -103,13 +103,13 @@ namespace Game.GamePlay.View.UI.PanelBuild
             }
             
             Updated.OnNext(true);
-          //  Defence.OnNext(null);
         }
 
         private void InfoRoad()
         {
             Caption = "";
             Level = 0;
+            Defence = null;
             ImageCard = _rewardData.ConfigId;
             ImageBack = "CardBuild";
             var text = _rewardData.ConfigId switch
@@ -127,7 +127,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
         {
             Caption = "";
             Level = 0;
-            
+            Defence = null;
             ImageCard = "CardGround";
             ImageBack = "CardBuild";
             Description = "ДОП.ПОЛЕ";
@@ -150,9 +150,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
             };
             Description = "БАШНЯ \n" + config.TitleLid;
             DescriptionBack = Description;
-            
             Defence = config.Defence;
-            
             ImageCard = _rewardData.ConfigId;
             ImageBack = _rewardData.EpicLevel.Index().ToString();
             foreach (var parameterData in _towersService.TowerParametersMap[_rewardData.ConfigId])

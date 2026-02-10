@@ -107,8 +107,7 @@ namespace Game.State.Maps.Towers
             return Vector2.Distance(mobPosition, Position.CurrentValue) <= 0.5f;
         }
         
-
-        public ShotData GetShotParameters(MobDefence mobDefence)
+        public ShotData ShotCalculation(MobDefence mobDefence, float damageBooster, float criticalBooster)
         {
             var damage = 0f;
             if (Parameters.TryGetValue(TowerParameterType.Damage, out var parameter)) damage = parameter.Value;
@@ -131,11 +130,13 @@ namespace Game.State.Maps.Towers
                     Time = speedTower,
                 };
             }
+
+            damage += damage * damageBooster / 100; //Добавляем бустер урона
             
             var damageType = IsSingleTarget ? DamageType.Normal : DamageType.MassDamage; 
             if (Parameters.TryGetValue(TowerParameterType.Critical, out var criticalParameter))
             {
-                var shans = Mathf.FloorToInt(100 / criticalParameter.Value);
+                var shans = Mathf.FloorToInt(100 / (criticalParameter.Value + criticalBooster)); //Добавляем бустер крита
                 if (Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % shans == 0)
                 {
                     damageType = DamageType.Critical;

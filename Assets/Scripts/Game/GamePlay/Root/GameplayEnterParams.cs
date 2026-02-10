@@ -2,6 +2,7 @@
 using Game.GamePlay.Classes;
 using Game.GameRoot;
 using Game.State.Inventory.TowerCards;
+using Game.State.Research;
 using Scripts.Game.GameRoot;
 
 namespace Game.GamePlay.Root
@@ -15,6 +16,8 @@ namespace Game.GamePlay.Root
         //public bool HasSessionGameplay { get; set; }
         //public float DamageTowerBust { get; set; }
         public List<TowerCardData> Towers { get; } = new();
+
+        public GameplayBoosters GameplayBoosters;
 
         public GameplayEnterParams(TypeGameplay typeGameplay, int uniqueId) : base(Scenes.GAMEPLAY)
         {

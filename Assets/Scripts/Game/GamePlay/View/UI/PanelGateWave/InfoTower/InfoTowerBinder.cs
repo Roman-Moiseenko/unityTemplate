@@ -5,9 +5,11 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Game.Common;
 using Game.GameRoot.ImageManager;
+using Game.State.Inventory;
 using Game.State.Maps.Towers;
 using ObservableCollections;
 using R3;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,13 +18,21 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
     public class InfoTowerBinder : MonoBehaviour
     {
         [SerializeField] private Transform baseParameters;
-        [SerializeField] private Transform upgradeParameters;
-
+        [SerializeField] private Transform boosters;
+        
         [SerializeField] private Image header;
+        [SerializeField] private Image output;
+        [SerializeField] private Image background;
+        [SerializeField] private TMP_Text nameEpic;
+        [SerializeField] private TMP_Text nameTower;
+
+        [SerializeField] private List<BaseParameterBinder> parameterBinders;
+        [SerializeField] private List<BoosterParameterBinder> boosterBinders;
         
+        [SerializeField] private Image backDefence;
+        [SerializeField] private Image iconDefence;
         
-        private readonly List<BaseParameterBinder> _baseParameterBinders = new();
-        private readonly List<UpgradeParameterBinder> _upgradeParameterBinders = new();
+        [SerializeField] private Transform stars;
         
         private InfoTowerViewModel _viewModel;
         private IDisposable _disposable;
@@ -33,23 +43,11 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
             transform.gameObject.SetActive(false);
             _imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
             
-            //Загружаем фон из _imageManager
-            //Меняем название и эпичность
-            
-            
-            
-            
             var d = Disposable.CreateBuilder();
             viewModel.ShowInfoTower.Subscribe(showTower =>
             {
                 if (showTower)
                 {
-                    //TODO Заполняем данне о башне
-                    //MobDefence
-                    //Эпичность
-                    //Название
-                    //Уровень в Геймплее
-                    //Debug.Log("ShowInfoTower " + showTower);
                     if (transform.gameObject.activeSelf)
                     {
                         transform.localScale = Vector3.one * 0.3f;
@@ -70,64 +68,86 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
                         .OnComplete(() => transform.gameObject.SetActive(false));
                 }
             }).AddTo(ref d);
+            //Перед показываением окна, обновляем его содержимое
             viewModel.UpdateInfoBackgroundTower.Where(x => x).Subscribe(_ =>
             {
-                Debug.Log("UpdateInfoBackgroundTower");
-                Debug.Log(viewModel.NameTower);
-                Debug.Log(viewModel.Level);
-                Debug.Log(viewModel.EpicLevel);
-                Debug.Log(viewModel.Defence);
+                //Фон от эпичности 
+                var epicImage = _imageManager.GetEpicData(viewModel.EpicLevel);
+                header.sprite = epicImage.Header;
+                output.sprite = epicImage.Output;
+                background.sprite = epicImage.Background;
+
+                nameEpic.text = viewModel.EpicLevel.GetString();
+                nameTower.text = viewModel.NameTower;
+                
+                var defenceImage = _imageManager.GetDefenceData(viewModel.Defence);
+                backDefence.sprite = defenceImage.Background;
+                iconDefence.sprite = defenceImage.Icon;
+                
+                //Звездочки
+                for (var i = 1; i <= 6; i++)
+                {
+                    var star = stars.Find($"Container/Star{i}").GetComponent<Transform>();
+                    star.gameObject.SetActive(i <= viewModel.Level);
+                }
+                //Эффекты
+                InfoTowerBoosters();
+                //Параметры башни
+                InfoTowerParameters();
                 
             }).AddTo(ref d);
 
             viewModel.PositionInfoTower.Subscribe(p => transform.transform.position = p).AddTo(ref d);
-            viewModel.BaseParameters.ObserveAdd().Subscribe(e => InfoTowerBaseParametersAddEntity(e.Value)).AddTo(ref d);
-            viewModel.BaseParameters.ObserveClear().Subscribe(_ => InfoTowerBaseParametersClear()).AddTo(ref d);
-            viewModel.UpgradeParameters.ObserveAdd().Subscribe(e => InfoTowerUpgradeParametersAddEntity(e.Value)).AddTo(ref d);
-            viewModel.UpgradeParameters.ObserveClear().Subscribe(_ => InfoTowerUpgradeParametersClear()).AddTo(ref d);
 
             _disposable = d.Build();
         }
-        private void InfoTowerBaseParametersAddEntity(KeyValuePair<TowerParameterType, float> objValue)
+        
+        private void InfoTowerBoosters()
         {
-            var count = _baseParameterBinders.Count;
-            var prefabPath = $"Prefabs/UI/Gameplay/Panels/GateWaveInfo/BaseParameter"; //Перенести в настройки уровня
-            var paramPrefab = Resources.Load<BaseParameterBinder>(prefabPath);
-            var createdBinder = Instantiate(paramPrefab, baseParameters);
+            if (_viewModel.BoosterParameters.Count == 0)
+            {
+                boosters.gameObject.SetActive(false);
+                return;
+            }
+            boosters.gameObject.SetActive(true);
             
+            foreach (var boosterBinder in boosterBinders)
+                boosterBinder.gameObject.SetActive(false);
+
+            var index = 0;
             
-            var image = _imageManager.GetParameter(objValue.Key);
+            foreach (var (parameter, value) in _viewModel.BoosterParameters)
+            {
+                var image = _imageManager.GetParameter(parameter);
+                boosterBinders[index].Bind(image, value);
+                boosterBinders[index].gameObject.SetActive(true);
+                index++;
+            }
+            
+        }
+
+        public void InfoTowerParameters()
+        {
+            foreach (var parameterBinder in parameterBinders)
+                parameterBinder.gameObject.SetActive(false);
+
+            var index = 0;
+
+            foreach (var (parameter, value) in _viewModel.BaseParameters)
+            {
+                var image = _imageManager.GetParameter(parameter);
+                
+                parameterBinders[index].Bind(image, parameter.GetString(), value, 0, false);
+                parameterBinders[index].gameObject.SetActive(true);
+                index++;
+            }
+        }
+
+
    
-            //if (image == null) throw new Exception("Не найдено изображение для " + objValue.Key);
-            createdBinder.Bind(image, objValue.Key.GetString(), objValue.Value, count);
-            _baseParameterBinders.Add(createdBinder);
-            baseParameters.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(600, 320 + 105 * count);
-        }
 
-        private void InfoTowerBaseParametersClear()
-        {
-            foreach (var infoBinder in _baseParameterBinders)
-            {
-                Destroy(infoBinder.gameObject);
-            }
-            _baseParameterBinders.Clear();
-            
-            //_enemies.parent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 270);
-        }
 
-        private void InfoTowerUpgradeParametersAddEntity(KeyValuePair<TowerParameterType, float> objValue)
-        {
-            //TODO Загружаем из префаба
-        }
 
-        private void InfoTowerUpgradeParametersClear()
-        {
-            foreach (var infoBinder in _upgradeParameterBinders)
-            {
-                Destroy(infoBinder.gameObject);
-            }
-            _upgradeParameterBinders.Clear();
-        }
         public void OnDestroy()
         {
             _disposable.Dispose();
