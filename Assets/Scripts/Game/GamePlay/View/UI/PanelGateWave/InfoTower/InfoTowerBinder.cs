@@ -133,11 +133,11 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
 
             var index = 0;
 
-            foreach (var (parameter, value) in _viewModel.BaseParameters)
+            foreach (var (parameter, values) in _viewModel.BaseParameters)
             {
                 var image = _imageManager.GetParameter(parameter);
                 
-                parameterBinders[index].Bind(image, parameter.GetString(), value, 0, false);
+                parameterBinders[index].Bind(image, parameter, values);
                 parameterBinders[index].gameObject.SetActive(true);
                 index++;
             }

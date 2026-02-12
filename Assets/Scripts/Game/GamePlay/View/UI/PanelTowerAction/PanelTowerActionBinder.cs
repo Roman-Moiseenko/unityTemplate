@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using Game.GamePlay.View.UI.PanelConfirmation;
 using MVVM.UI;
 using R3;
@@ -12,7 +13,9 @@ namespace Game.GamePlay.View.UI.PanelTowerAction
         [SerializeField] private Button btnPlacement;
         [SerializeField] private Button btnRemove;
         private IDisposable _disposable;
-
+        private Vector2 _hidePivot = new Vector2(0f, 0.5f);
+        private Vector2 _showPivot = new Vector2(1f, 0.5f);
+        
         protected override void OnBind(PanelTowerActionViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
@@ -58,12 +61,15 @@ namespace Game.GamePlay.View.UI.PanelTowerAction
 
         public override void Show()
         {
-            panel.pivot = new Vector2(1f, 0.5f);
+            panel.DOPivot(_showPivot, 0.3f).From(_hidePivot).SetUpdate(true);
+            //panel.pivot
+          //  panel.pivot = new Vector2(1f, 0.5f);
         }
 
         public override void Hide()
         {
-            panel.pivot = new Vector2(0f, 0.5f);
+            panel.DOPivot(_hidePivot, 0.3f).From(_showPivot).SetUpdate(true);
+          //  panel.pivot = new Vector2(0f, 0.5f);
         }
         
         private void OnDestroy()

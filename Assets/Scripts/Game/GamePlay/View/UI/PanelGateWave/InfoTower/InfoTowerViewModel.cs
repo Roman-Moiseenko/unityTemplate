@@ -27,7 +27,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
         public ReactiveProperty<Vector3> PositionInfoTower = new(Vector3.zero);
         private readonly GameplayCamera _cameraService;
         
-        public Dictionary<TowerParameterType, float> BaseParameters = new(); 
+        public Dictionary<TowerParameterType, Vector2> BaseParameters = new(); 
         public Dictionary<TowerParameterType, float> BoosterParameters = new();
         
         private Vector2Int _towerPrevious = Vector2Int.zero;
@@ -108,7 +108,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
                 _towerPrevious = towerViewModel.GetPosition();
                 BaseParameters.Clear();
                 BoosterParameters.Clear();
-//                Debug.Log(" **** " + _towerBoosters[towerViewModel.ConfigId].Count);
+                
                 foreach (var (parameterType, value) in _towerBoosters[towerViewModel.ConfigId])
                 {
                     //TODO Для всех Damage сделать проверка
@@ -129,26 +129,47 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
                 
                 //Урон, все 3
                 if (towerViewModel.Parameters.TryGetValue(TowerParameterType.Damage, out var damage))
-                    BaseParameters.Add(TowerParameterType.Damage, damage.Value);
+                {
+                    var paramVector = new Vector2(damage.Value, 0);
+                    //проверка на бустер
+                    if (BoosterParameters.TryGetValue(TowerParameterType.Damage, out var damageBooster)) paramVector.y = damageBooster;
+                    BaseParameters.Add(TowerParameterType.Damage, paramVector);
+                }
                 if (towerViewModel.Parameters.TryGetValue(TowerParameterType.DamageArea, out var damageArea))
-                    BaseParameters.Add(TowerParameterType.DamageArea, damageArea.Value);
+                {
+                    var paramVector = new Vector2(damageArea.Value, 0);
+                    //проверка на бустер
+                    if (BoosterParameters.TryGetValue(TowerParameterType.DamageArea, out var damageBooster)) paramVector.y = damageBooster;
+                    BaseParameters.Add(TowerParameterType.DamageArea, paramVector);
+                }
                 //TODO Добавить Высокий урон, низкий урон
                 
                 //Частота
                 if (towerViewModel.Parameters.TryGetValue(TowerParameterType.Speed, out var speed))
-                    BaseParameters.Add(TowerParameterType.Speed, speed.Value);
+                {
+                    var paramVector = new Vector2(speed.Value, 0);
+                    //проверка на бустер
+                    if (BoosterParameters.TryGetValue(TowerParameterType.Speed, out var speedBooster)) paramVector.y = speedBooster;
+                    BaseParameters.Add(TowerParameterType.Speed, paramVector);
+                }
                 
                 //Крит, Замедление, Оглушение, Здоровье, Перезарядка  если кол-во иконок меньше 3х
                 if (BaseParameters.Count < 3 
                     && towerViewModel.Parameters.TryGetValue(TowerParameterType.Critical, out var critical))
-                    BaseParameters.Add(TowerParameterType.Critical, critical.Value);
+                {
+                    var paramVector = new Vector2(critical.Value, 0);
+                    //проверка на бустер
+                    if (BoosterParameters.TryGetValue(TowerParameterType.Critical, out var criticalBooster)) paramVector.y = criticalBooster;
+                    BaseParameters.Add(TowerParameterType.Critical, paramVector);
+                }
                 
                 if (BaseParameters.Count < 3 
                     && towerViewModel.Parameters.TryGetValue(TowerParameterType.SlowingDown, out var slow))
-                    BaseParameters.Add(TowerParameterType.SlowingDown, slow.Value);
+                    BaseParameters.Add(TowerParameterType.SlowingDown, new Vector2(slow.Value, 0));
                 if (BaseParameters.Count < 3 
                     && towerViewModel.Parameters.TryGetValue(TowerParameterType.Health, out var health))
-                    BaseParameters.Add(TowerParameterType.Health, health.Value);
+                    BaseParameters.Add(TowerParameterType.Health, new Vector2(health.Value, 0));
+                
                 //TODO Добавить Оглушение, Перезарядка
 
 

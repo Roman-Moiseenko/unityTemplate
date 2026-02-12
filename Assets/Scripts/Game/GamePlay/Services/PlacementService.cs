@@ -32,16 +32,20 @@ namespace Game.GamePlay.Services
                 if (IsPositionNear(positionTower, roadEntity.Position.CurrentValue))
                     return roadEntity.Position.CurrentValue - positionTower;
             }
-            
+
             foreach (var roadEntity in _gameplayState.WaySecond)
             {
                 if (IsPositionNear(positionTower, roadEntity.Position.CurrentValue))
                     return roadEntity.Position.CurrentValue - positionTower;
             }
+
             return Vector2Int.zero;
         }
 
-        public bool CheckPlacementTower(Vector2Int position, int towerId, bool onRoad)
+        /**
+         * Определяем возможность размещения Башни на карте
+         */
+        public bool CheckPlacementTower(Vector2Int position, int towerId, bool onRoad, bool isPlacement)
         {
             //var tower = _gameplayState.Origin.Towers.Find(t => t.UniqueId == towerId);
             var result = false;
@@ -65,11 +69,29 @@ namespace Game.GamePlay.Services
                 if (towerEntity.UniqueId != towerId) //На другой башне ?
                 {
                     if (towerEntity.PositionNear(position)) result = true;
-                    //Строить нельзя, принудительный выход
-                    if (position == towerEntity.Position.CurrentValue) return false; 
+                    //Строить на башне нельзя, принудительный выход
+                    if (position == towerEntity.Position.CurrentValue) return false;
                 }
             }
 
+            //Для Placement
+            if (isPlacement)
+            {
+                var nearRoad = false;
+                for (var x = position.x - 2; x <= position.x + 2; x++)
+                {
+                    for (var y = position.y - 2; y <= position.y + 2; y++)
+                    {
+                        if (IsRoad(new Vector2Int(x, y)))
+                            nearRoad = true;
+                    }
+                }
+                //Поблизости не оказалось дороги
+                if (!nearRoad) return false;
+                
+            }
+            
+            //TODO протестировать
             foreach (var roadEntity in _gameplayState.Way)
             {
                 if (onRoad)
@@ -83,6 +105,7 @@ namespace Game.GamePlay.Services
                     if (roadEntity.PositionNear(position)) result = true;
                 }
             }
+
             foreach (var roadEntity in _gameplayState.WaySecond)
             {
                 if (onRoad)
@@ -112,6 +135,7 @@ namespace Game.GamePlay.Services
             {
                 if (roadEntity.Position.CurrentValue == position) return true;
             }
+
             return false;
         }
 
@@ -123,7 +147,7 @@ namespace Game.GamePlay.Services
                 {
                     foreach (var nearPosition in roadEntity.GetNearPositions())
                     {
-                        if (CheckPlacementTower(nearPosition, -1, false)) return nearPosition;
+                        if (CheckPlacementTower(nearPosition, -1, false, false)) return nearPosition;
                     }
                 }
             }
@@ -133,21 +157,21 @@ namespace Game.GamePlay.Services
                 {
                     var roadEntity = _gameplayState.Way[i];
                     var position = roadEntity.Position.CurrentValue;
-                    if (CheckPlacementTower(position, -1, true)) return position;
+                    if (CheckPlacementTower(position, -1, true, false)) return position;
                 }
-                
             }
-            
+
             return _gameplayState.Way[0].Position.CurrentValue; //Вычисляем координаты для башни 
         }
 
         public Vector2Int GetNewPositionRoad()
         {
-            return _wayService.GetExitPoint(_gameplayState.Origin.Way); 
+            return _wayService.GetExitPoint(_gameplayState.Origin.Way);
         }
+
         public Vector2Int GetNewDirectionRoad()
         {
-            return _wayService.GetLastPoint(_gameplayState.Origin.Way); 
+            return _wayService.GetLastPoint(_gameplayState.Origin.Way);
         }
 
         public bool CheckPlacementRoad(List<RoadEntityData> roads)
@@ -199,7 +223,7 @@ namespace Game.GamePlay.Services
                     roads.Any(road => road.Position == roadWay.Position.CurrentValue))) return false;
             var checkWay = CheckCombinationPointsRoad(_gameplayState.Origin.Way, roads);
             var checkWaySecond = CheckCombinationPointsRoad(_gameplayState.Origin.WaySecond, roads);
-           
+
             result = checkWay ^ checkWaySecond; //Исключающее "или", Закольцовывание дороги
 
             return result;
@@ -260,7 +284,7 @@ namespace Game.GamePlay.Services
         {
             return _gameplayState.Origin.Grounds.Any(ground => ground.Position == position);
         }
-        
+
         public bool IsPositionNear(Vector2Int target, Vector2Int position)
         {
             if (position.x == target.x && position.y == target.y - 1) return true;
@@ -277,6 +301,7 @@ namespace Game.GamePlay.Services
                 if (roadEntity.Position.CurrentValue == placementCurrentValue)
                     return true;
             }
+
             foreach (var roadEntity in _gameplayState.WaySecond)
             {
                 if (roadEntity.Position.CurrentValue == placementCurrentValue)
@@ -285,6 +310,33 @@ namespace Game.GamePlay.Services
 
             throw new Exception("Неверные данные");
         }
+
+        public Vector2Int GetDefaultPlacement(Vector2Int position)
+        {
+            List<Vector2Int> list = new();
+            
+            for (var x = position.x - 2; x <= position.x + 2; x++)
+            {
+                for (var y = position.y - 2; y <= position.y + 2; y++)
+                {
+                    if (IsRoad(new Vector2Int(x, y))) list.Add(new Vector2Int(x, y));
+                }
+            }
+
+            var positionPlacement = Vector2Int.zero;
+            var distance = 99f;
+            foreach (var item in list)
+            {
+                //Сортировка по минимальному
+                var d = Vector2Int.Distance(position, item);
+                if (d < distance)
+                {
+                    distance = d;
+                    positionPlacement = item;
+                }
+            }
+
+            return positionPlacement;
+        }
     }
-    
 }

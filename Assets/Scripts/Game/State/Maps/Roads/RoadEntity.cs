@@ -142,22 +142,22 @@ namespace Game.State.Maps.Roads
                 {
                     case 0:
                         list.Add(new Vector2Int(x, y - 1));
-                        list.Add(new Vector2Int(x + 1, y - 1));
+                        //list.Add(new Vector2Int(x + 1, y - 1));
                         list.Add(new Vector2Int(x + 1, y));
                         break;
                     case 1: 
                         list.Add(new Vector2Int(x, y - 1));
-                        list.Add(new Vector2Int(x - 1, y - 1));
+                        //list.Add(new Vector2Int(x - 1, y - 1));
                         list.Add(new Vector2Int(x - 1, y));
                         break;
                     case 2: 
                         list.Add(new Vector2Int(x - 1, y));
-                        list.Add(new Vector2Int(x - 1, y + 1));
+                      //  list.Add(new Vector2Int(x - 1, y + 1));
                         list.Add(new Vector2Int(x, y + 1));
                         break;
                     case 3: 
                         list.Add(new Vector2Int(x + 1, y));
-                        list.Add(new Vector2Int(x + 1, y + 1));
+                //        list.Add(new Vector2Int(x + 1, y + 1));
                         list.Add(new Vector2Int(x, y + 1));
                         break;
                 }

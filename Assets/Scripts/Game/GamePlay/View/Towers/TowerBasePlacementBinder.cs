@@ -47,6 +47,11 @@ namespace Game.GamePlay.View.Towers
                 Destroy(warriorBinder.gameObject);
                 Destroy(warriorBinder);
             }).AddTo(ref d);
+            
+            viewModel.EnabledPlacement.Subscribe(v =>
+            {
+                ((AreaPlacementBinder)areaBinder).SetEnabledColor(v);
+            }).AddTo(ref d);
 
             _disposable = d.Build();
             //MainCoroutine = StartCoroutine(PlacementUpdateTower());

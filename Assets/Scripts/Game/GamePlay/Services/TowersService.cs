@@ -150,7 +150,10 @@ namespace Game.GamePlay.Services
         public bool PlaceTower(string towerTypeId, Vector2Int position)
         {
             var command = new CommandPlaceTower(towerTypeId, position);
-            command.Placement = _placementService.GetDirectionTower(position) + position;
+            //var placement = _placementService.GetDirectionTower(position) + position;
+            var placement = _placementService.GetDefaultPlacement(position);
+            command.Placement = placement;
+            
             return _cmd.Process(command);
         }
         

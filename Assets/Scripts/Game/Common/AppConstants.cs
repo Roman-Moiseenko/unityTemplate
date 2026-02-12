@@ -46,7 +46,8 @@
         public const float CAMERA_SCALE_MIN = 3.5f;
         public const float CAMERA_SCALE_MAX = 7f;
         
-        //WARRIO
-        public static float WARRIOR_VISIBLE = 2.5f; //Радиус видимости 
+        //WARRIOR
+        public static float WARRIOR_VISIBLE = 2.0f; //Радиус видимости 
+        public static float WARRIOR_DELTA = 0.15f;
     }
 }

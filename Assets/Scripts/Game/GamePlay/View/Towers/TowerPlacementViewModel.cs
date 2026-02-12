@@ -33,7 +33,6 @@ namespace Game.GamePlay.View.Towers
         private readonly List<int> _freeIndex = new();
 
         public bool IsWay;
-        public float DeltaWarrior = 0.15f;
         
         public Dictionary<int, RoadPoint3> AvailablePath = new();
 
@@ -43,9 +42,11 @@ namespace Game.GamePlay.View.Towers
         private readonly Dictionary<int, IDisposable> _mobDisposables = new();
         public ReactiveProperty<Vector2Int> Placement => TowerEntity.Placement;
         public bool IsFly { get; set; }
+        public ReactiveProperty<bool> EnabledPlacement { get; set; }
 
         public TowerPlacementViewModel(TowerEntity towerEntity, DIContainer container, FsmWave fsmWave, PlacementService placementService) : base(towerEntity, container)
         {
+            EnabledPlacement = new ReactiveProperty<bool>(true);
             IsFly = TowerEntity.TypeEnemy == TowerTypeEnemy.Air;
             _placementService = placementService;
             UpdateParameterWarrior();
@@ -202,7 +203,7 @@ namespace Game.GamePlay.View.Towers
 
         public RoadPoint3 GenerateRoadPoints(int index)
         {
-            var delta = DeltaWarrior * index;
+            var delta = AppConstants.WARRIOR_DELTA * index;
             var way = IsWay ? GameplayState.Origin.Way.ToList() : GameplayState.Origin.WaySecond.ToList();
 
             var gate = IsWay ? GameplayState.GateWave.CurrentValue : GameplayState.GateWaveSecond.CurrentValue;
@@ -218,7 +219,7 @@ namespace Game.GamePlay.View.Towers
             way.Add(rd);
 
 
-            //Формируем список точек движения моба
+            //Формируем список точек движения
             for (var i = 0; i < way.Count - 1; i++)
             {
                 if (way[i].Position == Placement.CurrentValue)
@@ -227,18 +228,7 @@ namespace Game.GamePlay.View.Towers
 
                     var direction = MyFunc.Vector2To3(way[i + 1].Position) - MyFunc.Vector2To3(way[i].Position); 
                     result.Direction = direction.normalized;
-/*
-                    if (direction.y == 0)
-                    {
-                        
-                    }
-                    else if(direction.x == 0)
-                    {
-                        
-                    }
-                    
-                    Debug.Log(way[i + 1].Position + " " + way[i].Position);
-                    Debug.Log(result.Direction.normalized);*/
+
                     Vector2 position = way[i + 1].Position;
                     
                     if (position.x > Position.CurrentValue.x + 2 ||
@@ -259,7 +249,7 @@ namespace Game.GamePlay.View.Towers
                 }
             }
 
-            throw new Exception("Точкеа на дороге не нашлась");
+            throw new Exception("Точка на дороге не нашлась");
         }
 
         public override void Dispose()

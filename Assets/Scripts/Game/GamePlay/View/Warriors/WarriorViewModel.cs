@@ -66,13 +66,13 @@ namespace Game.GamePlay.View.Warriors
             {
                 if (AvailablePath.Direction.z == 0)
                 {
-                    Placement.z = v.y + Index * 0.15f;
-                    Placement.x = v.x - (AvailablePath.Direction.x * Math.Abs(Index * 0.15f));
+                    Placement.z = v.y + Index * AppConstants.WARRIOR_DELTA;
+                    Placement.x = v.x - (AvailablePath.Direction.x * Math.Abs(Index * AppConstants.WARRIOR_DELTA));
                 }
                 else if (AvailablePath.Direction.x == 0)
                 {
-                    Placement.x = v.x + Index * 0.15f;
-                    Placement.z = v.y - (AvailablePath.Direction.z * Math.Abs(Index * 0.15f));
+                    Placement.x = v.x + Index * AppConstants.WARRIOR_DELTA;
+                    Placement.z = v.y - (AvailablePath.Direction.z * Math.Abs(Index * AppConstants.WARRIOR_DELTA));
                 }
             });
 

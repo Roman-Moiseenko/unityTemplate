@@ -40,6 +40,7 @@ namespace Game.GamePlay.View.Frames
                 var enabled = service.IsRoad(position);
                 if (enabled) enabled = IsInPlacement(towerViewModel, position);
                 Enable.Value = enabled;
+                towerViewModel.EnabledPlacement.Value = enabled;
             });
      
         }

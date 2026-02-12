@@ -34,7 +34,7 @@
                 TowerParameterType.Distance => "",
                 TowerParameterType.Health => "",
                 TowerParameterType.DamageArea => "",
-                TowerParameterType.Speed => "сек",
+                TowerParameterType.Speed => " сек",
                 //    TowerParameterType.HighDamage => "Высокий урон",
                 //  TowerParameterType.MiddleDamage => "Средний урон",
                 TowerParameterType.MaxDistance => "",

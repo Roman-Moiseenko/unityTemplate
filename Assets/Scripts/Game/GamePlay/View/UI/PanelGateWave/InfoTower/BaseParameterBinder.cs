@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using System;
+using Game.State.Maps.Towers;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,17 +12,25 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
         [SerializeField] private TMP_Text valueField;
         [SerializeField] private Transform image;
         public string colorBoss = "FF5353";
+        public string colorBooster = "#487F1E";
         
-        public void Bind(Sprite sprite, string nameParam, float valueParam, int number, bool isBooster)
+        public void Bind(Sprite sprite, TowerParameterType parameter, Vector2 valueParam)
         {
             image.GetComponentInChildren<Image>().sprite = sprite;
-            nameField.text = nameParam;
-            valueField.text = $"{valueParam}";
+            nameField.text = parameter.GetString();
 
-            transform.localPosition = new Vector3(transform.localPosition.x,
-                transform.localPosition.y + 85 * number,
-                transform.localPosition.z
-            );
+            var value = Math.Round(valueParam.x + valueParam.y, 1);
+            valueField.text = $"{value}{parameter.GetMeasure()}" ;
+            if (valueParam.y > 0)
+            {
+                if (ColorUtility.TryParseHtmlString(colorBooster, out var newColor))
+                    valueField.color = newColor;    
+            }
+            else
+            {
+                valueField.color = Color.white;
+            }
+            
         }
     }
 }

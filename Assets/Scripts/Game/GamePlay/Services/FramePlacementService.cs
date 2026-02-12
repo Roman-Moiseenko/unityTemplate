@@ -78,7 +78,6 @@ namespace Game.GamePlay.Services
         {
             _viewModel = new FramePlacementViewModel(towerViewModel , this);
             _viewModels.Add(_viewModel);
-            
         }
 
         public bool IsSelected()

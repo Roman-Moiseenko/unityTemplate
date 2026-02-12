@@ -67,7 +67,7 @@ namespace Game.GamePlay.Services
             if (_viewModel.IsTower())
             {
                 _viewModel.Enable.Value = _placementService.CheckPlacementTower(position,
-                    _viewModel.GetTower().UniqueId, _viewModel.GetTower().IsOnRoad);
+                    _viewModel.GetTower().UniqueId, _viewModel.GetTower().IsOnRoad, _viewModel.GetTower().IsPlacement);
                 
             }
 
@@ -143,7 +143,7 @@ namespace Game.GamePlay.Services
             _viewModel.AddItem(towerViewModel);
             _viewModels.Add(_viewModel);
             _viewModel.Enable.Value =
-                _placementService.CheckPlacementTower(position, towerEntityId, towerEntity.IsOnRoad);
+                _placementService.CheckPlacementTower(position, towerEntityId, towerEntity.IsOnRoad, towerEntity.IsPlacement);
         }
 
         /**
