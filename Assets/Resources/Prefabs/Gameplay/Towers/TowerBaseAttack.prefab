@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1124747660849422202}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.026, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -229,9 +229,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3542096551093112646}
-  - component: {fileID: 6711420346351256066}
   - component: {fileID: 8389276105546198374}
   - component: {fileID: 1260623977593996031}
+  - component: {fileID: 2771966417393503368}
   m_Layer: 0
   m_Name: Visible
   m_TagString: Untagged
@@ -248,33 +248,12 @@ Transform:
   m_GameObject: {fileID: 8389341900228140671}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.026, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5018650313240646595}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &6711420346351256066
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8389341900228140671}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8389276105546198374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,7 +266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5abe7a8128b04fa3bb7e544d4f3a3e45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.Towers.TowerVisibleBinder
-  visibleCollider: {fileID: 6711420346351256066}
+  visibleCollider: {fileID: 2771966417393503368}
 --- !u!54 &1260623977593996031
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -315,6 +294,29 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!136 &2771966417393503368
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8389341900228140671}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 5
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1001 &300287523142818798
 PrefabInstance:
   m_ObjectHideFlags: 0

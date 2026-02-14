@@ -22,7 +22,6 @@ namespace Game.GamePlay.View.Mobs
 
         private Quaternion _targetDirection;
 
-        private float _mobY;
         private int _currentIndexListPoint;
 
         [FormerlySerializedAs("UnityId")] public int UniqueId;
@@ -42,7 +41,6 @@ namespace Game.GamePlay.View.Mobs
 
             ViewModel = viewModel;
             UniqueId = viewModel.UniqueId;
-            _mobY = ViewModel.IsFly ? 0.9f : 0.0f;
             
             _healthBarBinder = _healthBar.GetComponent<HealthBar>();
             _healthBarBinder.Bind(
@@ -77,7 +75,7 @@ namespace Game.GamePlay.View.Mobs
             }).AddTo(ref d);
             */
 
-            transform.position = new Vector3(viewModel.StartPosition.x, _mobY, viewModel.StartPosition.y);
+            transform.position = new Vector3(viewModel.StartPosition.x, 0, viewModel.StartPosition.y);
             //TODO Включение анимации или эффекта длп старта
             //Начальная позиция - координата первой дороги от портала
             _targetPosition = viewModel.GetTargetPosition(_currentIndexListPoint);
@@ -102,7 +100,7 @@ namespace Game.GamePlay.View.Mobs
                 {
                     var newValue = ViewModel.RoadPoints[_currentIndexListPoint].Direction;
 
-                    var direction = new Vector3(newValue.x, ViewModel.IsFly ? 0.9f : 0.0f, newValue.y);
+                    var direction = new Vector3(newValue.x, 0.0f, newValue.y);
                     transform.rotation = Quaternion.LookRotation(direction);
                     //Направление поворота Проверяем, поменялось ли направление
 
@@ -147,12 +145,13 @@ namespace Game.GamePlay.View.Mobs
         }
 
         //Для учета попадания по мобу
-        private void OnTriggerEnter(Collider other)
+    /*    private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.CompareTag("Shot"))
             {
-                //TODO Находим Данные от Выстрела и наносим уронм мобу через viewModel.DamageService.SetDamage()
+                //Находим Данные от Выстрела и наносим уронм мобу через viewModel.DamageService.SetDamage() ???
             }
         }
+        */
     }
 }

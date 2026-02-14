@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Warriors;
 using UnityEngine;
 
@@ -14,51 +15,31 @@ namespace Game.GamePlay.View.Mobs
             ViewModel = viewModel;
         }
         
-        
         private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.CompareTag("Warrior"))
             {
-                //TODO Сделать через PullTargets
                 var warrior = other.gameObject.GetComponent<WarriorAttackBinder>();
+              //  Debug.Log(warrior.ViewModel.UniqueId + " " + warrior.ViewModel.ConfigId);
                 ViewModel.PullTargets.Add(warrior.ViewModel);
-                //warrior.
-//                Debug.Log("warrior.UniqueId = " + warrior.ViewModel.UniqueId);
-//                _coroutine = StartCoroutine(ViewModel.AttackWarrior(warrior.ViewModel));
+                
             }
 
             if (other.gameObject.CompareTag("Castle"))
             {
-                _coroutine = StartCoroutine(ViewModel.AttackCastle());
+                Debug.Log("В зоне атаки Замка" + ViewModel.UniqueId);
+                var castle = other.gameObject.GetComponent<CastleBinder>();
+                ViewModel.PullTargets.Add(castle.ViewModel);
             }
 
             if (other.gameObject.CompareTag("Wall"))
             {
-                //Передать модель стены
-                _coroutine = StartCoroutine(ViewModel.AttackWall());
                 //TODO Наносим урон стене
+                //var wall = other.gameObject.GetComponent<WallBinder>();
+                //ViewModel.PullTargets.Add(wall.ViewModel);
             }
         }
-/*
-        private void OnTriggerStay(Collider other)
-        {
-            if (other.gameObject.CompareTag("Warrior"))
-            {
-                
-                //Исключительный случай, когда 1й воин убит, но моб уже внутри коллайдера 2-го воина    
-            }
-             
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (other.gameObject.CompareTag("Warrior") || other.gameObject.CompareTag("Wall"))
-            {
-               
-            }
-        }
-
-        */
+        
         
         private void OnDestroy()
         {

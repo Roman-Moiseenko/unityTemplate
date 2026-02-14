@@ -51,7 +51,7 @@ namespace Game.GamePlay.View.Towers
                 var target = e.Value;
                 //При его смерти - удаляем из пула
                 var disposable = target.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(target));
-                _mobDisposables.Add(target.UniqueId, disposable); //Кеш подписок на смерть моба
+                _mobDisposables.TryAdd(target.UniqueId, disposable); //Кеш подписок на смерть моба
                 SetTarget(target); //Добавляем его цель (если мультишот, то добавляется, для одиночного идет проверка)
             });
 
@@ -92,7 +92,7 @@ namespace Game.GamePlay.View.Towers
         public void SetDamageAfterShot(MobViewModel mobViewModel)
         {
             var shot = TowersService.ShotCalculation(TowerEntity, mobViewModel.Defence);
-            //var shot = TowerEntity.GetShotParameters(mobViewModel.Defence);
+            
             shot.MobEntityId = mobViewModel.UniqueId;
             GameplayState.Shots.Add(shot);
         }

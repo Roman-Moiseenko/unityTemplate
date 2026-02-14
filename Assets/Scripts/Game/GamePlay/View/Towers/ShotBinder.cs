@@ -34,7 +34,9 @@ namespace Game.GamePlay.View.Towers
         public virtual void FirePrepare(MobViewModel mobViewModel)
         {
             _mobViewModel = mobViewModel;
-            _target = mobViewModel.PositionTarget;
+            
+            _target = mobViewModel.PositionTargetForShot; //Скорректирована высота для Fly, Boss и остальные
+            
             transform.localPosition = new Vector3(0, _baseYMissile, 0); //Размещение снаряда в точке 0
         }
 

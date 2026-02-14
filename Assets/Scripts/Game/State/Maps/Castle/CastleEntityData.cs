@@ -17,6 +17,6 @@ namespace Game.State.Maps.Castle
         public float Speed { get; set; }
         public bool IsReduceHealth { get; set; }
         public int CountResurrection { get; set; }
-        
+        public int UniqueId { get; set; }
     }
 }

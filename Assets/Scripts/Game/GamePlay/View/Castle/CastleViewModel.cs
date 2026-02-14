@@ -12,10 +12,11 @@ using UnityEngine;
 
 namespace Game.GamePlay.View.Castle
 {
-    public class CastleViewModel
+    public class CastleViewModel: IHasHeathViewModel
     {
         private readonly GameplayStateProxy _gameplayState;
         public CastleEntity CastleEntity { get; }
+        public int UniqueId => CastleEntity.UniqueId;
         public ReadOnlyReactiveProperty<int> Level { get; }
         public readonly string ConfigId;
         public Vector2Int Position { get; }
@@ -24,6 +25,8 @@ namespace Game.GamePlay.View.Castle
         //Кеш подписок на смерть моба
         private readonly Dictionary<int, IDisposable> _mobDisposables = new();
         public float Speed => CastleEntity.Speed;
+
+        public ReadOnlyReactiveProperty<bool> IsDead => CastleEntity.IsDead;
         
         public CastleViewModel(CastleEntity castleEntity,
             GameplayStateProxy gameplayState)
@@ -32,7 +35,6 @@ namespace Game.GamePlay.View.Castle
             ConfigId = castleEntity.ConfigId;
             CastleEntity = castleEntity;
             Position = castleEntity.Position;
-            
             
             //** Логика ведения целей **//
             PullTargets.ObserveAdd().Subscribe(e =>
@@ -95,6 +97,12 @@ namespace Game.GamePlay.View.Castle
                 MobEntityId = MobTarget.CurrentValue.UniqueId,
             };
             _gameplayState.Shots.Add(shot);
+        }
+
+        public void DamageReceived(float damage, MobDefence defence)
+        {
+            Debug.Log("Урон по замку " + damage);
+            CastleEntity.DamageReceived(damage);
         }
     }
 }

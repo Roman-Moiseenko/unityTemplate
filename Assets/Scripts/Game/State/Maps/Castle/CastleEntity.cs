@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Game.GamePlay;
-using Game.State.Entities;
 using Game.State.Maps.Mobs;
 using ObservableCollections;
 using R3;
@@ -11,6 +10,7 @@ namespace Game.State.Maps.Castle
     public class CastleEntity : IEntityHasHealth
     {
         public CastleEntityData Origin;
+        public int UniqueId => Origin.UniqueId;
         public string ConfigId => Origin.ConfigId; //Идентификатор для поиска настроек сущности
         public Vector2Int Position => Origin.Position;  //Позиция в координатах x y сущности на карте, конвертируются в x z на плоскости
         public Vector2Int Direction => Origin.Direction; //Направление на дорогу, по умолчанию (1,0)
@@ -22,10 +22,9 @@ namespace Game.State.Maps.Castle
         public float Damage => Origin.Damage;
         //public float DistanceDamage => Origin.DistanceDamage;
         public float Speed => Origin.Speed;
+        
         public ReactiveProperty<bool> IsDead; //Для подписок
-
         public ReactiveProperty<bool> IsBusy = new(false);
-
         public ReactiveProperty<bool> IsReduceHealth;
         public ReactiveProperty<int> CountResurrection;
         public ObservableList<MobEntity> Target = new();

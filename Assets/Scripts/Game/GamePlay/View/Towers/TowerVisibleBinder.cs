@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Game.GamePlay.View.Mobs;
+using Game.State.Maps.Towers;
 using R3;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -11,9 +12,9 @@ namespace Game.GamePlay.View.Towers
     public class TowerVisibleBinder : MonoBehaviour
     {
 
-        [SerializeField] private SphereCollider visibleCollider;
+        [SerializeField] private CapsuleCollider visibleCollider;
         private TowerAttackViewModel _viewModel;
-        private float _minDistance; // => _viewModel.MinDistance;
+        //private float _minDistance; // => _viewModel.MinDistance;
         private IDisposable _disposable;
 
         private void Awake()
@@ -27,7 +28,7 @@ namespace Game.GamePlay.View.Towers
         {
             visibleCollider.gameObject.SetActive(true);
             var d = Disposable.CreateBuilder();
-            _minDistance = viewModel.MinDistance;
+            //_minDistance = viewModel.MinDistance;
             _viewModel = viewModel;
             _viewModel.MaxDistance.Subscribe(v =>
             {
@@ -42,7 +43,8 @@ namespace Game.GamePlay.View.Towers
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
             var mobBinder = other.gameObject.GetComponent<MobBinder>();
             if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
-            _viewModel.PullTargets.Add(mobBinder.ViewModel); //Добавляем моба в пулл целей
+            if (_viewModel.TypeEnemy.IsTarget(mobBinder.ViewModel.IsFly)) 
+                _viewModel.PullTargets.Add(mobBinder.ViewModel); //Добавляем моба в пулл целей
         }
 
         private void OnTriggerExit(Collider other)

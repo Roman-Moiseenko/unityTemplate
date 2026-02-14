@@ -15,13 +15,13 @@ namespace Game.GamePlay.View.Castle
         [SerializeField] private CastleVisibleBinder visibleBinder;
 
         private IDisposable _disposable;
-        private CastleViewModel _viewModel;
+        public CastleViewModel ViewModel;
         private Coroutine _coroutine;
         private Coroutine _mainCoroutine;
         
         public void Bind(CastleViewModel viewModel)
         {
-            _viewModel = viewModel;
+            ViewModel = viewModel;
             visibleBinder.Bind(viewModel);
             gunLeft.Bind(viewModel);
             gunCenter.Bind(viewModel);
@@ -57,11 +57,11 @@ namespace Game.GamePlay.View.Castle
             {
                 yield return null;
                 //Обходим все цели в модели
-                if (_viewModel.MobTarget.CurrentValue == null) continue;
-                gunLeft.Fire(_viewModel.MobTarget.CurrentValue);
-                gunCenter.Fire(_viewModel.MobTarget.CurrentValue);
-                gunRight.Fire(_viewModel.MobTarget.CurrentValue);
-                yield return new WaitForSeconds(_viewModel.Speed);
+                if (ViewModel.MobTarget.CurrentValue == null) continue;
+                gunLeft.Fire(ViewModel.MobTarget.CurrentValue);
+                gunCenter.Fire(ViewModel.MobTarget.CurrentValue);
+                gunRight.Fire(ViewModel.MobTarget.CurrentValue);
+                yield return new WaitForSeconds(ViewModel.Speed);
             }
         }
         
@@ -73,11 +73,11 @@ namespace Game.GamePlay.View.Castle
 
         private void FinishFire()
         {
-            var mobViewModel = _viewModel.MobTarget.CurrentValue;
+            var mobViewModel = ViewModel.MobTarget.CurrentValue;
             if (mobViewModel == null) return;
             explosionEffect.transform.position = mobViewModel.PositionTarget.CurrentValue;
             explosionEffect.Play();
-            _viewModel.SetDamageAfterShot();
+            ViewModel.SetDamageAfterShot();
         }
     }
 }

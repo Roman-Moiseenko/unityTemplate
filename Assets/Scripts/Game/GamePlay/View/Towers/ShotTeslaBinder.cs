@@ -15,7 +15,7 @@ namespace Game.GamePlay.View.Towers
             _mobViewModel = mobViewModel;
             transform.gameObject.SetActive(true);
             _disposableTesla?.Dispose();
-            _disposableTesla = mobViewModel.PositionTarget.Subscribe(position =>
+            _disposableTesla = mobViewModel.PositionTargetForShot.Subscribe(position =>
             {
                 var scale = Vector3.Distance(transform.position, position) / 0.5f;
                 transform.localScale = new Vector3(1, 1, scale);

@@ -13,6 +13,7 @@ namespace Game.GamePlay.View.Warriors
     {
         [SerializeField] private HealthBar healthBarBinder;
         [SerializeField] private ParticleSystem fire;
+        [SerializeField] private WarriorAttackBinder attackBinder;
         
         //[SerializeField] private WarriorAttackBinder attackBinder;
         private Vector3 _targetPosition;
@@ -32,6 +33,8 @@ namespace Game.GamePlay.View.Warriors
                 viewModel.CurrentHealth,
                 0
             );
+            attackBinder.Bind(viewModel);
+            
             transform.position = viewModel.Position.CurrentValue;
             
             var d = Disposable.CreateBuilder();
@@ -42,7 +45,8 @@ namespace Game.GamePlay.View.Warriors
                 if (state.GetType() == typeof(FsmWarriorGoToPlacement))
                 {
                     _targetPosition = viewModel.FsmWarrior.GetPosition();
-                    transform.rotation = Quaternion.LookRotation(_targetPosition - transform.position);
+                    var direction = _targetPosition - transform.position;
+                    if (direction != Vector3.zero) transform.rotation = Quaternion.LookRotation(direction);
                 }
                 //Повернуться к дороге и вкл.анимацию ожидания
                 if (state.GetType() == typeof(FsmWarriorAwait)) 

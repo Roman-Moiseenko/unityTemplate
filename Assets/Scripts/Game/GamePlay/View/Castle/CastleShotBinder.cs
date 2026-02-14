@@ -27,7 +27,7 @@ namespace Game.GamePlay.View.Castle
         public void FirePrepare(MobViewModel mobViewModel)
         {
             IsShotComplete.Value = false;
-            _target = mobViewModel.PositionTarget;
+            _target = mobViewModel.PositionTargetForShot;
             transform.localPosition = _beginPosition;
         }
 

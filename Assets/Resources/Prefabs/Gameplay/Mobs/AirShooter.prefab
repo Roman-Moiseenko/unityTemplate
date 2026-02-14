@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 705583265261407418}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0.046}
+  m_LocalPosition: {x: 0, y: 0, z: 0.046}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -139,8 +139,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _healthBar: {fileID: 6806237550410711639}
-  mobVisible: {fileID: 0}
-  UnityId: 0
+  mobVisible: {fileID: 7456196950214569766}
+  UniqueId: 0
 --- !u!136 &6589015781382999755
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -163,7 +163,7 @@ CapsuleCollider:
   m_Radius: 0.15
   m_Height: 0.1
   m_Direction: 1
-  m_Center: {x: 0, y: 0.1, z: 0}
+  m_Center: {x: 0, y: 0.7, z: 0}
 --- !u!1 &7542431532477943838
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ Transform:
   m_GameObject: {fileID: 7542431532477943838}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -224,7 +224,7 @@ Transform:
   m_GameObject: {fileID: 7920236039328212085}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.2, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -299,13 +299,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: VisibleTargetArea
       objectReference: {fileID: 0}
+    - target: {fileID: 5060079027805661732, guid: b54ea05b1e7979d44aeb9607cf7352ca, type: 3}
+      propertyPath: m_TagString
+      value: MobVisible
+      objectReference: {fileID: 0}
     - target: {fileID: 5138380573707538485, guid: b54ea05b1e7979d44aeb9607cf7352ca, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5138380573707538485, guid: b54ea05b1e7979d44aeb9607cf7352ca, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.094
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5138380573707538485, guid: b54ea05b1e7979d44aeb9607cf7352ca, type: 3}
       propertyPath: m_LocalPosition.z
@@ -349,6 +353,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5138380573707538485, guid: b54ea05b1e7979d44aeb9607cf7352ca, type: 3}
   m_PrefabInstance: {fileID: 4962583720219253332}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7456196950214569766 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2569048530298467698, guid: b54ea05b1e7979d44aeb9607cf7352ca, type: 3}
+  m_PrefabInstance: {fileID: 4962583720219253332}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aac3b83c6a9147689133f190ada49311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.Mobs.MobVisibleBinder
 --- !u!1001 &7796277308810232489
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -363,7 +378,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3622420335610380542, guid: d41caca255faa4d46a4c6e71aa3818f8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.25
+      value: 0.95
       objectReference: {fileID: 0}
     - target: {fileID: 3622420335610380542, guid: d41caca255faa4d46a4c6e71aa3818f8, type: 3}
       propertyPath: m_LocalPosition.z

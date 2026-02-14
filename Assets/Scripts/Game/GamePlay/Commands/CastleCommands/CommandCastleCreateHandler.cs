@@ -22,6 +22,7 @@ namespace Game.GamePlay.Commands.CastleCommands
             {
                 ConfigId = "Castle",
                 Position = new Vector2Int(0, 0),
+                UniqueId = _gameplayState.CreateEntityID(),
                 //Базовые параметры
                 Damage = _gameSettings.CastleInitialSettings.Damage,
                 FullHealth = _gameSettings.CastleInitialSettings.FullHealth,

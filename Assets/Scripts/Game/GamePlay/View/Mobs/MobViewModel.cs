@@ -23,8 +23,8 @@ namespace Game.GamePlay.View.Mobs
     {
         private MobEntity _mobEntity;
 
-        public ObservableList<WarriorViewModel> PullTargets = new();
-        public ReactiveProperty<WarriorViewModel> Target = new(null); //Текущая цель
+        public ObservableList<IHasHeathViewModel> PullTargets = new();
+        public ReactiveProperty<IHasHeathViewModel> Target = new(null); //Текущая цель
 
         public int UniqueId => _mobEntity.UniqueId;
         public bool IsFly => _mobEntity.IsFly;
@@ -49,13 +49,14 @@ namespace Game.GamePlay.View.Mobs
         public float Damage => _mobEntity.Damage;
 
         public ReactiveProperty<Vector3> PositionTarget => _mobEntity.PositionTarget;
+        public ReactiveProperty<Vector3> PositionTargetForShot = new();
         public ReadOnlyReactiveProperty<bool> IsDead => _mobEntity.IsDead;
         public MobDefence Defence => _mobEntity.Defence;
         public bool IsWay => _mobEntity.IsWay;
-        private readonly GameplayStateProxy _gameplayState;
+        //private readonly GameplayStateProxy _gameplayState;
         private readonly Coroutines _coroutines;
 
-        private Dictionary<int, IDisposable> PullTargetsDisposables = new();
+        private readonly Dictionary<int, IDisposable> _pullTargetsDisposables = new();
         public MobViewModel(
             MobEntity mobEntity,
             GameplayStateProxy gameplayState,
@@ -65,7 +66,7 @@ namespace Game.GamePlay.View.Mobs
             //TODO Перенести в Binder как у Warriors, возможно через FSM
             _coroutines = GameObject.Find(AppConstants.COROUTINES).GetComponent<Coroutines>();
 
-            _gameplayState = gameplayState;
+           // _gameplayState = gameplayState;
             _mobEntity = mobEntity;
             CurrentHealth = mobEntity.Health;
             MaxHealth = mobEntity.Health.CurrentValue;
@@ -75,26 +76,41 @@ namespace Game.GamePlay.View.Mobs
             var direction = -1 * waveService.GateWaveViewModel.Direction.Value;
 
             mobEntity.SetStartPosition(position, direction);
+            PositionTarget.Subscribe(v =>
+            {
+                var h = 0.15f; //Устанавливаем центр по высоте для ShotViewModel
+                if (IsFly)
+                {
+                    h = 0.7f;
+                } 
+                else if(_mobEntity.IsBoss)
+                {
+                    h = 0.3f;
+                }
+                PositionTargetForShot.Value = new Vector3(v.x, h, v.z);
+            });
+            
             StartPosition = mobEntity.Position.CurrentValue;
             StartDirection = mobEntity.Direction.CurrentValue;
-
             RoadPoints = waveService.GenerateRoadPoints(mobEntity);
 
             IsMoving.Value = true;
 
             PullTargets.ObserveAdd().Subscribe(e =>
             {
-                var warrior = e.Value;
-                var disposable = warrior.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(warrior));
+              //  Debug.Log("Добавили в пул " + e.Value.GetType());
+                var targetViewModel = e.Value;
+                Debug.Log(targetViewModel.UniqueId + " PullTargets");
+                var disposable = targetViewModel.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(targetViewModel));
 
                 if (Target.CurrentValue == null)
                 {
-                    Target.OnNext(warrior);
+                    Target.OnNext(targetViewModel);
                     IsMoving.OnNext(false);
                     IsAttack.OnNext(true);
                 }
 
-                PullTargetsDisposables.Add(warrior.UniqueId, disposable);
+                _pullTargetsDisposables.Add(targetViewModel.UniqueId, disposable);
             });
 
             PullTargets.ObserveRemove().Subscribe(e =>
@@ -105,10 +121,10 @@ namespace Game.GamePlay.View.Mobs
                     Target.OnNext(null);
                 }
 
-                if (PullTargetsDisposables.TryGetValue(warrior.UniqueId, out var disposable))
+                if (_pullTargetsDisposables.TryGetValue(warrior.UniqueId, out var disposable))
                 {
                     disposable?.Dispose();
-                    PullTargetsDisposables.Remove(warrior.UniqueId);
+                    _pullTargetsDisposables.Remove(warrior.UniqueId);
                 }
 
                 if (PullTargets.Count == 0)
@@ -123,9 +139,9 @@ namespace Game.GamePlay.View.Mobs
             {
                 if (target == null)
                 {
-                    foreach (var warriorViewModel in PullTargets)
+                    foreach (var targetViewModel in PullTargets)
                     {
-                        Target.OnNext(warriorViewModel);
+                        Target.OnNext(targetViewModel);
                         IsMoving.Value = false;
                         IsAttack.Value = true;
                         return;
@@ -135,8 +151,7 @@ namespace Game.GamePlay.View.Mobs
                     IsAttack.Value = false;
                     return;
                 }
-
-                _coroutines.StartCoroutine(AttackWarrior());
+                _coroutines.StartCoroutine(AttackTarget());
             });
         }
 
@@ -155,7 +170,6 @@ namespace Game.GamePlay.View.Mobs
             _mobEntity.RemoveDebuff(configId);
         }
 
-
         public float GetSpeedMob()
         {
             return _mobEntity.Speed();
@@ -164,7 +178,7 @@ namespace Game.GamePlay.View.Mobs
         public Vector3 GetTargetPosition(int index)
         {
             var newValue = RoadPoints[index].Point; //_currentIndexListPoint
-            return new Vector3(newValue.x, IsFly ? 0.9f : 0.0f, newValue.y);
+            return new Vector3(newValue.x, 0.0f, newValue.y);
         }
 
         public void StartAnimationDelete()
@@ -177,48 +191,17 @@ namespace Game.GamePlay.View.Mobs
         {
             _mobEntity.RemoveDebuff(configId);
         }
-
-        public IEnumerator AttackCastle()
+        
+        public IEnumerator AttackTarget()
         {
-            IsMoving.Value = false;
-            IsAttack.Value = true;
-            yield return AttackEntity(_gameplayState.Castle);
-        }
-
-        public IEnumerator AttackWarrior()
-        {
+            Debug.Log(" AttackTarget " + Target.CurrentValue.UniqueId);
             if (_mobEntity.IsDead.CurrentValue) yield break;
-            Target.CurrentValue.DamageWarrior(Damage, _mobEntity.Defence);
+            Target.CurrentValue.DamageReceived(Damage, _mobEntity.Defence);
             yield return new WaitForSeconds(_mobEntity.SpeedAttack / AppConstants.MOB_SPEED_ATTACK);
 
             if (Target.CurrentValue == null) yield break;
-            if (!Target.CurrentValue.IsDead.CurrentValue) _coroutines.StartCoroutine(AttackWarrior());
+            if (!Target.CurrentValue.IsDead.CurrentValue) _coroutines.StartCoroutine(AttackTarget());
         }
-
-        public IEnumerator AttackEntity(IEntityHasHealth entity)
-        {
-            //State.Value = MobState.Attacking;
-            while (IsAttack.Value)
-            {
-                yield return new WaitForSeconds(_mobEntity.SpeedAttack / AppConstants.MOB_SPEED_ATTACK);
-                if (_mobEntity.IsDead.CurrentValue) yield break;
-                entity.DamageReceived(Damage);
-                if (!entity.IsDeadEntity()) continue;
-
-                //State.Value = MobState.Moving;
-                IsMoving.Value = true;
-                IsAttack.Value = false;
-            }
-        }
-
-        /**
-         * Добавить модель Стены
-         */
-        public IEnumerator AttackWall()
-        {
-            IsMoving.Value = false;
-            IsAttack.Value = true;
-            yield return null;
-        }
+        
     }
 }

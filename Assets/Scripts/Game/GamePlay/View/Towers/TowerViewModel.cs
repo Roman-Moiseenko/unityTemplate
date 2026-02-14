@@ -52,8 +52,7 @@ namespace Game.GamePlay.View.Towers
         public TypeEpicCard EpicLevel { get; set; }
         public ReactiveProperty<bool> FinishEffectLevelUp = new(false);
         public ReactiveProperty<bool> ShowArea = new(false);
-
-        public string NameTower;
+        public TowerTypeEnemy TypeEnemy => TowerEntity.TypeEnemy;
 
 
         //Флаг для передачи в Панели подтверждения из различных состояния

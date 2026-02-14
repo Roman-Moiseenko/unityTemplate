@@ -35,7 +35,7 @@ namespace Game.GamePlay.View.Castle
                         .DORotateQuaternion(targetRotation, 0.1f)
                         )
                 .Append(
-                    barrel
+                    turret
                         .DOPunchPosition(new Vector3(0, 0, -0.1f), 0.1f, 1, 1)
                         .From(false)) // 1. Откат орудия
                 .AppendCallback(() =>
@@ -47,7 +47,7 @@ namespace Game.GamePlay.View.Castle
                 })
                 .OnComplete(() =>
                 {
-                    barrel.localPosition = Vector3.zero;
+                    turret.localPosition = Vector3.zero;
                     Sequence.Kill();
                 });
         }

@@ -5046,7 +5046,7 @@ Transform:
   m_GameObject: {fileID: 4992816770234959187}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.273, y: 0.59, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5066,7 +5066,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.Castle.CastleGunBinder
   turret: {fileID: 5706819347520696177}
-  barrel: {fileID: 6106654506116321349}
+  barrel: {fileID: 5706819347520696177}
   fireEffect: {fileID: 6254743579461054599}
   shot: {fileID: 3644733328212827275}
 --- !u!1 &5351983579472046922

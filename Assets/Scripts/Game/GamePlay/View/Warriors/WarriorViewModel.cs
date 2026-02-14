@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.View.Warriors
 {
-    public class WarriorViewModel : IDisposable
+    public class WarriorViewModel : IDisposable, IHasHeathViewModel
     {
         public FsmWarrior FsmWarrior = new();
 
@@ -40,6 +40,7 @@ namespace Game.GamePlay.View.Warriors
         private readonly GameplayStateProxy _gameplayState;
         public ReactiveProperty<float> MaxHealth => _warriorEntity.MaxHealth;
         public ReadOnlyReactiveProperty<bool> IsDead => _warriorEntity.IsDead;
+        
         public ReactiveProperty<float> CurrentHealth => _warriorEntity.Health;
         public int Index => _warriorEntity.Index;
         public bool IsFly => _warriorEntity.IsFly;
@@ -152,26 +153,6 @@ namespace Game.GamePlay.View.Warriors
                 }
             });
 
-            
-            /*
-            PullAttacks.ObserveAdd().Subscribe(e =>
-            {
-                var target = e.Value;
-
-                Debug.Log(UniqueId + " Add " + PullAttacks.Count);
-                if (MobTarget.CurrentValue == null &&
-                    !target.IsDead.CurrentValue) //Первая цель, когда при движении столкнулись с Collider
-                {
-                    MobTarget.Value = target;
-                    FsmWarrior.Fsm.SetState<FsmWarriorAttack>(target.PositionTarget.CurrentValue);
-                }
-            });
-            PullAttacks.ObserveRemove().Subscribe(e =>
-            {
-                Debug.Log(UniqueId + " Remove " + e.Value.UniqueId + " Count = "+ PullAttacks.Count);
-            });
-            PullAttacks.ObserveClear().Subscribe(_ => MobTarget.Value = null);
-            */
             //Принудительная смена состояния, при достижении определенных точек
             FsmWarrior.Fsm.StateCurrent.Subscribe(state =>
             {
@@ -182,26 +163,7 @@ namespace Game.GamePlay.View.Warriors
                     FsmWarrior.Fsm.SetState<FsmWarriorGoToPlacement>(Placement);
                 }
             });
-
-            //Проверяем только, когда цель удалена, чтоб назначить новую или вернуться
-     /*       MobTarget.Skip(1).Where(x => x == null).Subscribe(mobTarget =>
-            {
-                if (FsmWarrior.IsDead()) return; //На всякий случай
-
-//                Debug.Log("Цель Убита " + FsmWarrior.Fsm.StateCurrent.CurrentValue.GetType());
-                //Сначала берем цели из ближащих и их атакуем
-                if (PullAttacks.Count > 0)
-                {
-                    MobTarget.Value = PullAttacks[0]; //устанавливаем новую цель
-                    FsmWarrior.Fsm.SetState<FsmWarriorAttack>(MobTarget.CurrentValue.PositionTarget.CurrentValue);
-                    return;
-                }
-
-          //      Debug.Log("PullAttacks.Count " + PullAttacks.Count);
-                //Целей нет, ищем из доступных башни или возвращаемся
-              //  SetTargetOrReturnToBase();
-            });*/
-
+            
             _warriorEntity.IsDead.Where(x => x).Subscribe(_ =>
             {
                 FsmWarrior.Fsm.SetState<FsmWarriorDead>();
@@ -242,7 +204,6 @@ namespace Game.GamePlay.View.Warriors
 
             return false;
         }
-        
         
         /**
          * Движение закончилось (из Binder), меняем состояние от текущего
@@ -348,15 +309,16 @@ namespace Game.GamePlay.View.Warriors
 //            Debug.Log("Урон от Warrior " + UniqueId + " Мобу " + MobTarget.CurrentValue.UniqueId);
             _gameplayState.Shots.Add(shot);
         }
-
-        public void DamageWarrior(float damage, MobDefence defence)
+        
+        public void DamageReceived(float damage, MobDefence defence)
         {
             if (_warriorEntity.Defence.Previous() == defence) damage *= 0.8f;
             if (_warriorEntity.Defence.Next() == defence) damage *= 1.2f;
 
             _warriorEntity.DamageReceived(damage);
         }
-
+        
+        
         public void Dispose()
         {
             //StartPosition?.Dispose();
