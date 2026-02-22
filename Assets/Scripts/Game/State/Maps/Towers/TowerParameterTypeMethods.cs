@@ -21,6 +21,7 @@
                 TowerParameterType.MaxDistance => "Максимальная дистанция",
                 TowerParameterType.MinDistance => "Минимальная дистанция",
                 TowerParameterType.SlowingDown => "Замедление",
+                TowerParameterType.Warriors => "Кол-во бойцов",
                 _ => ""
             };
         }
@@ -29,17 +30,19 @@
         {
             return type switch
             {
-                TowerParameterType.Damage => "",
                 TowerParameterType.Critical => "%",
-                TowerParameterType.Distance => "",
-                TowerParameterType.Health => "",
-                TowerParameterType.DamageArea => "",
                 TowerParameterType.Speed => " сек",
-                //    TowerParameterType.HighDamage => "Высокий урон",
-                //  TowerParameterType.MiddleDamage => "Средний урон",
-                TowerParameterType.MaxDistance => "",
-                TowerParameterType.MinDistance => "",
                 TowerParameterType.SlowingDown => "%",
+                
+                //TowerParameterType.Damage => "",
+                //TowerParameterType.Distance => "",
+                //TowerParameterType.Health => "",
+                //TowerParameterType.DamageArea => "",
+                //    TowerParameterType.HighDamage => "",
+                //  TowerParameterType.MiddleDamage => "",
+                //TowerParameterType.MaxDistance => "",
+                //TowerParameterType.MinDistance => "",
+                //TowerParameterType.Warriors => "",
                 _ => ""
             };
             

@@ -20,19 +20,25 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             {
                 _btnConfirmation.interactable = newValue;
             }).AddTo(ref d);
-            ViewModel.IsRotate.Subscribe(newValue =>
+            ViewModel.IsRotate.Subscribe(isRotation =>
             {
-                _btnRotate.gameObject.SetActive(newValue);
-                var vector3 = _btnCancel.transform.localPosition;
-                if (newValue)
+                _btnRotate.gameObject.SetActive(isRotation);
+                var confirmY = _btnConfirmation.transform.localPosition;
+                var cancelY = _btnCancel.transform.localPosition;
+                //var rotateY = _btnRotate.transform.localPosition;
+                if (isRotation)
                 {
-                    vector3.y = -110;
+                    confirmY.y = 140f;
+                    cancelY.y = -140f;
                 }
                 else
                 {
-                    vector3.y = 0;
+                    confirmY.y = 70f;
+                    cancelY.y = -70f;
                 }
-                _btnCancel.transform.localPosition = vector3;
+
+                _btnConfirmation.transform.localPosition = confirmY;
+                _btnCancel.transform.localPosition = cancelY;
             }).AddTo(ref d);
             _disposable = d.Build();
         }

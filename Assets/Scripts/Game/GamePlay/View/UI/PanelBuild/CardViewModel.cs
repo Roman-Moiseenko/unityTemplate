@@ -34,6 +34,8 @@ namespace Game.GamePlay.View.UI.PanelBuild
         private readonly FsmGameplay _fsmGameplay;
         private readonly TowersService _towersService;
         public RewardType RewardType => _rewardData.RewardType; 
+        
+        public readonly Dictionary<TowerParameterType, float> UpgradeParameters = new();
 
         //private readonly ResourceService _resourceService;
 
@@ -85,11 +87,11 @@ namespace Game.GamePlay.View.UI.PanelBuild
             ImageBack = "TowerUpCard";
 
             var parameters = config.GameplayLevels.Find(v => v.Level == Level + 1);
-            Description = "";
+            
+            UpgradeParameters.Clear();
             foreach (var parameter in parameters.Parameters)
             {
-                //Debug.Log($"{parameter.ParameterType.GetString()} {parameter.Value} %\n");
-                Description += $"{parameter.ParameterType.GetString()} {parameter.Value} %\n";
+                UpgradeParameters.Add(parameter.ParameterType, parameter.Value);
             }
             
             foreach (var parameterData in _towersService.TowerParametersMap[_rewardData.ConfigId])

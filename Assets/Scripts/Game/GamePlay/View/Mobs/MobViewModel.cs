@@ -100,7 +100,6 @@ namespace Game.GamePlay.View.Mobs
             {
               //  Debug.Log("Добавили в пул " + e.Value.GetType());
                 var targetViewModel = e.Value;
-                Debug.Log(targetViewModel.UniqueId + " PullTargets");
                 var disposable = targetViewModel.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(targetViewModel));
 
                 if (Target.CurrentValue == null)

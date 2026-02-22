@@ -65,8 +65,6 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: cf618e545c6bfbd4bba7ef96939dfc7c, type: 3}
   - TypeEpic: 9
     Sprite: {fileID: 21300000, guid: bf7e213deff3e1740800ab10288f2c35, type: 3}
-  - TypeEpic: 8
-    Sprite: {fileID: 21300000, guid: cf618e545c6bfbd4bba7ef96939dfc7c, type: 3}
   towerPlan:
   - ConfigId: Background
     Sprite: {fileID: 21300000, guid: 79ebbc9508155e949b7897bbabe0824e, type: 3}
@@ -192,21 +190,29 @@ MonoBehaviour:
   - TypeParameter: 7
     Sprite: {fileID: 21300000, guid: 6f951cd9201bbd249bf26de6d006398e, type: 3}
   - TypeParameter: 2
-    Sprite: {fileID: 21300000, guid: b3a4f4e8703c94d40ae435a8193040bc, type: 3}
+    Sprite: {fileID: 21300000, guid: dfdab5ed16ca802459ac151ede7c7aaf, type: 3}
   - TypeParameter: 3
-    Sprite: {fileID: 21300000, guid: 29840bd14c9978a4dbfc26a35743df1e, type: 3}
+    Sprite: {fileID: 21300000, guid: 67c64db9de17cf74383a10dda3f80cd9, type: 3}
   - TypeParameter: 4
-    Sprite: {fileID: 21300000, guid: 38f36d58b023a6b41845400b3dc0417c, type: 3}
+    Sprite: {fileID: 21300000, guid: 0c45611a88989d04f927e539eadb9ab8, type: 3}
   - TypeParameter: 8
-    Sprite: {fileID: 21300000, guid: 096ba8dd29f47254faa172f672b14ad7, type: 3}
+    Sprite: {fileID: 21300000, guid: 70e692710dacb4e4bb706ad1c2570010, type: 3}
   - TypeParameter: 9
-    Sprite: {fileID: 21300000, guid: b3a4f4e8703c94d40ae435a8193040bc, type: 3}
+    Sprite: {fileID: 21300000, guid: dfdab5ed16ca802459ac151ede7c7aaf, type: 3}
+  - TypeParameter: 10
+    Sprite: {fileID: 21300000, guid: 30a21bb3403de004e93e74056d5388b3, type: 3}
   otherSprite:
   - ConfigId: TowerUpCard
-    Sprite: {fileID: 21300000, guid: 80fd7e715a58c58419284abc35cbbd90, type: 3}
+    Sprite: {fileID: 21300000, guid: 60fedadfae431dd498d14edf921ec65e, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: UpgradeBtnCard
+    Sprite: {fileID: 21300000, guid: a894e0d05107e4c4486d93a46ffcd03f, type: 3}
     Texture: {fileID: 0}
   - ConfigId: CardBuild
-    Sprite: {fileID: 21300000, guid: 6ccfbdf6340763d4abadf43bb51e5c1a, type: 3}
+    Sprite: {fileID: 21300000, guid: 4e12118406b85e04c94050067f9272b1, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: OtherBtnCard
+    Sprite: {fileID: 21300000, guid: a0d72d504a26b094fb86a8541e028951, type: 3}
     Texture: {fileID: 0}
   - ConfigId: CardGround
     Sprite: {fileID: 21300000, guid: 303ac3c4525551449bc66d68a0da07a1, type: 3}
@@ -334,10 +340,10 @@ MonoBehaviour:
     Background: {fileID: 21300000, guid: 1c49bd898a6c7084d91b1b26c53b0dd6, type: 3}
   defenceMaps:
   - Defence: 1
-    Icon: {fileID: 21300000, guid: 641bd4885d92a674c8f423789fc240b3, type: 3}
+    Icon: {fileID: 21300000, guid: f9e756ba7e470304290cc8ddc204ea36, type: 3}
     Background: {fileID: 21300000, guid: b1926f239fb0cff4095f62333f5f119b, type: 3}
   - Defence: 0
-    Icon: {fileID: 21300000, guid: f9e756ba7e470304290cc8ddc204ea36, type: 3}
+    Icon: {fileID: 21300000, guid: 641bd4885d92a674c8f423789fc240b3, type: 3}
     Background: {fileID: 21300000, guid: 5ae9eeda1f8b1ca448efb2806d4d0b94, type: 3}
   - Defence: 2
     Icon: {fileID: 21300000, guid: 2ddc91e98b3fac24f83aebbf985af79e, type: 3}

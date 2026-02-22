@@ -5,6 +5,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Game.Common;
 using Game.GameRoot.ImageManager;
+using Game.GameRoot.View.Defence;
 using Game.State.Inventory;
 using Game.State.Maps.Towers;
 using ObservableCollections;
@@ -28,9 +29,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
 
         [SerializeField] private List<BaseParameterBinder> parameterBinders;
         [SerializeField] private List<BoosterParameterBinder> boosterBinders;
-        
-        [SerializeField] private Image backDefence;
-        [SerializeField] private Image iconDefence;
+        [SerializeField] private DefenceBinder defenceBinder;
         
         [SerializeField] private Transform stars;
         
@@ -79,10 +78,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
 
                 nameEpic.text = viewModel.EpicLevel.GetString();
                 nameTower.text = viewModel.NameTower;
+                defenceBinder.Bind(viewModel.Defence);
                 
-                var defenceImage = _imageManager.GetDefenceData(viewModel.Defence);
-                backDefence.sprite = defenceImage.Background;
-                iconDefence.sprite = defenceImage.Icon;
                 
                 //Звездочки
                 for (var i = 1; i <= 6; i++)

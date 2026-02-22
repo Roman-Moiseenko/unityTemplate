@@ -12,6 +12,7 @@
         Health,
         SlowingDown,
         Range,
+        Warriors,
         // MiddleDamage,
         //  HighDamage,
     }
