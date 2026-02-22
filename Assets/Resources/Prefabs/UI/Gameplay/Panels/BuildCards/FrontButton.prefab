@@ -1833,10 +1833,10 @@ RectTransform:
   - {fileID: 4562416387667165863}
   m_Father: {fileID: 5057883122103339611}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 70}
-  m_SizeDelta: {x: -40, y: 0}
+  m_SizeDelta: {x: 300, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3755943223261295529
 MonoBehaviour:
@@ -2013,6 +2013,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8134194624679533757}
     m_Modifications:
+    - target: {fileID: 647248049308824147, guid: e15150243151d4d4cb0af68eba1f50a9, type: 3}
+      propertyPath: m_fontSize
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 1210685703726002454, guid: e15150243151d4d4cb0af68eba1f50a9, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -2145,6 +2149,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FrontUpgradeParameter
       objectReference: {fileID: 0}
+    - target: {fileID: 8836089255431645158, guid: e15150243151d4d4cb0af68eba1f50a9, type: 3}
+      propertyPath: m_fontSize
+      value: 28
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2174,6 +2182,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8134194624679533757}
     m_Modifications:
+    - target: {fileID: 647248049308824147, guid: e15150243151d4d4cb0af68eba1f50a9, type: 3}
+      propertyPath: m_fontSize
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 1210685703726002454, guid: e15150243151d4d4cb0af68eba1f50a9, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -2305,6 +2317,10 @@ PrefabInstance:
     - target: {fileID: 6671411371899228925, guid: e15150243151d4d4cb0af68eba1f50a9, type: 3}
       propertyPath: m_Name
       value: FrontUpgradeParameter (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836089255431645158, guid: e15150243151d4d4cb0af68eba1f50a9, type: 3}
+      propertyPath: m_fontSize
+      value: 28
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3166,6 +3182,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8134194624679533757}
     m_Modifications:
+    - target: {fileID: 647248049308824147, guid: e15150243151d4d4cb0af68eba1f50a9, type: 3}
+      propertyPath: m_fontSize
+      value: 28
+      objectReference: {fileID: 0}
     - target: {fileID: 1210685703726002454, guid: e15150243151d4d4cb0af68eba1f50a9, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -3297,6 +3317,10 @@ PrefabInstance:
     - target: {fileID: 6671411371899228925, guid: e15150243151d4d4cb0af68eba1f50a9, type: 3}
       propertyPath: m_Name
       value: FrontUpgradeParameter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8836089255431645158, guid: e15150243151d4d4cb0af68eba1f50a9, type: 3}
+      propertyPath: m_fontSize
+      value: 28
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
