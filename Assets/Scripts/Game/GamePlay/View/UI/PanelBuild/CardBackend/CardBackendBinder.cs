@@ -26,8 +26,8 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardBackend
         
         private RectTransform _imageCardBackTransform;
         private RectTransform _textDescriptionTransform;
-        private readonly Vector3 _positionCardTower = new(0, 240, 0);
-        private readonly Vector2 _sizeCardTower = new(150, 150);
+        private readonly Vector3 _positionCardTower = new(0, 320, 0);
+        private readonly Vector2 _sizeCardTower = new(200, 200);
         private readonly Vector3 _positionTextDescriptionTower = new(0, 50, 0);
         
         private readonly Vector3 _positionCardOther = new(0, 150, 0);

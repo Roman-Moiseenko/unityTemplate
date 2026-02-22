@@ -60,6 +60,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
                     _paidCaption.gameObject.SetActive(true);
                     _paidText.text = (value * AppConstants.COST_UPDATE_BUILD).ToString();
                 }
+                //TODO Развернуть карты
             }).AddTo(ref d);
             
             _disposable = d.Build();

@@ -20,11 +20,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
         private CardViewModel _viewModel;
         Sequence Sequence;
 
-        private void Awake()
-        {
-           // _imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
-        }
-
         public void Bind(CardViewModel viewModel)
         {
             _viewModel = viewModel;
@@ -109,6 +104,8 @@ namespace Game.GamePlay.View.UI.PanelBuild
         public void ShowCard()
         {
             gameObject.SetActive(true);
+            backendBinder.gameObject.SetActive(false);
+            frontendBinder.gameObject.SetActive(true);
             transform.DOScale(1, 0.1f).From(0.8f).SetEase(Ease.OutSine).SetUpdate(true);
         }
 
