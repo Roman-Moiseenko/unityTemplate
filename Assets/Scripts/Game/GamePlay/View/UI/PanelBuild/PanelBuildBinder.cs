@@ -15,7 +15,8 @@ namespace Game.GamePlay.View.UI.PanelBuild
     public class PanelBuildBinder : PanelBinder<PanelBuildViewModel>
     {
         [SerializeField] private Button _btnUpdate;
-        [SerializeField] private List<Transform> cards;
+        //[SerializeField] private List<Transform> cards;
+        [SerializeField] private List<CardBinder> cardBinders;
 
         private Transform _freeCaption;
         private Transform _paidCaption;
@@ -43,10 +44,8 @@ namespace Game.GamePlay.View.UI.PanelBuild
             _paidCaption.gameObject.SetActive(false);
 
             for (var i = 1; i <= 3; i++)
-            {
-                var binder = cards[i - 1].GetComponent<CardBinder>();
-                binder.Bind(viewModel.CardViewModels[i]);
-            }
+                cardBinders[i - 1].Bind(viewModel.CardViewModels[i]);
+            
             viewModel.UpdateCards.Subscribe(value =>
             {
                 if (value == 0)
@@ -75,19 +74,17 @@ namespace Game.GamePlay.View.UI.PanelBuild
         
         private IEnumerator ShowCards()
         {
-            foreach (var card in cards)
+            foreach (var card in cardBinders)
             {
-                card.GetComponent<CardBinder>().ShowCard();
+                card.ShowCard();
                 yield return new WaitForSecondsRealtime(0.1f);
             }
         }
 
         public override void Hide()
         {
-            foreach (var card in cards)
-            {
-                card.GetComponent<CardBinder>().HideCard();
-            }
+            foreach (var card in cardBinders)
+                card.HideCard();
 
             panel.pivot = new Vector2(0.5f, 1);
         }
@@ -104,6 +101,9 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         private void OnClickUpdate()
         {
+            foreach (var cardBinder in cardBinders)
+                cardBinder.ReturnFrontendShow();
+            
             ViewModel.OnUpdateCard();
         }
 

@@ -52,9 +52,9 @@ MonoBehaviour:
   - TypeEpic: 2
     Sprite: {fileID: 21300000, guid: 915caa8b66ea12144b3510c23bde5a62, type: 3}
   - TypeEpic: 3
-    Sprite: {fileID: 21300000, guid: 3ace2b293fa896940affecf900dc39cb, type: 3}
+    Sprite: {fileID: 21300000, guid: 8846417ec1099f24d848f94476f44f64, type: 3}
   - TypeEpic: 4
-    Sprite: {fileID: 21300000, guid: 3ef42e304d9180347a4c01b641753df9, type: 3}
+    Sprite: {fileID: 21300000, guid: 51249191c3272df4eacba2e82545efaf, type: 3}
   - TypeEpic: 5
     Sprite: {fileID: 21300000, guid: fd7c9b94c4967ab438988269138b6a61, type: 3}
   - TypeEpic: 6

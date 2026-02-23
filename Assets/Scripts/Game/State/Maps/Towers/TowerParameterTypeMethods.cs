@@ -22,8 +22,14 @@
                 TowerParameterType.MinDistance => "Минимальная дистанция",
                 TowerParameterType.SlowingDown => "Замедление",
                 TowerParameterType.Warriors => "Кол-во бойцов",
+                TowerParameterType.Range => "Диапазон",
                 _ => ""
             };
+        }
+
+        public static bool IsDamage(this TowerParameterType type)
+        {
+            return type is TowerParameterType.Damage or TowerParameterType.DamageArea; // or TowerParameterType.HighDamage or TowerParameterType.MiddleDamage;
         }
 
         public static string GetMeasure(this TowerParameterType type)

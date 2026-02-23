@@ -104,9 +104,18 @@ namespace Game.GamePlay.View.UI.PanelBuild
         public void ShowCard()
         {
             gameObject.SetActive(true);
+            ReturnFrontendShow();
+            transform.DOScale(1, 0.1f).From(0.8f).SetEase(Ease.OutSine).SetUpdate(true);
+        }
+
+        /**
+         * Поворачиваем карту лицом к игроку
+         */
+        public void ReturnFrontendShow()
+        {
             backendBinder.gameObject.SetActive(false);
             frontendBinder.gameObject.SetActive(true);
-            transform.DOScale(1, 0.1f).From(0.8f).SetEase(Ease.OutSine).SetUpdate(true);
+            frontendBinder.transform.localRotation = Quaternion.Euler(Vector3.zero);
         }
 
         public void HideCard()
