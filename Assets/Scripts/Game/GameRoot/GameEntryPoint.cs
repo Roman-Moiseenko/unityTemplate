@@ -40,36 +40,15 @@ namespace Scripts.Game.GameRoot
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void AutostartGame()
         {
-/*
-            var d = new MapRewardSetting();
-            var l = new List<RewardItem>();
-            l.Add(new RewardItem
-            {
-                ConfigId = "Tower01",
-                Type = InventoryType.TowerCard,
-                Amount = 1,
-            });
-            l.Add(new RewardItem
-            {
-                ConfigId = "",
-                Type = InventoryType.SoftCurrency,
-                Amount = 9999,
-            });
-            //d.RewardOnWave.Add(10, l);
-            d.RewardChest.Add(TypeChest.Legend, l);
-            Debug.Log(JsonConvert.SerializeObject(d, Formatting.Indented));
-            */
-            /**
+            /*
              * Системные настройки
              * FPS и др.
              */
-            Application.targetFrameRate = 60;
+            
+            Application.targetFrameRate = 30;
             Screen.sleepTimeout = SleepTimeout.NeverSleep; //Не гаснуть экран
-
-
+            
             _instance = new GameEntryPoint();
-
-            // _instance.LoadState();
             _instance.RunGame();
         }
 
@@ -194,7 +173,6 @@ namespace Scripts.Game.GameRoot
                 _uiRoot.TextLoadingFirst(loadedSettings.TextState.CurrentValue);
                 yield return null;
             }
-
             //   Debug.Log("GameState Load");
             //Загружаем данные по игре
             var settings = _rootContainer.Resolve<ISettingsProvider>();
