@@ -140,8 +140,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2baf229df94b50f4c9d52749db11edb0, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 68066fe576086054483c2610c38fb106, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -372,8 +372,9 @@ MonoBehaviour:
   towerImage: {fileID: 4417787595917698835}
   levelText: {fileID: 322800687560121594}
   buttonReset: {fileID: 7182578257556743399}
-  Position: 1
   setImage: {fileID: 4815504814150222795}
+  baseParent: {fileID: 0}
+  movingParent: {fileID: 0}
 --- !u!1 &6871673022812173696
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,6 +553,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 4
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

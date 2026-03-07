@@ -131,12 +131,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 var position = new Vector3(r.Value.Position.x, 1f, r.Value.Position.y);
                 
                 //На одной из наград отслеживает, когда доберется до конца
-                currency.StartPopup(position, _targetProgress.position)
+                currency.StartPopup(position, _targetCurrency.position)
                     .Where(x => x)
                     .Subscribe(v => ViewModel.AllRewards.Remove(r.Value));
                 
                 progress.StartPopup(position, _targetProgress.position);
-
             }).AddTo(ref d);
 
             ViewModel.RewardEntity.Where(r => r != null).Subscribe(r =>

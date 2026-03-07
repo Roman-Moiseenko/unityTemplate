@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MVVM.UI;
 using R3;
 using TMPro;
@@ -10,40 +11,43 @@ namespace Game.GamePlay.View.UI.PanelActions
 {
     public class PanelActionsBinder : PanelBinder<PanelActionsViewModel>
     {
-        [SerializeField] private Button _btnGameSpeed;
-        [SerializeField] private Button _btnProgressAdd;
+        [SerializeField] private Button btnGameSpeed;
+        [SerializeField] private Button btnProgressAdd;
+        [SerializeField] private List<Transform> speedList;
         private IDisposable _disposable;
 
         protected override void OnBind(PanelActionsViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
-            _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.GetCurrentSpeed()}x";
+           // _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.GetCurrentSpeed()}x";
+            SetSpeed(ViewModel.GetCurrentSpeed());
             /*
-            viewModel.CurrentSpeed
-                .Subscribe(x => { _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{x}x"; })
-                .AddTo(ref d);
-            */
+                      viewModel.CurrentSpeed
+                          .Subscribe(x => { _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{x}x"; })
+                          .AddTo(ref d);
+                      */
             _disposable = d.Build();
             //_btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.CurrentSpeed}x";
         }
 
         private void OnEnable()
         {
-            _btnGameSpeed.onClick.AddListener(OnChangeGameSpeed);
-            _btnProgressAdd.onClick.AddListener(OnProgressAdd);
+            btnGameSpeed.onClick.AddListener(OnChangeGameSpeed);
+            btnProgressAdd.onClick.AddListener(OnProgressAdd);
         }
 
         private void OnDisable()
         {
-            _btnGameSpeed.onClick.RemoveListener(OnChangeGameSpeed);
-            _btnProgressAdd.onClick.RemoveListener(OnProgressAdd);
+            btnGameSpeed.onClick.RemoveListener(OnChangeGameSpeed);
+            btnProgressAdd.onClick.RemoveListener(OnProgressAdd);
         }
 
         private void OnChangeGameSpeed()
         {
             
             ViewModel.RequestGameSpeed();
-            _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.GetCurrentSpeed()}x";
+            SetSpeed(ViewModel.GetCurrentSpeed());
+            //_btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"x{ViewModel.GetCurrentSpeed()}";
         }
 
         private void OnProgressAdd()
@@ -66,6 +70,16 @@ namespace Game.GamePlay.View.UI.PanelActions
         private void OnDestroy()
         {
             _disposable.Dispose();
+        }
+
+        private void SetSpeed(float speed)
+        {
+            var nameObj = "x" + speed;
+            foreach (var speedTransform in speedList)
+            {
+                speedTransform.gameObject.SetActive(speedTransform.name == nameObj);
+            }
+            
         }
     }
 }

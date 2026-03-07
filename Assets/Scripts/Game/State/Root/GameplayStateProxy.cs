@@ -227,7 +227,7 @@ namespace Game.State.Root
                     break;
                 case 2: newSpeed = 4;
                     break;
-                case 4: newSpeed = 0.5f;
+                case 4: newSpeed = 1;
                     break;
             }
           

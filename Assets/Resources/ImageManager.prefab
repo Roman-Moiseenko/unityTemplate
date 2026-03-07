@@ -46,25 +46,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   epicLevels:
   - TypeEpic: 0
-    Sprite: {fileID: 21300000, guid: 2baf229df94b50f4c9d52749db11edb0, type: 3}
+    Sprite: {fileID: 21300000, guid: 68066fe576086054483c2610c38fb106, type: 3}
   - TypeEpic: 1
-    Sprite: {fileID: 21300000, guid: 58b6aa01cd461dd478d4bb8b3947a6ac, type: 3}
+    Sprite: {fileID: 21300000, guid: af4d2846e1c6d0f4ea216350974bd9d0, type: 3}
   - TypeEpic: 2
-    Sprite: {fileID: 21300000, guid: 915caa8b66ea12144b3510c23bde5a62, type: 3}
+    Sprite: {fileID: 21300000, guid: 957a31564d1eaf8498a2583ffdbaa22c, type: 3}
   - TypeEpic: 3
     Sprite: {fileID: 21300000, guid: 8846417ec1099f24d848f94476f44f64, type: 3}
   - TypeEpic: 4
     Sprite: {fileID: 21300000, guid: 51249191c3272df4eacba2e82545efaf, type: 3}
   - TypeEpic: 5
-    Sprite: {fileID: 21300000, guid: fd7c9b94c4967ab438988269138b6a61, type: 3}
+    Sprite: {fileID: 21300000, guid: 4e64bdd2f95d24e4a95bbd96ca96df7e, type: 3}
   - TypeEpic: 6
-    Sprite: {fileID: 21300000, guid: f6fca000b6e25c241980ce68b8070d28, type: 3}
+    Sprite: {fileID: 21300000, guid: d6a88d9e0ff87ba4cab2c24425a5ce34, type: 3}
   - TypeEpic: 7
-    Sprite: {fileID: 21300000, guid: b439678486616db49bad958db2d0d031, type: 3}
+    Sprite: {fileID: 21300000, guid: eb5b8878b383112448146e9485498fe5, type: 3}
   - TypeEpic: 8
-    Sprite: {fileID: 21300000, guid: cf618e545c6bfbd4bba7ef96939dfc7c, type: 3}
+    Sprite: {fileID: 21300000, guid: 66d794141f9d9414bb57a078629771e2, type: 3}
   - TypeEpic: 9
-    Sprite: {fileID: 21300000, guid: bf7e213deff3e1740800ab10288f2c35, type: 3}
+    Sprite: {fileID: 21300000, guid: 7aed88ffc5811b046b434b374f49c5a5, type: 3}
   towerPlan:
   - ConfigId: Background
     Sprite: {fileID: 21300000, guid: 79ebbc9508155e949b7897bbabe0824e, type: 3}
@@ -221,7 +221,7 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: fa3ea0caeb4ca8d40846edc4794b8a35, type: 3}
     Texture: {fileID: 0}
   - ConfigId: Currency
-    Sprite: {fileID: 21300000, guid: 8048575ffec1447479768089bcd3b583, type: 3}
+    Sprite: {fileID: 21300000, guid: 95eac2cf059d59b45ab0b0c808b8b56c, type: 3}
     Texture: {fileID: 0}
   - ConfigId: ChestNot
     Sprite: {fileID: 21300000, guid: a970457df5dff814a9d940f0f4a81126, type: 3}
@@ -236,7 +236,7 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 522aff60923fb92428c44320a7ab0c10, type: 3}
     Texture: {fileID: 0}
   - ConfigId: Crystal
-    Sprite: {fileID: 21300000, guid: 988866eeca4b2c441a116c0c1d9e4535, type: 3}
+    Sprite: {fileID: 21300000, guid: 6dea5ea274e8b514e947c4eb67775468, type: 3}
     Texture: {fileID: 0}
   roads:
   - ConfigId: 0
