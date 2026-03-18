@@ -12,7 +12,8 @@ namespace Game.GamePlay.View.UI.PopupLose
         public override string Id => "PopupLose";
         
         public override string Path => "Gameplay/Popups/";
-        
+        public int CountHearts { get; set; }
+
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
 
         private readonly GameplayService _gameplayService;
@@ -25,7 +26,10 @@ namespace Game.GamePlay.View.UI.PopupLose
         {
             _exitSceneRequest = exitSceneRequest;
             _gameplayService = container.Resolve<GameplayService>();
-
+            
+            //TODO Сердца для восстановления замка из Инвентаря
+            CountHearts = 23;
+            
             var gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
             ShowButtonAd.Value = gameplayState.Castle.CountResurrection.CurrentValue == 0;
         }

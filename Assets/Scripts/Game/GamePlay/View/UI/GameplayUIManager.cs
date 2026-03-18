@@ -12,7 +12,6 @@ using Game.GamePlay.View.UI.PanelConfirmation;
 using Game.GamePlay.View.UI.PanelGateWave;
 using Game.GamePlay.View.UI.PanelTowerAction;
 using Game.GamePlay.View.UI.PanelTowerPlacement;
-using Game.GamePlay.View.UI.PopupB;
 using Game.GamePlay.View.UI.PopupExitNotSave;
 using Game.GamePlay.View.UI.PopupFinishGameplay;
 using Game.GamePlay.View.UI.PopupLose;
@@ -166,7 +165,6 @@ namespace Game.GamePlay.View.UI
         {
             //TODO Закрыть все другие попап
             //TODO Закрыть все панели
-            Debug.Log(JsonConvert.SerializeObject(exitParams, Formatting.Indented));
             var finish = new PopupFinishGameplayViewModel(exitParams, _exitSceneRequest, Container);
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
             rootUI.CloseAllPopupHandler.OnNext(true);
@@ -205,5 +203,6 @@ namespace Game.GamePlay.View.UI
             rootUI.OpenPopup(lose);
             return lose;
         }
+        
     }
 }
