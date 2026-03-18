@@ -7,6 +7,7 @@ using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Warriors;
+using Game.State.Gameplay;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Warriors;

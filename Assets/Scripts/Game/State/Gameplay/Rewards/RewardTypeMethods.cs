@@ -1,4 +1,4 @@
-namespace Game.State.Gameplay
+namespace Game.State.Gameplay.Rewards
 {
     internal static class RewardTypeMethods
     {

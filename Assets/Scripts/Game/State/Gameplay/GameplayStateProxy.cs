@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Game.GamePlay.Classes;
+using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Mobs;
@@ -8,12 +9,11 @@ using Game.State.Maps.Roads;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
 
-namespace Game.State.Root
+namespace Game.State.Gameplay
 {
     public class GameplayStateProxy
     {
@@ -28,14 +28,16 @@ namespace Game.State.Root
         public readonly ReactiveProperty<int> CurrentWave;
         public readonly ReactiveProperty<int> UpdateCards;
         
-        public readonly ReactiveProperty<int> KillMobs;
+
+        
         public readonly ReactiveProperty<TypeGameplay> TypeGameplay;
         
         private float _previousGameSpeed;
         public int CountWaves;
         //Для отслеживания за игровой процесс
-
-        public CastleEntity Castle;
+        
+        public readonly CastleEntity Castle;
+        public readonly StatisticGame StatisticGame;
         
         public ObservableList<RewardEntityData> RewardEntities { get; } = new(); 
         public ObservableList<TowerEntity> Towers { get; } = new();
@@ -47,7 +49,7 @@ namespace Game.State.Root
         public ObservableList<MobEntity> Mobs { get; } = new();
         public ObservableList<MobEntity> BufferMobs { get; } = new();
 
-        public ReactiveProperty<bool> MapFinished = new(false);
+        public readonly ReactiveProperty<bool> MapFinished = new(false);
         public ObservableList<ShotData> Shots { get; } = new();
 
         public ReactiveProperty<Vector2> GateWave { get; set; } = new(Vector2.zero);
@@ -57,6 +59,8 @@ namespace Game.State.Root
         {
             Origin = origin;
             Castle = new CastleEntity(origin.CastleData);
+
+            StatisticGame = new StatisticGame(origin.StatisticGameData);
             _previousGameSpeed = Origin.GameSpeed;
             
             Progress = new ReactiveProperty<int>(origin.Progress);
@@ -75,10 +79,7 @@ namespace Game.State.Root
 
             MapId = new ReactiveProperty<int>(origin.MapId);
             MapId.Subscribe(newValue => origin.MapId = newValue);
-
-            KillMobs = new ReactiveProperty<int>(origin.KillMobs);
-            KillMobs.Subscribe(newValue => origin.KillMobs = newValue);
-
+            
             TypeGameplay = new ReactiveProperty<TypeGameplay>(origin.TypeGameplay);
             TypeGameplay.Subscribe(newValue => origin.TypeGameplay = newValue);
 

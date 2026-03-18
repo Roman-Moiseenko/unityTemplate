@@ -12,6 +12,7 @@ using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Mobs;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
+using Game.State.Gameplay;
 using Game.State.Inventory;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;

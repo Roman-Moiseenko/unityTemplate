@@ -1,8 +1,7 @@
 ﻿using Game.State.Inventory;
-using Game.State.Maps.Mobs;
 using UnityEngine;
 
-namespace Game.State.Gameplay
+namespace Game.State.Gameplay.Rewards
 {
     public class RewardCardData
     {

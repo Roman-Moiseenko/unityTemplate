@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Game.State.Gameplay;
+using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
@@ -30,6 +32,7 @@ namespace Game.State
                 WaySecond = new List<RoadEntityData>(),
                 WayDisabled = new List<RoadEntityData>(),
                 Grounds = new List<GroundEntityData>(),
+                StatisticGameData = new StatisticGameData(),
                 //GateWave = Vector2.zero,
                 //GateWaveSecond = Vector2.zero,
             };

@@ -10,6 +10,7 @@ using Game.Settings;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
 using Game.State.Gameplay;
+using Game.State.Gameplay.Rewards;
 using Game.State.Root;
 using MVVM.FSM;
 using MVVM.UI;
@@ -88,11 +89,23 @@ namespace Game.GamePlay.View.UI.PanelBuild
          */
         public void OnUpdateCard()
         {
-            if (!_resourceService.SpendHardCurrency(UpdateCards.CurrentValue * AppConstants.COST_UPDATE_BUILD))
-                return;
+            if (UpdateCards.CurrentValue == 1)
+            {
+                //TODO Показ рекламы
+                // Если ошибка показа, return;
+                Debug.Log($"Реклама");
+            }
+
+            if (UpdateCards.CurrentValue > 1) //Снимаем оплату
+            {
+                if (!_resourceService.SpendHardCurrency((UpdateCards.CurrentValue - 1) * AppConstants.COST_UPDATE_BUILD))
+                                return;
+            }
+            
+            // Debug.Log($"Update card: {UpdateCards.CurrentValue}");
             
             UpdateCards.Value++;
-            LoadRewardsToCards();
+            LoadRewardsToCards(); //Перезогружаем карточки
         }
 
         public override void Dispose()

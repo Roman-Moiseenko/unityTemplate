@@ -10,6 +10,7 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.WaveStates;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Waves;
+using Game.State.Gameplay;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
 using Game.State.Root;
@@ -90,8 +91,7 @@ namespace Game.GamePlay.Services
             {
                 var mobEntity = e.Value;
                 _coroutines.StartCoroutine(RemoveMobViewModel(mobEntity.UniqueId));
-                _gameplayState.KillMobs.Value++;
-
+                _gameplayState.StatisticGame.KillMob();
                 var finishWave = true;
                 var freeRoad = true;
                 foreach (var stateMob in gameplayState.Mobs)

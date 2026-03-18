@@ -1,4 +1,5 @@
-﻿using Game.State.Inventory;
+﻿using Game.State.Gameplay;
+using Game.State.Inventory;
 using Game.State.Root;
 using MVVM.CMD;
 

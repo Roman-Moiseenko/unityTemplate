@@ -6,6 +6,7 @@ using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Services;
 using Game.Settings;
 using Game.State.Gameplay;
+using Game.State.Gameplay.Rewards;
 using Game.State.Inventory;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;

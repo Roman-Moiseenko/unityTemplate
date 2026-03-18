@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.Settings;
+using Game.State.Gameplay;
 using Game.State.Maps.Mobs;
 using Game.State.Root;
 using MVVM.CMD;

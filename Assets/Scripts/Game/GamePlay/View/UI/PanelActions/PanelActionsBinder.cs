@@ -13,6 +13,7 @@ namespace Game.GamePlay.View.UI.PanelActions
     {
         [SerializeField] private Button btnGameSpeed;
         [SerializeField] private Button btnProgressAdd;
+        [SerializeField] private Button btnBuySpeed4x;
         [SerializeField] private List<Transform> speedList;
         private IDisposable _disposable;
 
@@ -34,12 +35,14 @@ namespace Game.GamePlay.View.UI.PanelActions
         {
             btnGameSpeed.onClick.AddListener(OnChangeGameSpeed);
             btnProgressAdd.onClick.AddListener(OnProgressAdd);
+            btnBuySpeed4x.onClick.AddListener(OnBuySpeed4x);
         }
 
         private void OnDisable()
         {
             btnGameSpeed.onClick.RemoveListener(OnChangeGameSpeed);
             btnProgressAdd.onClick.RemoveListener(OnProgressAdd);
+            btnBuySpeed4x.onClick.RemoveListener(OnBuySpeed4x);
         }
 
         private void OnChangeGameSpeed()
@@ -50,6 +53,10 @@ namespace Game.GamePlay.View.UI.PanelActions
             //_btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"x{ViewModel.GetCurrentSpeed()}";
         }
 
+        private void OnBuySpeed4x()
+        {
+            ViewModel.RequestBuySpeed4x();
+        }
         private void OnProgressAdd()
         {
             ViewModel.RequestToProgressAdd();

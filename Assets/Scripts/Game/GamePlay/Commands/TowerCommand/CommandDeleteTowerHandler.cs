@@ -1,4 +1,5 @@
-﻿using Game.State.Maps.Towers;
+﻿using Game.State.Gameplay;
+using Game.State.Maps.Towers;
 using Game.State.Root;
 using MVVM.CMD;
 using Newtonsoft.Json;
@@ -22,6 +23,7 @@ namespace Game.GamePlay.Commands.TowerCommand
                 if (entity  is TowerEntity towerEntity && towerEntity.UniqueId == command.UniqueId)
                 {
                     _gameplayState.Towers.Remove(towerEntity);
+                    _gameplayState.StatisticGame.DestroyTower();
                     return true;
                 }
             }

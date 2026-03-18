@@ -4,7 +4,7 @@ Shader "Custom/Slider"
     {
         _Color ("Tint Color", Color) = (1,1,1,1)
         _MainTex ("Texture", 2D) = "white" {}
-        _Progress ("Progress", Range(0,1)) = 0.5
+        _Progress ("Progress", Range(0, 1)) = 0.5
         _SlantAngle ("Slant Angle", Range(-45,45)) = 15 // Угол наклона
     }
     SubShader
@@ -47,23 +47,26 @@ Shader "Custom/Slider"
             {
 // Конвертируем угол в радианы
                 float radAngle = radians(_SlantAngle);
-                // Максимальный отрицательный сдвиг, который может произойти (когда y=0.0 для положительного угла или y=1.0 для отрицательного угла)
-                // Для положительного угла, y=0.0 дает максимальное отрицательное смещение -> -0.5 * tan(radAngle)
-                // Для отрицательного угла, y=1.0 дает максимальное отрицательное смещение -> 0.5 * tan(radAngle) (т.к. tan(отр. угла) отр.)
-                // Правильнее: нам нужно найти минимальное значение slantOffset.
-                // Если slantAngle > 0, min slantOffset = tan(radAngle) * (0 - 0.5) = -0.5 * tan(radAngle)
-                // Если slantAngle < 0, min slantOffset = tan(radAngle) * (1 - 0.5) = 0.5 * tan(radAngle)
+                float tanAngle = tan(radAngle);
+                // Оцениваем максимальную величину смещения (положительную).
+                // Это будет 0.5 * |tan(radAngle)|
+                float maxAbsSlantOffset = 0.5 * abs(tanAngle);
+                // Теперь мы можем сместить _Progress так, чтобы он покрывал весь диапазон
+                // При _Progress = 0, мы хотим, чтобы fillThreshold был <= 0
+                // При _Progress = 1, мы хотим, чтобы fillThreshold был >= 1
+                // Для этого мы растягиваем _Progress на величину 2 * maxAbsSlantOffset
+                // И сдвигаем его так, чтобы 0 был на -maxAbsSlantOffset, а 1 был на 1 + maxAbsSlantOffset
+                float stretchedProgress = _Progress * (1.0 + 2.0 * maxAbsSlantOffset) - maxAbsSlantOffset;
+                float slantOffset = tanAngle * (i.texcoord.y - 0.5);
+                /*
                 float minSlantOffset = (radAngle > 0) ? -0.5 * tan(radAngle) : 0.5 * tan(radAngle);
-                // Корректировка _Progress, чтобы компенсировать этот минимальный сдвиг.
-                // Это гарантирует, что даже при минимальном сдвиге, когда _Progress = 1, весь экран будет заполнен.
                 float adjustedProgress = _Progress - minSlantOffset;
-                // Расчет сдвига по X в зависимости от Y и угла
                 float slantOffset = tan(radAngle) * (i.texcoord.y - 0.5);
-                // Скорректированная позиция заполнения
-                float fillThreshold = adjustedProgress + slantOffset;
+
+                */
+                float fillThreshold = stretchedProgress + slantOffset;
                 fixed4 col = tex2D(_MainTex, i.texcoord) * i.color;
-                // Если пиксель находится за порогом заполнения, делаем его прозрачным
-                // Также можно добавить более мягкий переход для antialiasing, но это усложнит
+
                 
                 if (i.texcoord.x > fillThreshold)
                 {

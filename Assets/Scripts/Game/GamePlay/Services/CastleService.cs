@@ -4,6 +4,7 @@ using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Root;
 using Game.GamePlay.View.Castle;
+using Game.State.Gameplay;
 using Game.State.Maps.Castle;
 using Game.State.Research;
 using Game.State.Root;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Mobs;
+using Game.State.Gameplay;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
@@ -81,6 +82,11 @@ namespace Game.GamePlay.View.Castle
 
         private void RemoveTarget(MobViewModel mobViewModel)
         {
+            if (mobViewModel == null)
+            {
+                MobTarget.OnNext(null);
+                return;
+            }
             if (MobTarget.CurrentValue.UniqueId == mobViewModel.UniqueId) MobTarget.OnNext(null);
         }
 

@@ -5,6 +5,7 @@ using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.WarriorStates;
 using Game.GamePlay.View.Mobs;
+using Game.State.Gameplay;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Shots;

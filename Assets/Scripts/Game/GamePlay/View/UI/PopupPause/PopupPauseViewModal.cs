@@ -3,6 +3,7 @@ using Game.GamePlay.Root;
 using Game.GamePlay.Services;
 using Game.MainMenu.Root;
 using Game.State;
+using Game.State.Gameplay;
 using Game.State.Root;
 using MVVM.UI;
 using R3;
@@ -17,19 +18,19 @@ namespace Game.GamePlay.View.UI.PopupPause
     {
         public override string Id => "PopupPause";
         public override string Path => "Gameplay/Popups/";
-        private readonly Subject<GameplayExitParams> _exitSceneRequest;
+      //  private readonly Subject<GameplayExitParams> _exitSceneRequest;
 
-        private readonly GameplayStateProxy _gameplayState;
+        public readonly GameplayStateProxy GameplayState;
+
+        private readonly GameplayUIManager _uiManager;
         //TODO действия при нажатии на кнопки
 
         public PopupPauseViewModal(
-            GameplayUIManager uiManager, 
-            Subject<GameplayExitParams> exitSceneRequest,
-            DIContainer container) : base(container)
+            GameplayUIManager uiManager, DIContainer container) : base(container)
         {
-            _exitSceneRequest = exitSceneRequest;
-
-            _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            //_exitSceneRequest = exitSceneRequest;
+            _uiManager = uiManager;
+            GameplayState = container.Resolve<IGameStateProvider>().GameplayState;
         }
 
         //Проигрыш 
@@ -40,15 +41,6 @@ namespace Game.GamePlay.View.UI.PopupPause
         //Вызываем событие просмотр рекламы, после завершения событие восстановления
 
         //Покупка восстановления ... отнимаем кристаллы, событие восстановления
-        public void RequestGoToMainMenu()
-        {
-            Container.Resolve<GameplayService>().Abort();
-        }
-
-        public void RequestExitSave()
-        {
-            Container.Resolve<GameplayService>().ExitSave();
-        }
 
         public void Win()
         {
@@ -60,6 +52,22 @@ namespace Game.GamePlay.View.UI.PopupPause
         {
             var gs = Container.Resolve<GameplayService>();
             gs.Lose();
+        }
+
+        public void RequestToExit()
+        {
+            _uiManager.OpenPopupExitNotSave();
+            //TODO Окно выхода без сохранения
+        }
+
+        public void RequestToSettings()
+        {
+            //TODO Окно настроек
+        }
+
+        public void RequestToStatistic()
+        {
+            //TODO Окно статистики
         }
     }
 }

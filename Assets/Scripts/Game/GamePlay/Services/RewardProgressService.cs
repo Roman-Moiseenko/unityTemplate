@@ -8,6 +8,7 @@ using Game.GamePlay.Root;
 using Game.Settings;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Gameplay;
+using Game.State.Gameplay.Rewards;
 using Game.State.Inventory;
 using Game.State.Maps.Rewards;
 using Game.State.Research;

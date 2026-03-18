@@ -7,6 +7,7 @@ using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
 using Game.State;
+using Game.State.Gameplay;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Shots;
 using Game.State.Root;

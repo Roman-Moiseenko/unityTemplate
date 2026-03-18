@@ -1,4 +1,5 @@
 ﻿using Game.State.Entities;
+using Game.State.Gameplay;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Root;
@@ -35,7 +36,7 @@ namespace Game.GamePlay.Commands.RoadCommand
             {
                 _gameplayState.WaySecond.Add(newRoad);
             }
-            
+            _gameplayState.StatisticGame.BuildRoad();
             return true;
         }
     }

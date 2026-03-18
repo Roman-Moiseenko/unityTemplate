@@ -855,4 +855,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.UI.ScreenGameplay.SlantedSliderFill
   targetSlider: {fileID: 6450884540964673807}
   fillImage: {fileID: 1022242004255227166}
-  slantAngle: 3
+  slantAngle: 0.8

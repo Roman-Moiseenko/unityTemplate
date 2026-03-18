@@ -19,6 +19,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
         [SerializeField] private List<CardBinder> cardBinders;
 
         private Transform _freeCaption;
+        private Transform _freeAdCaption;
         private Transform _paidCaption;
         private TMP_Text _paidText;
 
@@ -28,6 +29,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
         private void Awake()
         {
             _freeCaption = _btnUpdate.transform.Find("Free");
+            _freeAdCaption = _btnUpdate.transform.Find("FreeAd");
             _paidCaption = _btnUpdate.transform.Find("Paid");
             _paidText = _paidCaption
                 .transform.Find("ImageBlock")
@@ -45,19 +47,27 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
             for (var i = 1; i <= 3; i++)
                 cardBinders[i - 1].Bind(viewModel.CardViewModels[i]);
+            _freeCaption.gameObject.SetActive(false);
+            _freeAdCaption.gameObject.SetActive(false);
+            _paidCaption.gameObject.SetActive(false);
             
             viewModel.UpdateCards.Subscribe(value =>
             {
                 if (value == 0)
                 {
                     _freeCaption.gameObject.SetActive(true);
-                    _paidCaption.gameObject.SetActive(false);
                 }
-                else
+
+                if (value == 1)
                 {
                     _freeCaption.gameObject.SetActive(false);
+                    _freeAdCaption.gameObject.SetActive(true);
+                }
+                if (value > 1)
+                {
+                    _freeAdCaption.gameObject.SetActive(false);
                     _paidCaption.gameObject.SetActive(true);
-                    _paidText.text = (value * AppConstants.COST_UPDATE_BUILD).ToString();
+                    _paidText.text = ((value - 1) * AppConstants.COST_UPDATE_BUILD).ToString();
                 }
                 //TODO Развернуть карты
             }).AddTo(ref d);

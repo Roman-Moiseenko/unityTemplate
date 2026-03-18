@@ -1,6 +1,7 @@
 ﻿using DI;
 using Game.GamePlay.Fsm.TowerStates;
 using Game.State.Gameplay;
+using Game.State.Gameplay.Rewards;
 using Game.State.Root;
 using MVVM.FSM;
 

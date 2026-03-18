@@ -3,6 +3,7 @@ using System.Linq;
 using Game.GamePlay.Commands.WarriorCommands;
 using Game.GamePlay.View.Warriors;
 using Game.State.Entities;
+using Game.State.Gameplay;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
 using Game.State.Root;

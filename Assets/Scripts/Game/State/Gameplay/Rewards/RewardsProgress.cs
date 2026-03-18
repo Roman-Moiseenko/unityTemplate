@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Game.State.Gameplay
+namespace Game.State.Gameplay.Rewards
 {
     public class RewardsProgress
     {

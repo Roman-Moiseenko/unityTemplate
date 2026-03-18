@@ -7,6 +7,7 @@ using Game.GamePlay.Root;
 using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.Settings.Gameplay.Maps;
+using Game.State.Gameplay;
 using Game.State.Inventory.Chests;
 using Game.State.Maps.Rewards;
 using Game.State.Root;
@@ -265,7 +266,7 @@ namespace Game.GamePlay.Services
                 ? _gameplayState.CurrentWave.CurrentValue
                 : _gameplayState.CurrentWave.CurrentValue - 1;
 
-            menuParams.KillsMob = _gameplayState.KillMobs.CurrentValue;
+            menuParams.KillsMob = _gameplayState.StatisticGame.CountKills.CurrentValue;
             menuParams.TypeGameplay = _gameplayState.Origin.TypeGameplay;
 
             menuParams.RewardOnWave = GetRewardOnWave(completedLevel, out var lastRewardOnWave);

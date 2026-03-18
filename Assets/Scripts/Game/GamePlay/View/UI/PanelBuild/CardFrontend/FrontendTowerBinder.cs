@@ -3,6 +3,7 @@ using Game.Common;
 using Game.GameRoot.ImageManager;
 using Game.GameRoot.View.Defence;
 using Game.State.Gameplay;
+using Game.State.Gameplay.Rewards;
 using R3;
 using UnityEngine;
 

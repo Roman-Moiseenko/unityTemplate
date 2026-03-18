@@ -3,6 +3,7 @@ using System.Linq;
 using Game.Common;
 using Game.GamePlay.Commands.GroundCommands;
 using Game.GamePlay.View.Grounds;
+using Game.State.Gameplay;
 using Game.State.Maps.Grounds;
 using Game.State.Root;
 using MVVM.CMD;

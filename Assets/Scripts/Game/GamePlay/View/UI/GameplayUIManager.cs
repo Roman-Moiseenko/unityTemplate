@@ -13,6 +13,7 @@ using Game.GamePlay.View.UI.PanelGateWave;
 using Game.GamePlay.View.UI.PanelTowerAction;
 using Game.GamePlay.View.UI.PanelTowerPlacement;
 using Game.GamePlay.View.UI.PopupB;
+using Game.GamePlay.View.UI.PopupExitNotSave;
 using Game.GamePlay.View.UI.PopupFinishGameplay;
 using Game.GamePlay.View.UI.PopupLose;
 using Game.GamePlay.View.UI.PopupPause;
@@ -20,7 +21,9 @@ using Game.GamePlay.View.UI.PopupTowerDelete;
 using Game.GamePlay.View.UI.ScreenGameplay;
 using Game.State;
 using MVVM.UI;
+using Newtonsoft.Json;
 using R3;
+using UnityEngine;
 
 
 namespace Game.GamePlay.View.UI
@@ -116,6 +119,8 @@ namespace Game.GamePlay.View.UI
                 .Where(x => x != null)
                 .Subscribe(exitParams =>
                     {
+                        Debug.Log(exitParams);
+                        if (exitParams.MainMenuEnterParams == null) return;
                         _fsmGameplay.Fsm.SetState<FsmStateGamePause>();
                         OpenFinishPopup(exitParams);
                     }
@@ -133,7 +138,7 @@ namespace Game.GamePlay.View.UI
 
         public PopupPauseViewModal OpenPopupPause()
         {
-            var a = new PopupPauseViewModal(this, _exitSceneRequest, Container);
+            var a = new PopupPauseViewModal(this, Container);
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
             _fsmGameplay.Fsm.SetState<FsmStateGamePause>();
             a.CloseRequested.Subscribe(e =>
@@ -144,11 +149,24 @@ namespace Game.GamePlay.View.UI
             return a;
         }
 
+        public PopupExitNotSaveViewModel OpenPopupExitNotSave()
+        {
+            var a = new PopupExitNotSaveViewModel(Container);
+            var rootUI = Container.Resolve<UIGameplayRootViewModel>();
+            _fsmGameplay.Fsm.SetState<FsmStateGamePause>();
+            a.CloseRequested.Subscribe(e =>
+            {
+                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
+            });
+            rootUI.OpenPopup(a);
+            return a; 
+        }
+
         public PopupFinishGameplayViewModel OpenFinishPopup(GameplayExitParams exitParams)
         {
             //TODO Закрыть все другие попап
             //TODO Закрыть все панели
-            
+            Debug.Log(JsonConvert.SerializeObject(exitParams, Formatting.Indented));
             var finish = new PopupFinishGameplayViewModel(exitParams, _exitSceneRequest, Container);
             var rootUI = Container.Resolve<UIGameplayRootViewModel>();
             rootUI.CloseAllPopupHandler.OnNext(true);

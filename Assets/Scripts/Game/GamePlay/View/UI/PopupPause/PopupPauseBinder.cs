@@ -1,4 +1,5 @@
 ﻿using MVVM.UI;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,8 +7,17 @@ namespace Game.GamePlay.View.UI.PopupPause
 {
     public class PopupPauseBinder : PopupBinder<PopupPauseViewModal>
     {
-        [SerializeField] private Button _btnGoToMenu;
-        [SerializeField] private Button _btnExitSave;
+        [SerializeField] private Button btnToExit;
+        [SerializeField] private Button btnToSettings;
+        [SerializeField] private Button btnToStatistic;
+        [SerializeField] private TMP_Text txtCaption;
+        
+        [SerializeField] private TMP_Text countKills;
+        [SerializeField] private TMP_Text countResurrection;
+        [SerializeField] private TMP_Text countTowers;
+        [SerializeField] private TMP_Text countRoads;
+
+        
         
         [SerializeField] private Button _btnWin;
 
@@ -15,30 +25,56 @@ namespace Game.GamePlay.View.UI.PopupPause
         //Поля кнопок во всплывающем окне
         //Например при проигрыше - а) выйти, б) посмотреть рекламу и продолжить, в) купить продолжение за кристаллы
         //Переписываем OnBind(), когда надо реализовать свое
-/*
-        protected override void OnBind(PopupAViewModal viewModal)
+
+        protected override void OnBind(PopupPauseViewModal viewModal)
         {
             base.OnBind(viewModal);
+            var resurrection = viewModal.GameplayState.Castle.CountResurrection.CurrentValue;
+            var stat = viewModal.GameplayState.StatisticGame;
+            txtCaption.text = $"Глава {viewModal.GameplayState.MapId.CurrentValue}";
+            //TODO Получаем статистические данные
+            countResurrection.text = $"{2 - resurrection}/2";
+            countKills.text = stat.CountKills.CurrentValue.ToString();
+            countTowers.text = stat.CountTowers.CurrentValue.ToString();
+            countRoads.text = stat.CountRoads.CurrentValue.ToString();
         }
-        */
+        
 
         //Подписываемся на нажатия кнопок и вызываем функции из View Модели
         private void OnEnable()
         {
-            _btnGoToMenu.onClick.AddListener(OnGoToMenuButtonClicked);
-            _btnGoToMenu.onClick.AddListener(OnGoToMenuButtonClicked);
+            btnToExit.onClick.AddListener(OnToExitClick);
+            btnToSettings.onClick.AddListener(OnToSettingsClick);
+            btnToStatistic.onClick.AddListener(OnToStatisticClick);
+            
             _btnWin.onClick.AddListener(OnWin);
             _btnLose.onClick.AddListener(OnLose);
         }
 
         private void OnDisable()
         {
-            _btnGoToMenu.onClick.RemoveListener(OnGoToMenuButtonClicked);
-            _btnExitSave.onClick.RemoveListener(OnExitSaveClicked);
+            btnToExit.onClick.RemoveListener(OnToExitClick);
+            btnToSettings.onClick.RemoveListener(OnToSettingsClick);
+            btnToStatistic.onClick.RemoveListener(OnToStatisticClick);
+
             _btnWin.onClick.RemoveListener(OnWin);
             _btnLose.onClick.RemoveListener(OnLose);
         }
 
+        private void OnToExitClick()
+        {
+            ViewModel.RequestClose();
+            ViewModel.RequestToExit();
+        }
+        private void OnToSettingsClick()
+        {
+            ViewModel.RequestToSettings();
+        }
+        private void OnToStatisticClick()
+        {
+            ViewModel.RequestToStatistic();
+        }
+        
         private void OnWin()
         {
             ViewModel.RequestClose();
@@ -51,16 +87,6 @@ namespace Game.GamePlay.View.UI.PopupPause
             ViewModel.Lose();
         }
         
-        private void OnExitSaveClicked()
-        {
-            ViewModel.RequestExitSave();
-        }
-
-        private void OnGoToMenuButtonClicked()
-        {
-            ViewModel.RequestGoToMainMenu();
-        }
-
         protected override void OnCloseButtonClick()
         {
             //

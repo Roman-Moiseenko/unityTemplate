@@ -3,10 +3,12 @@ using DI;
 using Game.GamePlay.Commands.RewardCommand;
 using Game.GamePlay.Fsm;
 using Game.State;
+using Game.State.Gameplay;
 using Game.State.Root;
 using MVVM.CMD;
 using MVVM.UI;
 using R3;
+using UnityEngine;
 
 namespace Game.GamePlay.View.UI.PanelActions
 {
@@ -55,6 +57,12 @@ namespace Game.GamePlay.View.UI.PanelActions
         public float GetCurrentSpeed()
         {
             return _gameplayStateProxy.GetCurrentSpeed();
+        }
+
+        public void RequestBuySpeed4x()
+        {
+            //TODO Запуск процедуры покупки
+            Debug.Log("RequestBuySpeed4x");
         }
     }
 }

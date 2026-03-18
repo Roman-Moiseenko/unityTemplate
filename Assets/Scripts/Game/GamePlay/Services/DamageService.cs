@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Game.State.Gameplay;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
 using Game.State.Root;
@@ -15,11 +16,13 @@ namespace Game.GamePlay.Services
     public class DamageService
     {
         public ObservableList<DamageEntity> AllDamages = new();
+        private readonly GameplayStateProxy _gameplayState;
 
         public DamageService(
             GameplayStateProxy gameplayState
         )
         {
+            _gameplayState = gameplayState;
             gameplayState.Shots.ObserveAdd().Subscribe(e =>
             {
                 var shot = e.Value;
@@ -38,6 +41,7 @@ namespace Game.GamePlay.Services
                 Damage = Mathf.FloorToInt(mobEntity.SetDamage(shot.Damage)),
                 Type = shot.DamageType,
             };
+            _gameplayState.StatisticGame.SetDamage(shot.Damage, shot.ConfigId);
             AllDamages.Add(damage);
             //Устанавливаем дебаф, если есть
             if (shot.Debuff != null) mobEntity.SetDebuff(shot.ConfigId, shot.Debuff);

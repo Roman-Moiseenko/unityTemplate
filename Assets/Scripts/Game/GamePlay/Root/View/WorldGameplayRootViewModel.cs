@@ -17,6 +17,7 @@ using Game.GamePlay.View.Towers;
 using Game.GamePlay.View.Warriors;
 using Game.GamePlay.View.Waves;
 using Game.State.Gameplay;
+using Game.State.Gameplay.Rewards;
 using ObservableCollections;
 using R3;
 using Scripts.Utils;
