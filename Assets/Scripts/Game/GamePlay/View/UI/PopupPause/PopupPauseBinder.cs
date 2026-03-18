@@ -68,6 +68,7 @@ namespace Game.GamePlay.View.UI.PopupPause
         }
         private void OnToSettingsClick()
         {
+            ViewModel.RequestClose();
             ViewModel.RequestToSettings();
         }
         private void OnToStatisticClick()

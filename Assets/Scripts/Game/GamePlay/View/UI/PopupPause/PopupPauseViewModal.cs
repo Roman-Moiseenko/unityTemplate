@@ -57,12 +57,11 @@ namespace Game.GamePlay.View.UI.PopupPause
         public void RequestToExit()
         {
             _uiManager.OpenPopupExitNotSave();
-            //TODO Окно выхода без сохранения
         }
 
         public void RequestToSettings()
         {
-            //TODO Окно настроек
+            _uiManager.OpenPopupSettings();
         }
 
         public void RequestToStatistic()

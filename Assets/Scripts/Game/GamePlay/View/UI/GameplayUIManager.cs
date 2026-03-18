@@ -16,6 +16,7 @@ using Game.GamePlay.View.UI.PopupExitNotSave;
 using Game.GamePlay.View.UI.PopupFinishGameplay;
 using Game.GamePlay.View.UI.PopupLose;
 using Game.GamePlay.View.UI.PopupPause;
+using Game.GamePlay.View.UI.PopupSettings;
 using Game.GamePlay.View.UI.PopupTowerDelete;
 using Game.GamePlay.View.UI.ScreenGameplay;
 using Game.State;
@@ -202,6 +203,19 @@ namespace Game.GamePlay.View.UI
             });
             rootUI.OpenPopup(lose);
             return lose;
+        }
+
+        public PopupSettingsViewModel OpenPopupSettings()
+        {
+            var settings = new PopupSettingsViewModel(Container);
+            var rootUI = Container.Resolve<UIGameplayRootViewModel>();
+            _fsmGameplay.Fsm.SetState<FsmStateGamePause>(); //Меняем состояние на Пауза
+            settings.CloseRequested.Subscribe(e =>
+            {
+                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
+            });
+            rootUI.OpenPopup(settings);
+            return settings;
         }
         
     }
