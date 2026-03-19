@@ -17,6 +17,7 @@ using Game.GamePlay.View.UI.PopupFinishGameplay;
 using Game.GamePlay.View.UI.PopupLose;
 using Game.GamePlay.View.UI.PopupPause;
 using Game.GamePlay.View.UI.PopupSettings;
+using Game.GamePlay.View.UI.PopupStatistics;
 using Game.GamePlay.View.UI.PopupTowerDelete;
 using Game.GamePlay.View.UI.ScreenGameplay;
 using Game.State;
@@ -216,6 +217,19 @@ namespace Game.GamePlay.View.UI
             });
             rootUI.OpenPopup(settings);
             return settings;
+        }
+        
+        public PopupStatisticsViewModel OpenPopupStatistics()
+        {
+            var statistics = new PopupStatisticsViewModel(Container);
+            var rootUI = Container.Resolve<UIGameplayRootViewModel>();
+            _fsmGameplay.Fsm.SetState<FsmStateGamePause>(); //Меняем состояние на Пауза
+            statistics.CloseRequested.Subscribe(e =>
+            {
+                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
+            });
+            rootUI.OpenPopup(statistics);
+            return statistics;
         }
         
     }

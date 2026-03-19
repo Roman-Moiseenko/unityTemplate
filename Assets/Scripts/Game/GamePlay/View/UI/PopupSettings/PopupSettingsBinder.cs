@@ -6,6 +6,7 @@ using Game.State;
 using MVVM.CMD;
 using MVVM.UI;
 using R3;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +21,7 @@ namespace Game.GamePlay.View.UI.PopupSettings
         [SerializeField] private SwitchBinder damage;
         [SerializeField] private SwitchBinder sound;
         [SerializeField] private SwitchBinder music;
+        [SerializeField] private TMP_Text txtVersion;
         private IDisposable _disposable;
         protected override void OnBind(PopupSettingsViewModel viewModel)
         {
@@ -31,7 +33,8 @@ namespace Game.GamePlay.View.UI.PopupSettings
             var settings = viewModel.Container.Resolve<IGameStateProvider>().SettingsState;
             var cmd = viewModel.Container.Resolve<ICommandProcessor>();
             var command = new CommandSaveGameState();
-            
+
+            txtVersion.text = $"Версия: {Application.version}";
             vibrator.Bind(settings.Vibration.CurrentValue);
             damage.Bind(settings.Damage.CurrentValue);
             sound.Bind(settings.Sound.CurrentValue);

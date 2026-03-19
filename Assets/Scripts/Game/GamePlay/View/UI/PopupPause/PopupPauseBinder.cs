@@ -16,8 +16,7 @@ namespace Game.GamePlay.View.UI.PopupPause
         [SerializeField] private TMP_Text countResurrection;
         [SerializeField] private TMP_Text countTowers;
         [SerializeField] private TMP_Text countRoads;
-
-        
+        [SerializeField] private TMP_Text txtVersion;
         
         [SerializeField] private Button _btnWin;
 
@@ -32,6 +31,7 @@ namespace Game.GamePlay.View.UI.PopupPause
             var resurrection = viewModal.GameplayState.Castle.CountResurrection.CurrentValue;
             var stat = viewModal.GameplayState.StatisticGame;
             txtCaption.text = $"Глава {viewModal.GameplayState.MapId.CurrentValue}";
+            txtVersion.text = $"Версия: {Application.version}";
             //TODO Получаем статистические данные
             countResurrection.text = $"{2 - resurrection}/2";
             countKills.text = stat.CountKills.CurrentValue.ToString();
@@ -73,6 +73,7 @@ namespace Game.GamePlay.View.UI.PopupPause
         }
         private void OnToStatisticClick()
         {
+            ViewModel.RequestClose();
             ViewModel.RequestToStatistic();
         }
         

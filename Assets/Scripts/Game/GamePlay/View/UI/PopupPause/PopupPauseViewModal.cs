@@ -66,7 +66,7 @@ namespace Game.GamePlay.View.UI.PopupPause
 
         public void RequestToStatistic()
         {
-            //TODO Окно статистики
+            _uiManager.OpenPopupStatistics();
         }
     }
 }
