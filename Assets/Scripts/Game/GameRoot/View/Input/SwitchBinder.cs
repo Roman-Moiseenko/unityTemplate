@@ -1,4 +1,5 @@
 ﻿using System;
+using DG.Tweening;
 using R3;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,43 +13,33 @@ namespace Game.GameRoot.View.Input
         [SerializeField] private Transform backOn;
         [SerializeField] private Transform handler;
 
-        private const int Delta = 19;
+        private const int DELTA = 38;
         public ReactiveProperty<bool> Value;
         public void Bind(bool value)
         {
             Value = new ReactiveProperty<bool>(value);
-
-            ToggleUI(value ? 1 : 0, value);
-//if (value)
-      //      {
-     //           var pos = handler.position;
-      //          pos.x += Delta * 2;
-      //          handler.position = pos;
-      //      }
-      //      backOff.gameObject.SetActive(!value);
-       //     backOn.gameObject.SetActive(value);
-            
+            //Базовое включение
+            var pos = handler.position;
+            pos.x += (value ? 1 : 0) * DELTA * 2;
+            handler.position = pos;
+            SetActiveBacks(value);
             Value.Skip(1).Subscribe(x =>
             {
-               // var pos = handler.position;
                 var direction = x ? 1 : -1;
-                ToggleUI(direction, x);
-              //  pos.x += direction * Delta * 2;
-              //  handler.position = pos;
-              //  backOff.gameObject.SetActive(!x);
-              //  backOn.gameObject.SetActive(x);
+                handler
+                    .DOLocalMoveX(handler.localPosition.x + direction * DELTA * 2, 0.3f)
+                    .From(handler.localPosition.x)
+                    .SetUpdate(true);
+                SetActiveBacks(x);
             });
         }
 
-        private void ToggleUI(int direction, bool on)
+        private void SetActiveBacks(bool value)
         {
-            var pos = handler.position;
-            pos.x += direction * Delta * 2;
-            handler.position = pos;
-            backOff.gameObject.SetActive(!on);
-            backOn.gameObject.SetActive(on);
+            backOff.gameObject.SetActive(!value);
+            backOn.gameObject.SetActive(value);
         }
-
+        
         private void OnEnable()
         {
             switchButton.onClick.AddListener(OnClickToggle);

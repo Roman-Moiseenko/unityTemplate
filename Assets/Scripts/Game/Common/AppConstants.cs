@@ -2,7 +2,9 @@
 {
     public static class AppConstants
     {
-        
+        public const string URL_COMMUNITY = "https://td-infinity.ru";
+        public const string URL_SUPPORT = "https://td-infinity.ru";
+
 
         // public const string EXIT_SCENE_REQUEST_TAG = nameof(EXIT_SCENE_REQUEST_TAG);
         public const string GAME_PLAY_STATE = nameof(GAME_PLAY_STATE);

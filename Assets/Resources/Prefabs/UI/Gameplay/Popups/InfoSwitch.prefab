@@ -279,7 +279,7 @@ RectTransform:
   m_Children:
   - {fileID: 5143856431004718294}
   - {fileID: 2857499060388488169}
-  - {fileID: 261264596333901765}
+  - {fileID: 1795243409131426979}
   m_Father: {fileID: 5076889142480103078}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -362,7 +362,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1001 &8524816263978934409
+--- !u!1001 &7856518157875413999
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -380,7 +380,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8497740532971329356, guid: 6631818d093a9ea44a48a325d21b5628, type: 3}
       propertyPath: m_Pivot.y
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8497740532971329356, guid: 6631818d093a9ea44a48a325d21b5628, type: 3}
       propertyPath: m_AnchorMax.x
@@ -400,7 +400,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8497740532971329356, guid: 6631818d093a9ea44a48a325d21b5628, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 140
       objectReference: {fileID: 0}
     - target: {fileID: 8497740532971329356, guid: 6631818d093a9ea44a48a325d21b5628, type: 3}
       propertyPath: m_SizeDelta.y
@@ -436,11 +436,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8497740532971329356, guid: 6631818d093a9ea44a48a325d21b5628, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 126.1
+      value: 131.4
       objectReference: {fileID: 0}
     - target: {fileID: 8497740532971329356, guid: 6631818d093a9ea44a48a325d21b5628, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 34.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8497740532971329356, guid: 6631818d093a9ea44a48a325d21b5628, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -459,8 +459,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6631818d093a9ea44a48a325d21b5628, type: 3}
---- !u!224 &261264596333901765 stripped
+--- !u!224 &1795243409131426979 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8497740532971329356, guid: 6631818d093a9ea44a48a325d21b5628, type: 3}
-  m_PrefabInstance: {fileID: 8524816263978934409}
+  m_PrefabInstance: {fileID: 7856518157875413999}
   m_PrefabAsset: {fileID: 0}

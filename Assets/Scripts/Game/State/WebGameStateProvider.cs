@@ -108,8 +108,9 @@ namespace Game.State
             if (WebAvailable.CurrentValue)
             {
                 //TODO Проверка частоты сохранения, отправление данных в пул
-                SaveSettingsStateWeb().Where(x => !x).Subscribe(_ =>
+                SaveSettingsStateWeb().Skip(1).Where(x => !x).Subscribe(_ =>
                 {
+                    Debug.Log("Данные не сохранились на сервере");
                     //Данные не сохранились на сервере
                 });
             }
@@ -118,17 +119,17 @@ namespace Game.State
             return Observable.Return(true);
         }
 
-        private Observable<bool> SaveSettingsStateWeb()
+        private ReactiveProperty<bool> SaveSettingsStateWeb()
         {
-            var Result = false;
-            Action<bool> callback = v => { Result = v; };
+            ReactiveProperty<bool> result = new(false);
+            Action<bool> callback = v => { result.Value = v; };
 
             var json = JsonConvert.SerializeObject(SettingsState.Origin);
             var formData = new WWWForm();
 
             formData.AddField("data", json);
             _coroutines.StartCoroutine(SaveDataToServer(WebConstants.WEB_USER_SETTINGS, formData, callback));
-            return Observable.Return(Result);
+            return result;
         }
 
         private Observable<bool> SaveSettingsStateLocal()

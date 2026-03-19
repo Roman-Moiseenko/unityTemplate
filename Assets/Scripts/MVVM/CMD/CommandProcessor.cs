@@ -38,6 +38,7 @@ namespace MVVM.CMD
                 if (result && autoSave) //Если команда успешно обработалась, то сохраняем состояние игры
                 {
                     _gameStateProvider.SaveGameState();
+                    _gameStateProvider.SaveSettingsState();
                 }
                 return result;
             }

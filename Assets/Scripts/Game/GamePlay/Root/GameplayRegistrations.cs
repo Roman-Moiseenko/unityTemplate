@@ -41,7 +41,8 @@ namespace Game.GamePlay.Root
             var gameState = gameStateProvider.GameState; //TODO Получим кристалы для изменения
 
 
-            var gameplayState = gameStateProvider.GameplayState;
+            var gameplayState = gameStateProvider.GameplayState; //Состояние игры игрока
+            var settingsState = gameStateProvider.SettingsState; //Настройки игры
             gameplayState.MapId.OnNext(gameplayEnterParams.MapId);
             gameplayState.TypeGameplay.OnNext(gameplayEnterParams.TypeGameplay);
 
@@ -199,7 +200,7 @@ namespace Game.GamePlay.Root
             //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             container.RegisterInstance(gameplayService);
             
-            container.RegisterFactory(_ => new DamageService(gameplayState)).AsSingle();
+            container.RegisterFactory(_ => new DamageService(gameplayState, settingsState)).AsSingle();
 
             //Загружаем уровень из настроек, если gameplayState пуст.
             if (gameplayState.Towers.Any() != true)

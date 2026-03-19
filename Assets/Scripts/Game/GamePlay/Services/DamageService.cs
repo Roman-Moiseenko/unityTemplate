@@ -17,11 +17,15 @@ namespace Game.GamePlay.Services
     {
         public ObservableList<DamageEntity> AllDamages = new();
         private readonly GameplayStateProxy _gameplayState;
+        private readonly GameSettingsStateProxy _settingsState;
 
         public DamageService(
-            GameplayStateProxy gameplayState
+            GameplayStateProxy gameplayState,
+            GameSettingsStateProxy settingsState
         )
         {
+            //var settings = viewModel.Container.Resolve<IGameStateProvider>().SettingsState;
+            _settingsState = settingsState;
             _gameplayState = gameplayState;
             gameplayState.Shots.ObserveAdd().Subscribe(e =>
             {
@@ -42,7 +46,8 @@ namespace Game.GamePlay.Services
                 Type = shot.DamageType,
             };
             _gameplayState.StatisticGame.SetDamage(shot.Damage, shot.ConfigId);
-            AllDamages.Add(damage);
+            if (_settingsState.Damage.CurrentValue) AllDamages.Add(damage);
+            //AllDamages.Add(damage);
             //Устанавливаем дебаф, если есть
             if (shot.Debuff != null) mobEntity.SetDebuff(shot.ConfigId, shot.Debuff);
             //TODO если есть продолжительный урон, добавляем мобу mobEntity.PeriodDamage(shot.ConfigId, shot.PeriodDamage)

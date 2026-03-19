@@ -1,5 +1,7 @@
 ﻿using DI;
+using Game.Common;
 using MVVM.UI;
+using UnityEngine;
 
 namespace Game.GamePlay.View.UI.PopupSettings
 {
@@ -11,6 +13,18 @@ namespace Game.GamePlay.View.UI.PopupSettings
         public PopupSettingsViewModel(DIContainer container) : base(container)
         {
             
+        }
+
+        public void RequestCommunity()
+        {
+            //TODO Аналитика учет
+            Application.OpenURL(AppConstants.URL_COMMUNITY);
+        }
+
+        public void RequestSupport()
+        {
+            //TODO Аналитика учет
+            Application.OpenURL(AppConstants.URL_SUPPORT);
         }
     }
 }
