@@ -95,7 +95,7 @@ namespace Game.State.Gameplay.Statistics
         public int GetTowerCount(string configId)
         {
             var pair = Origin.Entities.Find(p => p.ConfigId == configId);
-            return pair.Count;
+            return pair == null ? 0 : pair.Count;
         }
     }
 }

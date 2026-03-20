@@ -71,7 +71,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.19999313, y: -2.9000015}
+  m_AnchoredPosition: {x: -2.6999931, y: -2.9000015}
   m_SizeDelta: {x: 26, y: 28}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3284124398340359205
@@ -682,6 +682,7 @@ MonoBehaviour:
   backgroundDefence: {fileID: 7917475907295528642}
   iconDefence: {fileID: 338581055428469325}
   countEntity: {fileID: 1351228755708768950}
+  txtName: {fileID: 6074786701528984878}
   txtPercent: {fileID: 1626744750102229936}
   txtDamage: {fileID: 4241585169520876863}
   sliderPercent: {fileID: 919841980272995112}
@@ -1013,7 +1014,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 3846510277885380034}
   m_HandleRect: {fileID: 0}
@@ -1462,7 +1463,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 19}
+  m_AnchoredPosition: {x: -2.5, y: 19}
   m_SizeDelta: {x: 30, y: 38}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2043151158491979202

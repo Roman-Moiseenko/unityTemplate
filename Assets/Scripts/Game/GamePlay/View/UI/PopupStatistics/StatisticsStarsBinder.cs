@@ -13,8 +13,8 @@ namespace Game.GamePlay.View.UI.PopupStatistics
             var index = 0;
             foreach (var star in stars)
             {
-                star.Find("starFill").gameObject.SetActive(index <= viewStars);
-                star.Find("starEmpty").gameObject.SetActive(index <= allStars);
+                star.Find("starFill").gameObject.SetActive(index < viewStars);
+                star.Find("starEmpty").gameObject.SetActive(index < allStars);
                 index++;
             }
         }

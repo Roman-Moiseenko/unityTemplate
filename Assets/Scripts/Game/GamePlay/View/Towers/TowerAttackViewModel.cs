@@ -92,8 +92,7 @@ namespace Game.GamePlay.View.Towers
          */
         public void SetDamageAfterShot(MobViewModel mobViewModel)
         {
-            Debug.Log("SetDamageAfterShot");
-
+            if (mobViewModel == null) return;
             var shot = TowersService.ShotCalculation(TowerEntity, mobViewModel.Defence);
             
             shot.MobEntityId = mobViewModel.UniqueId;
