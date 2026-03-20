@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using R3;
 
 namespace Game.State.Gameplay.Statistics
@@ -65,37 +66,37 @@ namespace Game.State.Gameplay.Statistics
         {
             CountRoads.Value++;
         }
-
-        public void SetDamage(float damage, string configId, TypeEntityStatisticDamage typeEntity)
+        
+        public void SetDamage(float damage, string configId)
         {
             AllDamage.Value += damage;
             var pair = Origin.Damages.Find(p => p.ConfigId == configId);
-            if (pair != null)
-            {
-                pair.Damage += damage;
-            }
-            else
-            {
-                pair = new ConfigEntityDamage
-                {
-                    ConfigId = configId,
-                    Damage = damage,
-                    TypeEntity = typeEntity
-                };
-                Origin.Damages.Add(pair);
-            }
-        }
+            if (pair == null) throw new Exception("Ошибка в статистике");
+            pair.Damage += damage;
 
-        public float GetDamage(string configId)
-        {
-            var pair = Origin.Damages.Find(p => p.ConfigId == configId);
-            return pair.Damage;
         }
-
+        
         public int GetTowerCount(string configId)
         {
             var pair = Origin.Entities.Find(p => p.ConfigId == configId);
-            return pair == null ? 0 : pair.Count;
+            return pair?.Count ?? 0;
+        }
+
+        /**
+         * Инициализация статистики, добавляем все сущности (герои, башни, навыки и замок)
+         */
+        public void Add(string configId, TypeEntityStatisticDamage typeEntity)
+        {
+            var isPair = Origin.Damages.Find(p => p.ConfigId == configId);
+            if (isPair != null) throw new Exception($"Сущность {configId} уже добавлена в статистику ");
+            
+            var pair = new ConfigEntityDamage
+            {
+                ConfigId = configId,
+                Damage = 0,
+                TypeEntity = typeEntity
+            };
+            Origin.Damages.Add(pair);
         }
     }
 }

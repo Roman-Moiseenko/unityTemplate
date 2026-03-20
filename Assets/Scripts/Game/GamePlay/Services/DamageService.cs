@@ -45,7 +45,7 @@ namespace Game.GamePlay.Services
                 Damage = Mathf.FloorToInt(mobEntity.SetDamage(shot.Damage)),
                 Type = shot.DamageType,
             };
-            _gameplayState.StatisticGame.SetDamage(shot.Damage, shot.ConfigId, shot.TypeEntity);
+            _gameplayState.StatisticGame.SetDamage(shot.Damage, shot.ConfigId);
             if (_settingsState.Damage.CurrentValue) AllDamages.Add(damage);
             //AllDamages.Add(damage);
             //Устанавливаем дебаф, если есть

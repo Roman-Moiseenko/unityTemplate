@@ -103,6 +103,7 @@ namespace Game.GamePlay.View.Castle
                 Single = true,
                 MobEntityId = MobTarget.CurrentValue.UniqueId,
                 TypeEntity = TypeEntityStatisticDamage.Castle,
+                ConfigId = "Castle",
             };
             _gameplayState.Shots.Add(shot);
         }

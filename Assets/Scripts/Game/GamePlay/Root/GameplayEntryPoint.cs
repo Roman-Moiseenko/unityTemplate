@@ -42,7 +42,6 @@ namespace Game.GamePlay.Root
             GameplayViewModelsRegistrations.Register(gameplayViewModelsContainer); //Регистрируем все View-модели сцены Gameplay
             InitWorld(gameplayViewModelsContainer);
             InitUI(gameplayViewModelsContainer);
-            
             //Сохраняем начальные параметры игровой сессии
             gameplayContainer.Resolve<IGameStateProvider>().SaveGameplayState();
             
@@ -78,5 +77,6 @@ namespace Game.GamePlay.Root
             var uiManager = viewContainer.Resolve<GameplayUIManager>();
             uiManager.OpenScreenGameplay();
         }
+        
     }
 }

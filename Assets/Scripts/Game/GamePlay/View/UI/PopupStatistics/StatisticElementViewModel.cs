@@ -15,7 +15,7 @@ namespace Game.GamePlay.View.UI.PopupStatistics
         public int MaxLevel;
 
         public float Damage;
-        public float Percent;
+        public float Percent = 0f;
         public string Name;
         public string ConfigId;
         public int Level = 0;

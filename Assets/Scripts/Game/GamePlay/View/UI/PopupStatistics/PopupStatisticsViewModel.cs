@@ -21,10 +21,12 @@ namespace Game.GamePlay.View.UI.PopupStatistics
         public GameplayStateProxy GameplayState;
         private StatisticGame _statisticGame ;
         public List<StatisticElementViewModel> Elements = new();
+        public int AllDamage;
         public PopupStatisticsViewModel(DIContainer container) : base(container)
         {
             GameplayState = container.Resolve<IGameStateProvider>().GameplayState;
             _statisticGame = GameplayState.StatisticGame;
+            AllDamage = Mathf.RoundToInt(_statisticGame.AllDamage.CurrentValue);
             var gameSettings = container.Resolve<ISettingsProvider>().GameSettings;
             var towersService = container.Resolve<TowersService>();
             var towersSettings = gameSettings.TowersSettings.AllTowers;

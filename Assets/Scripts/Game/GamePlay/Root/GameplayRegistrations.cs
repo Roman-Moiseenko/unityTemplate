@@ -19,6 +19,7 @@ using Game.GamePlay.Services;
 using Game.GameRoot.Services;
 using Game.Settings;
 using Game.State;
+using Game.State.Gameplay.Statistics;
 using MVVM.CMD;
 using Newtonsoft.Json;
 using R3;
@@ -39,8 +40,7 @@ namespace Game.GamePlay.Root
             //Загружаем параметры карт от типа игры 
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
             var gameState = gameStateProvider.GameState; //TODO Получим кристалы для изменения
-
-
+            
             var gameplayState = gameStateProvider.GameplayState; //Состояние игры игрока
             var settingsState = gameStateProvider.SettingsState; //Настройки игры
             gameplayState.MapId.OnNext(gameplayEnterParams.MapId);
@@ -232,6 +232,29 @@ namespace Game.GamePlay.Root
                 fsmGameplay.Fsm.SetState<FsmStateBuildBegin>(); //Устанавливаем начальный режим строительства
             }
             //Debug.Log(JsonConvert.SerializeObject(gameplayState.Waves, Formatting.Indented));
+            
+            //Заполняем статистику данными
+            gameplayState.StatisticGame.Add("Castle", TypeEntityStatisticDamage.Castle);
+            //TODO Загрузка героя и навыков в статистику
+/*
+            var availableHeroes = heroesService.GetAvailableTowers();
+            foreach (var (configId, value) in heroesService)
+            {
+                gameplayState.StatisticGame.Add(configId, TypeEntityStatisticDamage.Hero);
+            }
+            */
+            var availableTowers = towersService.GetAvailableTowers();
+            foreach (var (configId, value) in availableTowers)
+            {
+                gameplayState.StatisticGame.Add(configId, TypeEntityStatisticDamage.Tower);
+            }
+/*
+            var availableSkills = skillsService.GetAvailableTowers();
+            foreach (var (configId, value) in availableSkills)
+            {
+                gameplayState.StatisticGame.Add(configId, TypeEntityStatisticDamage.Skill);
+            }
+            */
         }
     }
 }

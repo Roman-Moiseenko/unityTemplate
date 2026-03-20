@@ -19,9 +19,13 @@ namespace Game.GamePlay.View.UI.PopupStatistics
         [SerializeField] private TMP_Text txtName;
         [SerializeField] private TMP_Text txtPercent;
         [SerializeField] private TMP_Text txtDamage;
+        [SerializeField] private TMP_Text txtNotDamage;
         [SerializeField] private Slider sliderPercent;
         [SerializeField] private StatisticsStarsBinder starsBinder;
         
+        private readonly Vector3 _scaleSmall = new (1, 1, 1);
+        private readonly Vector3 _scaleBig = new(1.5f, 1.5f, 1.5f);
+
         private ImageManagerBinder _imageManager;
 
         private void Awake()
@@ -34,24 +38,28 @@ namespace Game.GamePlay.View.UI.PopupStatistics
             {
                 backgroundCard.sprite = _imageManager.GetEpicLevel(viewModel.EpicCard);
                 iconCard.sprite = _imageManager.GetTowerCard(viewModel.ConfigId, 1);
+                iconCard.GetComponent<RectTransform>().localScale = _scaleSmall;
             }
             
             if (viewModel.TypeEntity == TypeEntityStatisticDamage.Skill)
             {
                 backgroundCard.sprite = _imageManager.GetEpicLevel(viewModel.EpicCard);
                 //iconCard.sprite = _imageManager.GetSkillCard(viewModel.ConfigId, 1);
+                iconCard.GetComponent<RectTransform>().localScale = _scaleSmall;
             }
             
             if (viewModel.TypeEntity == TypeEntityStatisticDamage.Hero)
             {
-                backgroundCard.sprite = _imageManager.GetOther(viewModel.ConfigId);
+                //backgroundCard.sprite = _imageManager.GetOther(viewModel.ConfigId);
                 //iconCard.sprite = _imageManager.GetHeroCard(viewModel.ConfigId, 1);
+                iconCard.GetComponent<RectTransform>().localScale = _scaleBig;
             }
             
             if (viewModel.TypeEntity == TypeEntityStatisticDamage.Castle)
             {
-              //  backgroundCard.sprite = _imageManager.GetOther("CastleBack"); //???
-              //  iconCard.sprite = _imageManager.GetOther("Castle");
+                backgroundCard.sprite = _imageManager.GetOther("CastleBack"); //???
+                iconCard.sprite = _imageManager.GetOther("Castle");
+                iconCard.GetComponent<RectTransform>().localScale = _scaleBig;
             }
             
             if (viewModel.Defence == null)
@@ -79,9 +87,12 @@ namespace Game.GamePlay.View.UI.PopupStatistics
             }
 
             txtName.text = viewModel.Name;
-            txtPercent.text = $"{viewModel.Percent}%";
+            txtPercent.text = $"{Mathf.RoundToInt(viewModel.Percent)}%";
             txtDamage.text = MyFunc.CurrencyToStr((long)viewModel.Damage);
-            sliderPercent.value = viewModel.Percent;
+            txtNotDamage.gameObject.SetActive(viewModel.Damage == 0f);
+            txtPercent.gameObject.SetActive(viewModel.Damage != 0f);
+
+            sliderPercent.value = viewModel.Percent / 100f;
             starsBinder.Bind(viewModel.Level, viewModel.MaxLevel);
         }
     }

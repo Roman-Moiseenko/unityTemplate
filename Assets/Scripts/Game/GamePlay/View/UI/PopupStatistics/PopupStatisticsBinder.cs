@@ -9,10 +9,13 @@ namespace Game.GamePlay.View.UI.PopupStatistics
     public class PopupStatisticsBinder : PopupBinder<PopupStatisticsViewModel>
     {
         [SerializeField] private Transform containerElements;
+        [SerializeField] private TMP_Text txtAllDamage;
+        
         private List<StatisticElementBinder> _elementBinders = new();
         protected override void OnBind(PopupStatisticsViewModel viewModel)
         {
             base.OnBind(viewModel);
+            txtAllDamage.text = viewModel.AllDamage.ToString();
             foreach (var element in viewModel.Elements)
             {
                 CreateElement(element);
