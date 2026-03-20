@@ -194,7 +194,7 @@ namespace Game.GamePlay.View.Mobs
         
         public IEnumerator AttackTarget()
         {
-            Debug.Log(" AttackTarget " + Target.CurrentValue.UniqueId);
+//            Debug.Log(" AttackTarget " + Target.CurrentValue.UniqueId);
             if (_mobEntity.IsDead.CurrentValue) yield break;
             Target.CurrentValue.DamageReceived(Damage, _mobEntity.Defence);
             yield return new WaitForSeconds(_mobEntity.SpeedAttack / AppConstants.MOB_SPEED_ATTACK);

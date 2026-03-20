@@ -78,7 +78,7 @@ namespace Game.GamePlay.View.Towers
         {
             foreach (var shotBinder in _shotBinders)
             {
-                shotBinder.StopShot();
+                shotBinder.StopShot(null);
             }
         }
         

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.State.Entities;
+using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
 using Newtonsoft.Json;
@@ -153,6 +154,7 @@ namespace Game.State.Maps.Towers
                 Damage = damage, 
                 Debuff = debuff,
                 DamageType = damageType,
+                TypeEntity = TypeEntityStatisticDamage.Tower,
             };
             
             return shotData;

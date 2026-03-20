@@ -37,9 +37,9 @@ namespace Game.GamePlay.View.Towers
             _disposable?.Dispose();
             
         }
-        public override void StopShot()
+        public override void StopShot(Vector3? position)
         {
-            base.StopShot();
+            base.StopShot(null);
             _disposableTesla?.Dispose();
         }
         private void OnTriggerEnter(Collider other)

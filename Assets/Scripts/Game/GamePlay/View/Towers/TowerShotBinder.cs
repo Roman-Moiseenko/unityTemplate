@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using Game.GamePlay.View.Mobs;
+using Newtonsoft.Json;
 using R3;
 using UnityEngine;
 
@@ -59,6 +60,7 @@ namespace Game.GamePlay.View.Towers
         protected virtual IEnumerator StartShotFire()
         {
             yield return shotBinder.FireStart();
+            Debug.Log(JsonConvert.SerializeObject(shotBinder.LoggerShot, Formatting.Indented));
             if (explosionBinder != null) yield return StartExplosion();    
             IsFree = true;
         }
@@ -87,9 +89,9 @@ namespace Game.GamePlay.View.Towers
             _disposable?.Dispose();
         }
 
-        public virtual void StopShot()
+        public virtual void StopShot(Vector3? position)
         {
-            shotBinder?.StopShot();
+            shotBinder?.StopShot(position);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Game.GamePlay.View.Mobs;
+using UnityEngine;
 
 namespace Game.GamePlay.View.Towers
 {
@@ -28,7 +29,7 @@ namespace Game.GamePlay.View.Towers
             IsFree = true;
             yield return null;
         }
-        public override void StopShot()
+        public override void StopShot(Vector3? position)
         {
         }
     }

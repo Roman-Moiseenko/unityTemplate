@@ -41,7 +41,7 @@ namespace Game.GamePlay.Commands.TowerCommand
             };
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
             _gameplayState.Towers.Add(newTower);//Добавляем в список объектов карты
-            _gameplayState.StatisticGame.BuildTower();
+            _gameplayState.StatisticGame.BuildTower(command.ConfigId);
             return true;
         }
     }

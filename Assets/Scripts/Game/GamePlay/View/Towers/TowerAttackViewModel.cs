@@ -8,6 +8,7 @@ using Game.State.Maps.Towers;
 using Game.State.Root;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 
 namespace Game.GamePlay.View.Towers
 {
@@ -91,6 +92,8 @@ namespace Game.GamePlay.View.Towers
          */
         public void SetDamageAfterShot(MobViewModel mobViewModel)
         {
+            Debug.Log("SetDamageAfterShot");
+
             var shot = TowersService.ShotCalculation(TowerEntity, mobViewModel.Defence);
             
             shot.MobEntityId = mobViewModel.UniqueId;

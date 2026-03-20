@@ -1,4 +1,5 @@
-﻿using R3;
+﻿using System.Collections.Generic;
+using R3;
 
 namespace Game.State.Gameplay.Statistics
 {
@@ -6,6 +7,9 @@ namespace Game.State.Gameplay.Statistics
     {
         public StatisticGameData Origin;
 
+        public List<ConfigEntityDamage> Damages => Origin.Damages;
+        public List<ConfigEntityCount> Entities => Origin.Entities;
+ 
         public ReactiveProperty<int> CountKills { get; private set; }
         public ReactiveProperty<int> CountTowers { get; private set; }
         public ReactiveProperty<int> CountRoads { get; private set; }
@@ -32,9 +36,24 @@ namespace Game.State.Gameplay.Statistics
             CountKills.Value++;
         }
 
-        public void BuildTower()
+        public void BuildTower(string configId)
         {
             CountTowers.Value++;
+            var pair = Origin.Entities.Find(p => p.ConfigId == configId);
+            if (pair != null)
+            {
+                pair.Count++;
+            }
+            else
+            {
+                pair = new ConfigEntityCount
+                {
+                    ConfigId = configId,
+                    Count = 1
+                };
+                Origin.Entities.Add(pair);
+            }
+            
         }
 
         public void DestroyTower()
@@ -47,24 +66,36 @@ namespace Game.State.Gameplay.Statistics
             CountRoads.Value++;
         }
 
-        public void SetDamage(float damage, string configId)
+        public void SetDamage(float damage, string configId, TypeEntityStatisticDamage typeEntity)
         {
             AllDamage.Value += damage;
-            var pair = Origin.Damages.Find(p => p.Key == configId);
+            var pair = Origin.Damages.Find(p => p.ConfigId == configId);
             if (pair != null)
             {
-                pair.Value += damage;
+                pair.Damage += damage;
             }
             else
             {
-                pair = new PairStringFloat
+                pair = new ConfigEntityDamage
                 {
-                    Key = configId,
-                    Value = damage
+                    ConfigId = configId,
+                    Damage = damage,
+                    TypeEntity = typeEntity
                 };
                 Origin.Damages.Add(pair);
             }
+        }
 
+        public float GetDamage(string configId)
+        {
+            var pair = Origin.Damages.Find(p => p.ConfigId == configId);
+            return pair.Damage;
+        }
+
+        public int GetTowerCount(string configId)
+        {
+            var pair = Origin.Entities.Find(p => p.ConfigId == configId);
+            return pair.Count;
         }
     }
 }

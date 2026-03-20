@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Mobs;
 using Game.State.Gameplay;
+using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
@@ -101,13 +102,14 @@ namespace Game.GamePlay.View.Castle
                 Position = MobTarget.CurrentValue.PositionTarget.CurrentValue,
                 Single = true,
                 MobEntityId = MobTarget.CurrentValue.UniqueId,
+                TypeEntity = TypeEntityStatisticDamage.Castle,
             };
             _gameplayState.Shots.Add(shot);
         }
 
         public void DamageReceived(float damage, MobDefence defence)
         {
-            Debug.Log("Урон по замку " + damage);
+//            Debug.Log("Урон по замку " + damage);
             CastleEntity.DamageReceived(damage);
         }
     }

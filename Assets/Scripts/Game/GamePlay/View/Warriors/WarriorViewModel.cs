@@ -6,6 +6,7 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.WarriorStates;
 using Game.GamePlay.View.Mobs;
 using Game.State.Gameplay;
+using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Shots;
@@ -305,6 +306,8 @@ namespace Game.GamePlay.View.Warriors
                 Position = MobTarget.CurrentValue.PositionTarget.CurrentValue,
                 Single = true,
                 MobEntityId = MobTarget.CurrentValue.UniqueId,
+                TypeEntity = TypeEntityStatisticDamage.Tower,
+                ConfigId = ConfigId, 
             };
 
 //            Debug.Log("Урон от Warrior " + UniqueId + " Мобу " + MobTarget.CurrentValue.UniqueId);

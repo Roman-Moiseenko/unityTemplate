@@ -1,4 +1,5 @@
-﻿using Game.State.Maps.Mobs;
+﻿using Game.State.Gameplay.Statistics;
+using Game.State.Maps.Mobs;
 using UnityEngine;
 
 namespace Game.State.Maps.Shots
@@ -14,5 +15,6 @@ namespace Game.State.Maps.Shots
         public MobDebuff Debuff;
         public DamageType DamageType;
         public bool IsFly;
+        public TypeEntityStatisticDamage TypeEntity;
     }
 }

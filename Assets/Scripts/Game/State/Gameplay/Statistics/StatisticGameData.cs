@@ -10,6 +10,7 @@ namespace Game.State.Gameplay.Statistics
         
         public float AllDamage { get; set; }
 
-        public List<PairStringFloat> Damages = new();
+        public List<ConfigEntityDamage> Damages = new();
+        public List<ConfigEntityCount> Entities = new();
     }
 }

@@ -12,8 +12,6 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardFrontend
 {
     public class FrontendUpgradeBinder : MonoBehaviour
     {
-                
-        
         [SerializeField] private Transform upgradeLevel;
       //  [SerializeField] private Transform upgradeInfo;
         [SerializeField] private Transform upgradeDescription;

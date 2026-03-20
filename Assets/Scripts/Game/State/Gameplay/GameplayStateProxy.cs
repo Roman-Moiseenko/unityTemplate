@@ -228,7 +228,7 @@ namespace Game.State.Gameplay
                     break;
                 case 2: newSpeed = 4;
                     break;
-                case 4: newSpeed = 1;
+                case 4: newSpeed = 0.5f;
                     break;
             }
           

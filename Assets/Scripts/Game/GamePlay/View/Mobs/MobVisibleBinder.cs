@@ -27,7 +27,7 @@ namespace Game.GamePlay.View.Mobs
 
             if (other.gameObject.CompareTag("Castle"))
             {
-                Debug.Log("В зоне атаки Замка" + ViewModel.UniqueId);
+//                Debug.Log("В зоне атаки Замка" + ViewModel.UniqueId);
                 var castle = other.gameObject.GetComponent<CastleBinder>();
                 ViewModel.PullTargets.Add(castle.ViewModel);
             }
