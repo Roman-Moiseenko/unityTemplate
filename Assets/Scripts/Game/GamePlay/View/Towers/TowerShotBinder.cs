@@ -60,7 +60,7 @@ namespace Game.GamePlay.View.Towers
         protected virtual IEnumerator StartShotFire()
         {
             yield return shotBinder.FireStart();
-            Debug.Log(JsonConvert.SerializeObject(shotBinder.LoggerShot, Formatting.Indented));
+                //            Debug.Log(JsonConvert.SerializeObject(shotBinder.LoggerShot, Formatting.Indented));
             if (explosionBinder != null) yield return StartExplosion();    
             IsFree = true;
         }

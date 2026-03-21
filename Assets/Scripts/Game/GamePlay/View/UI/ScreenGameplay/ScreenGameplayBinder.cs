@@ -41,7 +41,8 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         [SerializeField] private Transform startWave;
         [SerializeField] private Transform finishWave;
-
+        [SerializeField] private AnimationInfoWaveBinder startWaveAnimation;
+        [SerializeField] private AnimationInfoWaveBinder finishWaveAnimation;
         [SerializeField] private Transform topMenu;
         
         
@@ -70,8 +71,10 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             var d = Disposable.CreateBuilder();
 
-            startWave.gameObject.SetActive(false);
-            finishWave.gameObject.SetActive(false);
+            startWaveAnimation.Bind();
+            finishWaveAnimation.Bind();
+         //   startWave.gameObject.SetActive(false);
+         //   finishWave.gameObject.SetActive(false);
             rewardEntity.Bind();
             
             //Инициализируем пулы объектов
@@ -149,12 +152,14 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             //Показываем инфо начала и окончания волны
             ViewModel.ShowStartWave.Where(show => show).Subscribe(_ =>
             {
-                startWave.gameObject.SetActive(true);
+                startWaveAnimation.Start();
+               // startWave.gameObject.SetActive(true);
                 ViewModel.ShowStartWave.Value = false;
             }).AddTo(ref d);
             ViewModel.ShowFinishWave.Where(show => show).Subscribe(_ =>
             {
-                finishWave.gameObject.SetActive(true);
+                finishWaveAnimation.Start();
+                //finishWave.gameObject.SetActive(true);
                 ViewModel.ShowFinishWave.Value = false;
             }).AddTo(ref d);
 
