@@ -74,15 +74,18 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
                         switch (status)
                         {
                             case StatusChest.Close:
+                                statusClose.gameObject.SetActive(true);
                                 d = viewModel.IsOpening.Subscribe(v =>
                                 {
+                                    
+                                  //  Debug.Log(toOpening);
                                     toOpening.gameObject.SetActive(v);
                                     isClosed.gameObject.SetActive(!v);
                                 });
                                 
                                 timeChest.text = $"{chest.TypeChest.FullHourOpening()}ч";
                                 levelChest.text = $"Глава {chest.MapId}";
-                                statusClose.gameObject.SetActive(true);
+                                
                                 break;
                             case StatusChest.Opening:
                                 if (d != null) d.Dispose();
