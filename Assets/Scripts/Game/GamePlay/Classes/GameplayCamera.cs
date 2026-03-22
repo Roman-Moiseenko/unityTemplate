@@ -151,7 +151,6 @@ namespace Game.GamePlay.Classes
 
         public void AutoMoving()
         {
-           
             /*if (!_autoMoving) return;
 
             if (_moveTowards) //Плавное движение
@@ -207,6 +206,7 @@ namespace Game.GamePlay.Classes
         {
             var newSize = Camera.orthographicSize + (scalingUp ? -1 : +1) *  AppConstants.CAMERA_SCALE_SPEED;
             Camera.orthographicSize = Mathf.Clamp(newSize, AppConstants.CAMERA_SCALE_MIN,  AppConstants.CAMERA_SCALE_MAX);
+            _subjectCameraMoving.OnNext(Unit.Default);
         }
     }
 }

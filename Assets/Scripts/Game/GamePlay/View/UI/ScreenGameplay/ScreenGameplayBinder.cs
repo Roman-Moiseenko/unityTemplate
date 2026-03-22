@@ -23,44 +23,43 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         [SerializeField] private TMP_Text _textCrystal;
         [SerializeField] private TMP_Text _textWave;
 
-        [SerializeField] private Transform _panelPopupMessages;
+        [SerializeField] private Transform panelUIBeforeTop;
+        [SerializeField] private Transform panelUIAfterTop;
+
         [SerializeField] private Transform _panelRewardPopup;
-        
-        
+
         [SerializeField] private List<CurrencyPopupBinder> _currencyPopups;
         [SerializeField] private List<CurrencyPopupBinder> _progressPopups;
-        
-        
+
+
         [SerializeField] private RewardEntityBinder rewardEntity;
 
         [SerializeField] private Transform _targetCurrency;
         [SerializeField] private Transform _targetProgress;
-        [SerializeField] private ReducePopupBinder _reducePopupBinder;
-        [SerializeField] private CastleHealthBarBinder _castleHealthBar;
         [SerializeField] private Transform _progressContainer;
 
-        [SerializeField] private Transform startWave;
-        [SerializeField] private Transform finishWave;
         [SerializeField] private AnimationInfoWaveBinder startWaveAnimation;
         [SerializeField] private AnimationInfoWaveBinder finishWaveAnimation;
         [SerializeField] private Transform topMenu;
         
-        
+        private ReducePopupBinder _reducePopupBinder;
+        private CastleHealthBarBinder _castleHealthBar;
+
         private TMP_Text _levelProgress;
         private Slider _progress;
         private IDisposable _disposable;
 
-        private PoolMono<DamagePopupBinder> _poolDamages;//Пул всплывающих popup
-        private PoolMono<CurrencyPopupBinder> _poolCurrency;//Пул всплывающих монеток
-        private PoolMono<CurrencyPopupBinder> _poolProgress;//Пул всплывающих кристалов
+        private PoolMono<DamagePopupBinder> _poolDamages; //Пул всплывающих popup
+        private PoolMono<CurrencyPopupBinder> _poolCurrency; //Пул всплывающих монеток
+        private PoolMono<CurrencyPopupBinder> _poolProgress; //Пул всплывающих кристалов
 
         //TODO РАЗБИТЬ НА МАЛЫЕ ЗАДАЧИ В ОТДЕЛЬНЫЕ BINDER
         //1. TopMenu
         //2. Блок показа начала и конца волны
         //3. Панель для Сообщений
         //4. Панель для Наград
-        
-        
+
+
         private void Awake()
         {
             _levelProgress = _progressContainer.Find("Level").GetComponent<TMP_Text>();
@@ -73,25 +72,25 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
             startWaveAnimation.Bind();
             finishWaveAnimation.Bind();
-         //   startWave.gameObject.SetActive(false);
-         //   finishWave.gameObject.SetActive(false);
+            //   startWave.gameObject.SetActive(false);
+            //   finishWave.gameObject.SetActive(false);
             rewardEntity.Bind();
-            
+
             //Инициализируем пулы объектов
             _poolDamages = new PoolMono<DamagePopupBinder>(
-                "Prefabs/UI/Gameplay/ScreenGameplay/DamagePopup", 
-                20, 
-                _panelPopupMessages);
+                "Prefabs/UI/Gameplay/ScreenGameplay/DamagePopup",
+                20,
+                panelUIBeforeTop);
             _poolCurrency = new PoolMono<CurrencyPopupBinder>(
-                "Prefabs/UI/Gameplay/ScreenGameplay/RewardCurrency", 
-                7, 
-                _panelPopupMessages);
+                "Prefabs/UI/Gameplay/ScreenGameplay/RewardCurrency",
+                7,
+                panelUIAfterTop);
             _poolProgress = new PoolMono<CurrencyPopupBinder>(
-                "Prefabs/UI/Gameplay/ScreenGameplay/RewardProgress", 
-                7, 
-                _panelPopupMessages);
-            
-            
+                "Prefabs/UI/Gameplay/ScreenGameplay/RewardProgress",
+                7,
+                panelUIAfterTop);
+
+
             ViewModel.ProgressData.Subscribe(newValue =>
             {
                 var p = newValue / 100f;
@@ -132,12 +131,12 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 var currency = _poolCurrency.GetFreeElement();
                 var progress = _poolProgress.GetFreeElement();
                 var position = new Vector3(r.Value.Position.x, 1f, r.Value.Position.y);
-                
+
                 //На одной из наград отслеживает, когда доберется до конца
                 currency.StartPopup(position, _targetCurrency.position)
                     .Where(x => x)
                     .Subscribe(v => ViewModel.AllRewards.Remove(r.Value));
-                
+
                 progress.StartPopup(position, _targetProgress.position);
             }).AddTo(ref d);
 
@@ -146,14 +145,13 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                 var position = new Vector3(r.Position.x, 1f, r.Position.y);
                 position = ViewModel.CameraService.Camera.WorldToScreenPoint(position);
                 rewardEntity.StartPopup(r.RewardType, r.ConfigId, position);
-
             }).AddTo(ref d);
-            
+
             //Показываем инфо начала и окончания волны
             ViewModel.ShowStartWave.Where(show => show).Subscribe(_ =>
             {
                 startWaveAnimation.Start();
-               // startWave.gameObject.SetActive(true);
+                // startWave.gameObject.SetActive(true);
                 ViewModel.ShowStartWave.Value = false;
             }).AddTo(ref d);
             ViewModel.ShowFinishWave.Where(show => show).Subscribe(_ =>
@@ -166,7 +164,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             ViewModel.ShowTopMenu.Subscribe(v => topMenu.gameObject.SetActive(v)).AddTo(ref d);
             _disposable = d.Build();
         }
-        
+
 
         private void OnEnable()
         {
@@ -181,7 +179,6 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         private void OnDestroy()
         {
             _disposable.Dispose();
-
         }
 
         private void OnPopupPauseButtonClicked()
@@ -189,12 +186,12 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             ViewModel.RequestOpenPopupPause();
         }
 
-        
+
         private ReducePopupBinder CreateReducePopup()
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/ReduceHealthPopup";
             var reducePopupPrefab = Resources.Load<ReducePopupBinder>(prefabPath);
-            var createdReducePopup = Instantiate(reducePopupPrefab, _panelPopupMessages);
+            var createdReducePopup = Instantiate(reducePopupPrefab, panelUIAfterTop);
             createdReducePopup.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera);
 
             return createdReducePopup;
@@ -204,12 +201,11 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
         {
             var prefabPath = "Prefabs/UI/Gameplay/ScreenGameplay/CastleHealthBar";
             var castleHealthPrefab = Resources.Load<CastleHealthBarBinder>(prefabPath);
-            var createdCastleHealth = Instantiate(castleHealthPrefab, _panelPopupMessages);
+            var createdCastleHealth = Instantiate(castleHealthPrefab, panelUIBeforeTop);
             createdCastleHealth.Bind(ViewModel.CameraService.Camera, ViewModel.PositionCamera,
                 ViewModel.CastleFullHealth);
 
             return createdCastleHealth;
         }
-        
     }
 }
