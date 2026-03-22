@@ -31,7 +31,6 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             _leftSecondX = leftSecondArrow.position.x;
             _rightFirstX = rightFirstArrow.position.x;
             _rightSecondX = rightSecondArrow.position.x;
-            Debug.Log(_leftFirstX + " " + _leftSecondX + " " + _rightFirstX + " " + _rightSecondX);
         }
 
         public void Bind()
