@@ -43,8 +43,7 @@ namespace Game.GamePlay.Root
             
             var gameplayState = gameStateProvider.GameplayState; //Состояние игры игрока
             var settingsState = gameStateProvider.SettingsState; //Настройки игры
-            gameplayState.MapId.OnNext(gameplayEnterParams.MapId);
-            gameplayState.TypeGameplay.OnNext(gameplayEnterParams.TypeGameplay);
+
 
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
@@ -57,6 +56,16 @@ namespace Game.GamePlay.Root
             var fsmTower = new FsmTower(container);
             container.RegisterInstance(fsmTower);
 
+            //Инициализируем данные из настроек карты, до создания Сервисов
+            gameplayState.MapId.OnNext(gameplayEnterParams.MapId);
+            gameplayState.TypeGameplay.OnNext(gameplayEnterParams.TypeGameplay);
+            
+            var mapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
+            gameplayState.CurrentWave.Value = 0;
+            gameplayState.CountWaves = mapSettings.InitialStateSettings.Waves.Count;
+            gameplayState.HasWaySecond.Value = mapSettings.InitialStateSettings.hasWaySecond;
+            ////
+            
             switch (gameplayState.TypeGameplay.CurrentValue)
             {
                 case TypeGameplay.Infinity:
@@ -112,7 +121,7 @@ namespace Game.GamePlay.Root
             
             cmd.RegisterHandler(new CommandCastleCreateHandler(gameSettings, gameplayState));
             cmd.RegisterHandler(new CommandGroundCreateBaseHandler(cmd));
-            cmd.RegisterHandler(new CommandRoadCreateBaseHandler(gameplayState, cmd));
+            cmd.RegisterHandler(new CommandRoadCreateBaseHandler(cmd));
             //Команды создания карт
             cmd.RegisterHandler(new CommandCreateLevelHandler(gameSettings, gameplayState, cmd)); // по уровням 
 

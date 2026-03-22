@@ -69,11 +69,13 @@ namespace Game.GamePlay.Commands.MapCommand
                 var commandTower = new CommandPlaceTower(towerSettings.ConfigId, towerSettings.Position);
                 _cmd.Process(commandTower, false);
             }
-            _gameplayState.CurrentWave.Value = 0;
+            /*
+             _gameplayState.CurrentWave.Value = 0;
             _gameplayState.CountWaves = newMapInitialStateSettings.Waves.Count;
             _gameplayState.MapId.Value = command.MapId;
             _gameplayState.HasWaySecond.Value = newMapInitialStateSettings.hasWaySecond;
             _gameplayState.SetTypeGameplay(TypeGameplay.Levels);
+            */
             return true;
         }
     }
