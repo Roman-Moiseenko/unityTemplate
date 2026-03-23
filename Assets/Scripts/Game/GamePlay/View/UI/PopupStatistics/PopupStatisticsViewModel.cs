@@ -5,7 +5,6 @@ using DI;
 using Game.GamePlay.Services;
 using Game.Settings;
 using Game.State;
-using Game.State.Gameplay;
 using Game.State.Gameplay.Statistics;
 using Game.State.Inventory;
 using MVVM.UI;
@@ -18,33 +17,30 @@ namespace Game.GamePlay.View.UI.PopupStatistics
     {
         public override string Id => "PopupStatistics";
         public override string Path => "Gameplay/Popups/";
-        public GameplayStateProxy GameplayState;
-        private StatisticGame _statisticGame ;
         public List<StatisticElementViewModel> Elements = new();
         public int AllDamage;
         public PopupStatisticsViewModel(DIContainer container) : base(container)
         {
-            GameplayState = container.Resolve<IGameStateProvider>().GameplayState;
-            _statisticGame = GameplayState.StatisticGame;
-            AllDamage = Mathf.RoundToInt(_statisticGame.AllDamage.CurrentValue);
+            var gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            var statisticGame = gameplayState.StatisticGame;
             var gameSettings = container.Resolve<ISettingsProvider>().GameSettings;
             var towersService = container.Resolve<TowersService>();
             var towersSettings = gameSettings.TowersSettings.AllTowers;
             
+            AllDamage = Mathf.RoundToInt(statisticGame.AllDamage.CurrentValue);            
+            
             //TODO var skillsSettings = gameSettings.TowersSettings.AllSkills;
             //TODO var heroesSettings = gameSettings.TowersSettings.AllHeroes;
-
             
             //var towerSetting = towersSettings.FirstOrDefault(t => t.ConfigId == tower.Key);
-            Debug.Log(JsonConvert.SerializeObject(_statisticGame.Origin, Formatting.Indented));
-            foreach (var entityDamage in _statisticGame.Damages)
+            foreach (var entityDamage in statisticGame.GetDamages())
             {
                 var stat = new StatisticElementViewModel(container)
                 {
                     ConfigId = entityDamage.ConfigId,
                     Damage = entityDamage.Damage,
-                    Percent = entityDamage.Damage / _statisticGame.AllDamage.CurrentValue * 100f,
-                    Count = _statisticGame.GetTowerCount(entityDamage.ConfigId),
+                    Percent = entityDamage.Damage / statisticGame.AllDamage.CurrentValue * 100f,
+                    Count = statisticGame.GetTowerCount(entityDamage.ConfigId),
                     TypeEntity = entityDamage.TypeEntity,
                 };
 

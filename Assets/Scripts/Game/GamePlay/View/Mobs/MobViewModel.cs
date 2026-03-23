@@ -54,6 +54,9 @@ namespace Game.GamePlay.View.Mobs
         public ReadOnlyReactiveProperty<bool> IsDead => _mobEntity.IsDead;
         public MobDefence Defence => _mobEntity.Defence;
         public bool IsWay => _mobEntity.IsWay;
+
+        public bool IsBoss => _mobEntity.IsBoss;
+
         //private readonly GameplayStateProxy _gameplayState;
         private readonly Coroutines _coroutines;
 

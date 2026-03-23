@@ -180,7 +180,9 @@ namespace Game.GamePlay.Root.View
 */
         private void CreateMob(MobViewModel mobViewModel)
         {
-            var prefabPath = $"Prefabs/Gameplay/Mobs/{mobViewModel.ConfigId}"; //Перенести в настройки уровня
+            var bossPath = mobViewModel.IsBoss ? "Bosses/" : "";
+            
+            var prefabPath = $"Prefabs/Gameplay/Mobs/{bossPath}{mobViewModel.ConfigId}"; 
             var mobPrefab = Resources.Load<MobBinder>(prefabPath);
             var createdMob = Instantiate(mobPrefab, transform);
 

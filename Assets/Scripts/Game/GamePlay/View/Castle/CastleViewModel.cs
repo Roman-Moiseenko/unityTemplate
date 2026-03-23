@@ -47,17 +47,22 @@ namespace Game.GamePlay.View.Castle
                 var disposable = target.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(target));
                 _mobDisposables.Add(target.UniqueId, disposable); //Кеш подписок на смерть моба
                 SetTarget(target); //Добавляем его цель (если мультишот, то добавляется, для одиночного идет проверка)
-            });            
+            });     
+            
             //При удалении из пула (убит или вышел с дистанции) - удалить из цели
             PullTargets.ObserveRemove().Subscribe(e =>
             {
+                if (PullTargets.Count == 0) MobTarget.OnNext(null);
                 var target = e.Value;
+                if (target == null) return;
+
+                if (MobTarget.CurrentValue != null && 
+                    MobTarget.CurrentValue.UniqueId == target.UniqueId) MobTarget.OnNext(null);
+                _mobDisposables[target.UniqueId]?.Dispose();
                 _mobDisposables.Remove(target.UniqueId);
-                RemoveTarget(target);
-                if (PullTargets.Count == 0)
-                {
-                    MobTarget.OnNext(null);
-                }
+                //RemoveTarget(target);
+                if (PullTargets.Count == 0) MobTarget.OnNext(null);
+                
             });
             MobTarget.Where(x => x == null).Subscribe(_ =>
             {

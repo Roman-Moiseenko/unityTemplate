@@ -1,5 +1,6 @@
 ﻿using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Gameplay;
+using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using MVVM.CMD;
@@ -42,6 +43,7 @@ namespace Game.GamePlay.Commands.TowerCommand
             var newTower = new TowerEntity(newTowerEntity); //Оборачиваем его Прокси
             _gameplayState.Towers.Add(newTower);//Добавляем в список объектов карты
             _gameplayState.StatisticGame.BuildTower(command.ConfigId);
+            _gameplayState.StatisticGame.Add(command.ConfigId, TypeEntityStatisticDamage.Tower);
             return true;
         }
     }

@@ -171,14 +171,6 @@ namespace Game.GamePlay.Services
 
         private IEnumerator GenerateMob()
         {
-            /*
-                    foreach (var mobEntity in _gameplayState.BufferMobs.ToList())
-                    {
-                        _gameplayState.Mobs.Add(mobEntity);
-                        _gameplayState.BufferMobs.Remove(mobEntity);
-                        yield return new WaitForSeconds(SPEED_GENERATE_MOBS);
-                    }
-        */
             while (_gameplayState.BufferMobs.Count > 0 || _gameplayState.SecondBufferMobs.Count > 0)
             {
                 if (_gameplayState.BufferMobs.Count > 0)
@@ -186,45 +178,17 @@ namespace Game.GamePlay.Services
                     var mobEntity = _gameplayState.BufferMobs[0];
                     _gameplayState.Mobs.Add(mobEntity);
                     _gameplayState.BufferMobs.Remove(mobEntity);
-                    Debug.Log("GenerateMob 1");
                 }
                 if (_gameplayState.SecondBufferMobs.Count > 0)
                 {
                     var mobEntitySecond = _gameplayState.SecondBufferMobs[0];
                     _gameplayState.Mobs.Add(mobEntitySecond);
                     _gameplayState.SecondBufferMobs.Remove(mobEntitySecond);
-                    Debug.Log("GenerateMob 2");
                 }
                 yield return new WaitForSeconds(SPEED_GENERATE_MOBS);
 
             }
-            Debug.Log("GenerateMob FINISHED");
             _fsmWave.Fsm.SetState<FsmStateWaveEnd>(); //Все мобы вышли
-        }
-
-        private IEnumerator GenerateMobMainWay()
-        {
-            foreach (var mobEntity in _gameplayState.BufferMobs.ToList())
-            {
-                _gameplayState.Mobs.Add(mobEntity);
-                _gameplayState.BufferMobs.Remove(mobEntity);
-                Debug.Log("GenerateMobMainWay " + mobEntity.UniqueId);
-                yield return new WaitForSeconds(SPEED_GENERATE_MOBS);
-            }
-
-            Debug.Log("GenerateMobMainWay FINISHED");
-        }
-
-        private IEnumerator GenerateMobSecondWay()
-        {
-            foreach (var mobEntity in _gameplayState.SecondBufferMobs.ToList())
-            {
-                _gameplayState.Mobs.Add(mobEntity);
-                _gameplayState.SecondBufferMobs.Remove(mobEntity);
-                yield return new WaitForSeconds(SPEED_GENERATE_MOBS);
-            }
-
-            Debug.Log("GenerateMobSecondWay FINISHED");
         }
 
         public IEnumerator MobTimerDebuff(string configId, MobDebuff debuff, MobEntity mobEntity)

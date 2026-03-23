@@ -250,11 +250,13 @@ namespace Game.GamePlay.Root
                 gameplayState.StatisticGame.Add(configId, TypeEntityStatisticDamage.Hero);
             }
             */
+/*
             var availableTowers = towersService.GetAvailableTowers();
             foreach (var (configId, value) in availableTowers)
             {
                 gameplayState.StatisticGame.Add(configId, TypeEntityStatisticDamage.Tower);
             }
+            */
             //В последнюю очередь создаем сервис волн мобов
             var waveService = new WaveService(container, gameplayState, cmd);
             container.RegisterInstance(waveService);

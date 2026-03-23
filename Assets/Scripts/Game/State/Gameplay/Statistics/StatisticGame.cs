@@ -88,7 +88,7 @@ namespace Game.State.Gameplay.Statistics
         public void Add(string configId, TypeEntityStatisticDamage typeEntity)
         {
             var isPair = Origin.Damages.Find(p => p.ConfigId == configId);
-            if (isPair != null) throw new Exception($"Сущность {configId} уже добавлена в статистику ");
+            if (isPair != null) return;
             
             var pair = new ConfigEntityDamage
             {
@@ -97,6 +97,69 @@ namespace Game.State.Gameplay.Statistics
                 TypeEntity = typeEntity
             };
             Origin.Damages.Add(pair);
+        }
+
+        public List<ConfigEntityDamage> GetDamages()
+        {
+            List<ConfigEntityDamage> damages = new();
+
+            var hero = GetDamageHero();
+            if (hero != null) damages.Add(hero);
+            damages.Add(GetDamageCastle());
+            var towers = GetDamageTowers();
+            foreach (var tower in towers)
+                damages.Add(tower);
+            var skills = GetDamageSkills();
+            foreach (var skill in skills)
+                damages.Add(skill);
+            return damages;
+        }
+
+        private ConfigEntityDamage GetDamageHero()
+        {
+            foreach (var entity in Damages)
+            {
+                if (entity.TypeEntity == TypeEntityStatisticDamage.Hero)
+                return entity;
+            }
+
+            return null;
+        }
+        
+        private ConfigEntityDamage GetDamageCastle()
+        {
+            foreach (var entity in Damages)
+            {
+                if (entity.TypeEntity == TypeEntityStatisticDamage.Castle)
+                    return entity;
+            }
+
+            return null;
+        }
+        
+        private List<ConfigEntityDamage> GetDamageTowers()
+        {
+            var list = new List<ConfigEntityDamage>();
+            foreach (var entity in Damages)
+            {
+                if (entity.TypeEntity == TypeEntityStatisticDamage.Tower)
+                    list.Add(entity);
+            }
+            list.Sort((a, b) => b.Damage.CompareTo(a.Damage));
+            return list;
+        }
+        
+        private List<ConfigEntityDamage> GetDamageSkills()
+        {
+            var list = new List<ConfigEntityDamage>();
+            foreach (var entity in Damages)
+            {
+                if (entity.TypeEntity == TypeEntityStatisticDamage.Skill)
+                    list.Add(entity);
+            }
+            list.Sort((a, b) => b.Damage.CompareTo(a.Damage));
+
+            return list;
         }
     }
 }
