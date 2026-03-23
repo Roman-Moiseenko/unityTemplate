@@ -40,9 +40,27 @@ namespace Game.GamePlay.Commands.WaveCommands
                     Level = waveItem.Level,
                     NumberWave = command.Index,
                     Quantity = waveItem.Quantity,
+                    IsMain = true,
                 };
                 _cmd.Process(commandMob);
             }
+            //Второй путь
+            if (!newMapInitialStateSettings.hasWaySecond) return false; //Волну в не сохраняем
+            var waveSecondItems = newMapInitialStateSettings.WavesSecond[command.Index - 1].WaveItems;
+            foreach (var waveItem in waveSecondItems) //Настройки каждой волны - группы мобов
+            {
+                var commandMob = new CommandCreateMob
+                {
+                    ConfigId = waveItem.MobConfigId,
+                    Level = waveItem.Level,
+                    NumberWave = command.Index,
+                    Quantity = waveItem.Quantity,
+                    IsMain = false,
+                };
+                _cmd.Process(commandMob);
+            }
+            
+            
             return false; //Волну в не сохраняем
         }
     }

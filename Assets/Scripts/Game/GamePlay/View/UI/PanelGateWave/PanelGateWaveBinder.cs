@@ -19,6 +19,11 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         {
             infoWave.Bind(viewModel.InfoWaveViewModel);
             infoTower.Bind(viewModel.InfoTowerViewModel);
+            if (viewModel.HasSecondWay)
+            {
+                infoWaveSecond.gameObject.SetActive(true);
+                infoWaveSecond.Bind(viewModel.InfoSecondWaveViewModel);
+            }
             
             var d = Disposable.CreateBuilder();
             

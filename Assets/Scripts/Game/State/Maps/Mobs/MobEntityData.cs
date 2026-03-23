@@ -26,5 +26,6 @@ namespace Game.State.Maps.Mobs
         //public MobState State = MobState.Moving;
 
 
+        public bool IsWay = true;
     }
 }

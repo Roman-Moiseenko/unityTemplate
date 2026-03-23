@@ -72,14 +72,29 @@ namespace Game.GamePlay.View.Mobs
             CurrentHealth = mobEntity.Health;
             MaxHealth = mobEntity.Health.CurrentValue;
 
+            
             //Моб вышел на дорогу, просчитываем путь и начальные координаты, от расположения ворот
-            var position = waveService.GateWaveViewModel.Position.Value;
-            var direction = -1 * waveService.GateWaveViewModel.Direction.Value;
+            
+            //Начальные координаты и направление для моба в зависимости от его пути
+            Vector2 position;
+            Vector2Int direction;
 
+            if (mobEntity.IsWay)
+            {
+                position = waveService.GateWaveViewModel.Position.Value;
+                direction = -1 * waveService.GateWaveViewModel.Direction.Value;
+            }
+            else
+            {
+                position = waveService.GateWaveSecondViewModel.Position.Value;
+                direction = -1 * waveService.GateWaveSecondViewModel.Direction.Value;
+            }
             mobEntity.SetStartPosition(position, direction);
+            
+            //Устанавливаем центр по высоте для ShotViewModel
             PositionTarget.Subscribe(v =>
             {
-                var h = 0.15f; //Устанавливаем центр по высоте для ShotViewModel
+                var h = 0.15f; 
                 if (IsFly)
                 {
                     h = 0.7f;

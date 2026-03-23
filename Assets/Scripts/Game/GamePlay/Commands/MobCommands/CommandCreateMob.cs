@@ -8,5 +8,6 @@ namespace Game.GamePlay.Commands.MobCommands
         public int Level;
         public int NumberWave;
         public int Quantity;
+        public bool IsMain;
     }
 }

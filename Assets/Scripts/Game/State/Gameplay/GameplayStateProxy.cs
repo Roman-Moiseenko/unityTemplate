@@ -48,6 +48,8 @@ namespace Game.State.Gameplay
         public ObservableList<WarriorEntity> Warriors { get; } = new();
         public ObservableList<MobEntity> Mobs { get; } = new();
         public ObservableList<MobEntity> BufferMobs { get; } = new();
+        public ObservableList<MobEntity> SecondBufferMobs { get; } = new();
+        
 
         public readonly ReactiveProperty<bool> MapFinished = new(false);
         public ObservableList<ShotData> Shots { get; } = new();

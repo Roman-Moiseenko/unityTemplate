@@ -184,9 +184,7 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(framePlacementService);
             
             container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();
-            //сервис волн мобов
-            var waveService = new WaveService(container, gameplayState, cmd);
-            container.RegisterInstance(waveService);
+
 
             container.RegisterFactory(_ => new CastleService(container,
                 gameplayState.Castle, gameplayState, gameplayEnterParams)).AsSingle();
@@ -257,6 +255,10 @@ namespace Game.GamePlay.Root
             {
                 gameplayState.StatisticGame.Add(configId, TypeEntityStatisticDamage.Tower);
             }
+            //В последнюю очередь создаем сервис волн мобов
+            var waveService = new WaveService(container, gameplayState, cmd);
+            container.RegisterInstance(waveService);
+            
 /*
             var availableSkills = skillsService.GetAvailableTowers();
             foreach (var (configId, value) in availableSkills)

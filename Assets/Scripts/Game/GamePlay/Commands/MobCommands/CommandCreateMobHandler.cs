@@ -67,9 +67,17 @@ namespace Game.GamePlay.Commands.MobCommands
                     NumberWave = command.NumberWave,
                     DamageSecond = damageSecond,
                     DamageSecondType = damageSecondType,
+                    IsWay = command.IsMain,
                 };
-                
-                _gameplayState.BufferMobs.Add(new MobEntity(mob));
+
+                if (command.IsMain)
+                {
+                    _gameplayState.BufferMobs.Add(new MobEntity(mob));
+                }
+                else
+                {
+                    _gameplayState.SecondBufferMobs.Add(new MobEntity(mob));
+                }
             }
 
             return false;

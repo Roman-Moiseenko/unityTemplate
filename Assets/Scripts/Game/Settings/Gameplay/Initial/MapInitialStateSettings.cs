@@ -8,6 +8,7 @@ namespace Game.Settings.Gameplay.Initial
     {
         public List<TowerInitialSettings> Towers = new();
         public List<WaveSettings> Waves = new();
+        public List<WaveSettings> WavesSecond = new();
         
         public string groundDefault;
         public bool smallMap = false;

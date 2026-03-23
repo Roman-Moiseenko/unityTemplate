@@ -26,19 +26,17 @@ namespace Game.GamePlay.Services
 {
     public class WaveService
     {
-        private const float SpeedGenerateMobs = 0.5f; //Скорость генерации новых мобов
-        private const float TimeEndWave = 0.8f; //Задержка между волнами
+        private const float SPEED_GENERATE_MOBS = 0.5f; //Скорость генерации новых мобов
+        private const float TIME_END_WAVE = 0.8f; //Задержка между волнами
 
         private readonly GameplayStateProxy _gameplayState;
         private readonly ICommandProcessor _cmd;
         private readonly WayService _wayService;
 
-        private readonly Coroutines _coroutines;
+        public readonly ReactiveProperty<float> TimeOutNewWaveValue = new(0f);
 
-        public ReactiveProperty<float> TimeOutNewWaveValue = new(0f);
-        
-        public ReactiveProperty<bool> FinishWave = new(false); //Волна закончилась
-        public ReactiveProperty<bool> StartWave = new(false); //Волна началась
+        public readonly ReactiveProperty<bool> FinishWave = new(false); //Волна закончилась
+        public readonly ReactiveProperty<bool> StartWave = new(false); //Волна началась
 
 
         private readonly ObservableList<MobViewModel> _allMobsOnWay = new();
@@ -58,8 +56,8 @@ namespace Game.GamePlay.Services
         {
             _gameplayState = gameplayState;
             _cmd = cmd;
-            _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
-            
+            var coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
+
             _fsmWave = container.Resolve<FsmWave>();
             _wayService = container.Resolve<WayService>();
             var roadsService = container.Resolve<RoadsService>();
@@ -69,28 +67,28 @@ namespace Game.GamePlay.Services
                     {
                         if (newValue > gameplayState.CountWaves) return;
                         //Создаем мобов для всей волны
-                        var command = new CommandCreateWave{ Index = newValue};
+                        var command = new CommandCreateWave { Index = newValue };
                         _cmd.Process(command);
-                        _coroutines.StartCoroutine(StartNewWave());
+                        coroutines.StartCoroutine(StartNewWave());
                     }
                 );
-            
+
             //Подписка на всех мобов из Уровня
             gameplayState.Mobs.ObserveAdd().Subscribe(e =>
             {
                 var mobEntity = e.Value;
                 CreateMobViewModel(mobEntity);
                 mobEntity.Debuffs.ObserveAdd().Subscribe(d =>
-                    _coroutines.StartCoroutine(MobTimerDebuff(d.Value.Key, d.Value.Value, mobEntity)));
+                    coroutines.StartCoroutine(MobTimerDebuff(d.Value.Key, d.Value.Value, mobEntity)));
 
                 mobEntity.Debuffs.ObserveRemove().Subscribe(d =>
-                    _coroutines.StopCoroutine(MobTimerDebuff(d.Value.Key, d.Value.Value, mobEntity)));
+                    coroutines.StopCoroutine(MobTimerDebuff(d.Value.Key, d.Value.Value, mobEntity)));
             });
-            
+
             gameplayState.Mobs.ObserveRemove().Subscribe(e =>
             {
                 var mobEntity = e.Value;
-                _coroutines.StartCoroutine(RemoveMobViewModel(mobEntity.UniqueId));
+                coroutines.StartCoroutine(RemoveMobViewModel(mobEntity.UniqueId));
                 _gameplayState.StatisticGame.KillMob();
                 var finishWave = true;
                 var freeRoad = true;
@@ -99,30 +97,31 @@ namespace Game.GamePlay.Services
                     freeRoad = false; //На дороге есть мобы, она не свободна
                     if (stateMob.NumberWave == mobEntity.NumberWave) finishWave = false;
                 }
+
                 FinishWave.OnNext(finishWave);
                 if (freeRoad)
                 {
                     _fsmWave.Fsm.SetState<FsmStateWaveTimer>();
                 }
             });
- 
-            
+
+
             //Создаем модель ворот
             CreateGateWaveViewModel();
             roadsService.Way.ObserveAdd().Subscribe(_ => MoveGateWaveViewModel());
             //Если 2 пути
             if (_gameplayState.HasWaySecond.Value)
             {
-                CreateGateWaveSecondViewModel();    
+                CreateGateWaveSecondViewModel();
                 roadsService.WaySecond.ObserveAdd().Subscribe(_ => MoveGateWaveSecondViewModel());
             }
-            
-            //При добавлении дороги на путь, перемещаем модель ворот
+
+            //Обрабатываем текущее состояние волны
             _fsmWave.Fsm.StateCurrent.Subscribe(v =>
             {
                 if (v.GetType() == typeof(FsmStateWaveGo))
                 {
-                    _coroutines.StopCoroutine(_coroutineTimerNewWave);
+                    coroutines.StopCoroutine(_coroutineTimerNewWave);
                     TimeOutNewWaveValue.Value = 0;
                 }
 
@@ -134,7 +133,7 @@ namespace Game.GamePlay.Services
                 if (v.GetType() == typeof(FsmStateWaveTimer))
                 {
                     TimeOutNewWaveValue.Value = 0;
-                    _coroutineTimerNewWave = _coroutines.StartCoroutine(TimerNewWave());
+                    _coroutineTimerNewWave = coroutines.StartCoroutine(TimerNewWave());
                 }
             });
         }
@@ -172,13 +171,60 @@ namespace Game.GamePlay.Services
 
         private IEnumerator GenerateMob()
         {
+            /*
+                    foreach (var mobEntity in _gameplayState.BufferMobs.ToList())
+                    {
+                        _gameplayState.Mobs.Add(mobEntity);
+                        _gameplayState.BufferMobs.Remove(mobEntity);
+                        yield return new WaitForSeconds(SPEED_GENERATE_MOBS);
+                    }
+        */
+            while (_gameplayState.BufferMobs.Count > 0 || _gameplayState.SecondBufferMobs.Count > 0)
+            {
+                if (_gameplayState.BufferMobs.Count > 0)
+                {
+                    var mobEntity = _gameplayState.BufferMobs[0];
+                    _gameplayState.Mobs.Add(mobEntity);
+                    _gameplayState.BufferMobs.Remove(mobEntity);
+                    Debug.Log("GenerateMob 1");
+                }
+                if (_gameplayState.SecondBufferMobs.Count > 0)
+                {
+                    var mobEntitySecond = _gameplayState.SecondBufferMobs[0];
+                    _gameplayState.Mobs.Add(mobEntitySecond);
+                    _gameplayState.SecondBufferMobs.Remove(mobEntitySecond);
+                    Debug.Log("GenerateMob 2");
+                }
+                yield return new WaitForSeconds(SPEED_GENERATE_MOBS);
+
+            }
+            Debug.Log("GenerateMob FINISHED");
+            _fsmWave.Fsm.SetState<FsmStateWaveEnd>(); //Все мобы вышли
+        }
+
+        private IEnumerator GenerateMobMainWay()
+        {
             foreach (var mobEntity in _gameplayState.BufferMobs.ToList())
             {
                 _gameplayState.Mobs.Add(mobEntity);
                 _gameplayState.BufferMobs.Remove(mobEntity);
-                yield return new WaitForSeconds(SpeedGenerateMobs);
+                Debug.Log("GenerateMobMainWay " + mobEntity.UniqueId);
+                yield return new WaitForSeconds(SPEED_GENERATE_MOBS);
             }
-            _fsmWave.Fsm.SetState<FsmStateWaveEnd>(); //Все мобы вышли
+
+            Debug.Log("GenerateMobMainWay FINISHED");
+        }
+
+        private IEnumerator GenerateMobSecondWay()
+        {
+            foreach (var mobEntity in _gameplayState.SecondBufferMobs.ToList())
+            {
+                _gameplayState.Mobs.Add(mobEntity);
+                _gameplayState.SecondBufferMobs.Remove(mobEntity);
+                yield return new WaitForSeconds(SPEED_GENERATE_MOBS);
+            }
+
+            Debug.Log("GenerateMobSecondWay FINISHED");
         }
 
         public IEnumerator MobTimerDebuff(string configId, MobDebuff debuff, MobEntity mobEntity)
@@ -217,6 +263,7 @@ namespace Game.GamePlay.Services
             var exitPoint = _wayService.GetExitPoint(_gameplayState.Origin.Way);
 
             Vector2 position = new Vector2((lastPoint.x + exitPoint.x) / 2f, (lastPoint.y + exitPoint.y) / 2f);
+
             var direction = exitPoint - lastPoint;
             //_gameplayState.GateWave.OnNext(position);
 
@@ -233,31 +280,30 @@ namespace Game.GamePlay.Services
             };
             _gameplayState.GateWave = GateWaveViewModel.Position;
         }
-        
-            private void CreateGateWaveSecondViewModel()
+
+        private void CreateGateWaveSecondViewModel()
+        {
+            var lastPoint = _wayService.GetLastPoint(_gameplayState.Origin.WaySecond);
+            var exitPoint = _wayService.GetExitPoint(_gameplayState.Origin.WaySecond);
+
+            Vector2 position = new Vector2((lastPoint.x + exitPoint.x) / 2f, (lastPoint.y + exitPoint.y) / 2f);
+            var direction = exitPoint - lastPoint;
+
+            //_gameplayState.GateWaveSecond.OnNext(position);
+
+            GateWaveSecondViewModel = new GateWaveViewModel(_fsmWave)
             {
-                var lastPoint = _wayService.GetLastPoint(_gameplayState.Origin.WaySecond);
-                var exitPoint = _wayService.GetExitPoint(_gameplayState.Origin.WaySecond);
-    
-                Vector2 position = new Vector2((lastPoint.x + exitPoint.x) / 2f, (lastPoint.y + exitPoint.y) / 2f);
-                var direction = exitPoint - lastPoint;
-                
-                //_gameplayState.GateWaveSecond.OnNext(position);
-    
-                GateWaveSecondViewModel = new GateWaveViewModel(_fsmWave)
+                Position =
                 {
-                    Position =
-                    {
-                        Value = position
-                    },
-                    Direction =
-                    {
-                        Value = direction
-                    }
-                };
-                _gameplayState.GateWaveSecond = GateWaveSecondViewModel.Position;
-            }    
-        
+                    Value = position
+                },
+                Direction =
+                {
+                    Value = direction
+                }
+            };
+            _gameplayState.GateWaveSecond = GateWaveSecondViewModel.Position;
+        }
 
         /**
          * Перемещаем главные ворота
@@ -287,7 +333,7 @@ namespace Game.GamePlay.Services
 
         private void CreateMobViewModel(MobEntity mobEntity)
         {
-            mobEntity.IsWay = true;
+            //   mobEntity.IsWay = true;
             var mobViewModel = new MobViewModel(mobEntity, _gameplayState, this);
             _allMobsOnWay.Add(mobViewModel);
         }
@@ -319,12 +365,13 @@ namespace Game.GamePlay.Services
                         position.x += mobEntity.Delta;
                     }
                 }
-                
-                var direction = ( i == 0 ? Vector2Int.zero : way[i - 1].Position) - way[i].Position;
+
+                var direction = (i == 0 ? Vector2Int.zero : way[i - 1].Position) - way[i].Position;
                 roads.Add(new RoadPoint(position, direction)); //Список точек движения 
             }
+
             roads.Add(new RoadPoint(Vector2.zero, Vector2Int.left));
-            
+
             return roads;
         }
     }

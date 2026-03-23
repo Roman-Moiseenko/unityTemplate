@@ -28,7 +28,7 @@ namespace Game.State.Maps.Mobs
         public ReactiveProperty<float> Health;
         public ReactiveProperty<float> Armor;       
         
-        public bool IsWay = true; //На главной дороге
+        public bool IsWay => Origin.IsWay; //На главной дороге
         public float Delta;        
         
         public ReactiveProperty<Vector2> Position; //Данные не сохраняются в MobEntityData
