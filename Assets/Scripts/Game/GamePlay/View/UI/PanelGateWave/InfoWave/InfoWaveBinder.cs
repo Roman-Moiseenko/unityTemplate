@@ -28,6 +28,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
         
         private List<EnemyInfoBinder> _enemyInfoBinders = new();
         private ReactiveProperty<bool> _isBoss = new(false);
+        
+        public ReactiveProperty<bool> IsShowClicked = new(false);
         public void Bind(InfoWaveViewModel viewModel)
         {
             _viewModel = viewModel;
@@ -112,6 +114,11 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
             
             _disposable = d.Build();
         }
+
+        public void CloseInfoPopup()
+        {
+            _viewModel.ShowInfoWave.Value = false;
+        }
         
         private void InfoWavePanelAddEntity(EnemyDataInfo enemyDataInfo)
         {
@@ -149,6 +156,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
         {
             if (!_viewModel.ShowInfoWave.CurrentValue)
             {
+                IsShowClicked.OnNext(true);
                 _viewModel.ShowInfoWave.OnNext(true);
             }
             else

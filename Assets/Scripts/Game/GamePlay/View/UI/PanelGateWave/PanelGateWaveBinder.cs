@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using Game.GamePlay.View.UI.PanelGateWave.InfoTower;
 using Game.GamePlay.View.UI.PanelGateWave.InfoWave;
 using MVVM.UI;
@@ -17,15 +18,25 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         
         protected override void OnBind(PanelGateWaveViewModel viewModel)
         {
+            var d = Disposable.CreateBuilder();
             infoWave.Bind(viewModel.InfoWaveViewModel);
+
             infoTower.Bind(viewModel.InfoTowerViewModel);
             if (viewModel.HasSecondWay)
             {
                 infoWaveSecond.gameObject.SetActive(true);
                 infoWaveSecond.Bind(viewModel.InfoSecondWaveViewModel);
+                infoWave.IsShowClicked
+                    .Where(x => x)
+                    .Subscribe(v => infoWaveSecond.CloseInfoPopup())
+                    .AddTo(ref d);
+                infoWaveSecond.IsShowClicked
+                    .Where(x => x)
+                    .Subscribe(v => infoWave.CloseInfoPopup())
+                    .AddTo(ref d);
             }
             
-            var d = Disposable.CreateBuilder();
+
             
             _disposableImplementation = d.Build();
         }
