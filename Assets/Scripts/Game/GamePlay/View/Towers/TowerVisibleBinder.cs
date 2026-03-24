@@ -11,7 +11,6 @@ namespace Game.GamePlay.View.Towers
 {
     public class TowerVisibleBinder : MonoBehaviour
     {
-
         [SerializeField] private CapsuleCollider visibleCollider;
         private TowerAttackViewModel _viewModel;
         //private float _minDistance; // => _viewModel.MinDistance;
@@ -43,8 +42,12 @@ namespace Game.GamePlay.View.Towers
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
             var mobBinder = other.gameObject.GetComponent<MobBinder>();
             if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
-            if (_viewModel.TypeEnemy.IsTarget(mobBinder.ViewModel.IsFly)) 
+            
+            
+            
+            if (_viewModel.TypeEnemy.IsTarget(mobBinder.ViewModel.IsFly))
                 _viewModel.PullTargets.Add(mobBinder.ViewModel); //Добавляем моба в пулл целей
+            
         }
 
         private void OnTriggerExit(Collider other)

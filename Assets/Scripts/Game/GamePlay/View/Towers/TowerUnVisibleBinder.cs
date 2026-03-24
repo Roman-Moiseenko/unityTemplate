@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Game.GamePlay.View.Mobs;
+using Game.State.Maps.Towers;
 using R3;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -46,7 +47,8 @@ namespace Game.GamePlay.View.Towers
             //Когда моб выходит из зоны видимости, удаляем из Пула
             var mobBinder = other.gameObject.GetComponent<MobBinder>();
             if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
-            _viewModel.PullTargets.Add(mobBinder.ViewModel); //Добавляем моба в пулл целей
+            if (_viewModel.TypeEnemy.IsTarget(mobBinder.ViewModel.IsFly))
+                _viewModel.PullTargets.Add(mobBinder.ViewModel); //Добавляем моба в пулл целей
         }
         
         private void OnDestroy()

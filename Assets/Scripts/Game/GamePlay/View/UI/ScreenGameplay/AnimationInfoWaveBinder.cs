@@ -55,6 +55,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
                     .Join(rightFirstArrow.DOScale(DELTA_SCALE_FIRST, DURATION).From(SCALE_FIRST))
                 )
                 .AppendInterval(0.2f)
+                .SetUpdate(true)
                 .SetLoops(2)
                 .OnComplete(() =>
                 {
