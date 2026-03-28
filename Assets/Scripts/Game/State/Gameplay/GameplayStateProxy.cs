@@ -41,6 +41,7 @@ namespace Game.State.Gameplay
         
         public ObservableList<RewardEntityData> RewardEntities { get; } = new(); 
         public ObservableList<TowerEntity> Towers { get; } = new();
+        public ObservableList<TowerEntity> Skills { get; } = new();
         public ObservableList<GroundEntity> Grounds { get; } = new();
         public ObservableList<RoadEntity> Way { get; } = new();
         public ObservableList<RoadEntity> WaySecond { get; } = new();

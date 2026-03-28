@@ -2,6 +2,7 @@
 using Game.GamePlay.Classes;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
+using Game.State.Inventory.Common;
 using Game.State.Maps.Rewards;
 
 namespace Game.MainMenu.Root

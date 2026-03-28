@@ -1,4 +1,5 @@
 ﻿using Game.Settings.Gameplay.Enemies;
+using Game.State.Common;
 using UnityEngine;
 
 namespace Game.State.Maps.Mobs
@@ -9,7 +10,7 @@ namespace Game.State.Maps.Mobs
         public int UniqueId;
         public bool IsBoss;
         public int Level;
-        public MobDefence Defence;
+        public TypeDefence Defence;
         public bool IsFly;
         public int NumberWave;       
         

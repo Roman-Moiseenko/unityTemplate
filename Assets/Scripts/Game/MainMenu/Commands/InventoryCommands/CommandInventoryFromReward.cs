@@ -1,4 +1,5 @@
 ﻿using Game.State.Inventory;
+using Game.State.Inventory.Common;
 using MVVM.CMD;
 
 namespace Game.MainMenu.Commands.InventoryCommands

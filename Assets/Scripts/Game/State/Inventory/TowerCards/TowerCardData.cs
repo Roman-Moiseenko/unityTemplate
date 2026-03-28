@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Game.State.Common;
+using Game.State.Inventory.Common;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
 
@@ -11,9 +13,9 @@ namespace Game.State.Inventory.TowerCards
     {
         public override bool Accumulation => false;
         public override InventoryType TypeItem => InventoryType.TowerCard;
-        public TypeEpicCard EpicLevel;
+        public TypeEpic EpicLevel;
         public int Level;
-        public MobDefence Defence;
+        public TypeDefence Defence;
         public Dictionary<TowerParameterType, TowerParameterData> Parameters; 
         public Dictionary<TowerParameterType, TowerParameterData> BaseParameters = new();
         public Dictionary<TowerParameterType, TowerParameterData> UpdateParameters = new();

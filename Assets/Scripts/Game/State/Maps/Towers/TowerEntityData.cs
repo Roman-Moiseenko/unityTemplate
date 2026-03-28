@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.State.Common;
 using Game.State.Entities;
 using Game.State.Maps.Mobs;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Game.State.Maps.Towers
         public int Level { get; set; }
         public Vector2Int Position { get; set; } //Позиция в координатах x y сущности на карте, конвертируются в x z на плоскости
         
-        public TowerTypeEnemy TypeEnemy { get; set; }
+        public TypeTarget TypeTarget { get; set; }
         //Список усилений, навешанных на башню
 
         public bool IsOnRoad;
@@ -21,7 +22,7 @@ namespace Game.State.Maps.Towers
         public bool IsMultiShot { get; set; }
         public bool IsSingleTarget { get; set; }
         public float SpeedShot { get; set; }
-        public MobDefence Defence { get; set; }
+        public TypeDefence Defence { get; set; }
         public Vector2Int Placement { get; set; } //Доп.размещение, для Гарнизона точка появления солдат
         public bool IsPlacement { get; set; }
     }

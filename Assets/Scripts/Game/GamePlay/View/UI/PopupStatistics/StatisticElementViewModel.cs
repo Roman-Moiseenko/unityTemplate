@@ -1,5 +1,6 @@
 ﻿using DI;
 using Game.State;
+using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Gameplay.Statistics;
 using Game.State.Inventory;
@@ -10,7 +11,7 @@ namespace Game.GamePlay.View.UI.PopupStatistics
     public class StatisticElementViewModel
     {
         public GameplayStateProxy GameplayState { get; set; }
-        public MobDefence? Defence = null;
+        public TypeDefence? Defence = null;
 
         public int MaxLevel;
 
@@ -19,7 +20,7 @@ namespace Game.GamePlay.View.UI.PopupStatistics
         public string Name;
         public string ConfigId;
         public int Level = 0;
-        public TypeEpicCard EpicCard;
+        public TypeEpic EpicCard;
         public int Count;
         public TypeEntityStatisticDamage TypeEntity;
         

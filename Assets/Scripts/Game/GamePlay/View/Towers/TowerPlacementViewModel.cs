@@ -8,6 +8,7 @@ using Game.GamePlay.Fsm.WaveStates;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Warriors;
+using Game.State.Common;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
@@ -47,7 +48,7 @@ namespace Game.GamePlay.View.Towers
         public TowerPlacementViewModel(TowerEntity towerEntity, DIContainer container, FsmWave fsmWave, PlacementService placementService) : base(towerEntity, container)
         {
             EnabledPlacement = new ReactiveProperty<bool>(true);
-            IsFly = TowerEntity.TypeEnemy == TowerTypeEnemy.Air;
+            IsFly = TowerEntity.TypeTarget == TypeTarget.Air;
             _placementService = placementService;
             UpdateParameterWarrior();
             for (var i = 1; i <= CountWarriors; i++)
@@ -187,7 +188,7 @@ namespace Game.GamePlay.View.Towers
                 Speed = Speed,
                 Range = Range,
                 Defence = TowerEntity.Defence,
-                IsFly = TowerEntity.TypeEnemy == TowerTypeEnemy.Air,
+                IsFly = TowerEntity.TypeTarget == TypeTarget.Air,
                 PlacementPosition = TowerEntity.Placement.CurrentValue, //Позиция, куда идт warrior первоначально
                 StartPosition = TowerEntity.Position.CurrentValue, //Позиция башни, откуда идут warrior
                 UniqueId = GameplayState.CreateEntityID(),

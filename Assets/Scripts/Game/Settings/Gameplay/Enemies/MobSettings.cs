@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.State.Common;
 using Game.State.Maps.Mobs;
 
 namespace Game.Settings.Gameplay.Enemies
@@ -14,7 +15,7 @@ namespace Game.Settings.Gameplay.Enemies
         public bool IsFly;
         public int AvailableWave;
         public int RewardCurrency;
-        public MobDefence Defence;
+        public TypeDefence Defence;
         
         //Все динамические параметры, зависящие от уровня
         public Dictionary<MobParameter, List<float>> Parameters = new();

@@ -4,6 +4,7 @@ using System.Globalization;
 using Game.Common;
 using Game.GameRoot.ImageManager;
 using Game.MainMenu.View.ScreenInventory.Parameters;
+using Game.State.Common;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps.Towers;

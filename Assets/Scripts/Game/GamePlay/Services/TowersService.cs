@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using DI;
 using Game.GamePlay.Commands.TowerCommand;
-using Game.GamePlay.Commands.WarriorCommands;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Root;
 using Game.GamePlay.View.Towers;
 using Game.GameRoot.Commands;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.State.Common;
 using Game.State.Gameplay;
-using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
-using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
 using Game.State.Research;
-using Game.State.Root;
 using MVVM.CMD;
 using ObservableCollections;
 using R3;
@@ -245,9 +242,9 @@ namespace Game.GamePlay.Services
         /**
          * Список доступных башен на текущем уровне
          */
-        public Dictionary<string, TypeEpicCard> GetAvailableTowers()
+        public Dictionary<string, TypeEpic> GetAvailableTowers()
         {
-            var towers = new Dictionary<string, TypeEpicCard>();
+            var towers = new Dictionary<string, TypeEpic>();
 
             foreach (var towerCard in _baseTowerCards)
             {
@@ -286,7 +283,7 @@ namespace Game.GamePlay.Services
         }
 
 
-        public ShotData ShotCalculation(TowerEntity towerEntity, MobDefence mobDefence)
+        public ShotData ShotCalculation(TowerEntity towerEntity, TypeDefence typeDefence)
         {
             var damageBooster = 0f;
             var criticalBooster = 0f;
@@ -295,7 +292,7 @@ namespace Game.GamePlay.Services
             if (boosters.TryGetValue(TowerParameterType.Damage, out var damage)) damageBooster = damage;
             if (boosters.TryGetValue(TowerParameterType.Critical, out var critical)) criticalBooster = critical;
             
-            return towerEntity.ShotCalculation(mobDefence, damageBooster, criticalBooster);
+            return towerEntity.ShotCalculation(typeDefence, damageBooster, criticalBooster);
         }
 
 

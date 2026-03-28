@@ -3,6 +3,7 @@ using Game.MainMenu.Services;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.State;
 using Game.State.Inventory;
+using Game.State.Inventory.Common;
 using Game.State.Inventory.TowerPlans;
 using Game.State.Root;
 using MVVM.UI;

@@ -5,6 +5,7 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Services;
 using Game.Settings;
+using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Gameplay.Rewards;
 using Game.State.Inventory;
@@ -26,7 +27,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
         public int NumberModel;
         public readonly Dictionary<TowerParameterType, Vector2> InfoCardParameters = new(); //Параметры для отображения на Backend
 
-        public MobDefence? Defence = null;
+        public TypeDefence? Defence = null;
         public ReactiveProperty<bool> Updated = new(true);
         
         

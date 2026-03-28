@@ -1,4 +1,5 @@
 ﻿using Game.State.Inventory;
+using Game.State.Inventory.Common;
 using Game.State.Maps.Rewards;
 
 namespace Game.GameRoot.View.ResourceReward

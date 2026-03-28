@@ -2,6 +2,7 @@
 using Game.State.GameStates;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
+using Game.State.Inventory.Common;
 using ObservableCollections;
 using R3;
 using UnityEngine;

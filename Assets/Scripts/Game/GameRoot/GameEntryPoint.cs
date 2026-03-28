@@ -6,6 +6,7 @@ using System.IO;
 using DI;
 using Game.Common;
 using Game.GamePlay.Root;
+using Game.GameRoot;
 using Game.GameRoot.Commands;
 using Game.GameRoot.Commands.HardCurrency;
 using Game.GameRoot.ImageManager;
@@ -206,6 +207,11 @@ namespace Scripts.Game.GameRoot
                         LoadAndStartGameplay(mainMenuExitParams.TargetSceneEnterParams.As<GameplayEnterParams>())
                     );
                 }
+/*
+                if (targetSceneName == Scenes.EVENT)
+                {
+                    
+                } */
             });
             _uiRoot.HideLoadingFirstScreen();
         }

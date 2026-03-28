@@ -23,7 +23,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
             infoEmptyBlock.gameObject.SetActive(false);
             infoTowerBlock.gameObject.SetActive(true);
             useBlock.gameObject.SetActive(true);
-            infoTowerBlock.Find("textCardTitle").GetComponent<TMP_Text>().text = viewModel.NameTower;
+            infoTowerBlock.Find("textCardTitle").GetComponent<TMP_Text>().text = viewModel.NameEnitity;
             
             var index = 0;
             foreach (var parameter in viewModel.Parameters)
@@ -35,7 +35,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
 
             infoTowerBlock.GetComponent<RectTransform>().sizeDelta = new Vector2(
                 720, index * 40 + 50);
-            useBlock.GetComponent<TMP_Text>().text = $"2 x {viewModel.NameEpic} {viewModel.NameTower}";
+            useBlock.GetComponent<TMP_Text>().text = $"2 x {viewModel.NameEpic} {viewModel.NameEnitity}";
         }
 
         public void Empty()

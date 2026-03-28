@@ -10,6 +10,7 @@ using Game.Settings;
 using Game.Settings.Gameplay.Maps;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
+using Game.State.Inventory.Common;
 using Game.State.Maps.Rewards;
 using Game.State.Root;
 using MVVM.CMD;

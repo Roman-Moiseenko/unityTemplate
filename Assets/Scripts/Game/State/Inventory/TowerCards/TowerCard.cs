@@ -1,4 +1,6 @@
 ﻿using System;
+using Game.State.Common;
+using Game.State.Inventory.Common;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
 using Newtonsoft.Json;
@@ -10,16 +12,16 @@ namespace Game.State.Inventory.TowerCards
 {
     public class TowerCard : InventoryItem
     {
-        public ReactiveProperty<TypeEpicCard> EpicLevel;
+        public ReactiveProperty<TypeEpic> EpicLevel;
         public readonly ReactiveProperty<int> Level;
         public ObservableDictionary<TowerParameterType, TowerParameter> Parameters;
-        public MobDefence Defence;
+     //   public TypeDefence Defence;
        // public ObservableDictionary<TowerParameterType, TowerParameter> BaseParameters;
         
         public TowerCard(TowerCardData data) : base(data)
         {
-            Defence = data.Defence;
-            EpicLevel = new ReactiveProperty<TypeEpicCard>(data.EpicLevel);
+         //   Defence = data.Defence;
+            EpicLevel = new ReactiveProperty<TypeEpic>(data.EpicLevel);
             EpicLevel.Subscribe(newValue => data.EpicLevel = newValue);
             
             Level = new ReactiveProperty<int>(data.Level);

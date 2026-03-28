@@ -12,6 +12,7 @@ using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Mobs;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
+using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Inventory;
 using Game.State.Maps.Mobs;
@@ -50,10 +51,10 @@ namespace Game.GamePlay.View.Towers
 
         public ReactiveProperty<int> NumberModel = new(0);
         public float SpeedShot => TowerEntity.SpeedShot;
-        public TypeEpicCard EpicLevel { get; set; }
+        public TypeEpic EpicLevel { get; set; }
         public ReactiveProperty<bool> FinishEffectLevelUp = new(false);
         public ReactiveProperty<bool> ShowArea = new(false);
-        public TowerTypeEnemy TypeEnemy => TowerEntity.TypeEnemy;
+        public TypeTarget TypeTarget => TowerEntity.TypeTarget;
 
 
         //Флаг для передачи в Панели подтверждения из различных состояния

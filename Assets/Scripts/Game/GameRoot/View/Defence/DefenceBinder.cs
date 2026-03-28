@@ -1,5 +1,6 @@
 using Game.Common;
 using Game.GameRoot.ImageManager;
+using Game.State.Common;
 using Game.State.Maps.Mobs;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +17,7 @@ namespace Game.GameRoot.View.Defence
             _imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
         }
         
-        public void Bind(MobDefence? defence)
+        public void Bind(TypeDefence? defence)
         {
             if (defence == null)
             {
@@ -24,7 +25,7 @@ namespace Game.GameRoot.View.Defence
             }
             else
             {
-                var defenceImage = _imageManager.GetDefenceData((MobDefence)defence);
+                var defenceImage = _imageManager.GetDefenceData((TypeDefence)defence);
                 backDefence.sprite = defenceImage.Background;
                 iconDefence.sprite = defenceImage.Icon;
                 gameObject.SetActive(true);

@@ -12,7 +12,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
     public class InfoUpgradedViewModel
     {
 
-        public string NameTower;
+        public string NameEnitity;
         public string NameEpic;
         public Dictionary<string, Vector2> Parameters = new();
         

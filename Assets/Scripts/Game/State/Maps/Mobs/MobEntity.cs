@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.State.Common;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
@@ -20,7 +21,7 @@ namespace Game.State.Maps.Mobs
         public float Damage => Origin.Damage;   
         public float DamageSecond => Origin.DamageSecond;   
         public MobParameter? DamageSecondType => Origin.DamageSecondType;   
-        public MobDefence Defence => Origin.Defence;        
+        public TypeDefence Defence => Origin.Defence;        
         public bool IsBoss => Origin.IsBoss;     
         public int RewardCurrency => Origin.RewardCurrency;
         public int NumberWave => Origin.NumberWave;        

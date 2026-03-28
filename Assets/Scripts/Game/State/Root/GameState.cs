@@ -6,6 +6,7 @@ using Game.State.GameResources;
 using Game.State.GameStates;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
+using Game.State.Inventory.Common;
 using Game.State.Inventory.Deck;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps;

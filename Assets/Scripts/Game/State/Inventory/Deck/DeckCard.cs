@@ -38,16 +38,20 @@ namespace Game.State.Inventory.Deck
             {
                 deckCardData.TowerCardIds.Remove(v.Value.Key);
             });
-       /*     
-            TowerCardIds.ObserveChanged().Subscribe(e =>
-            {
-                deckCardData.TowerCardIds[e.NewItem.Key] = e.NewItem.Value;
-            });
-            */
+
             foreach (var value in deckCardData.SkillCardIds)
             {
                 SkillCardIds.Add(value.Key, value.Value);
             }
+
+            SkillCardIds.ObserveAdd().Subscribe(newValue =>
+            {
+                deckCardData.SkillCardIds.Add(newValue.Value.Key, newValue.Value.Value);
+            });
+            SkillCardIds.ObserveRemove().Subscribe(newValue =>
+            {
+                deckCardData.SkillCardIds.Remove(newValue.Value.Key);
+            });
         }
 
         public bool TowerCardInDeck(int uniqueId)
@@ -55,7 +59,7 @@ namespace Game.State.Inventory.Deck
             return TowerCardIds.Any(towerCardId => towerCardId.Value == uniqueId);
         }
 
-        public void ExtractFromDeck(int uniqueId)
+        public void ExtractTowerFromDeck(int uniqueId)
         {
             foreach (var towerCardId in TowerCardIds)
             {
@@ -65,24 +69,56 @@ namespace Game.State.Inventory.Deck
             }
         }
 
-        public int PushToDeck(int uniqueId)
+        public int PushTowerToDeck(int uniqueId)
         {
             var count = TowerCardIds.Count;
             if (count == 6)
             {
-                ExtractFromDeck(TowerCardIds[1]);
+                ExtractTowerFromDeck(TowerCardIds[1]);
                 return 1;
             }
-            else
+
+            for (var i = 1; i <= 6; i++)
             {
-                for (var i = 1; i <= 6; i++)
-                {
-                    if (TowerCardIds.TryGetValue(i, out var value)) continue;
-                    TowerCardIds.Add(i, uniqueId);
-                    return i;
-                }
+                if (TowerCardIds.TryGetValue(i, out var value)) continue;
+                TowerCardIds.Add(i, uniqueId);
+                return i;
+            }
+            
+            throw new Exception("Ошибка добавления в колоду");
+        }
+
+        public bool SkillCardInDeck(int uniqueId)
+        {
+            return SkillCardIds.Any(skillCardId => skillCardId.Value == uniqueId);
+        }
+        
+        public void ExtractSkillFromDeck(int uniqueId)
+        {
+            foreach (var skillCardId in SkillCardIds)
+            {
+                if (skillCardId.Value != uniqueId) continue;
+                SkillCardIds.Remove(skillCardId.Key);
+                return;
+            }
+        }
+        
+        public int PushSkillToDeck(int uniqueId)
+        {
+            var count = SkillCardIds.Count;
+            if (count == 2)
+            {
+                ExtractSkillFromDeck(SkillCardIds[1]);
+                return 1;
             }
 
+            for (var i = 1; i <= 2; i++)
+            {
+                if (SkillCardIds.TryGetValue(i, out var value)) continue;
+                SkillCardIds.Add(i, uniqueId);
+                return i;
+            }
+            
             throw new Exception("Ошибка добавления в колоду");
         }
     }

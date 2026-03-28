@@ -2,7 +2,9 @@
 using Game.MainMenu.Services;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
+using Game.State.Common;
 using Game.State.Inventory;
+using Game.State.Inventory.Common;
 using Game.State.Inventory.TowerCards;
 using Game.State.Inventory.TowerPlans;
 using R3;
@@ -15,7 +17,7 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
         public TowerCard TowerCard => _towerCardEntity;
         public readonly TowerSettings TowerSettings;
         public string ConfigId => _towerCardEntity.ConfigId;
-        public ReadOnlyReactiveProperty<TypeEpicCard> EpicLevel => _towerCardEntity.EpicLevel;
+        public ReadOnlyReactiveProperty<TypeEpic> EpicLevel => _towerCardEntity.EpicLevel;
         public ReadOnlyReactiveProperty<int> Level => _towerCardEntity.Level;
         public int IdTowerCard => _towerCardEntity.UniqueId;
         public int NumberCardDeck { get; set; } //Номер места в колоде (для присваивания парента)

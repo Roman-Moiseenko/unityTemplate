@@ -76,7 +76,7 @@ namespace Game.GamePlay.Services
             {
                 UniqueId = towerEntity.UniqueId,
                 ConfigId = towerEntity.ConfigId,
-                TypeEnemy = towerEntity.TypeEnemy,
+                TypeTarget = towerEntity.TypeTarget,
                 Position = towerEntity.Position.CurrentValue,
                 Placement = towerEntity.Placement.CurrentValue,
             };

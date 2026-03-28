@@ -4,6 +4,7 @@ using DI;
 using Game.MainMenu.Commands.ChestCommands;
 using Game.MainMenu.Commands.InventoryCommands;
 using Game.MainMenu.Commands.ResourceCommands;
+using Game.MainMenu.Commands.SkillCommands;
 using Game.MainMenu.Commands.SoftCurrency;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.Services;
@@ -75,8 +76,9 @@ namespace Game.MainMenu.Root
 
             cmd.RegisterHandler(new CommandTowerPlanAddHandler(gameState));
             cmd.RegisterHandler(new CommandTowerPlanSpendHandler(gameState));
+            //SKILL
+            cmd.RegisterHandler(new CommandSkillCardLevelUpHandler(gameState));
             
-            //
 
 
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
@@ -110,7 +112,6 @@ namespace Game.MainMenu.Root
             container.RegisterInstance(mapService);
 */
             //Сервисы карточек
-
             var towerCardService = new TowerCardPlanService(
                 gameState.Inventory,
                 gameSettings.TowersSettings,
@@ -118,6 +119,14 @@ namespace Game.MainMenu.Root
                 container
             );
             container.RegisterInstance(towerCardService);
+
+            var skillCardService = new SkillCardPlanService(
+                gameState.Inventory,
+                gameSettings.SkillsSettings,
+                cmd,
+                container
+                );
+            container.RegisterInstance(skillCardService);
             
             var chestService = new ChestService(gameState, cmd, gameSettings);
             container.RegisterInstance(chestService);

@@ -1,4 +1,5 @@
 ﻿using Game.State.Inventory;
+using Game.State.Inventory.Common;
 using UnityEngine;
 
 namespace Game.State.Maps.Rewards

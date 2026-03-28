@@ -1,6 +1,7 @@
 ﻿using Game.Common;
 using Game.GameRoot.ImageManager;
 using Game.State.Inventory;
+using Game.State.Inventory.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,4 +1,6 @@
-﻿namespace Game.State.Inventory.TowerPlans
+﻿using Game.State.Inventory.Common;
+
+namespace Game.State.Inventory.TowerPlans
 {
     /**
      * Чертеж карты башни

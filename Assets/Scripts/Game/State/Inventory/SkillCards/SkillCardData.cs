@@ -1,12 +1,18 @@
-﻿namespace Game.State.Inventory.SkillCards
+﻿using System.Collections.Generic;
+using Game.State.Common;
+using Game.State.Inventory.Common;
+using Game.State.Maps.Skills;
+
+namespace Game.State.Inventory.SkillCards
 {
     public class SkillCardData : InventoryItemData
     {
         public override bool Accumulation => false;
         public override InventoryType TypeItem => InventoryType.SkillCard;
+        public TypeDefence Defence { get; set; }
 
-        public TypeEpicCard EpicLevel;
+        public TypeEpic EpicLevel;
         public int Level;
-        //TODO Добавить параметры навыков public Dictionary<SkillParameterType, SkillParameterData> Parameters;
+        public Dictionary<SkillParameterType, SkillParameterData> Parameters;
     }
 }

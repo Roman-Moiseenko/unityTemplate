@@ -1,4 +1,5 @@
-﻿using Game.State.Inventory;
+﻿using Game.State.Common;
+using Game.State.Inventory;
 using UnityEngine;
 
 namespace Game.State.Gameplay.Rewards
@@ -17,7 +18,7 @@ namespace Game.State.Gameplay.Rewards
       //  public string Description;
         public string Name;
         public bool OnRoad;
-        public TypeEpicCard EpicLevel;
+        public TypeEpic EpicLevel;
      //   public MobDefence Defence;
 
 

@@ -7,6 +7,7 @@ using Game.MainMenu.Services;
 using Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
+using Game.State.Common;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
 using Game.State.Root;
@@ -83,7 +84,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
         {
             TowerCardMaps.Clear();
 
-            Dictionary<string, Dictionary<TypeEpicCard, List<int>>> array = new();
+            Dictionary<string, Dictionary<TypeEpic, List<int>>> array = new();
             foreach (var towerCard in BaseListCard)
             {
                 if (TowerUpgrading.IsSetCard.CurrentValue && 
@@ -106,7 +107,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
                 else
                 {
                     var list = new List<int> { towerCard.UniqueId };
-                    var dictEpic = new Dictionary<TypeEpicCard, List<int>>();
+                    var dictEpic = new Dictionary<TypeEpic, List<int>>();
                     dictEpic.Add(epic, list);
                     array.Add(towerCard.ConfigId, dictEpic);
                 }
@@ -128,7 +129,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
 
             foreach (var configPair in array)
             {
-                foreach (TypeEpicCard value in Enum.GetValues(typeof(TypeEpicCard)))
+                foreach (TypeEpic value in Enum.GetValues(typeof(TypeEpic)))
                 {
                     if (configPair.Value.TryGetValue(value, out var uniqueIds))
                     {

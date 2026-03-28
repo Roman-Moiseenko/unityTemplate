@@ -6,6 +6,7 @@ using Game.GamePlay.Root.View;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.UI;
 using Game.GamePlay.View.Waves;
+using Game.GameRoot;
 using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.State;

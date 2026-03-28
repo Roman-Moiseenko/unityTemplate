@@ -1,5 +1,6 @@
 ﻿using System;
 using DI;
+using Game.GameRoot;
 using R3;
 using Scripts.Game.GameRoot;
 using UnityEngine;

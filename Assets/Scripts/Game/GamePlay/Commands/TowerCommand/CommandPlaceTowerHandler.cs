@@ -31,7 +31,7 @@ namespace Game.GamePlay.Commands.TowerCommand
                 UniqueId = entityId,
                 Position = command.Position,
                 ConfigId = command.ConfigId,
-                TypeEnemy = towerSettings.TypeEnemy,
+                TypeTarget = towerSettings.TypeTarget,
                 IsMultiShot = towerSettings.MultiShot,
                 IsSingleTarget = towerSettings.Shot.Single,
                 SpeedShot = towerSettings.Shot.Speed,

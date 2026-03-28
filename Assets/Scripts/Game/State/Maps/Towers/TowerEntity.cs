@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Game.State.Entities;
+using Game.State.Common;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
@@ -20,14 +20,14 @@ namespace Game.State.Maps.Towers
         public bool IsOnRoad => Origin.IsOnRoad;
         public readonly ReactiveProperty<Vector2Int> Position;
         
-        public readonly TowerTypeEnemy TypeEnemy;
-        public readonly bool IsMultiShot;
-        public readonly bool IsSingleTarget;
-        public readonly bool IsPlacement;
-        public readonly float SpeedShot;
-        public ReactiveProperty<Vector2Int> Placement; 
+        public TypeTarget TypeTarget => Origin.TypeTarget;
+        public bool IsMultiShot => Origin.IsMultiShot;
+        public bool IsSingleTarget => Origin.IsSingleTarget;
+        public bool IsPlacement => Origin.IsPlacement;
+        public float SpeedShot => Origin.SpeedShot;
+        public readonly ReactiveProperty<Vector2Int> Placement; 
         
-        public MobDefence Defence => Origin.Defence;
+        public TypeDefence Defence => Origin.Defence;
         
         public Dictionary<TowerParameterType, TowerParameterData> Parameters = new();
         
@@ -45,20 +45,6 @@ namespace Game.State.Maps.Towers
             {
                 towerEntityData.Level = newLevel;
             }); //При изменении позиции Position.Value меняем в данных
-            
-            TypeEnemy = towerEntityData.TypeEnemy;
-            IsMultiShot = towerEntityData.IsMultiShot;
-            SpeedShot = towerEntityData.SpeedShot;
-            IsSingleTarget = towerEntityData.IsSingleTarget;
-            IsPlacement = towerEntityData.IsPlacement;
-            /*          Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
-                      Parameters.ObserveAdd().Subscribe(e =>
-                      {
-                          var type = e.Value.Key;
-                          var parameter = e.Value.Value.Origin;
-                          towerEntityData.Parameters.Add(type, parameter);
-                      });
-          */
         }
 
         public bool PositionNear(Vector2Int position)
@@ -77,12 +63,12 @@ namespace Game.State.Maps.Towers
          */
         public bool IsTargetForAttack(bool mobEntityIsFly)
         {
-            if (TypeEnemy == TowerTypeEnemy.Universal) return true;
+            if (TypeTarget == TypeTarget.Universal) return true;
 
             switch (mobEntityIsFly)
             {
-                case true when TypeEnemy == TowerTypeEnemy.Air:
-                case false when TypeEnemy == TowerTypeEnemy.Ground:
+                case true when TypeTarget == TypeTarget.Air:
+                case false when TypeTarget == TypeTarget.Ground:
                     return true;
                 default:
                     return false;
@@ -108,7 +94,7 @@ namespace Game.State.Maps.Towers
             return Vector2.Distance(mobPosition, Position.CurrentValue) <= 0.5f;
         }
         
-        public ShotData ShotCalculation(MobDefence mobDefence, float damageBooster, float criticalBooster)
+        public ShotData ShotCalculation(TypeDefence typeDefence, float damageBooster, float criticalBooster)
         {
             var damage = 0f;
             if (Parameters.TryGetValue(TowerParameterType.Damage, out var parameter)) damage = parameter.Value;
@@ -144,8 +130,8 @@ namespace Game.State.Maps.Towers
                     damage *= 2.0f;
                 }
             }
-            if (Defence.Previous() == mobDefence) damage *= 0.8f;
-            if (Defence.Next() == mobDefence) damage *= 1.2f;
+            if (Defence.Previous() == typeDefence) damage *= 0.8f;
+            if (Defence.Next() == typeDefence) damage *= 1.2f;
             var shotData = new ShotData
             {
                 //MobEntityId = mobEntity.UniqueId,

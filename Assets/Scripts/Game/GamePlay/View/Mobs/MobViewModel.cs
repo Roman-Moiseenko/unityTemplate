@@ -7,6 +7,7 @@ using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Warriors;
+using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
@@ -52,7 +53,7 @@ namespace Game.GamePlay.View.Mobs
         public ReactiveProperty<Vector3> PositionTarget => _mobEntity.PositionTarget;
         public ReactiveProperty<Vector3> PositionTargetForShot = new();
         public ReadOnlyReactiveProperty<bool> IsDead => _mobEntity.IsDead;
-        public MobDefence Defence => _mobEntity.Defence;
+        public TypeDefence Defence => _mobEntity.Defence;
         public bool IsWay => _mobEntity.IsWay;
 
         public bool IsBoss => _mobEntity.IsBoss;

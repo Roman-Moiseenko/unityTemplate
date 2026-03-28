@@ -5,6 +5,7 @@ using Game.GameRoot.View.ResourceReward;
 using Game.MainMenu.Root;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
+using Game.State.Inventory.Common;
 using Game.State.Maps.Rewards;
 using MVVM.UI;
 using R3;

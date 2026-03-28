@@ -4,6 +4,7 @@ using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Mobs;
+using Game.State.Common;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using ObservableCollections;
@@ -104,11 +105,11 @@ namespace Game.GamePlay.View.Towers
          */
         public bool IsTargetForDamage(bool mobIsFly)
         {
-            switch (TowerEntity.TypeEnemy)
+            switch (TowerEntity.TypeTarget)
             {
-                case TowerTypeEnemy.Universal:
-                case TowerTypeEnemy.Air when mobIsFly:
-                case TowerTypeEnemy.Ground when !mobIsFly:
+                case TypeTarget.Universal:
+                case TypeTarget.Air when mobIsFly:
+                case TypeTarget.Ground when !mobIsFly:
                     return true;
                 default:
                     return false;

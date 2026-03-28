@@ -55,6 +55,8 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(fsmWave);
             var fsmTower = new FsmTower(container);
             container.RegisterInstance(fsmTower);
+            var fsmSkill = new FsmSkill(container);
+            container.RegisterInstance(fsmSkill);
 
             //Инициализируем данные из настроек карты, до создания Сервисов
             gameplayState.MapId.OnNext(gameplayEnterParams.MapId);
@@ -174,6 +176,15 @@ namespace Game.GamePlay.Root
             
             cmd.RegisterHandler(new CommandCreateWarriorTowerHandler(gameplayState, towersService));
             cmd.RegisterHandler(new CommandRemoveWarriorTowerHandler(gameplayState));
+
+            var skillsService = new SkillsService(
+                gameplayState,
+                gameSettings.SkillsSettings,
+                gameplayEnterParams,
+                container
+                );
+            container.RegisterInstance(skillsService);
+            //TODO Команды для скилла ??
             
             var frameService = new FrameService(gameplayState, placementService, towersService, roadsService,
                 gameSettings.TowersSettings, qrc, container);

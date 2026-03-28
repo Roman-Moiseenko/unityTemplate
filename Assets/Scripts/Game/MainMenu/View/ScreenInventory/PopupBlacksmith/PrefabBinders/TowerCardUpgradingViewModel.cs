@@ -1,4 +1,5 @@
-﻿using Game.State.Inventory;
+﻿using Game.State.Common;
+using Game.State.Inventory;
 using R3;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
         public ReactiveProperty<bool> IsNecessary = new(false); 
         public string ConfigId;
         public int Level = 1;
-        public TypeEpicCard EpicLevel;
+        public TypeEpic EpicLevel;
         public int Position = 0;
         public int TowerEntityId;
         public string NameCard { get; set; }

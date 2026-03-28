@@ -3,7 +3,9 @@ using System.Collections;
 using DG.Tweening;
 using Game.Common;
 using Game.GameRoot.ImageManager;
+using Game.State.Common;
 using Game.State.Inventory;
+using Game.State.Inventory.Common;
 using Game.State.Maps.Rewards;
 using R3;
 using UnityEngine;
@@ -40,7 +42,7 @@ namespace Game.GamePlay.View.UI.ScreenGameplay.Rewards
             if (rewardType == InventoryType.TowerCard)
             {
                 imageCard.sprite = _imageManager.GetTowerCard(configId, 1);
-                imageBack.sprite = _imageManager.GetEpicLevel(TypeEpicCard.Normal);
+                imageBack.sprite = _imageManager.GetEpicLevel(TypeEpic.Normal);
             }
 
             if (rewardType == InventoryType.TowerPlan)

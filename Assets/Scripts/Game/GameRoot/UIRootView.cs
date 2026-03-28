@@ -1,8 +1,7 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
-namespace Scripts.Game.GameRoot
+namespace Game.GameRoot
 {
     /**
      * Класс для прехаба UIRoot

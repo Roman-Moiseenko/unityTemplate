@@ -10,8 +10,8 @@ namespace Game.State.Inventory.Chests
             {
                 TypeChest.Silver => "Серебрянный сундук",
                 TypeChest.Gold => "Золотой сундук",
-                TypeChest.Epic => "Рубиновый сундук",
-                TypeChest.Legend => "Алмазный сундук",
+                TypeChest.Epic => "Чемпионский сундук",
+                TypeChest.Legend => "Великолепный сундук",
                 TypeChest.None => "Нет места под сундук",
                 _ => ""
             };

@@ -2,6 +2,7 @@
 using Game.Common;
 using Game.GameRoot.ImageManager;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
+using Game.State.Common;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
 using R3;
@@ -23,7 +24,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
         private TowerCardResourceViewModel _viewModel;
         private IDisposable _disposable;
         public string ConfigId => _viewModel.ConfigId;
-        public TypeEpicCard EpicLevel => _viewModel.EpicLevel;
+        public TypeEpic EpicLevel => _viewModel.EpicLevel;
 
         public void Bind(TowerCardResourceViewModel viewModel)
         {

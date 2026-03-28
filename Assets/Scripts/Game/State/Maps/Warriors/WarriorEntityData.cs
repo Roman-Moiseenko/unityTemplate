@@ -1,4 +1,5 @@
-﻿using Game.State.Maps.Mobs;
+﻿using Game.State.Common;
+using Game.State.Maps.Mobs;
 using UnityEngine;
 
 namespace Game.State.Maps.Warriors
@@ -17,6 +18,6 @@ namespace Game.State.Maps.Warriors
         public int ParentId { get; set; } //Родительская башня
         public Vector2Int StartPosition { get; set; }
         public Vector2Int PlacementPosition { get; set; }
-        public MobDefence Defence { get; set; }
+        public TypeDefence Defence { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Game.State.Inventory;
+﻿using Game.State.Common;
+using Game.State.Inventory;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -7,7 +8,7 @@ namespace Game.Settings.Gameplay.Inventory
     public class TowerCardSettings
     {
         public string ConfigId;
-        public TypeEpicCard epicCardLevel;
+        public TypeEpic epicCardLevel;
         public int Level;
     }
 }

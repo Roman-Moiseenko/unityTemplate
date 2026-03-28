@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.State.Common;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
 using UnityEngine;
@@ -15,9 +16,9 @@ namespace Game.Settings.Gameplay.Entities.Tower
         public bool Placement; //Башня имеет точку размещения (Гарнизон)
         public bool Buffs; //Башня накладывает Баффы
         public bool MultiShot; //Массовый урон всем в области действия
-        public TowerTypeEnemy TypeEnemy;
+        public TypeTarget TypeTarget;
 
-        public MobDefence Defence;
+        public TypeDefence Defence;
 
         //  public string PrefabName { get; private set; }
         public ShotSettings Shot = new();

@@ -1,4 +1,5 @@
 ﻿using Game.State.Inventory;
+using Game.State.Inventory.Common;
 
 namespace Game.Settings.Gameplay.Maps
 {

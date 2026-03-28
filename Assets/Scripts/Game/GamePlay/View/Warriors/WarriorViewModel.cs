@@ -5,6 +5,7 @@ using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.WarriorStates;
 using Game.GamePlay.View.Mobs;
+using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Mobs;
@@ -314,7 +315,7 @@ namespace Game.GamePlay.View.Warriors
             _gameplayState.Shots.Add(shot);
         }
         
-        public void DamageReceived(float damage, MobDefence defence)
+        public void DamageReceived(float damage, TypeDefence defence)
         {
             if (_warriorEntity.Defence.Previous() == defence) damage *= 0.8f;
             if (_warriorEntity.Defence.Next() == defence) damage *= 1.2f;

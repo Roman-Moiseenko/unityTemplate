@@ -1,5 +1,6 @@
 ﻿using Game.Common;
 using Game.GameRoot.ImageManager;
+using Game.State.Common;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Mobs;
 using TMPro;
@@ -69,7 +70,7 @@ namespace Game.GamePlay.View.UI.PopupStatistics
             }
             else
             {
-                var defenceImage = _imageManager.GetDefenceData((MobDefence)viewModel.Defence);
+                var defenceImage = _imageManager.GetDefenceData((TypeDefence)viewModel.Defence);
                 backgroundDefence.sprite = defenceImage.Background;
                 iconDefence.sprite = defenceImage.Icon;
                 backgroundDefence.gameObject.SetActive(true);

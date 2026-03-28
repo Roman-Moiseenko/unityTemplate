@@ -6,6 +6,7 @@ using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
+using Game.GameRoot;
 using Game.MainMenu.Root.View;
 using Game.MainMenu.Services;
 using Game.MainMenu.View;
@@ -16,6 +17,7 @@ using Game.State.GameResources;
 using Game.State.GameStates;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
+using Game.State.Inventory.Common;
 using Game.State.Inventory.TowerCards;
 using MVVM.CMD;
 using Newtonsoft.Json;
@@ -31,7 +33,6 @@ namespace Game.MainMenu.Root
 
         public Observable<MainMenuExitParams> Run(DIContainer mainMenuContainer, MainMenuEnterParams enterParams)
         {
-            
             MainMenuRegistrations.Register(mainMenuContainer, enterParams); //Регистрируем все сервисы сцены меню
             var mainMenuViewModelsContainer = new DIContainer(mainMenuContainer); //Создаем контейнер для view-моделей
             MainMenuViewModelsRegistrations.Register(mainMenuViewModelsContainer);
@@ -128,20 +129,16 @@ namespace Game.MainMenu.Root
                 }
                 //TODO Добавить остальные награды Навыки
             }
-
             
             if (gameState.MapStates.Maps.TryGetValue(enterParams.MapId, out var mapState))
             {
                 //Проверка полученных наград
                 if (enterParams.LastRewardChest.GetIndex() > mapState.RewardChest.Value.GetIndex())
-                {
                     mapState.RewardChest.OnNext(enterParams.LastRewardChest);
-                }
 
                 if (enterParams.LastRewardOnWave > mapState.RewardOnWave.Value)
-                {
                     mapState.RewardOnWave.OnNext(enterParams.LastRewardOnWave);
-                }
+                
                 mapState.Results.Add(resultMap);
                 mapState.Finished.Value = mapState.Finished.CurrentValue || enterParams.FinishedMap;
             }
@@ -158,9 +155,7 @@ namespace Game.MainMenu.Root
                 gameState.MapStates.Maps.Add(enterParams.MapId, new MapState(mapStateData));
             }
             
-            
             gameProvider.SaveGameState();
-            
         }
 
         private void InitUI(DIContainer container)
@@ -187,12 +182,10 @@ namespace Game.MainMenu.Root
         {
             var uiManager = container.Resolve<PlayUIManager>();
             
-            
             if (enterParams != null)
             {
                 //uiManager.OpenPopupFinishGameplay(enterParams);    
             }
-            
             
            // var uiManager = container.Resolve<MainMenuUIManager>();
             //TODO Сделать проверку, что есть сохраненные данные о сессии

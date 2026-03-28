@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Game.State.Common;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
 
@@ -23,7 +24,7 @@ namespace Game.State.Research
         //TODO Доработать
         
         //Бустеры на башню от героя, по типам башни 
-        public Dictionary<MobDefence, Dictionary<TowerParameterType, float>> HeroTowerDefenceBust = new();
+        public Dictionary<TypeDefence, Dictionary<TowerParameterType, float>> HeroTowerDefenceBust = new();
         //Бустеры на башню от героя
         public Dictionary<TowerParameterType, float> HeroTowerBust = new();
     }

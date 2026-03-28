@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Game.GameRoot.View.ResourceReward;
 using Game.State.Inventory;
+using Game.State.Inventory.Common;
 using Game.State.Maps.Rewards;
 using MVVM.UI;
 

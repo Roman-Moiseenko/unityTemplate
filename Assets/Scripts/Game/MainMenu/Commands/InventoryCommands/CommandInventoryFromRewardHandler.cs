@@ -2,6 +2,7 @@
 using Game.MainMenu.Commands.SoftCurrency;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.State.Inventory;
+using Game.State.Inventory.Common;
 using Game.State.Root;
 using MVVM.CMD;
 

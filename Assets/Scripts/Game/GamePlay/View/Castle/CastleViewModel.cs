@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Mobs;
+using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Castle;
@@ -113,7 +114,7 @@ namespace Game.GamePlay.View.Castle
             _gameplayState.Shots.Add(shot);
         }
 
-        public void DamageReceived(float damage, MobDefence defence)
+        public void DamageReceived(float damage, TypeDefence defence)
         {
 //            Debug.Log("Урон по замку " + damage);
             CastleEntity.DamageReceived(damage);

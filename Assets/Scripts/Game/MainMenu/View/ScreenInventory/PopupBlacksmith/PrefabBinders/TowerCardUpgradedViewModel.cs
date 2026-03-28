@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.State.Common;
 using Game.State.Inventory;
 using R3;
 
@@ -11,7 +12,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
         public ReactiveProperty<bool> IsActive = new(false);
         public string ConfigId;
         public int Level;
-        public TypeEpicCard EpicLevel;
+        public TypeEpic EpicLevel;
 
         public TowerCardUpgradedViewModel()
         {

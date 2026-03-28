@@ -10,6 +10,7 @@ using Game.GamePlay.Services;
 using Game.GamePlay.View.Towers;
 using Game.Settings;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.State.Common;
 using Game.State.Inventory;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
@@ -34,9 +35,9 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
         public TowerViewModel TowerViewModel;
 
         public string NameTower;
-        public TypeEpicCard EpicLevel;
+        public TypeEpic EpicLevel;
         public int Level;
-        public MobDefence Defence;
+        public TypeDefence Defence;
         
         private readonly GameSettings _gameSettings;
         private readonly List<TowerSettings> _settingsTowers;

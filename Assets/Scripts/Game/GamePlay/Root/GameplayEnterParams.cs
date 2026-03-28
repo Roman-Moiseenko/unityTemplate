@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Game.GamePlay.Classes;
 using Game.GameRoot;
+using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.TowerCards;
 using Game.State.Research;
 using Scripts.Game.GameRoot;
@@ -16,6 +17,8 @@ namespace Game.GamePlay.Root
         //public bool HasSessionGameplay { get; set; }
         //public float DamageTowerBust { get; set; }
         public List<TowerCardData> Towers { get; } = new();
+        
+        public List<SkillCardData> Skills { get; } = new();
 
         public GameplayBoosters GameplayBoosters;
 

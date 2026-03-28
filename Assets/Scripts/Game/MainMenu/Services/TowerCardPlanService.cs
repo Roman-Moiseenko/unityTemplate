@@ -12,7 +12,9 @@ using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
+using Game.State.Common;
 using Game.State.Inventory;
+using Game.State.Inventory.Common;
 using Game.State.Inventory.Deck;
 using Game.State.Inventory.TowerCards;
 using Game.State.Inventory.TowerPlans;
@@ -67,9 +69,7 @@ namespace Game.MainMenu.Services
             {
                 _towerSettingsMap[towerSettings.ConfigId] = towerSettings;
             }
-        //    Debug.Log(JsonConvert.SerializeObject(_towerSettingsMap, Formatting.Indented));
 
-         //   Debug.Log(JsonConvert.SerializeObject(_items, Formatting.Indented));
 
             foreach (var item in _items)
             {
@@ -87,8 +87,7 @@ namespace Game.MainMenu.Services
                     CreateTowerPlanViewModel(towerPlan);
                 }
             }
-            //Debug.Log(JsonConvert.SerializeObject(_items, Formatting.Indented));
-        //    Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.Items, Formatting.Indented));
+
 
             var command = new CommandSaveGameState();
             cmd.Process(command);
@@ -129,13 +128,13 @@ namespace Game.MainMenu.Services
 
             if (_currentDeck.TowerCardInDeck(uniqueId))
             {
-                _currentDeck.ExtractFromDeck(uniqueId);
+                _currentDeck.ExtractTowerFromDeck(uniqueId);
                 towerView.NumberCardDeck = 0;
                 towerView.IsDeck.OnNext(false);
             }
             else
             {
-                towerView.NumberCardDeck = _currentDeck.PushToDeck(uniqueId);
+                towerView.NumberCardDeck = _currentDeck.PushTowerToDeck(uniqueId);
                 towerView.IsDeck.OnNext(true);
             }
 
@@ -327,12 +326,12 @@ namespace Game.MainMenu.Services
 
 
         public InfoUpgradedViewModel GetInfoUpgradedViewModel(string configId,
-            TypeEpicCard epicLevel, int level)
+            TypeEpic epicLevel, int level)
         {
             var viewModel = new InfoUpgradedViewModel();
             var towerSetting = _towerSettingsMap[configId];
             var maxLevel = epicLevel.MaxLevel();
-            viewModel.NameTower = towerSetting.TitleLid;
+            viewModel.NameEnitity = towerSetting.TitleLid;
             viewModel.NameEpic = epicLevel.GetString();
 
             var towerCardData = new TowerCardData

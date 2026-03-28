@@ -1,4 +1,5 @@
-﻿using Game.State.Maps.Mobs;
+﻿using Game.State.Common;
+using Game.State.Maps.Mobs;
 using R3;
 
 namespace Game.GamePlay.View
@@ -14,7 +15,7 @@ namespace Game.GamePlay.View
         /**
          * Второй параметр используется в Warrior
          */
-        public void DamageReceived(float damage, MobDefence defence);
+        public void DamageReceived(float damage, TypeDefence defence);
 
         //TODO Добавить периодический урон (от ожога, укуса, яда)
     }

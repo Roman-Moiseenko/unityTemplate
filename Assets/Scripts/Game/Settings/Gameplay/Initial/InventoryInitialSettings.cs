@@ -8,5 +8,7 @@ namespace Game.Settings.Gameplay.Initial
     {
         public List<TowerCardSettings> TowerCards = new();
         public List<TowerPlanSettings> TowerPlans = new();
+        public List<SkillCardSettings> SkillCards = new();
+        public List<SkillPlanSettings> SkillPlans = new();
     }
 }

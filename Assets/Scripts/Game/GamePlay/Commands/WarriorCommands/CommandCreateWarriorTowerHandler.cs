@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Warriors;
+using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
@@ -40,7 +41,7 @@ namespace Game.GamePlay.Commands.WarriorCommands
                     Health = health.Value,
                     MaxHealth = health.Value,
                     Speed = speed.Value,
-                    IsFly = command.TypeEnemy == TowerTypeEnemy.Air,
+                    IsFly = command.TypeTarget == TypeTarget.Air,
                     PlacementPosition = command.Placement, //Позиция, куда идт warrior первоначально
                     StartPosition = command.Position, //Позиция башни, откуда идут warrior
                     UniqueId = _gameplayState.CreateEntityID(),

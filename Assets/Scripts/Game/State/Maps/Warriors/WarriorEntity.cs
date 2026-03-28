@@ -1,4 +1,5 @@
 ﻿using Game.GamePlay;
+using Game.State.Common;
 using Game.State.Maps.Mobs;
 using R3;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace Game.State.Maps.Warriors
         public int ParentId => Origin.ParentId;
         public ReactiveProperty<float> Speed; // => Origin.Speed;
         public ReactiveProperty<float> Damage; // => Origin.Damage;
-        public MobDefence Defence => Origin.Defence;
+        public TypeDefence Defence => Origin.Defence;
 
         public WarriorEntity(WarriorEntityData warriorEntityData)
         {

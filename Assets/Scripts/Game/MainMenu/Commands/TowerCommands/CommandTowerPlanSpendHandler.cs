@@ -1,4 +1,5 @@
 ﻿using Game.State.Inventory;
+using Game.State.Inventory.Common;
 using Game.State.Inventory.TowerPlans;
 using Game.State.Root;
 using MVVM.CMD;

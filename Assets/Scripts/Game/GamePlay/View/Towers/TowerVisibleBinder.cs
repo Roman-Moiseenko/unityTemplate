@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Game.GamePlay.View.Mobs;
+using Game.State.Common;
 using Game.State.Maps.Towers;
 using R3;
 using UnityEngine;
@@ -45,7 +46,7 @@ namespace Game.GamePlay.View.Towers
             
             
             
-            if (_viewModel.TypeEnemy.IsTarget(mobBinder.ViewModel.IsFly))
+            if (_viewModel.TypeTarget.IsTarget(mobBinder.ViewModel.IsFly))
                 _viewModel.PullTargets.Add(mobBinder.ViewModel); //Добавляем моба в пулл целей
             
         }

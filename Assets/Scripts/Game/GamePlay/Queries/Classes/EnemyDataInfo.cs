@@ -1,4 +1,5 @@
-﻿using Game.State.Maps.Mobs;
+﻿using Game.State.Common;
+using Game.State.Maps.Mobs;
 
 namespace Game.GamePlay.Queries.Classes
 {
@@ -10,7 +11,7 @@ namespace Game.GamePlay.Queries.Classes
         public string ConfigId;
         public string TitleLid;
         public int Quantity;
-        public MobDefence Defence;
+        public TypeDefence Defence;
         public bool IsBoss = false;
     }
 }

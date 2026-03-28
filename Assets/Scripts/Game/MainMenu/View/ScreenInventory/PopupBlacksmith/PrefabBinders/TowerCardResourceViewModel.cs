@@ -1,4 +1,5 @@
 ﻿using DI;
+using Game.State.Common;
 using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
 using R3;
@@ -18,7 +19,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders
         private readonly TowerCard _towerCardEntity;
         public string ConfigId => _towerCardEntity.ConfigId;
         public int Level => _towerCardEntity.Level.Value;
-        public TypeEpicCard EpicLevel => _towerCardEntity.EpicLevel.Value;
+        public TypeEpic EpicLevel => _towerCardEntity.EpicLevel.Value;
         public string NameCard => _towerCardEntity.Name;
 
 

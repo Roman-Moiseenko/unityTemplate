@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.State.Common;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
 using Game.State.Maps.Mobs;
@@ -14,6 +15,8 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByEpicType> epicLevels;
         [SerializeField] private List<ImageItemByConfig> towerPlan;
         [SerializeField] private List<ImageItemByConfigLevel> towerCard;
+        [SerializeField] private List<ImageItemByConfig> skillPlan;
+        [SerializeField] private List<ImageItemByConfigLevel> skillCard;
         [SerializeField] private List<ImageItemByParameter> parameters;
         //[SerializeField] private List<ImageItemByDefence> defences;
         [SerializeField] private List<ImageItemByConfig> otherSprite;
@@ -24,25 +27,25 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageDefenceData> defenceMaps;
 
 
-        public ImageDefenceData GetDefenceData(MobDefence defence)
+        public ImageDefenceData GetDefenceData(TypeDefence defence)
         {
             return defenceMaps.FirstOrDefault(t => t.Defence == defence);
         }
         
-        public ImageEpicData GetEpicData(TypeEpicCard typeEpicCard)
+        public ImageEpicData GetEpicData(TypeEpic typeEpicCard)
         {
             return epicMaps.FirstOrDefault(t => t.Epic == typeEpicCard);
         }
         
         //TODO Удалить 
-        public Sprite GetEpicLevel(TypeEpicCard typeEpicCard)
+        public Sprite GetEpicLevel(TypeEpic typeEpicCard)
         {
             return epicLevels.FirstOrDefault(t => t.TypeEpic == typeEpicCard)!.Sprite;
         }
         
         public Sprite GetEpicLevel(string indexEpic)
         {
-            foreach (TypeEpicCard typeEpic in Enum.GetValues(typeof(TypeEpicCard)))
+            foreach (TypeEpic typeEpic in Enum.GetValues(typeof(TypeEpic)))
             {
                 if (typeEpic.Index() == int.Parse(indexEpic))
                     return epicLevels.FirstOrDefault(t => t.TypeEpic == typeEpic)!.Sprite;
@@ -74,6 +77,16 @@ namespace Game.GameRoot.ImageManager
         {
             return towerPlan.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
         }
+        public Sprite GetSkillCard(string configId, int level)
+        {
+            var items = skillCard.FirstOrDefault(t => t.ConfigId == configId)!.ByLevels;
+            return items.FirstOrDefault(t => t.Level == level)!.Sprite;
+        }
+        public Sprite GetSkillPlan(string configId)
+        {
+            return skillPlan.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
+
+        }
 
         public Sprite GetOther(string configId)
         {
@@ -89,5 +102,7 @@ namespace Game.GameRoot.ImageManager
         {
             return grounds.FirstOrDefault(t => t.ConfigId == configId)!.Texture;
         }
+
+
     }
 }

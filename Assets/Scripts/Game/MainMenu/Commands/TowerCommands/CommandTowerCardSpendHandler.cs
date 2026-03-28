@@ -18,7 +18,7 @@ namespace Game.MainMenu.Commands.TowerCommands
             foreach (var deckPair in _gameState.Inventory.DeckCards)
             {
                 var deck = deckPair.Value;
-                deck.ExtractFromDeck(command.UniqueId);
+                deck.ExtractTowerFromDeck(command.UniqueId);
             }
             
             _gameState.Inventory.RemoveItem(command.UniqueId);
