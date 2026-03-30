@@ -178,6 +178,8 @@ MonoBehaviour:
       Sprite: {fileID: 21300000, guid: 05bda83c1606e2b4589cb3b5dc669b68, type: 3}
     - Level: 6
       Sprite: {fileID: 21300000, guid: d084fac76374f744ca3a95e24985a403, type: 3}
+  skillPlan: []
+  skillCard: []
   parameters:
   - TypeParameter: 0
     Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
@@ -227,13 +229,13 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: a00b8c219a145f04bab4171480c12ad6, type: 3}
     Texture: {fileID: 0}
   - ConfigId: InventoryBackTower
-    Sprite: {fileID: 21300000, guid: b2355f7f08c84e94ea8c2bed4eb62f21, type: 3}
+    Sprite: {fileID: 21300000, guid: aabc78ef978164747ae56593b694cb0d, type: 3}
     Texture: {fileID: 0}
   - ConfigId: InventoryBackSkill
-    Sprite: {fileID: 21300000, guid: b65a8a8edd4ccce42a8da3dd3497168d, type: 3}
+    Sprite: {fileID: 21300000, guid: 197259af5abb87141be1d3d9adb44563, type: 3}
     Texture: {fileID: 0}
   - ConfigId: InventoryBackOther
-    Sprite: {fileID: 21300000, guid: 522aff60923fb92428c44320a7ab0c10, type: 3}
+    Sprite: {fileID: 21300000, guid: 45743df973360244cb6fff0bc7b5466f, type: 3}
     Texture: {fileID: 0}
   - ConfigId: Crystal
     Sprite: {fileID: 21300000, guid: 6dea5ea274e8b514e947c4eb67775468, type: 3}

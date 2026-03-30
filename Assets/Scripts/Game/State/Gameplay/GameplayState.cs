@@ -24,6 +24,7 @@ namespace Game.State.Gameplay
         public int UpdateCards { get; set; }
         public TypeGameplay TypeGameplay { get; set; }
         
+        public float TotalTimeInScene { get; set; }
         //Список наград
         //Список Мобов
         public CastleEntityData CastleData { get; set; } 

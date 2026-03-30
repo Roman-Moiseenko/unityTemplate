@@ -27,9 +27,8 @@ namespace Game.State.Gameplay
         public readonly ReactiveProperty<bool> HasWaySecond;
         public readonly ReactiveProperty<int> CurrentWave;
         public readonly ReactiveProperty<int> UpdateCards;
-        
 
-        
+        public readonly ReactiveProperty<float> TotalTimeInScene;
         public readonly ReactiveProperty<TypeGameplay> TypeGameplay;
         
         private float _previousGameSpeed;
@@ -86,6 +85,8 @@ namespace Game.State.Gameplay
             TypeGameplay = new ReactiveProperty<TypeGameplay>(origin.TypeGameplay);
             TypeGameplay.Subscribe(newValue => origin.TypeGameplay = newValue);
 
+            TotalTimeInScene = new ReactiveProperty<float>(0f);
+            TotalTimeInScene.Subscribe(newValue => origin.TotalTimeInScene = newValue);
         //    GateWave = new ReactiveProperty<Vector2>(origin.GateWave);
         //    GateWave.Subscribe(newValue => origin.GateWave = newValue);
             

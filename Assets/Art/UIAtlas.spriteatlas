@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: UIAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 21300000, guid: 359aba6f0e7b191468c97e6b16054b54, type: 3}
+    - {fileID: 21300000, guid: 71c5ca9e08927084893c6c8fb9836e92, type: 3}
+    - {fileID: 21300000, guid: 338070f2215479c408d1f5e1319fb066, type: 3}
+    - {fileID: 21300000, guid: e3929c75f9fcdb54a90888df93ce9281, type: 3}
+    - {fileID: 21300000, guid: 8470a5f8e65948544a614c0d9694e1c9, type: 3}
+    - {fileID: 21300000, guid: 24544e8a9240b4c44b802645099efd56, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - 338070f2215479c408d1f5e1319fb066: 21300000
+    - e3929c75f9fcdb54a90888df93ce9281: 21300000
+    - 8470a5f8e65948544a614c0d9694e1c9: 21300000
+    - 24544e8a9240b4c44b802645099efd56: 21300000
+    - 71c5ca9e08927084893c6c8fb9836e92: 21300000
+    - 359aba6f0e7b191468c97e6b16054b54: 21300000
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 338070f2215479c408d1f5e1319fb066, type: 3}
+  - {fileID: 21300000, guid: e3929c75f9fcdb54a90888df93ce9281, type: 3}
+  - {fileID: 21300000, guid: 8470a5f8e65948544a614c0d9694e1c9, type: 3}
+  - {fileID: 21300000, guid: 24544e8a9240b4c44b802645099efd56, type: 3}
+  - {fileID: 21300000, guid: 71c5ca9e08927084893c6c8fb9836e92, type: 3}
+  - {fileID: 21300000, guid: 359aba6f0e7b191468c97e6b16054b54, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - Gold
+  - Chempion
+  - Silver
+  - Excellent
+  - background_hp_castle
+  - warrior_icon_400
+  m_RenderDataMap: {}
+  m_Tag: UIAtlas
+  m_IsVariant: 0

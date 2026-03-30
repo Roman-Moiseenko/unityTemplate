@@ -16,6 +16,7 @@ using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
 using Game.GamePlay.View.Warriors;
 using Game.GamePlay.View.Waves;
+using Game.State;
 using Game.State.Gameplay;
 using Game.State.Gameplay.Rewards;
 using ObservableCollections;
@@ -52,7 +53,9 @@ namespace Game.GamePlay.Root.View
         private readonly Subject<Unit> _entityClick;
         private readonly Subject<TowerViewModel> _towerClick;
         private bool _isFrameDownClick; //Отслеживаем что перетаскивать Фрейм ил Камеру
-      //  private readonly Coroutines _coroutines;
+
+        private readonly GameplayStateProxy _gameplayState;
+        //  private readonly Coroutines _coroutines;
 
         public WorldGameplayRootViewModel(
             GroundsService groundsService,
@@ -80,6 +83,8 @@ namespace Game.GamePlay.Root.View
             _entityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
             _towerClick = container.Resolve<Subject<TowerViewModel>>();
 
+            _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            
             AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
             AllBoards = groundsService.AllBoards;
@@ -331,6 +336,10 @@ namespace Game.GamePlay.Root.View
             _cameraService?.UpdateMoving(); //Движение камеры
             //_cameraService?.AutoMoving();
             //_damageService.Update();
+            
+            //Считаем время в игре
+            if (Time.timeScale > 0) _gameplayState.TotalTimeInScene.Value += Time.deltaTime;
+            
         }
 
         public void FinishMoving(Vector2 mousePosition)
