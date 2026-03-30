@@ -2675,6 +2675,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.GameRoot.View.Input.TabPanel.TabButton
   tabGroup: {fileID: 3551006021234389153}
   background: {fileID: 6377393733995607802}
+  onTabSelected:
+    m_PersistentCalls:
+      m_Calls: []
+  onTabDeselected:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7032801981113351600
 GameObject:
   m_ObjectHideFlags: 0
@@ -3037,6 +3043,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.GameRoot.View.Input.TabPanel.TabButton
   tabGroup: {fileID: 3551006021234389153}
   background: {fileID: 5922604579634466087}
+  onTabSelected:
+    m_PersistentCalls:
+      m_Calls: []
+  onTabDeselected:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7958039709193957247
 GameObject:
   m_ObjectHideFlags: 0

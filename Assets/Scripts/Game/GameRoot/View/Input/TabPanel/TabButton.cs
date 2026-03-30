@@ -1,6 +1,7 @@
 ﻿using System;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -10,8 +11,9 @@ namespace Game.GameRoot.View.Input.TabPanel
     public class TabButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         public TabGroup tabGroup;
-        
         public Image background;
+        public UnityEvent onTabSelected;
+        public UnityEvent onTabDeselected;
 
         private Vector3 localPositionBase;
         private void Awake()
@@ -40,16 +42,19 @@ namespace Game.GameRoot.View.Input.TabPanel
             tabGroup.OnTabSelected(this);
         }
 
-        public void SizeUp()
+        public void Select()
         {
+            if (onTabSelected != null) onTabSelected.Invoke();
+            
             transform
                 .DOLocalMoveY(transform.localPosition.y + 20, 0.3f)
                 .SetEase(Ease.OutQuart)
                 .SetUpdate(true);
         }
-
-        public void ResetParams()
+ 
+        public void Deselect()
         {
+            if (onTabDeselected != null) onTabDeselected.Invoke();
             transform.localPosition = localPositionBase;
         }
     }

@@ -18,7 +18,7 @@ namespace Game.GameRoot.View.Input.TabPanel
         {
             if (SelectedTab != null)
             {
-                SelectedTab.SizeUp();
+                SelectedTab.Select();
             }
         }
 
@@ -43,10 +43,15 @@ namespace Game.GameRoot.View.Input.TabPanel
 
         public void OnTabSelected(TabButton tabButton)
         {
+            if (SelectedTab != null)
+            {
+                SelectedTab.Deselect();
+            }
             SelectedTab = tabButton;
+            SelectedTab.Select();
             ResetTabs();
-            tabButton.background.sprite = tabActive;
-            tabButton.SizeUp();
+            SelectedTab.background.sprite = tabActive;
+         //   tabButton.SizeUp();
             var index = tabButton.transform.GetSiblingIndex();
             for (int i = 0; i < tabs.Count; i++)
             {
@@ -54,15 +59,11 @@ namespace Game.GameRoot.View.Input.TabPanel
             }
         }
 
-        public void ResetTabs()
+        private void ResetTabs()
         {
             foreach (var tabButton in tabButtons)
             {
-                if (SelectedTab != tabButton)
-                {
-                    tabButton.background.sprite = tabIdle;
-                    tabButton.ResetParams();
-                }
+                if (SelectedTab != tabButton) tabButton.background.sprite = tabIdle;
             }
         }
     }

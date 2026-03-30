@@ -59,9 +59,12 @@ namespace Game.GamePlay.View.Castle
 
                 if (MobTarget.CurrentValue != null && 
                     MobTarget.CurrentValue.UniqueId == target.UniqueId) MobTarget.OnNext(null);
-                _mobDisposables[target.UniqueId]?.Dispose();
-                _mobDisposables.Remove(target.UniqueId);
-                //RemoveTarget(target);
+                if (_mobDisposables.TryGetValue(target.UniqueId, out var disposable))
+                {
+                    disposable.Dispose();
+                    _mobDisposables.Remove(target.UniqueId);
+                }
+  
                 if (PullTargets.Count == 0) MobTarget.OnNext(null);
                 
             });
