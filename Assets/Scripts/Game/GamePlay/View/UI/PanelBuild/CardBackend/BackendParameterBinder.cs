@@ -22,7 +22,7 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardBackend
 
         public void Bind(TowerParameterType parameterType, Vector2 value)
         {
-            imageParameter.sprite = _imageManager.GetParameter(parameterType);
+            imageParameter.sprite = _imageManager.GetTowerParameter(parameterType);
             textName.text = parameterType.GetString();
             var valOrigin = value.x;
             var valUpgrade = parameterType.IsDamage()

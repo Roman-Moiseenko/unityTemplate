@@ -2,6 +2,7 @@
 using Game.MainMenu.Services;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.State;
+using Game.State.Common;
 using Game.State.Inventory.Common;
 using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.SkillPlans;
@@ -19,6 +20,8 @@ namespace Game.MainMenu.View.ScreenInventory.SkillCards
         public int IdSkillCard => _skillCardEntity.UniqueId;
         
         public int NumberCardDeck { get; set; }
+        public ReactiveProperty<TypeEpic> EpicLevel => _skillCardEntity.EpicLevel;
+
         public ReactiveProperty<bool> IsDeck = new(false);
         
         private readonly SkillCard _skillCardEntity;

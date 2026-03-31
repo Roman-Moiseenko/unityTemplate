@@ -179,30 +179,33 @@ MonoBehaviour:
     - Level: 6
       Sprite: {fileID: 21300000, guid: d084fac76374f744ca3a95e24985a403, type: 3}
   skillPlan: []
-  skillCard: []
-  parameters:
+  skillCard:
+  - ConfigId: Skill01
+    ByLevels: []
+  towerParameters:
   - TypeParameter: 0
     Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
   - TypeParameter: 1
     Sprite: {fileID: 21300000, guid: 0c40822f2eb37f34ea81823da136dc8c, type: 3}
-  - TypeParameter: 5
-    Sprite: {fileID: 21300000, guid: 0db5c76208e2f9a44a24e647721827eb, type: 3}
-  - TypeParameter: 6
-    Sprite: {fileID: 21300000, guid: f5e18ed3ad4ff914788204989868576f, type: 3}
-  - TypeParameter: 7
-    Sprite: {fileID: 21300000, guid: 6f951cd9201bbd249bf26de6d006398e, type: 3}
   - TypeParameter: 2
     Sprite: {fileID: 21300000, guid: dfdab5ed16ca802459ac151ede7c7aaf, type: 3}
   - TypeParameter: 3
     Sprite: {fileID: 21300000, guid: 67c64db9de17cf74383a10dda3f80cd9, type: 3}
   - TypeParameter: 4
     Sprite: {fileID: 21300000, guid: 0c45611a88989d04f927e539eadb9ab8, type: 3}
+  - TypeParameter: 5
+    Sprite: {fileID: 21300000, guid: 0db5c76208e2f9a44a24e647721827eb, type: 3}
+  - TypeParameter: 6
+    Sprite: {fileID: 21300000, guid: f5e18ed3ad4ff914788204989868576f, type: 3}
+  - TypeParameter: 7
+    Sprite: {fileID: 21300000, guid: 6f951cd9201bbd249bf26de6d006398e, type: 3}
   - TypeParameter: 8
     Sprite: {fileID: 21300000, guid: 70e692710dacb4e4bb706ad1c2570010, type: 3}
   - TypeParameter: 9
-    Sprite: {fileID: 21300000, guid: dfdab5ed16ca802459ac151ede7c7aaf, type: 3}
+    Sprite: {fileID: 21300000, guid: 30c7ccacb6dfd9a44aff02ea4fb517d5, type: 3}
   - TypeParameter: 10
     Sprite: {fileID: 21300000, guid: 30a21bb3403de004e93e74056d5388b3, type: 3}
+  skillParameters: []
   otherSprite:
   - ConfigId: TowerUpCard
     Sprite: {fileID: 21300000, guid: 60fedadfae431dd498d14edf921ec65e, type: 3}

@@ -21,11 +21,11 @@ using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
 {
-    public class PopupBlacksmithViewModel : WindowViewModel
+    public class PopupBlacksmithTowerViewModel : WindowViewModel
     {
         private readonly GameStateProxy _gameState;
         private readonly TowerCardPlanService _towerCardPlanService;
-        public override string Id => "PopupBlacksmith";
+        public override string Id => "PopupBlacksmithTower";
         public override string Path => "MainMenu/ScreenInventory/Popups/";
 
         public List<TowerCard> BaseListCard = new();
@@ -39,7 +39,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
         public ReactiveProperty<int> MaxLevel = new(1);
         private readonly ICommandProcessor _cmd;
 
-        public PopupBlacksmithViewModel(DIContainer container) : base(container)
+        public PopupBlacksmithTowerViewModel(DIContainer container) : base(container)
         {
             _gameState = container.Resolve<IGameStateProvider>().GameState;
             _towerCardPlanService = container.Resolve<TowerCardPlanService>();

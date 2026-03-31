@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using Game.Common;
 using Game.GameRoot.ImageManager;
 using Game.MainMenu.View.ScreenInventory.Parameters;
 using Game.State.Common;
-using Game.State.Inventory;
-using Game.State.Inventory.TowerCards;
-using Game.State.Maps.Towers;
+using Game.State.Inventory.SkillCards;
+using Game.State.Maps.Skills;
 using MVVM.UI;
 using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
+namespace Game.MainMenu.View.ScreenInventory.PopupSkillCard
 {
-    public class PopupTowerCardBinder : PopupBinder<PopupTowerCardViewModel>
+    public class PopupSkillCardBinder : PopupBinder<PopupSkillCardViewModel>
     {
         [SerializeField] private TMP_Text textSoftCurrency;
 
@@ -28,7 +26,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
         [SerializeField] private TMP_Text textDescription;
 
         [SerializeField] private Image epicImage;
-        [SerializeField] private Image towerImage;
+        [SerializeField] private Image skillImage;
         [SerializeField] private Image planImage;
         [SerializeField] private TMP_Text textLevel;
         [SerializeField] private TMP_Text textPlanAmount;
@@ -38,9 +36,10 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
 
         [SerializeField] private List<Transform> parameters = new(6);
         [SerializeField] private List<ParameterBinder> _parameterBinders;
-
+        
         private IDisposable _disposable;
-        protected override void OnBind(PopupTowerCardViewModel viewModel)
+
+        protected override void OnBind(PopupSkillCardViewModel viewModel)
         {
             base.OnBind(viewModel);
             var d = Disposable.CreateBuilder();
@@ -52,26 +51,26 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
                 _parameterBinders.Add(item.GetComponent<ParameterBinder>());
             });
 
-            viewModel.CardViewModel.IsDeck.Subscribe(v =>
+            viewModel.ViewModel.IsDeck.Subscribe(v =>
             {
                 buttonDeck.transform.Find("textDeck").GetComponent<TMP_Text>().text = v ? "УБРАТЬ" : "ВЗЯТЬ";
             }).AddTo(ref d);
             
-            var towerCardViewModel = viewModel.CardViewModel;
-            var towerSettings = viewModel.CardViewModel.TowerSettings;
+            var skillCardViewModel = viewModel.ViewModel;
+            var skillSettings = viewModel.ViewModel.SkillSettings;
             
-            var towerCardData = (TowerCardData)towerCardViewModel.TowerCard.Origin;
-            textTitle.text = $"{towerSettings.TitleLid} ({towerCardViewModel.EpicLevel.CurrentValue.GetString()})";
-            textDescription.text = towerSettings.DescriptionLid;
-            epicImage.sprite = imageManager.GetEpicLevel(towerCardViewModel.EpicLevel.CurrentValue);
-            towerImage.sprite = imageManager.GetTowerCard(towerCardViewModel.ConfigId, 1);
-            planImage.sprite = imageManager.GetTowerPlan(towerCardViewModel.ConfigId);
+            var skillCardData = (SkillCardData)skillCardViewModel.SkillCard.Origin;
+            textTitle.text = $"{skillSettings.TitleLid} ({skillCardViewModel.EpicLevel.CurrentValue.GetString()})";
+            textDescription.text = skillSettings.DescriptionLid;
+            epicImage.sprite = imageManager.GetEpicLevel(skillCardViewModel.EpicLevel.CurrentValue);
+            skillImage.sprite = imageManager.GetSkillCard(skillCardViewModel.ConfigId, 1);
+            planImage.sprite = imageManager.GetSkillPlan(skillCardViewModel.ConfigId);
 
-            textLevel.text = $"Ур.: {towerCardData.Level}/{towerCardViewModel.TowerCard.MaxLevel()}";
-            ViewModel.CardViewModel.TowerCard.Level
+            textLevel.text = $"Ур.: {skillCardData.Level}/{skillCardViewModel.SkillCard.MaxLevel()}";
+            ViewModel.ViewModel.SkillCard.Level
                 .Subscribe(newLevel =>
                 {
-                    textLevel.text = $"Ур.: {newLevel}/{towerCardViewModel.TowerCard.MaxLevel()}";
+                    textLevel.text = $"Ур.: {newLevel}/{skillCardViewModel.SkillCard.MaxLevel()}";
                 })
                 .AddTo(ref d);
             
@@ -88,18 +87,17 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
                 textSoftCurrency.text = MyFunc.CurrencyToStr(newValue);
                // buttonUpgrade.gameObject.SetActive(ViewModel.CardIsUpgrade());
             }).AddTo(ref d);
-            ViewModel.CardViewModel.IsCanUpdate
+            ViewModel.ViewModel.IsCanUpdate
                 .Subscribe(v => buttonUpgrade.gameObject.SetActive(v))
                 .AddTo(ref d);
             
             
-            //textCost.text = towerCardViewModel.TowerCard.GetCostCurrencyLevelUpTowerCard().ToString();
 
             var index = 0;
-            foreach (var parameter in towerCardViewModel.TowerCard.Parameters)
+            foreach (var parameter in skillCardViewModel.SkillCard.Parameters)
             {
                 _parameterBinders[index].Bind(
-                    imageManager.GetTowerParameter(parameter.Key),
+                    imageManager.GetSkillParameter(parameter.Key),
                     parameter.Key.GetString(),
                     parameter.Key.GetMeasure(),
                     parameter.Value.Value
@@ -107,24 +105,24 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
                 index++;
             }
             
-            _disposable = d.Build();
+            _disposable = d.Build();            
         }
-
+        
         private void OnEnable()
         {
             buttonUpgrade.onClick.AddListener(OnUpgradeLevelCard);
-            buttonDeck.onClick.AddListener(OnTowerCardChangeDeck);
+            buttonDeck.onClick.AddListener(OnSkillCardChangeDeck);
         }
 
         private void OnDisable()
         {
             buttonUpgrade.onClick.RemoveListener(OnUpgradeLevelCard);
-            buttonDeck.onClick.RemoveListener(OnTowerCardChangeDeck);
+            buttonDeck.onClick.RemoveListener(OnSkillCardChangeDeck);
         }
 
-        private void OnTowerCardChangeDeck()
+        private void OnSkillCardChangeDeck()
         {
-            ViewModel.TowerCardChangeDeck();
+            ViewModel.SkillCardChangeDeck();
             ViewModel.RequestClose();
         }
 

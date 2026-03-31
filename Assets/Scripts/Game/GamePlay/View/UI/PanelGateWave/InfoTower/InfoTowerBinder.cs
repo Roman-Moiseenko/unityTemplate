@@ -116,7 +116,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
             
             foreach (var (parameter, value) in _viewModel.BoosterParameters)
             {
-                var image = _imageManager.GetParameter(parameter);
+                var image = _imageManager.GetTowerParameter(parameter);
                 boosterBinders[index].Bind(image, value);
                 boosterBinders[index].gameObject.SetActive(true);
                 index++;
@@ -133,7 +133,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
 
             foreach (var (parameter, values) in _viewModel.BaseParameters)
             {
-                var image = _imageManager.GetParameter(parameter);
+                var image = _imageManager.GetTowerParameter(parameter);
                 
                 parameterBinders[index].Bind(image, parameter, values);
                 parameterBinders[index].gameObject.SetActive(true);

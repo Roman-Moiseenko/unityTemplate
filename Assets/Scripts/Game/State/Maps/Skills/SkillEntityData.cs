@@ -6,7 +6,7 @@ namespace Game.State.Maps.Skills
     {
         public int UniqueId { get; set; } //Уникальный ID сущности
         public string ConfigId { get; set; } //Идентификатор для поиска настроек сущности
-        public int Level { get; set; }
+        public int Level { get; set; } //Макс.уровень 3
         public TypeTarget TypeTarget { get; set; }
         public bool OnRoad { get; set; }
         

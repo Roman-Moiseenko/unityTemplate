@@ -975,7 +975,7 @@ GameObject:
   - component: {fileID: 8525239418808731657}
   - component: {fileID: 8664784201801864910}
   m_Layer: 5
-  m_Name: PopupBlacksmith
+  m_Name: PopupBlacksmithTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

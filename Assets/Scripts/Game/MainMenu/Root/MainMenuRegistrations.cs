@@ -8,6 +8,8 @@ using Game.MainMenu.Commands.SkillCommands;
 using Game.MainMenu.Commands.SoftCurrency;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.MainMenu.Services;
+using Game.MainMenu.View.ScreenInventory.SkillCards;
+using Game.MainMenu.View.ScreenInventory.SkillPlans;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using Game.MainMenu.View.ScreenPlay;
@@ -33,10 +35,14 @@ namespace Game.MainMenu.Root
             var gameSettings = settingsProvider.GameSettings;
 
             //container.RegisterInstance(new PlayUIManager(container));
-            //HРЕГИСТРИРУЕМ СОБЫТИЯ
+            //РЕГИСТРИРУЕМ СОБЫТИЯ
             var subjectExitParams = new Subject<MainMenuExitParams>();
+            //Открыть окна о карточках в меню по их клику
             container.RegisterFactory(_ => new Subject<TowerCardViewModel>()).AsSingle();
             container.RegisterFactory(_ => new Subject<TowerPlanViewModel>()).AsSingle();
+            
+            container.RegisterFactory(_ => new Subject<SkillCardViewModel>()).AsSingle();
+            container.RegisterFactory(_ => new Subject<SkillPlanViewModel>()).AsSingle();
 
 
             // new Subject<Unit>()); //Событие, требующее смены сцены

@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Game.MainMenu.View.ScreenInventory
@@ -18,7 +19,11 @@ namespace Game.MainMenu.View.ScreenInventory
         [SerializeField] private Transform containerTowerCard;
         [SerializeField] private Transform containerTowerPlan;
 
-        [SerializeField] private Button buttonBlacksmith ;
+        [SerializeField] private Transform containerSkillCard;
+        [SerializeField] private Transform containerSkillPlan;
+        
+        [FormerlySerializedAs("buttonBlacksmith")] [SerializeField] private Button buttonBlacksmithTower ;
+        [SerializeField] private Button buttonBlacksmithSkill ;
         [SerializeField] private List<Transform> deckCards = new(6);
         
         private readonly Dictionary<int, TowerCardBinder> _createdTowerCardMap = new();
@@ -30,6 +35,8 @@ namespace Game.MainMenu.View.ScreenInventory
             
             var d = Disposable.CreateBuilder();
             base.OnBind(viewModel);
+            
+            //Заполняем карточками и чертежами Башен
             foreach (var towerCardViewModel in viewModel.TowerCards)
             {
                 CreateTowerCard(towerCardViewModel);
@@ -72,6 +79,8 @@ namespace Game.MainMenu.View.ScreenInventory
             viewModel.TowerPlans.ObserveRemove()
                 .Subscribe(e => DestroyTowerPlan(e.Value))
                 .AddTo(ref d);
+            
+            //Заполняем карточками и чертежами Навыков
             
             _disposable = d.Build();
         }
@@ -155,12 +164,12 @@ namespace Game.MainMenu.View.ScreenInventory
 
         private void OnEnable()
         {
-            buttonBlacksmith.onClick.AddListener(OnOpenPopupBlacksmith);
+            buttonBlacksmithTower.onClick.AddListener(OnOpenPopupBlacksmith);
         }
 
         private void OnDisable()
         {
-            buttonBlacksmith.onClick.RemoveListener(OnOpenPopupBlacksmith);
+            buttonBlacksmithTower.onClick.RemoveListener(OnOpenPopupBlacksmith);
         }
 
         private void OnOpenPopupBlacksmith()

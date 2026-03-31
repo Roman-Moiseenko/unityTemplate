@@ -5,8 +5,10 @@ using Game.State.Common;
 using Game.State.Inventory;
 using Game.State.Inventory.Chests;
 using Game.State.Maps.Mobs;
+using Game.State.Maps.Skills;
 using Game.State.Maps.Towers;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.GameRoot.ImageManager
 {
@@ -17,7 +19,8 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByConfigLevel> towerCard;
         [SerializeField] private List<ImageItemByConfig> skillPlan;
         [SerializeField] private List<ImageItemByConfigLevel> skillCard;
-        [SerializeField] private List<ImageItemByParameter> parameters;
+        [SerializeField] private List<ImageItemByTowerParameter> towerParameters;
+        [SerializeField] private List<ImageItemBySkillParameter> skillParameters;
         //[SerializeField] private List<ImageItemByDefence> defences;
         [SerializeField] private List<ImageItemByConfig> otherSprite;
         [SerializeField] private List<ImageItemByConfig> roads;
@@ -68,11 +71,14 @@ namespace Game.GameRoot.ImageManager
             return items.FirstOrDefault(t => t.Level == level)!.Sprite;
         }
 
-        public Sprite GetParameter(TowerParameterType type)
+        public Sprite GetTowerParameter(TowerParameterType type)
         {
-            return parameters.FirstOrDefault(t => t.TypeParameter == type)!.Sprite;
+            return towerParameters.FirstOrDefault(t => t.TypeParameter == type)!.Sprite;
         }
-
+        public Sprite GetSkillParameter(SkillParameterType type)
+        {
+            return skillParameters.FirstOrDefault(t => t.TypeParameter == type)!.Sprite;
+        }
         public Sprite GetTowerPlan(string configId)
         {
             return towerPlan.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;

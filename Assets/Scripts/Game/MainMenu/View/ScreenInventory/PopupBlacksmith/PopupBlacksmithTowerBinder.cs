@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
 {
-    public class PopupBlacksmithBinder : PopupBinder<PopupBlacksmithViewModel>
+    public class PopupBlacksmithTowerBinder : PopupBinder<PopupBlacksmithTowerViewModel>
     {
         [SerializeField] private Transform upgradedInfo;
         [SerializeField] private Transform upgradedTower;
@@ -24,7 +24,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupBlacksmith
         private readonly List<TowerCardResourceBinder> _createdTowerCardMap = new();
         private IDisposable _disposable;
 
-        protected override void OnBind(PopupBlacksmithViewModel viewModel)
+        protected override void OnBind(PopupBlacksmithTowerViewModel viewModel)
         {
             base.OnBind(viewModel);
             var d = Disposable.CreateBuilder();

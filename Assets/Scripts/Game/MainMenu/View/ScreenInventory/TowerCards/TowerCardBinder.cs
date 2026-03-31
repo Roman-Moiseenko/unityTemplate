@@ -54,7 +54,7 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
             buttonPopup.onClick.RemoveListener(OnOpenPopup);
         }
 
-        public void OnOpenPopup()
+        private void OnOpenPopup()
         {
             _viewModel.RequestOpenPopupTowerCard();
         }

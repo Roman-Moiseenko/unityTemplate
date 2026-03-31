@@ -63,7 +63,7 @@ namespace Game.MainMenu.View.ScreenInventory
 
         public void RequestPopupBlacksmith()
         {
-            _inventoryUIManager.OpenPopupBlacksmith();
+            _inventoryUIManager.OpenPopupBlacksmithTower();
         }
     }
 }
