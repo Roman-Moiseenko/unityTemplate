@@ -2,6 +2,8 @@
 using DI;
 using Game.MainMenu.Services;
 using Game.MainMenu.View.ScreenInventory.PopupTowerCard;
+using Game.MainMenu.View.ScreenInventory.SkillCards;
+using Game.MainMenu.View.ScreenInventory.SkillPlans;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using Game.State;
@@ -29,16 +31,23 @@ namespace Game.MainMenu.View.ScreenInventory
 
         public IObservableCollection<TowerCardViewModel> TowerCards;
         public IObservableCollection<TowerPlanViewModel> TowerPlans;
-        private readonly TowerCardPlanService _towerCardPlanService;
+        
+        public IObservableCollection<SkillCardViewModel> SkillCards;
+        public IObservableCollection<SkillPlanViewModel> SkillPlans;
+
         private readonly InventoryUIManager _inventoryUIManager;
 
         public ScreenInventoryViewModel(MainMenuUIManager uiManager, DIContainer container) : base(container)
         {
             _uiManager = uiManager;
             GameState = container.Resolve<IGameStateProvider>().GameState;
-            _towerCardPlanService = container.Resolve<TowerCardPlanService>();
-            TowerCards = _towerCardPlanService.AllTowerCards;
-            TowerPlans = _towerCardPlanService.AllTowerPlans;
+            var towerCardPlanService = container.Resolve<TowerCardPlanService>();
+            TowerCards = towerCardPlanService.AllTowerCards;
+            TowerPlans = towerCardPlanService.AllTowerPlans;
+            
+            var skillCardPlanService = container.Resolve<SkillCardPlanService>();
+            SkillCards = skillCardPlanService.AllSkillCards;
+            SkillPlans = skillCardPlanService.AllSkillPlans;
             _inventoryUIManager = container.Resolve<InventoryUIManager>();
 
 /*

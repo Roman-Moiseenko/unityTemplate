@@ -22,10 +22,11 @@ namespace Game.MainMenu.View.ScreenInventory
         [SerializeField] private Transform containerSkillCard;
         [SerializeField] private Transform containerSkillPlan;
         
-        [FormerlySerializedAs("buttonBlacksmith")] [SerializeField] private Button buttonBlacksmithTower ;
+        [SerializeField] private Button buttonBlacksmithTower ;
         [SerializeField] private Button buttonBlacksmithSkill ;
-        [SerializeField] private List<Transform> deckCards = new(6);
-        
+        [SerializeField] private List<Transform> towerCards = new(6);
+        [SerializeField] private List<Transform> skillCards = new(2);
+        [SerializeField] private Transform heroCard;
         private readonly Dictionary<int, TowerCardBinder> _createdTowerCardMap = new();
         private readonly Dictionary<int, TowerPlanBinder> _createdTowerPlanMap = new();
 
@@ -89,7 +90,7 @@ namespace Game.MainMenu.View.ScreenInventory
         {
             if (viewModel.IsDeck.Value)
             {
-                _createdTowerCardMap[viewModel.IdTowerCard].transform.SetParent(deckCards[viewModel.NumberCardDeck - 1]);
+                _createdTowerCardMap[viewModel.IdTowerCard].transform.SetParent(towerCards[viewModel.NumberCardDeck - 1]);
                 _createdTowerCardMap[viewModel.IdTowerCard].transform.localPosition = new Vector3(0, 0, 0);
             }
             else
