@@ -2677,10 +2677,34 @@ MonoBehaviour:
   background: {fileID: 6377393733995607802}
   onTabSelected:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5231551675765766712}
+        m_TargetAssemblyTypeName: Game.GameRoot.View.Input.TabPanel.TabButton, Assembly-CSharp
+        m_MethodName: ActionUpSelected
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onTabDeselected:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5231551675765766712}
+        m_TargetAssemblyTypeName: Game.GameRoot.View.Input.TabPanel.TabButton, Assembly-CSharp
+        m_MethodName: ActionPositionDeselected
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7032801981113351600
 GameObject:
   m_ObjectHideFlags: 0
@@ -3045,10 +3069,34 @@ MonoBehaviour:
   background: {fileID: 5922604579634466087}
   onTabSelected:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8372875405751241249}
+        m_TargetAssemblyTypeName: Game.GameRoot.View.Input.TabPanel.TabButton, Assembly-CSharp
+        m_MethodName: ActionUpSelected
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onTabDeselected:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8372875405751241249}
+        m_TargetAssemblyTypeName: Game.GameRoot.View.Input.TabPanel.TabButton, Assembly-CSharp
+        m_MethodName: ActionPositionDeselected
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7958039709193957247
 GameObject:
   m_ObjectHideFlags: 0
@@ -3887,7 +3935,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1021198346754551448, guid: 3487b92b564fd5a4ebdafe63674d9d49, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 216.44
       objectReference: {fileID: 0}
     - target: {fileID: 1021198346754551448, guid: 3487b92b564fd5a4ebdafe63674d9d49, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -4011,7 +4059,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6561485825952472706, guid: 3487b92b564fd5a4ebdafe63674d9d49, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 130.61
       objectReference: {fileID: 0}
     - target: {fileID: 6561485825952472706, guid: 3487b92b564fd5a4ebdafe63674d9d49, type: 3}
       propertyPath: m_AnchoredPosition.x

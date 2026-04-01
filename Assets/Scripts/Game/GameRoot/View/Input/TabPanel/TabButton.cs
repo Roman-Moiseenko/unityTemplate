@@ -45,16 +45,23 @@ namespace Game.GameRoot.View.Input.TabPanel
         public void Select()
         {
             if (onTabSelected != null) onTabSelected.Invoke();
-            
-            transform
-                .DOLocalMoveY(transform.localPosition.y + 20, 0.3f)
-                .SetEase(Ease.OutQuart)
-                .SetUpdate(true);
         }
  
         public void Deselect()
         {
             if (onTabDeselected != null) onTabDeselected.Invoke();
+        }
+
+        public void ActionUpSelected()
+        {
+            transform
+                .DOLocalMoveY(transform.localPosition.y + 20, 0.3f)
+                .SetEase(Ease.OutQuart)
+                .SetUpdate(true);
+        }
+
+        public void ActionPositionDeselected()
+        {
             transform.localPosition = localPositionBase;
         }
     }

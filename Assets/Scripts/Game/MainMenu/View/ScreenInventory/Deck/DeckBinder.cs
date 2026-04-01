@@ -10,7 +10,7 @@ namespace Game.MainMenu.View.ScreenInventory.Deck
         [SerializeField] private Transform heroCard;
 
 
-        public void Bind()
+        public void Bind(ScreenInventoryViewModel viewModel)
         {
             
         }

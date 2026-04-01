@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.MainMenu.View.ScreenInventory.Deck;
+using Game.MainMenu.View.ScreenInventory.Panels;
+using Game.MainMenu.View.ScreenInventory.SkillCards;
+using Game.MainMenu.View.ScreenInventory.SkillPlans;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using MVVM.UI;
@@ -14,6 +18,10 @@ namespace Game.MainMenu.View.ScreenInventory
 {
     public class ScreenInventoryBinder : WindowBinder<ScreenInventoryViewModel>
     {
+
+        [SerializeField] private DeckBinder deckBinder;
+        [SerializeField] private PanelTowersBinder panelTowersBinder;
+        
         //    [SerializeField] private Button _btnGoToPlay;
         private IDisposable _disposable;
         [SerializeField] private Transform containerTowerCard;
@@ -29,6 +37,10 @@ namespace Game.MainMenu.View.ScreenInventory
         [SerializeField] private Transform heroCard;
         private readonly Dictionary<int, TowerCardBinder> _createdTowerCardMap = new();
         private readonly Dictionary<int, TowerPlanBinder> _createdTowerPlanMap = new();
+        
+        private readonly Dictionary<int, SkillCardBinder> _createdSkillCardMap = new();
+        private readonly Dictionary<int, SkillPlanBinder> _createdSkillPlanMap = new();
+        
 
         protected override void OnBind(ScreenInventoryViewModel viewModel)
         {
@@ -102,6 +114,7 @@ namespace Game.MainMenu.View.ScreenInventory
         
         private void UpdateHeightContainerTowerCard()
         {
+            return;
             var container = containerTowerCard.GetComponent<RectTransform>();
             const int blockHeight = 250;
             const int blockSpacing = 22;
@@ -114,6 +127,7 @@ namespace Game.MainMenu.View.ScreenInventory
 
         private void UpdateHeightContainerTowerPlan()
         {
+            return;
             var container = containerTowerPlan.GetComponent<RectTransform>();
             const int blockHeight = 240;
             const int blockSpacing = 20;
