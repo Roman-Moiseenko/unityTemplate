@@ -15,111 +15,90 @@ namespace Game.State.Inventory.Deck
     public class DeckCard
     {
         public readonly DeckCardData Origin;
-        public ObservableDictionary<int, int> TowerCardIds = new();
-        public ObservableDictionary<int, int> SkillCardIds = new();
-        public ReactiveProperty<int> HeroCardId;
+        public readonly ObservableList<int> TowerCardIds = new();
+        public readonly ObservableList<int> SkillCardIds = new();
+        public readonly ReactiveProperty<int> HeroCardId;
 
         public DeckCard(DeckCardData deckCardData)
         {
             Origin = deckCardData;
             HeroCardId = new ReactiveProperty<int>(deckCardData.HeroCardId);
             HeroCardId.Subscribe(newValue => deckCardData.HeroCardId = newValue);
-            foreach (var value in deckCardData.TowerCardIds)
+            foreach (var towerCardId in deckCardData.TowerCardIds)
             {
-                TowerCardIds.Add(value.Key, value.Value);
+                TowerCardIds.Add(towerCardId);
             }
             
-            TowerCardIds.ObserveAdd().Subscribe(newValue =>
+            TowerCardIds.ObserveAdd().Subscribe(e =>
             {
-                deckCardData.TowerCardIds.Add(newValue.Value.Key, newValue.Value.Value);
+                deckCardData.TowerCardIds.Add( e.Value);
             });
 
-            TowerCardIds.ObserveRemove().Subscribe(v =>
+            TowerCardIds.ObserveRemove().Subscribe(e =>
             {
-                deckCardData.TowerCardIds.Remove(v.Value.Key);
+                deckCardData.TowerCardIds.Remove(e.Value);
             });
 
-            foreach (var value in deckCardData.SkillCardIds)
+            foreach (var skillCardId in deckCardData.SkillCardIds)
             {
-                SkillCardIds.Add(value.Key, value.Value);
+                SkillCardIds.Add(skillCardId);
             }
 
-            SkillCardIds.ObserveAdd().Subscribe(newValue =>
+            SkillCardIds.ObserveAdd().Subscribe(e =>
             {
-                deckCardData.SkillCardIds.Add(newValue.Value.Key, newValue.Value.Value);
+                deckCardData.SkillCardIds.Add(e.Value);
             });
-            SkillCardIds.ObserveRemove().Subscribe(newValue =>
+            SkillCardIds.ObserveRemove().Subscribe(e =>
             {
-                deckCardData.SkillCardIds.Remove(newValue.Value.Key);
+                deckCardData.SkillCardIds.Remove(e.Value);
             });
         }
 
         public bool TowerCardInDeck(int uniqueId)
         {
-            return TowerCardIds.Any(towerCardId => towerCardId.Value == uniqueId);
+            return TowerCardIds.Any(towerCardId => towerCardId == uniqueId);
         }
 
         public void ExtractTowerFromDeck(int uniqueId)
         {
             foreach (var towerCardId in TowerCardIds)
             {
-                if (towerCardId.Value != uniqueId) continue;
-                TowerCardIds.Remove(towerCardId.Key);
+                if (towerCardId != uniqueId) continue;
+                TowerCardIds.Remove(towerCardId);
                 return;
             }
         }
 
-        public int PushTowerToDeck(int uniqueId)
+        public bool PushTowerToDeck(int uniqueId)
         {
-            var count = TowerCardIds.Count;
-            if (count == 6)
-            {
-                ExtractTowerFromDeck(TowerCardIds[1]);
-                return 1;
-            }
-
-            for (var i = 1; i <= 6; i++)
-            {
-                if (TowerCardIds.TryGetValue(i, out var value)) continue;
-                TowerCardIds.Add(i, uniqueId);
-                return i;
-            }
+            if (TowerCardIds.Count == 6) return false;
             
-            throw new Exception("Ошибка добавления в колоду");
+            TowerCardIds.Add(uniqueId);
+            return true;
         }
 
         public bool SkillCardInDeck(int uniqueId)
         {
-            return SkillCardIds.Any(skillCardId => skillCardId.Value == uniqueId);
+            return SkillCardIds.Any(skillCardId => skillCardId == uniqueId);
         }
         
         public void ExtractSkillFromDeck(int uniqueId)
         {
             foreach (var skillCardId in SkillCardIds)
             {
-                if (skillCardId.Value != uniqueId) continue;
-                SkillCardIds.Remove(skillCardId.Key);
+                if (skillCardId != uniqueId) continue;
+                SkillCardIds.Remove(skillCardId);
                 return;
             }
         }
         
-        public int PushSkillToDeck(int uniqueId)
+        public bool PushSkillToDeck(int uniqueId)
         {
             var count = SkillCardIds.Count;
-            if (count == 2)
-            {
-                ExtractSkillFromDeck(SkillCardIds[1]);
-                return 1;
-            }
+            if (SkillCardIds.Count == 2) return false;
 
-            for (var i = 1; i <= 2; i++)
-            {
-                if (SkillCardIds.TryGetValue(i, out var value)) continue;
-                SkillCardIds.Add(i, uniqueId);
-                return i;
-            }
-            
-            throw new Exception("Ошибка добавления в колоду");
+            SkillCardIds.Add(uniqueId);
+            return true;
         }
     }
 }

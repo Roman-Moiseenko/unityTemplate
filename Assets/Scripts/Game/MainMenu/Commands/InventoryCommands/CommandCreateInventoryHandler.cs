@@ -65,7 +65,7 @@ namespace Game.MainMenu.Commands.InventoryCommands
                 if (inventoryItem is TowerCard towerCard && index < 7)
                 {
                     index++;
-                    initialDeck.TowerCardIds.Add(index, towerCard.UniqueId); //Добавляем начальные башни в колоду    
+                    initialDeck.TowerCardIds.Add(towerCard.UniqueId); //Добавляем начальные башни в колоду    
                 }
             }
             _gameState.Inventory.DeckCards.Add(1, new DeckCard(initialDeck));

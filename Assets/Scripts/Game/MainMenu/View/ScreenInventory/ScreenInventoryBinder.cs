@@ -21,6 +21,7 @@ namespace Game.MainMenu.View.ScreenInventory
 
         [SerializeField] private DeckBinder deckBinder;
         [SerializeField] private PanelTowersBinder panelTowersBinder;
+        [SerializeField] private PanelSkillsBinder panelSkillsBinder;
         
         //    [SerializeField] private Button _btnGoToPlay;
         private IDisposable _disposable;
@@ -49,6 +50,12 @@ namespace Game.MainMenu.View.ScreenInventory
             var d = Disposable.CreateBuilder();
             base.OnBind(viewModel);
             
+            deckBinder.Bind(viewModel);
+            panelTowersBinder.Bind(viewModel);
+            panelSkillsBinder.Bind(viewModel);
+            
+            
+            /*
             //Заполняем карточками и чертежами Башен
             foreach (var towerCardViewModel in viewModel.TowerCards)
             {
@@ -94,7 +101,7 @@ namespace Game.MainMenu.View.ScreenInventory
                 .AddTo(ref d);
             
             //Заполняем карточками и чертежами Навыков
-            
+            */
             _disposable = d.Build();
         }
 

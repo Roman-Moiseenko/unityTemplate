@@ -114,43 +114,45 @@ namespace Game.MainMenu.Services
 
             foreach (var deckTowerCardId in _currentDeck.TowerCardIds)
             {
-                ChangeDeckTowerCardViewModel(deckTowerCardId.Value);
+                ChangeDeckTowerCardViewModel(deckTowerCardId);
             }
 
-            _currentDeck.TowerCardIds.ObserveAdd().Subscribe(e => { ChangeDeckTowerCardViewModel(e.Value.Value); });
-            _currentDeck.TowerCardIds.ObserveRemove().Subscribe(e => { ChangeDeckTowerCardViewModel(e.Value.Value); });
+            _currentDeck.TowerCardIds.ObserveAdd().Subscribe(e => { ChangeDeckTowerCardViewModel(e.Value); });
+            _currentDeck.TowerCardIds.ObserveRemove().Subscribe(e => { ChangeDeckTowerCardViewModel(e.Value); });
             //  Debug.Log(JsonConvert.SerializeObject(_allTowerCards[3].NumberCardDeck, Formatting.Indented));
         }
 
-        public void ChangeDeckTowerCard(int uniqueId)
+        public bool ChangeDeckTowerCard(int uniqueId)
         {
             var towerView = _allTowerCards.FirstOrDefault(t => t.IdTowerCard == uniqueId)!;
 
+            //TODO Проверка на ошибку и return false;
+            
             if (_currentDeck.TowerCardInDeck(uniqueId))
             {
                 _currentDeck.ExtractTowerFromDeck(uniqueId);
-                towerView.NumberCardDeck = 0;
                 towerView.IsDeck.OnNext(false);
             }
             else
             {
-                towerView.NumberCardDeck = _currentDeck.PushTowerToDeck(uniqueId);
-                towerView.IsDeck.OnNext(true);
+                //TODO Проверить на совпадение ConfigId и сравнить уровни карт
+                
+                
+                if (_currentDeck.PushTowerToDeck(uniqueId)) towerView.IsDeck.OnNext(true);
             }
 
             var command = new CommandSaveGameState();
             _cmd.Process(command);
+            return true;
         }
 
         private void ChangeDeckTowerCardViewModel(int uniqueId)
         {
             var towerView = _allTowerCards.FirstOrDefault(t => t.IdTowerCard == uniqueId)!;
-            towerView.NumberCardDeck = 0;
             foreach (var towerCardId in _currentDeck.TowerCardIds)
             {
-                if (towerCardId.Value == uniqueId)
+                if (towerCardId == uniqueId)
                 {
-                    towerView.NumberCardDeck = towerCardId.Key;
                     towerView.IsDeck.Value = true;
                     return;
                 }

@@ -36,9 +36,8 @@ namespace Game.MainMenu.Services
             var deckCard = gameState.Inventory.GetCurrentDeckCard();
 
             //Переносим башни
-            foreach (var keyValue in deckCard.TowerCardIds)
+            foreach (var towerUniqueId in deckCard.TowerCardIds)
             {
-                var towerUniqueId = keyValue.Value;
                 //TODO Сделать копию towerCard и ее передавать
                 var towerCard = gameState.Inventory.Items.FirstOrDefault(item => item.UniqueId == towerUniqueId);
                 if (towerCard == null) throw new Exception($"Отсутствует в инвентаре башня с id = {towerUniqueId}");
@@ -46,9 +45,8 @@ namespace Game.MainMenu.Services
             }
             
             //Переносим навыки
-            foreach (var keyValue in deckCard.SkillCardIds)
+            foreach (var skillUniqueId in deckCard.SkillCardIds)
             {
-                var skillUniqueId = keyValue.Value;
                 var skillCard = gameState.Inventory.Items.FirstOrDefault(item => item.UniqueId == skillUniqueId);
                 if (skillCard == null) throw new Exception($"Отсутствует в инвентаре навык с id = {skillUniqueId}");
                 gameplayEnterParams.Skills.Add((SkillCardData)skillCard?.Origin);

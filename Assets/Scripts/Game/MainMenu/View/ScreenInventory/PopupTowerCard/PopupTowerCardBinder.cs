@@ -124,7 +124,10 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
 
         private void OnTowerCardChangeDeck()
         {
-            ViewModel.TowerCardChangeDeck();
+            if (!ViewModel.TowerCardChangeDeck())
+            {
+                //TODO Вывести окно
+            }
             ViewModel.RequestClose();
         }
 

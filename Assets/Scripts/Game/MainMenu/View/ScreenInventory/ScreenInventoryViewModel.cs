@@ -29,11 +29,19 @@ namespace Game.MainMenu.View.ScreenInventory
 
         public GameStateProxy GameState;
 
-        public IObservableCollection<TowerCardViewModel> TowerCards;
-        public IObservableCollection<TowerPlanViewModel> TowerPlans;
+        private readonly IObservableCollection<TowerCardViewModel> towerCards;
         
-        public IObservableCollection<SkillCardViewModel> SkillCards;
-        public IObservableCollection<SkillPlanViewModel> SkillPlans;
+        public readonly ObservableList<TowerCardViewModel> TowerCardsDeck = new();
+        public readonly ObservableList<TowerCardViewModel> TowerCardsInventory = new();
+        
+        public readonly IObservableCollection<TowerPlanViewModel> TowerPlansInventory;
+        
+        private readonly IObservableCollection<SkillCardViewModel> skillCards;
+        
+        public readonly ObservableList<SkillCardViewModel> SkillCardsDeck = new();
+        public readonly ObservableList<SkillCardViewModel> SkillCardsInventory = new();
+        
+        public IObservableCollection<SkillPlanViewModel> SkillPlansInventory;
 
         private readonly InventoryUIManager _inventoryUIManager;
 
@@ -41,14 +49,23 @@ namespace Game.MainMenu.View.ScreenInventory
         {
             _uiManager = uiManager;
             GameState = container.Resolve<IGameStateProvider>().GameState;
+            _inventoryUIManager = container.Resolve<InventoryUIManager>();
+            
+            
             var towerCardPlanService = container.Resolve<TowerCardPlanService>();
-            TowerCards = towerCardPlanService.AllTowerCards;
-            TowerPlans = towerCardPlanService.AllTowerPlans;
+            towerCards = towerCardPlanService.AllTowerCards;
+            TowerPlansInventory = towerCardPlanService.AllTowerPlans;
+            TowerCardsUpload();
+
+            
+            
             
             var skillCardPlanService = container.Resolve<SkillCardPlanService>();
-            SkillCards = skillCardPlanService.AllSkillCards;
-            SkillPlans = skillCardPlanService.AllSkillPlans;
-            _inventoryUIManager = container.Resolve<InventoryUIManager>();
+            skillCards = skillCardPlanService.AllSkillCards;
+            SkillPlansInventory = skillCardPlanService.AllSkillPlans;
+            SkillCardsUpload();
+            
+            
 
 /*
             foreach (var inventoryItem in GameState.InventoryItems)
@@ -73,6 +90,115 @@ namespace Game.MainMenu.View.ScreenInventory
         public void RequestPopupBlacksmith()
         {
             _inventoryUIManager.OpenPopupBlacksmithTower();
+        }
+
+        private void TowerCardsUpload()
+        {
+            foreach (var towerCardViewModel  in towerCards)
+            {
+           /*
+            if (towerCardViewModel.IsDeck.Value)
+                {
+                    TowerCardsDeck.Add(towerCardViewModel);
+                }
+                else
+                {
+                    TowerCardsInventory.Add(towerCardViewModel);
+                }
+*/
+                towerCardViewModel.IsDeck.Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        TowerCardsDeck.Add(towerCardViewModel);
+                        TowerCardsInventory.Remove(towerCardViewModel);
+                    }
+                    else
+                    {
+                        TowerCardsDeck.Remove(towerCardViewModel);
+                        TowerCardsInventory.Add(towerCardViewModel);
+                    }
+                });
+            }
+
+            towerCards.ObserveAdd().Subscribe(e =>
+            {
+                var towerCardViewModel = e.Value;
+                if (towerCardViewModel.IsDeck.CurrentValue)
+                {
+                    TowerCardsDeck.Add(towerCardViewModel);
+                }
+                else
+                {
+                    TowerCardsInventory.Add(towerCardViewModel);
+                }
+            });
+            towerCards.ObserveRemove().Subscribe(e =>
+            {
+                var towerCardViewModel = e.Value;
+                if (towerCardViewModel.IsDeck.CurrentValue)
+                {
+                    TowerCardsDeck.Remove(towerCardViewModel);
+                }
+                else
+                {
+                    TowerCardsInventory.Remove(towerCardViewModel);
+                }
+            });
+        }
+        
+        private void SkillCardsUpload()
+        {
+            foreach (var skillCardViewModel  in skillCards)
+            {
+                if (skillCardViewModel.IsDeck.Value)
+                {
+                    SkillCardsDeck.Add(skillCardViewModel);
+                }
+                else
+                {
+                    SkillCardsInventory.Add(skillCardViewModel);
+                }
+
+                skillCardViewModel.IsDeck.Subscribe(x =>
+                {
+                    if (x)
+                    {
+                        SkillCardsDeck.Add(skillCardViewModel);
+                        SkillCardsInventory.Remove(skillCardViewModel);
+                    }
+                    else
+                    {
+                        SkillCardsDeck.Remove(skillCardViewModel);
+                        SkillCardsInventory.Add(skillCardViewModel);
+                    }
+                });
+            }
+
+            skillCards.ObserveAdd().Subscribe(e =>
+            {
+                var skillCardViewModel = e.Value;
+                if (skillCardViewModel.IsDeck.CurrentValue)
+                {
+                    SkillCardsDeck.Add(skillCardViewModel);
+                }
+                else
+                {
+                    SkillCardsInventory.Add(skillCardViewModel);
+                }
+            });
+            skillCards.ObserveRemove().Subscribe(e =>
+            {
+                var skillCardViewModel = e.Value;
+                if (skillCardViewModel.IsDeck.CurrentValue)
+                {
+                    SkillCardsDeck.Remove(skillCardViewModel);
+                }
+                else
+                {
+                    SkillCardsInventory.Remove(skillCardViewModel);
+                }
+            });
         }
     }
 }

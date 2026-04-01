@@ -103,11 +103,11 @@ namespace Game.MainMenu.Services
 
             foreach (var deckSkillCardId in _currentDeck.SkillCardIds)
             {
-                ChangeDeckSkillViewModel(deckSkillCardId.Value);
+                ChangeDeckSkillViewModel(deckSkillCardId);
             }
 
-            _currentDeck.SkillCardIds.ObserveAdd().Subscribe(e => { ChangeDeckSkillViewModel(e.Value.Value); });
-            _currentDeck.SkillCardIds.ObserveRemove().Subscribe(e => { ChangeDeckSkillViewModel(e.Value.Value); });
+            _currentDeck.SkillCardIds.ObserveAdd().Subscribe(e => { ChangeDeckSkillViewModel(e.Value); });
+            _currentDeck.SkillCardIds.ObserveRemove().Subscribe(e => { ChangeDeckSkillViewModel(e.Value); });
         }
         
         
@@ -123,8 +123,9 @@ namespace Game.MainMenu.Services
             }
             else
             {
-                skillView.NumberCardDeck = _currentDeck.PushSkillToDeck(uniqueId);
-                skillView.IsDeck.OnNext(true);
+                //TODO Проверка на ConfigId
+                
+                if (_currentDeck.PushSkillToDeck(uniqueId)) skillView.IsDeck.OnNext(true);
             }
 
             var command = new CommandSaveGameState();
@@ -134,12 +135,11 @@ namespace Game.MainMenu.Services
         private void ChangeDeckSkillViewModel(int uniqueId)
         {
             var skillView = _allSkillCards.FirstOrDefault(t => t.IdSkillCard == uniqueId)!;
-            skillView.NumberCardDeck = 0;
+            
             foreach (var skillCardId in _currentDeck.SkillCardIds)
             {
-                if (skillCardId.Value == uniqueId)
+                if (skillCardId == uniqueId)
                 {
-                    skillView.NumberCardDeck = skillCardId.Key;
                     skillView.IsDeck.Value = true;
                     return;
                 }

@@ -7,8 +7,8 @@ namespace Game.State.Inventory.Deck
 {
     public class DeckCardData
     {
-        public readonly Dictionary<int, int> TowerCardIds = new();
-        public readonly Dictionary<int, int> SkillCardIds = new();
+        public readonly List<int> TowerCardIds = new();
+        public readonly List<int> SkillCardIds = new();
         public int HeroCardId ;
         
     }
