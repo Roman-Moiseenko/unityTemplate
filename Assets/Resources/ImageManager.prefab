@@ -178,10 +178,20 @@ MonoBehaviour:
       Sprite: {fileID: 21300000, guid: 05bda83c1606e2b4589cb3b5dc669b68, type: 3}
     - Level: 6
       Sprite: {fileID: 21300000, guid: d084fac76374f744ca3a95e24985a403, type: 3}
-  skillPlan: []
+  skillPlan:
+  - ConfigId: Skill01
+    Sprite: {fileID: 21300000, guid: a8d39e35051de2043924931c42b8daf4, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: Skill02
+    Sprite: {fileID: 21300000, guid: a94e44c0630f2aa42b9d44b19da6f5c7, type: 3}
+    Texture: {fileID: 0}
   skillCard:
   - ConfigId: Skill01
-    ByLevels: []
+    Sprite: {fileID: 21300000, guid: bc55d8d5a4f7eaf44aac25e97ec52787, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: Skill02
+    Sprite: {fileID: 21300000, guid: bd148d7b42805be40a3f4d4e28f86579, type: 3}
+    Texture: {fileID: 0}
   towerParameters:
   - TypeParameter: 0
     Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}

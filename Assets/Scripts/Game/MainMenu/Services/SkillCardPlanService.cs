@@ -17,6 +17,7 @@ using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.SkillPlans;
 using Game.State.Maps.Skills;
 using MVVM.CMD;
+using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;

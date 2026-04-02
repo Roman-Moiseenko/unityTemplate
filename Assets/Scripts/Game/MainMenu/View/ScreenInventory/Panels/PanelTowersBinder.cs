@@ -21,15 +21,12 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
         private readonly Dictionary<int, TowerPlanBinder> _createdTowerPlanMap = new();
         private IDisposable _disposable;
         private ScreenInventoryViewModel _viewModel;
-
-        private ContainerConsts cardsContainerConsts = new ContainerConsts(250, 22, 40, 5);
-        private ContainerConsts plansContainerConsts = new ContainerConsts(240, 20, 40, 4);
         
         public void Bind(ScreenInventoryViewModel viewModel)
         {
-            _viewModel = viewModel;
             var d = Disposable.CreateBuilder();
-
+            _viewModel = viewModel;
+            
             foreach (var towerCardViewModel in viewModel.TowerCardsInventory)
             {
                 CreateTowerCard(towerCardViewModel);
@@ -117,7 +114,7 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
             UpdateContainer(
                 containerCards.GetComponent<RectTransform>(),
                 _viewModel.TowerCardsInventory.Count,
-                cardsContainerConsts
+                CardsContainerConsts
                 );
         }
 
@@ -126,7 +123,7 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
             UpdateContainer(
                 containerPlans.GetComponent<RectTransform>(),
                 _viewModel.TowerPlansInventory.Count,
-                plansContainerConsts
+                PlansContainerConsts
             );
         }
 

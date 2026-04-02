@@ -9,7 +9,7 @@ namespace Game.MainMenu.View.ScreenInventory.SkillPlans
     {
         
         public SkillPlan SkillPlan => _skillPlanEntity;
-        public int IdTowerPlan => _skillPlanEntity.UniqueId;
+        public int IdSkillPlan => _skillPlanEntity.UniqueId;
         public string ConfigId => _skillPlanEntity.ConfigId;
         public ReadOnlyReactiveProperty<long> Amount => _skillPlanEntity.Amount;
         public readonly SkillSettings SkillSettings;

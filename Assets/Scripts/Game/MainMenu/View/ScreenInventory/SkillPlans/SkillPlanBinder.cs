@@ -41,8 +41,8 @@ namespace Game.MainMenu.View.ScreenInventory.SkillPlans
         {
             buttonPopup.onClick.RemoveListener(OnOpenPopup);
         }
-        
-        public void OnOpenPopup()
+
+        private void OnOpenPopup()
         {
             _viewModel.RequestOpenPopupSkillPlan();
         }

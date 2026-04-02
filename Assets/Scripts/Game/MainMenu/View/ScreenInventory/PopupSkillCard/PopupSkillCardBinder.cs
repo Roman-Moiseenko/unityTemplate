@@ -63,7 +63,7 @@ namespace Game.MainMenu.View.ScreenInventory.PopupSkillCard
             textTitle.text = $"{skillSettings.TitleLid} ({skillCardViewModel.EpicLevel.CurrentValue.GetString()})";
             textDescription.text = skillSettings.DescriptionLid;
             epicImage.sprite = imageManager.GetEpicLevel(skillCardViewModel.EpicLevel.CurrentValue);
-            skillImage.sprite = imageManager.GetSkillCard(skillCardViewModel.ConfigId, 1);
+            skillImage.sprite = imageManager.GetSkillCard(skillCardViewModel.ConfigId);
             planImage.sprite = imageManager.GetSkillPlan(skillCardViewModel.ConfigId);
 
             textLevel.text = $"Ур.: {skillCardData.Level}/{skillCardViewModel.SkillCard.MaxLevel()}";

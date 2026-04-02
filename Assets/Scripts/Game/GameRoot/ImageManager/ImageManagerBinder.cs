@@ -18,7 +18,7 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByConfig> towerPlan;
         [SerializeField] private List<ImageItemByConfigLevel> towerCard;
         [SerializeField] private List<ImageItemByConfig> skillPlan;
-        [SerializeField] private List<ImageItemByConfigLevel> skillCard;
+        [SerializeField] private List<ImageItemByConfig> skillCard;
         [SerializeField] private List<ImageItemByTowerParameter> towerParameters;
         [SerializeField] private List<ImageItemBySkillParameter> skillParameters;
         //[SerializeField] private List<ImageItemByDefence> defences;
@@ -83,10 +83,9 @@ namespace Game.GameRoot.ImageManager
         {
             return towerPlan.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
         }
-        public Sprite GetSkillCard(string configId, int level)
+        public Sprite GetSkillCard(string configId)
         {
-            var items = skillCard.FirstOrDefault(t => t.ConfigId == configId)!.ByLevels;
-            return items.FirstOrDefault(t => t.Level == level)!.Sprite;
+            return skillCard.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
         }
         public Sprite GetSkillPlan(string configId)
         {

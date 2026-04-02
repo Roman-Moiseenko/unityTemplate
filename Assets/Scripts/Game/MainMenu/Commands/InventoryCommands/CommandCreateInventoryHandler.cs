@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.MainMenu.Commands.SkillCommands;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.Settings;
 using Game.State.Inventory;
 using Game.State.Inventory.Deck;
+using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.TowerCards;
 using Game.State.Root;
 using MVVM.CMD;
@@ -57,6 +59,35 @@ namespace Game.MainMenu.Commands.InventoryCommands
                 _cmd.Process(commandTowerCard, false);
             }
             
+
+            
+            //TODO Начальные навыки из настроек
+            var skillCards = _gameSettings.InventoryInitialSettings.SkillCards;
+            var skillPlans = _gameSettings.InventoryInitialSettings.SkillPlans;
+            var configSkills = _gameSettings.SkillsSettings.AllSkills;           
+            foreach (var skillPlan in skillPlans)
+            {
+                var commandSkillPlan = new CommandSkillPlanAdd()
+                {
+                    ConfigId = skillPlan.ConfigId,
+                    Amount = skillPlan.Amount
+                };
+                _cmd.Process(commandSkillPlan, false);
+            }
+            
+            foreach (var skillCard in skillCards) //Начальные башни из настроек
+            {
+                var configSkill = configSkills.FirstOrDefault(t => t.ConfigId == skillCard.ConfigId);
+                if (configSkill == null) throw new Exception($"skillConfig = {skillCard.ConfigId}  Not Find");
+                var commandSkillCard = new CommandSkillCardAdd
+                {
+                    ConfigId = skillCard.ConfigId,
+                    EpicLevel = skillCard.epicCardLevel,
+                    Level = skillCard.Level
+                };
+                _cmd.Process(commandSkillCard, false);
+            }
+            
             var initialDeck = new DeckCardData(); //Создаем начальную колоду
             var index = 0;
             foreach (var inventoryItem in _gameState.Inventory.Items)
@@ -67,10 +98,17 @@ namespace Game.MainMenu.Commands.InventoryCommands
                     index++;
                     initialDeck.TowerCardIds.Add(towerCard.UniqueId); //Добавляем начальные башни в колоду    
                 }
+                
+                if (inventoryItem is SkillCard skillCard && index < 3)
+                {
+                    index++;
+                    initialDeck.SkillCardIds.Add(skillCard.UniqueId); //Добавляем начальные башни в колоду    
+                }
+                
             }
             _gameState.Inventory.DeckCards.Add(1, new DeckCard(initialDeck));
             
-            //TODO Начальные навыки из настроек
+            
             //TODO Начальный герой из настроек
             
             

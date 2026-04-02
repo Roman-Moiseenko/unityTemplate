@@ -84,7 +84,10 @@ namespace Game.MainMenu.Root
             cmd.RegisterHandler(new CommandTowerPlanSpendHandler(gameState));
             //SKILL
             cmd.RegisterHandler(new CommandSkillCardLevelUpHandler(gameState));
+            cmd.RegisterHandler(new CommandSkillCardAddHandler(gameState, gameSettings));
+            cmd.RegisterHandler(new CommandSkillPlanAddHandler(gameState));
             
+            //cmd.RegisterHandler(new CommandSkillPlanSpendHandler(gameState));
 
 
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();

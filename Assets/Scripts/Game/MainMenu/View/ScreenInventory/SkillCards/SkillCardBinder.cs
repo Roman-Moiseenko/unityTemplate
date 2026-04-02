@@ -10,11 +10,11 @@ namespace Game.MainMenu.View.ScreenInventory.SkillCards
 {
     public class SkillCardBinder : MonoBehaviour
     {
-        public SkillCardViewModel _viewModel;
+        private SkillCardViewModel _viewModel;
         private IDisposable _disposable;
 
         [SerializeField] private Image epicImage;
-        [SerializeField] private Image towerImage;
+        [SerializeField] private Image skillImage;
         [SerializeField] private TMP_Text levelText;
         [SerializeField] private Button buttonPopup;
         [SerializeField] private Transform canIsUpdate;
@@ -28,7 +28,7 @@ namespace Game.MainMenu.View.ScreenInventory.SkillCards
 
             var d = Disposable.CreateBuilder();
             var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
-            towerImage.sprite = imageManager.GetTowerCard(viewModel.ConfigId, 1);
+            skillImage.sprite = imageManager.GetSkillCard(viewModel.ConfigId);
             _viewModel = viewModel;
             
             viewModel.EpicLevel

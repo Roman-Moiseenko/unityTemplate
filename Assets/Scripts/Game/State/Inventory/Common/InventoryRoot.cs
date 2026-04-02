@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
+using UnityEngine;
 using DeckCard = Game.State.Inventory.Deck.DeckCard;
 
 namespace Game.State.Inventory.Common
@@ -19,7 +21,8 @@ namespace Game.State.Inventory.Common
         public InventoryRoot(InventoryRootData rootData)
         {
             Origin = rootData;
-
+            Debug.Log(JsonConvert.SerializeObject(rootData.Items, Formatting.Indented));
+            
             foreach (var itemData in rootData.Items)
             {
                 var itemEntity = InventoryFactory.CreateInventory(itemData);

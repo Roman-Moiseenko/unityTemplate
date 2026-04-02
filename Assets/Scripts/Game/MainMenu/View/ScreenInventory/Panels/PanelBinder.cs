@@ -13,7 +13,8 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
     public abstract class PanelBinder : MonoBehaviour
     {
         private ResizeSubject _subject;
-
+        protected readonly ContainerConsts CardsContainerConsts = new (250, 22, 40, 5);
+        protected readonly ContainerConsts PlansContainerConsts = new (240, 20, 40, 4);
         private void Awake()
         {
             _subject = gameObject.GetComponent<ResizeSubject>();
@@ -37,6 +38,7 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
 
             transform.GetComponent<RectTransform>().sizeDelta = sizeDelta;
             //Передаем наверх, что размеры изменились
+            
             _subject.OnResize.OnNext(Unit.Default);
         }
 
@@ -45,6 +47,8 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
          */
         protected void UpdateContainer(RectTransform container, int count, ContainerConsts consts)
         {
+            if (!gameObject.activeSelf) return;
+            
             var sizeDelta = container.sizeDelta;
             var rows = Math.Ceiling(count / (consts.Cols * 1f));
 
