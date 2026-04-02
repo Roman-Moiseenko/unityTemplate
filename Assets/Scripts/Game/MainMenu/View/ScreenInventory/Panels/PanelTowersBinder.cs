@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.MainMenu.View.Common;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using ObservableCollections;
@@ -9,18 +10,21 @@ using UnityEngine.UI;
 
 namespace Game.MainMenu.View.ScreenInventory.Panels
 {
-    public class PanelTowersBinder : MonoBehaviour
+    public class PanelTowersBinder : PanelBinder
     {
         [SerializeField] private Button btnSort;
         [SerializeField] private Button btnBlacksmith;
         [SerializeField] private Transform containerCards;
         [SerializeField] private Transform containerPlans;
-
+ 
         private readonly Dictionary<int, TowerCardBinder> _createdTowerCardMap = new();
         private readonly Dictionary<int, TowerPlanBinder> _createdTowerPlanMap = new();
         private IDisposable _disposable;
         private ScreenInventoryViewModel _viewModel;
 
+        private ContainerConsts cardsContainerConsts = new ContainerConsts(250, 22, 40, 5);
+        private ContainerConsts plansContainerConsts = new ContainerConsts(240, 20, 40, 4);
+        
         public void Bind(ScreenInventoryViewModel viewModel)
         {
             _viewModel = viewModel;
@@ -34,7 +38,6 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
             UpdateHeightContainerCard();
             viewModel.TowerCardsInventory.ObserveAdd().Subscribe(e =>
             {
-                // var towerCardViewModel = e.Value;
                 CreateTowerCard(e.Value);
                 UpdateHeightContainerCard();
             }).AddTo(ref d);
@@ -59,13 +62,16 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
                 })
                 .AddTo(ref d);
             viewModel.TowerPlansInventory.ObserveRemove()
-                .Subscribe(e => DestroyTowerPlan(e.Value))
+                .Subscribe(e =>
+                {
+                    DestroyTowerPlan(e.Value);
+                    UpdateHeightContainerPlan();
+                })
                 .AddTo(ref d);
 
             _disposable = d.Build();
         }
-
-
+        
         private void CreateTowerCard(TowerCardViewModel viewModel)
         {
             var prefabTowerCardPath =
@@ -76,8 +82,7 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
             createdTower.transform.SetSiblingIndex(0);
             _createdTowerCardMap[viewModel.IdTowerCard] = createdTower;
         }
-
-
+        
         private void CreateTowerPlan(TowerPlanViewModel viewModel)
         {
             var prefabTowerPlanPath =
@@ -105,39 +110,29 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
                 _createdTowerPlanMap.Remove(viewModel.IdTowerPlan);
             }
         }
+        
 
         private void UpdateHeightContainerCard()
         {
-            // return;
-            var container = containerCards.GetComponent<RectTransform>();
-            var sizeDelta = container.sizeDelta;
-            var count = _viewModel.TowerCardsInventory.Count;
-            const int blockHeight = 250;
-            const int blockSpacing = 22;
-            var rows = Math.Ceiling(count / 5f);
-
-            Debug.Log(" count = " + count + ", rows = " + rows);
-            sizeDelta.y = count == 0 ? 0 : (float)(rows * blockHeight + (rows - 1) * blockSpacing);
-            sizeDelta.y += 40f;
-            Debug.Log(" sizeDelta.y = " + sizeDelta.y);
-            
-            container.sizeDelta = sizeDelta;
+            UpdateContainer(
+                containerCards.GetComponent<RectTransform>(),
+                _viewModel.TowerCardsInventory.Count,
+                cardsContainerConsts
+                );
         }
 
         private void UpdateHeightContainerPlan()
         {
-            //return;
-            var container = containerPlans.GetComponent<RectTransform>();
-            var sizeDelta = container.sizeDelta;
-            const int blockHeight = 240;
-            const int blockSpacing = 20;
-            var rows = Math.Ceiling(container.childCount / 4f);
-            sizeDelta.y = container.childCount == 0 ? 0 : (float)(rows * blockHeight + (rows - 1) * blockSpacing);
-            container.sizeDelta = sizeDelta;
+            UpdateContainer(
+                containerPlans.GetComponent<RectTransform>(),
+                _viewModel.TowerPlansInventory.Count,
+                plansContainerConsts
+            );
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             btnBlacksmith.onClick.AddListener(OnOpenPopupBlacksmith);
         }
 
@@ -155,5 +150,7 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
         {
             _disposable.Dispose();
         }
+
+        
     }
 }

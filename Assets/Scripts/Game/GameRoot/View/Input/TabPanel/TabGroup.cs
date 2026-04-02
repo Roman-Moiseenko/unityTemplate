@@ -14,7 +14,7 @@ namespace Game.GameRoot.View.Input.TabPanel
 
         public List<GameObject> tabs = new();
         
-        private void Start()
+        private void OnEnable()
         {
             if (SelectedTab != null)
             {
@@ -48,15 +48,17 @@ namespace Game.GameRoot.View.Input.TabPanel
                 SelectedTab.Deselect();
             }
             SelectedTab = tabButton;
-            SelectedTab.Select();
+            
             ResetTabs();
+            
             SelectedTab.background.sprite = tabActive;
-         //   tabButton.SizeUp();
             var index = tabButton.transform.GetSiblingIndex();
-            for (int i = 0; i < tabs.Count; i++)
+            for (var i = 0; i < tabs.Count; i++)
             {
-                tabs[i].gameObject.SetActive(i == index);
+                if (i != index) tabs[i].gameObject.SetActive(false);
             }
+            tabs[index].gameObject.SetActive(true);
+            SelectedTab.Select();
         }
 
         private void ResetTabs()
