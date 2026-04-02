@@ -25,42 +25,44 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
         {
             _viewModel = viewModel;
             var d = Disposable.CreateBuilder();
-            
+
             foreach (var towerCardViewModel in viewModel.TowerCardsInventory)
             {
                 CreateTowerCard(towerCardViewModel);
             }
-            
-            UpdateHeightContainerTowerCard();
+
+            UpdateHeightContainerCard();
             viewModel.TowerCardsInventory.ObserveAdd().Subscribe(e =>
             {
-               // var towerCardViewModel = e.Value;
+                // var towerCardViewModel = e.Value;
                 CreateTowerCard(e.Value);
-                UpdateHeightContainerTowerCard();
+                UpdateHeightContainerCard();
             }).AddTo(ref d);
             viewModel.TowerCardsInventory.ObserveRemove().Subscribe(e =>
             {
                 DestroyTowerCard(e.Value);
+                UpdateHeightContainerCard();
             }).AddTo(ref d);
-            
-            
+
+
             foreach (var towerPlanViewModel in viewModel.TowerPlansInventory)
             {
                 CreateTowerPlan(towerPlanViewModel);
             }
 
-            UpdateHeightContainerTowerPlan();
+            UpdateHeightContainerPlan();
             viewModel.TowerPlansInventory.ObserveAdd()
                 .Subscribe(e =>
                 {
                     CreateTowerPlan(e.Value);
-                    UpdateHeightContainerTowerPlan();
+                    UpdateHeightContainerPlan();
                 })
                 .AddTo(ref d);
             viewModel.TowerPlansInventory.ObserveRemove()
                 .Subscribe(e => DestroyTowerPlan(e.Value))
                 .AddTo(ref d);
-            
+
+            _disposable = d.Build();
         }
 
 
@@ -103,29 +105,37 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
                 _createdTowerPlanMap.Remove(viewModel.IdTowerPlan);
             }
         }
-        private void UpdateHeightContainerTowerCard()
+
+        private void UpdateHeightContainerCard()
         {
-            return;
+            // return;
             var container = containerCards.GetComponent<RectTransform>();
+            var sizeDelta = container.sizeDelta;
+            var count = _viewModel.TowerCardsInventory.Count;
             const int blockHeight = 250;
             const int blockSpacing = 22;
-            var rows = Math.Ceiling(container.childCount / 5f);
+            var rows = Math.Ceiling(count / 5f);
+
+            Debug.Log(" count = " + count + ", rows = " + rows);
+            sizeDelta.y = count == 0 ? 0 : (float)(rows * blockHeight + (rows - 1) * blockSpacing);
+            sizeDelta.y += 40f;
+            Debug.Log(" sizeDelta.y = " + sizeDelta.y);
             
-            container.sizeDelta = container.childCount == 0 
-                ? new Vector2(1040, 0) 
-                : new Vector2(1040, (float)(rows * blockHeight + (rows - 1) * blockSpacing));
+            container.sizeDelta = sizeDelta;
         }
-        private void UpdateHeightContainerTowerPlan()
+
+        private void UpdateHeightContainerPlan()
         {
-            return;
+            //return;
             var container = containerPlans.GetComponent<RectTransform>();
+            var sizeDelta = container.sizeDelta;
             const int blockHeight = 240;
             const int blockSpacing = 20;
             var rows = Math.Ceiling(container.childCount / 4f);
-            container.sizeDelta = container.childCount == 0 
-                ? new Vector2(1040, 0) 
-                : new Vector2(1040, (float)(rows * blockHeight + (rows - 1) * blockSpacing));
+            sizeDelta.y = container.childCount == 0 ? 0 : (float)(rows * blockHeight + (rows - 1) * blockSpacing);
+            container.sizeDelta = sizeDelta;
         }
+
         private void OnEnable()
         {
             btnBlacksmith.onClick.AddListener(OnOpenPopupBlacksmith);
