@@ -10,6 +10,8 @@ using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.TowerCards;
 using Game.State.Root;
 using MVVM.CMD;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Game.MainMenu.Commands.InventoryCommands
 {
@@ -20,21 +22,22 @@ namespace Game.MainMenu.Commands.InventoryCommands
         private readonly ICommandProcessor _cmd;
 
         public CommandCreateInventoryHandler(
-            GameStateProxy gameState, 
-            GameSettings gameSettings, 
+            GameStateProxy gameState,
+            GameSettings gameSettings,
             ICommandProcessor cmd)
         {
             _gameState = gameState;
             _gameSettings = gameSettings;
             _cmd = cmd;
         }
-        
+
         public bool Handle(CommandCreateInventory commandCreate)
         {
             var towerCards = _gameSettings.InventoryInitialSettings.TowerCards;
             var towerPlans = _gameSettings.InventoryInitialSettings.TowerPlans;
             var configTowers = _gameSettings.TowersSettings.AllTowers;
-            //Debug.Log("Загрузка инвентаря из настроек " + JsonConvert.SerializeObject(towers, Formatting.Indented));
+
+            //            Debug.Log(JsonConvert.SerializeObject(_gameSettings.InventoryInitialSettings, Formatting.Indented));
 
             foreach (var towerPlan in towerPlans)
             {
@@ -45,7 +48,7 @@ namespace Game.MainMenu.Commands.InventoryCommands
                 };
                 _cmd.Process(commandTowerPlan, false);
             }
-            
+
             foreach (var towerCard in towerCards) //Начальные башни из настроек
             {
                 var configTower = configTowers.FirstOrDefault(t => t.ConfigId == towerCard.ConfigId);
@@ -58,13 +61,12 @@ namespace Game.MainMenu.Commands.InventoryCommands
                 };
                 _cmd.Process(commandTowerCard, false);
             }
-            
 
-            
-            //TODO Начальные навыки из настроек
+
+            //Начальные навыки из настроек
             var skillCards = _gameSettings.InventoryInitialSettings.SkillCards;
             var skillPlans = _gameSettings.InventoryInitialSettings.SkillPlans;
-            var configSkills = _gameSettings.SkillsSettings.AllSkills;           
+            var configSkills = _gameSettings.SkillsSettings.AllSkills;
             foreach (var skillPlan in skillPlans)
             {
                 var commandSkillPlan = new CommandSkillPlanAdd()
@@ -74,7 +76,7 @@ namespace Game.MainMenu.Commands.InventoryCommands
                 };
                 _cmd.Process(commandSkillPlan, false);
             }
-            
+
             foreach (var skillCard in skillCards) //Начальные башни из настроек
             {
                 var configSkill = configSkills.FirstOrDefault(t => t.ConfigId == skillCard.ConfigId);
@@ -87,31 +89,24 @@ namespace Game.MainMenu.Commands.InventoryCommands
                 };
                 _cmd.Process(commandSkillCard, false);
             }
-            
+
             var initialDeck = new DeckCardData(); //Создаем начальную колоду
-            var index = 0;
+
             foreach (var inventoryItem in _gameState.Inventory.Items)
             {
-                
-                if (inventoryItem is TowerCard towerCard && index < 7)
-                {
-                    index++;
+                if (inventoryItem is TowerCard towerCard && initialDeck.TowerCardIds.Count < 6)
                     initialDeck.TowerCardIds.Add(towerCard.UniqueId); //Добавляем начальные башни в колоду    
-                }
-                
-                if (inventoryItem is SkillCard skillCard && index < 3)
-                {
-                    index++;
-                    initialDeck.SkillCardIds.Add(skillCard.UniqueId); //Добавляем начальные башни в колоду    
-                }
-                
+
+                if (inventoryItem is SkillCard skillCard && initialDeck.SkillCardIds.Count < 3)
+                    initialDeck.SkillCardIds.Add(skillCard.UniqueId); //Добавляем начальные навыки в колоду    
             }
+
             _gameState.Inventory.DeckCards.Add(1, new DeckCard(initialDeck));
-            
-            
+
+
             //TODO Начальный герой из настроек
-            
-            
+
+
             _gameState.HardCurrency.OnNext(5000);
             _gameState.SoftCurrency.OnNext(45000);
             return true;

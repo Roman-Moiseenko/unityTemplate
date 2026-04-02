@@ -26,6 +26,7 @@ namespace Game.MainMenu.View.ScreenInventory.Deck
 
             StartEmptyCells();
 
+            
             foreach (var towerCardViewModel in viewModel.TowerCardsDeck)
             {
                 CreateTowerCard(towerCardViewModel);

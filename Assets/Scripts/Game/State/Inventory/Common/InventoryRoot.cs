@@ -21,7 +21,7 @@ namespace Game.State.Inventory.Common
         public InventoryRoot(InventoryRootData rootData)
         {
             Origin = rootData;
-            Debug.Log(JsonConvert.SerializeObject(rootData.Items, Formatting.Indented));
+            //Debug.Log(JsonConvert.SerializeObject(rootData.Items, Formatting.Indented));
             
             foreach (var itemData in rootData.Items)
             {
