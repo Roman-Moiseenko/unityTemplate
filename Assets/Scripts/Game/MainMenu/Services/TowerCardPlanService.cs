@@ -41,7 +41,7 @@ namespace Game.MainMenu.Services
 
         private readonly Dictionary<string, TowerSettings> _towerSettingsMap = new();
         private readonly DeckCard _currentDeck;
-        
+
         public IObservableCollection<TowerCardViewModel> AllTowerCards =>
             _allTowerCards; //Интерфейс менять нельзя, возвращаем через динамический массив
 
@@ -55,9 +55,9 @@ namespace Game.MainMenu.Services
             DIContainer container
         )
         {
-       //     var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
-         //   var gameState = gameStateProvider.GameState;
-            
+            //     var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
+            //   var gameState = gameStateProvider.GameState;
+
             _inventoryRoot = inventoryRoot;
             _items = inventoryRoot.Items;
             _cmd = cmd;
@@ -79,7 +79,6 @@ namespace Game.MainMenu.Services
                     towerCard.Level.Subscribe(e => UpdateParameterTowerCard(towerCard));
                     UpdateParameterTowerCard(towerCard);
                     CreateTowerCardViewModel(towerCard);
-
                 }
 
                 if (item is TowerPlan towerPlan)
@@ -114,12 +113,9 @@ namespace Game.MainMenu.Services
 
             foreach (var deckTowerCardId in _currentDeck.TowerCardIds)
             {
-                ChangeDeckTowerCardViewModel(deckTowerCardId);
+                var towerView = _allTowerCards.FirstOrDefault(t => t.IdTowerCard == deckTowerCardId);
+                towerView?.IsDeck.OnNext(true);
             }
-
-            _currentDeck.TowerCardIds.ObserveAdd().Subscribe(e => { ChangeDeckTowerCardViewModel(e.Value); });
-            _currentDeck.TowerCardIds.ObserveRemove().Subscribe(e => { ChangeDeckTowerCardViewModel(e.Value); });
-            //  Debug.Log(JsonConvert.SerializeObject(_allTowerCards[3].NumberCardDeck, Formatting.Indented));
         }
 
         public bool ChangeDeckTowerCard(int uniqueId)
@@ -127,7 +123,7 @@ namespace Game.MainMenu.Services
             var towerView = _allTowerCards.FirstOrDefault(t => t.IdTowerCard == uniqueId)!;
 
             //TODO Проверка на ошибку и return false;
-            
+
             if (_currentDeck.TowerCardInDeck(uniqueId))
             {
                 _currentDeck.ExtractTowerFromDeck(uniqueId);
@@ -136,29 +132,14 @@ namespace Game.MainMenu.Services
             else
             {
                 //TODO Проверить на совпадение ConfigId и сравнить уровни карт
-                
-                
+
+
                 if (_currentDeck.PushTowerToDeck(uniqueId)) towerView.IsDeck.OnNext(true);
             }
 
             var command = new CommandSaveGameState();
             _cmd.Process(command);
             return true;
-        }
-
-        private void ChangeDeckTowerCardViewModel(int uniqueId)
-        {
-            var towerView = _allTowerCards.FirstOrDefault(t => t.IdTowerCard == uniqueId)!;
-            foreach (var towerCardId in _currentDeck.TowerCardIds)
-            {
-                if (towerCardId == uniqueId)
-                {
-                    towerView.IsDeck.Value = true;
-                    return;
-                }
-            }
-
-            towerView.IsDeck.Value = false;
         }
 
         //ПУБЛИЧНЫЕ МЕТОДЫ ИЗМЕНЕНИЯ TowerCardEntity
@@ -233,14 +214,15 @@ namespace Game.MainMenu.Services
             //    var level = towerCard.Level.Value;
 
             var settings = _towerSettingsMap[towerCard.ConfigId];
-            
+
 
             towerCard.Parameters.Clear();
             foreach (var baseParameter in settings.BaseParameters)
             {
-                towerCard.Parameters.Add(baseParameter.ParameterType, new TowerParameter(new TowerParameterData(baseParameter)));
+                towerCard.Parameters.Add(baseParameter.ParameterType,
+                    new TowerParameter(new TowerParameterData(baseParameter)));
             }
-            
+
             //Debug.Log(JsonConvert.SerializeObject(towerCard.Parameters, Formatting.Indented));
 
             //TODO Пересчет от базовых параметров 

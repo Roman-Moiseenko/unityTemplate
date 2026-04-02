@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DI;
 using Game.MainMenu.Services;
 using Game.MainMenu.View.ScreenInventory.PopupTowerCard;
@@ -44,6 +45,7 @@ namespace Game.MainMenu.View.ScreenInventory
         public IObservableCollection<SkillPlanViewModel> SkillPlansInventory;
 
         private readonly InventoryUIManager _inventoryUIManager;
+        private Dictionary<int, IDisposable> _disposableMap = new();
 
         public ScreenInventoryViewModel(MainMenuUIManager uiManager, DIContainer container) : base(container)
         {
@@ -96,55 +98,51 @@ namespace Game.MainMenu.View.ScreenInventory
         {
             foreach (var towerCardViewModel  in towerCards)
             {
-           /*
-            if (towerCardViewModel.IsDeck.Value)
-                {
-                    TowerCardsDeck.Add(towerCardViewModel);
-                }
-                else
-                {
-                    TowerCardsInventory.Add(towerCardViewModel);
-                }
-*/
-                towerCardViewModel.IsDeck.Subscribe(x =>
-                {
-                    if (x)
-                    {
-                        TowerCardsDeck.Add(towerCardViewModel);
-                        TowerCardsInventory.Remove(towerCardViewModel);
-                    }
-                    else
-                    {
-                        TowerCardsDeck.Remove(towerCardViewModel);
-                        TowerCardsInventory.Add(towerCardViewModel);
-                    }
-                });
+                TowerDeckSubscription(towerCardViewModel);
             }
 
             towerCards.ObserveAdd().Subscribe(e =>
             {
                 var towerCardViewModel = e.Value;
-                if (towerCardViewModel.IsDeck.CurrentValue)
-                {
-                    TowerCardsDeck.Add(towerCardViewModel);
-                }
-                else
-                {
-                    TowerCardsInventory.Add(towerCardViewModel);
-                }
+                TowerDeckSubscription(towerCardViewModel);
             });
             towerCards.ObserveRemove().Subscribe(e =>
             {
                 var towerCardViewModel = e.Value;
-                if (towerCardViewModel.IsDeck.CurrentValue)
+                TowerDeckUnsubscription(towerCardViewModel);
+            });
+        }
+
+        private void TowerDeckSubscription(TowerCardViewModel towerCardViewModel)
+        {
+            var d = towerCardViewModel.IsDeck.Subscribe(x =>
+            {
+                if (x)
                 {
-                    TowerCardsDeck.Remove(towerCardViewModel);
+                    TowerCardsDeck.Add(towerCardViewModel);
+                    TowerCardsInventory.Remove(towerCardViewModel);
                 }
                 else
                 {
-                    TowerCardsInventory.Remove(towerCardViewModel);
+                    TowerCardsDeck.Remove(towerCardViewModel);
+                    TowerCardsInventory.Add(towerCardViewModel);
                 }
             });
+            _disposableMap.Add(towerCardViewModel.IdTowerCard, d);
+        }
+
+        private void TowerDeckUnsubscription(TowerCardViewModel towerCardViewModel)
+        {
+            if (towerCardViewModel.IsDeck.CurrentValue)
+            {
+                TowerCardsDeck.Remove(towerCardViewModel);
+            }
+            else
+            {
+                TowerCardsInventory.Remove(towerCardViewModel);
+            }
+            _disposableMap[towerCardViewModel.IdTowerCard].Dispose();
+            _disposableMap.Remove(towerCardViewModel.IdTowerCard);
         }
         
         private void SkillCardsUpload()
