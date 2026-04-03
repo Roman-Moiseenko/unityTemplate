@@ -107,7 +107,7 @@ namespace Game.GamePlay.View.Castle
             var shot = new ShotData
             {
                 Damage = CastleEntity.Damage,
-                DamageType = DamageType.Normal, //TODO Возможно сделать крит-шанс
+                DamageType = DamageType.Normal,
                 Position = MobTarget.CurrentValue.PositionTarget.CurrentValue,
                 Single = true,
                 MobEntityId = MobTarget.CurrentValue.UniqueId,

@@ -42,8 +42,6 @@ namespace Game.MainMenu.View.ScreenPlay
 
         public PopupRewardChestViewModel OpenPopupRewardChest(TypeChest typeChest, List<RewardEntityData> rewards)
         {
-            //TODO
-            
             var b = new PopupRewardChestViewModel(typeChest, rewards, Container);
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             
@@ -52,7 +50,6 @@ namespace Game.MainMenu.View.ScreenPlay
             });
             rootUI.OpenPopup(b);
             return b;
-            
         }
         
 

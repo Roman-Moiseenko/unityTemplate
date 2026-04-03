@@ -115,7 +115,7 @@ namespace Game.State.Root
             //TODO Возможно вызвать событие @Нехватка денег@
             if (HardCurrency.CurrentValue < value) return false;
             HardCurrency.Value -= value;
-            //TODO Сохранить данные!!!!!
+            //Сохранить данные
             return true;
         }
 

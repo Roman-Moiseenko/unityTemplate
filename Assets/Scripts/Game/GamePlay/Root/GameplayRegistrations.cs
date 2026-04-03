@@ -249,25 +249,11 @@ namespace Game.GamePlay.Root
                 if (!success) throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
                 fsmGameplay.Fsm.SetState<FsmStateBuildBegin>(); //Устанавливаем начальный режим строительства
             }
-            //Debug.Log(JsonConvert.SerializeObject(gameplayState.Waves, Formatting.Indented));
+
             
             //Заполняем статистику данными
             gameplayState.StatisticGame.Add("Castle", TypeEntityStatisticDamage.Castle);
-            //TODO Загрузка героя и навыков в статистику
-/*
-            var availableHeroes = heroesService.GetAvailableTowers();
-            foreach (var (configId, value) in heroesService)
-            {
-                gameplayState.StatisticGame.Add(configId, TypeEntityStatisticDamage.Hero);
-            }
-            */
-/*
-            var availableTowers = towersService.GetAvailableTowers();
-            foreach (var (configId, value) in availableTowers)
-            {
-                gameplayState.StatisticGame.Add(configId, TypeEntityStatisticDamage.Tower);
-            }
-            */
+            
             //В последнюю очередь создаем сервис волн мобов
             var waveService = new WaveService(container, gameplayState, cmd);
             container.RegisterInstance(waveService);

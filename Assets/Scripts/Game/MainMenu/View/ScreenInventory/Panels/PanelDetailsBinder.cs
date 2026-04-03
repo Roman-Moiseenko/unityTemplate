@@ -18,5 +18,7 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
         {
             
         }
+        
+        
     }
 }

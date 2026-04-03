@@ -27,8 +27,7 @@ namespace Game.GamePlay.View.UI.PopupSettings
         {
             base.OnBind(viewModel);
             var d = Disposable.CreateBuilder();
-
-            //TODO Передать данные из настроек 
+            
             //viewModel.Container.Resolve<>()
             var settings = viewModel.Container.Resolve<IGameStateProvider>().SettingsState;
             var cmd = viewModel.Container.Resolve<ICommandProcessor>();

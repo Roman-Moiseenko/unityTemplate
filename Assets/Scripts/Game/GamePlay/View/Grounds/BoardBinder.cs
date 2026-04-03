@@ -51,8 +51,7 @@ namespace Game.GamePlay.View.Grounds
                 viewModel.Position.CurrentValue.y
             );
             
-            //TODO  Создаем Из превабов стороны и углы по списку Сторон из ViewModel
-
+            //Создаем Из превабов стороны и углы по списку Сторон из ViewModel
             foreach (var wallViewModel in viewModel.Walls)
             {
                 CreateBoard(wallViewModel);

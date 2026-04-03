@@ -93,10 +93,7 @@ namespace Game.State.Maps.Castle
         {
             if (!MobDistanceShotCastle(mobEntity.Position.CurrentValue)) return false;
             if (Target.Count > 0) //Цель уже установлена
-            {
-//                Debug.Log("Цель уже установлена " + mobEntity.UniqueId);//TODO Отладить
                 return false;
-            } 
             Target.Add(mobEntity);
             return true;
         }
@@ -110,7 +107,6 @@ namespace Game.State.Maps.Castle
         {
             if (position.x > 3) return false;
             return position.y is <= 1.5f and >= -1.5f;
-            //TODO Сделать проверку на точку пути Найти дорогу и посмотреть ее индекс в списке, он должен быть <= 3
         }
 
         public void ClearTarget()

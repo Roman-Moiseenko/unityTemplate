@@ -37,7 +37,7 @@ namespace Game.MainMenu.Commands.InventoryCommands
             var towerPlans = _gameSettings.InventoryInitialSettings.TowerPlans;
             var configTowers = _gameSettings.TowersSettings.AllTowers;
 
-            //            Debug.Log(JsonConvert.SerializeObject(_gameSettings.InventoryInitialSettings, Formatting.Indented));
+            
 
             foreach (var towerPlan in towerPlans)
             {
@@ -67,6 +67,8 @@ namespace Game.MainMenu.Commands.InventoryCommands
             var skillCards = _gameSettings.InventoryInitialSettings.SkillCards;
             var skillPlans = _gameSettings.InventoryInitialSettings.SkillPlans;
             var configSkills = _gameSettings.SkillsSettings.AllSkills;
+            Debug.Log(JsonConvert.SerializeObject(skillCards, Formatting.Indented));
+            
             foreach (var skillPlan in skillPlans)
             {
                 var commandSkillPlan = new CommandSkillPlanAdd()
@@ -98,7 +100,8 @@ namespace Game.MainMenu.Commands.InventoryCommands
                     initialDeck.TowerCardIds.Add(towerCard.UniqueId); //Добавляем начальные башни в колоду    
 
                 if (inventoryItem is SkillCard skillCard && initialDeck.SkillCardIds.Count < 3)
-                    initialDeck.SkillCardIds.Add(skillCard.UniqueId); //Добавляем начальные навыки в колоду    
+                    initialDeck.SkillCardIds.Add(skillCard.UniqueId); //Добавляем начальные навыки в колоду  
+                
             }
 
             _gameState.Inventory.DeckCards.Add(1, new DeckCard(initialDeck));

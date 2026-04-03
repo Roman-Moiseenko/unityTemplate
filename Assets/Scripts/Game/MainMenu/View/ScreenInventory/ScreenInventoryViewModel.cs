@@ -149,15 +149,6 @@ namespace Game.MainMenu.View.ScreenInventory
         {
             foreach (var skillCardViewModel  in skillCards)
             {
-                if (skillCardViewModel.IsDeck.Value)
-                {
-                    SkillCardsDeck.Add(skillCardViewModel);
-                }
-                else
-                {
-                    SkillCardsInventory.Add(skillCardViewModel);
-                }
-
                 skillCardViewModel.IsDeck.Subscribe(x =>
                 {
                     if (x)

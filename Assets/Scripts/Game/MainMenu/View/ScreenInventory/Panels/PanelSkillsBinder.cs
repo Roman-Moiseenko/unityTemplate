@@ -109,7 +109,7 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
 
         private void UpdateHeightContainerCard()
         {
-            Debug.Log(_viewModel.SkillCardsInventory.Count);
+
             UpdateContainer(
                 containerCards.GetComponent<RectTransform>(),
                 _viewModel.SkillCardsInventory.Count,
@@ -119,6 +119,7 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
 
         private void UpdateHeightContainerPlan()
         {
+            Debug.Log(_viewModel.SkillPlansInventory.Count);
             UpdateContainer(
                 containerPlans.GetComponent<RectTransform>(),
                 _viewModel.SkillPlansInventory.Count,
@@ -129,6 +130,8 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
         protected override void OnEnable()
         {
             base.OnEnable();
+            UpdateHeightContainerCard();
+            UpdateHeightContainerPlan();
             btnBlacksmith.onClick.AddListener(OnOpenPopupBlacksmith);
         }
 

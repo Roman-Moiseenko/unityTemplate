@@ -64,12 +64,12 @@ namespace Game.GamePlay.Services
         public void MoveFrame(Vector2Int position)
         {
             _viewModel.MoveFrame(position);
-            //TODO Все проверки перенести в модель
+            
             if (_viewModel.IsTower())
             {
+                var tower = _viewModel.GetTower();
                 _viewModel.Enable.Value = _placementService.CheckPlacementTower(position,
-                    _viewModel.GetTower().UniqueId, _viewModel.GetTower().IsOnRoad, _viewModel.GetTower().IsPlacement);
-                
+                    tower.UniqueId, tower.IsOnRoad, tower.IsPlacement);
             }
 
             if (_viewModel.IsRoad())

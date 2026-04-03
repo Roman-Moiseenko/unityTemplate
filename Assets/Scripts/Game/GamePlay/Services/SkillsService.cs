@@ -5,6 +5,7 @@ using Game.GamePlay.View.Skills;
 using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.Settings.Gameplay.Entities.Tower;
+using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.TowerCards;
@@ -52,6 +53,18 @@ namespace Game.GamePlay.Services
             _baseSkillCards = gameplayEnterParams.Skills; //Базовые настройки колоды
             _gameplayBoosters = gameplayEnterParams.GameplayBoosters; //TODO Передать в башни _castleResearch.TowerDamage 
 
+        }
+
+        public Dictionary<string, TypeEpic> GetAvailableSkills()
+        {
+            var skills = new Dictionary<string, TypeEpic>();
+
+            foreach (var skillCard in _baseSkillCards)
+            {
+                skills.Add(skillCard.ConfigId, skillCard.EpicLevel);
+            }
+
+            return skills;
         }
     }
 }
