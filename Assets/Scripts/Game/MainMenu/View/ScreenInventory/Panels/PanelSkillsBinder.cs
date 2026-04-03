@@ -119,7 +119,6 @@ namespace Game.MainMenu.View.ScreenInventory.Panels
 
         private void UpdateHeightContainerPlan()
         {
-            Debug.Log(_viewModel.SkillPlansInventory.Count);
             UpdateContainer(
                 containerPlans.GetComponent<RectTransform>(),
                 _viewModel.SkillPlansInventory.Count,

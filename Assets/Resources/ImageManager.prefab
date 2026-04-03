@@ -215,7 +215,31 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 30c7ccacb6dfd9a44aff02ea4fb517d5, type: 3}
   - TypeParameter: 10
     Sprite: {fileID: 21300000, guid: 30a21bb3403de004e93e74056d5388b3, type: 3}
-  skillParameters: []
+  skillParameters:
+  - TypeParameter: 0
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - TypeParameter: 1
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - TypeParameter: 2
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - TypeParameter: 3
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - TypeParameter: 4
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - TypeParameter: 5
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - TypeParameter: 6
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - TypeParameter: 7
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - TypeParameter: 8
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - TypeParameter: 9
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - TypeParameter: 10
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - TypeParameter: 10
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
   otherSprite:
   - ConfigId: TowerUpCard
     Sprite: {fileID: 21300000, guid: 60fedadfae431dd498d14edf921ec65e, type: 3}

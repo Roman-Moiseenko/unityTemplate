@@ -107,8 +107,8 @@ namespace Game.MainMenu.Services
                 ChangeDeckSkillViewModel(deckSkillCardId);
             }
 
-            _currentDeck.SkillCardIds.ObserveAdd().Subscribe(e => { ChangeDeckSkillViewModel(e.Value); });
-            _currentDeck.SkillCardIds.ObserveRemove().Subscribe(e => { ChangeDeckSkillViewModel(e.Value); });
+        //    _currentDeck.SkillCardIds.ObserveAdd().Subscribe(e => { ChangeDeckSkillViewModel(e.Value); });
+         //   _currentDeck.SkillCardIds.ObserveRemove().Subscribe(e => { ChangeDeckSkillViewModel(e.Value); });
         }
         
         
@@ -119,7 +119,6 @@ namespace Game.MainMenu.Services
             if (_currentDeck.SkillCardInDeck(uniqueId))
             {
                 _currentDeck.ExtractSkillFromDeck(uniqueId);
-                skillView.NumberCardDeck = 0;
                 skillView.IsDeck.OnNext(false);
             }
             else

@@ -132,8 +132,7 @@ namespace Game.MainMenu.Services
             else
             {
                 //TODO Проверить на совпадение ConfigId и сравнить уровни карт
-
-
+                
                 if (_currentDeck.PushTowerToDeck(uniqueId)) towerView.IsDeck.OnNext(true);
             }
 

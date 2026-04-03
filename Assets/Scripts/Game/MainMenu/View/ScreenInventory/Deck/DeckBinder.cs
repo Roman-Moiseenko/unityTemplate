@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.MainMenu.View.ScreenInventory.SkillCards;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using ObservableCollections;
 using R3;
@@ -17,7 +18,9 @@ namespace Game.MainMenu.View.ScreenInventory.Deck
         [SerializeField] private Transform containerSkillCards;
 
         private readonly Dictionary<int, TowerCardBinder> _createdTowerCardMap = new();
+        private readonly Dictionary<int, SkillCardBinder> _createdSkillCardMap = new();
         private readonly List<Transform> _createdTowerCellMap = new();
+        private readonly List<Transform> _createdSkillCellMap = new();
         private IDisposable _disposable;
 
         public void Bind(ScreenInventoryViewModel viewModel)
@@ -26,7 +29,7 @@ namespace Game.MainMenu.View.ScreenInventory.Deck
 
             StartEmptyCells();
 
-            
+            //Башни
             foreach (var towerCardViewModel in viewModel.TowerCardsDeck)
             {
                 CreateTowerCard(towerCardViewModel);
@@ -35,7 +38,6 @@ namespace Game.MainMenu.View.ScreenInventory.Deck
             
             viewModel.TowerCardsDeck.ObserveAdd().Subscribe(e =>
             {
-                // Устанавливаем индекс дочернего объекта childObject.SetSiblingIndex(1);
                 CreateTowerCard(e.Value);
                 DestroyTowerCell();
             }).AddTo(ref d);
@@ -45,6 +47,23 @@ namespace Game.MainMenu.View.ScreenInventory.Deck
                 CreateTowerCell();
             }).AddTo(ref d);
             
+            //Навыки
+            foreach (var skillCardViewModel in viewModel.SkillCardsDeck)
+            {
+                CreateSkillCard(skillCardViewModel);
+                DestroySkillCell();
+            }
+            
+            viewModel.SkillCardsDeck.ObserveAdd().Subscribe(e =>
+            {
+                CreateSkillCard(e.Value);
+                DestroySkillCell();
+            }).AddTo(ref d);
+            viewModel.SkillCardsDeck.ObserveRemove().Subscribe(e =>
+            {
+                DestroySkillCard(e.Value);
+                CreateSkillCell();
+            }).AddTo(ref d);
             _disposable = d.Build();
         }
 
@@ -53,6 +72,11 @@ namespace Game.MainMenu.View.ScreenInventory.Deck
             for (var i = 0; i < 6; i++)
             {
                 CreateTowerCell();
+            }
+            
+            for (var i = 0; i < 2; i++)
+            {
+                CreateSkillCell();
             }
         }
         
@@ -90,6 +114,38 @@ namespace Game.MainMenu.View.ScreenInventory.Deck
             _createdTowerCellMap.Remove(cell);
         }
 
+        private void CreateSkillCard(SkillCardViewModel viewModel)
+        {
+            var prefabSkillCardPath =
+                $"Prefabs/UI/MainMenu/ScreenInventory/SkillCard";
+            var skillPrefab = Resources.Load<SkillCardBinder>(prefabSkillCardPath);
+            var createdSkill = Instantiate(skillPrefab, containerSkillCards);
+            createdSkill.Bind(viewModel);
+            createdSkill.transform.SetSiblingIndex(0);
+            _createdSkillCardMap[viewModel.IdSkillCard] = createdSkill;
+        }
+        private void CreateSkillCell()
+        {
+            var prefabSkillCellPath = $"Prefabs/UI/MainMenu/ScreenInventory/EmptySkillCard";
+            var cellPrefab = Resources.Load<Transform>(prefabSkillCellPath);
+            var createdCell = Instantiate(cellPrefab, containerSkillCards);
+            _createdSkillCellMap.Add(createdCell);
+        }
+        private void DestroySkillCard(SkillCardViewModel viewModel)
+        {
+            if (_createdSkillCardMap.TryGetValue(viewModel.IdSkillCard, out var skillCardBinder))
+            {
+                Destroy(skillCardBinder.gameObject);
+                _createdSkillCardMap.Remove(viewModel.IdSkillCard);
+            }
+        }
+        private void DestroySkillCell()
+        {
+            var cell = _createdSkillCellMap[0];
+            Destroy(cell.gameObject);
+            _createdSkillCellMap.Remove(cell);
+        }
+        
         private void OnDestroy()
         {
             _disposable.Dispose();

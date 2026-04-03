@@ -94,7 +94,6 @@ namespace Game.State.Inventory.Deck
         
         public bool PushSkillToDeck(int uniqueId)
         {
-            var count = SkillCardIds.Count;
             if (SkillCardIds.Count == 2) return false;
 
             SkillCardIds.Add(uniqueId);
