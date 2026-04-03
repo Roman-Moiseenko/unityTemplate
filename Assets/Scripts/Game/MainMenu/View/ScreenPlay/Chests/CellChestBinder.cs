@@ -78,7 +78,6 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
                                 d = viewModel.IsOpening.Subscribe(v =>
                                 {
                                     statusClose.gameObject.SetActive(true);
-                                  //  Debug.Log(toOpening);
                                     toOpening.gameObject.SetActive(v);
                                     isClosed.gameObject.SetActive(!v);
                                 });

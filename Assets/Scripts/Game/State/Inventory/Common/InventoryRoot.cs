@@ -113,7 +113,7 @@ namespace Game.State.Inventory.Common
         public T GetByConfigAndType<T>(InventoryType type, string configId) where T : InventoryItem
         {
             var item = _items.FirstOrDefault(i => i.ConfigId == configId 
-                                                  && i.TypeItem == InventoryType.TowerPlan);
+                                                  && i.TypeItem == type);
             return item?.As<T>();
         }
 

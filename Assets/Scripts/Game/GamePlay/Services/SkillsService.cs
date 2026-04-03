@@ -2,15 +2,12 @@
 using DI;
 using Game.GamePlay.Root;
 using Game.GamePlay.View.Skills;
-using Game.GamePlay.View.Towers;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Inventory.SkillCards;
-using Game.State.Inventory.TowerCards;
 using Game.State.Maps.Skills;
-using Game.State.Maps.Towers;
 using Game.State.Research;
 using MVVM.CMD;
 using ObservableCollections;

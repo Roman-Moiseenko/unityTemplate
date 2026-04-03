@@ -5,7 +5,9 @@ using Game.State;
 using Game.State.Inventory.Common;
 using Game.State.Inventory.SkillPlans;
 using MVVM.UI;
+using Newtonsoft.Json;
 using R3;
+using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenInventory.PopupSkillCard
 {
@@ -28,7 +30,6 @@ namespace Game.MainMenu.View.ScreenInventory.PopupSkillCard
             _inventory = container.Resolve<IGameStateProvider>().GameState.Inventory;
             _service = container.Resolve<SkillCardPlanService>();
             SoftCurrency = container.Resolve<IGameStateProvider>().GameState.SoftCurrency;
-            
             var plan = _inventory.GetByConfigAndType<SkillPlan>(InventoryType.SkillPlan, viewModel.ConfigId);
             AmountPlans = plan == null ? new ReactiveProperty<long>(0) : plan.Amount;
             
