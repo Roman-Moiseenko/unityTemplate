@@ -43,7 +43,7 @@ namespace Game.GamePlay.Services
         private readonly DIContainer _container;
         private readonly GameplayBoosters _gameplayBoosters;
 
-        public Dictionary<string, Dictionary<TowerParameterType, float>> TowerBoosters = new();
+        public readonly Dictionary<string, Dictionary<TowerParameterType, float>> TowerBoosters = new();
 
         /**
          * При загрузке создаем все view-модели из реактивного списка всех строений.

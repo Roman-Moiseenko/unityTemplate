@@ -36,6 +36,9 @@ namespace Game.GamePlay.View.UI.PanelActions
             var fsmGameplay = container.Resolve<FsmGameplay>();
             fsmGameplay.Fsm.StateCurrent.Subscribe();
             _disposable = d.Build();
+            
+            
+            
         }
         public void RequestGameSpeed()
         {
@@ -63,6 +66,16 @@ namespace Game.GamePlay.View.UI.PanelActions
         {
             //TODO Запуск процедуры покупки
             Debug.Log("RequestBuySpeed4x");
+        }
+
+        public void RequestStartSkillOne()
+        {
+            
+        }
+
+        public void RequestStartSkillTwo()
+        {
+            
         }
     }
 }

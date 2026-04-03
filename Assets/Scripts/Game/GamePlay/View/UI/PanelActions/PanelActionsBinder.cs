@@ -11,6 +11,11 @@ namespace Game.GamePlay.View.UI.PanelActions
 {
     public class PanelActionsBinder : PanelBinder<PanelActionsViewModel>
     {
+        [SerializeField] private ButtonSkillBinder skillOneBinder;
+        [SerializeField] private ButtonSkillBinder skillTwoBinder;
+        
+        [SerializeField] private Button btnHero;
+
         [SerializeField] private Button btnGameSpeed;
         [SerializeField] private Button btnProgressAdd;
         [SerializeField] private Button btnBuySpeed4x;
@@ -20,7 +25,10 @@ namespace Game.GamePlay.View.UI.PanelActions
         protected override void OnBind(PanelActionsViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
-           // _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.GetCurrentSpeed()}x";
+            skillOneBinder.Bind();
+            skillTwoBinder.Bind();
+            
+            // _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.GetCurrentSpeed()}x";
             SetSpeed(ViewModel.GetCurrentSpeed());
             /*
                       viewModel.CurrentSpeed
@@ -33,6 +41,9 @@ namespace Game.GamePlay.View.UI.PanelActions
 
         private void OnEnable()
         {
+           skillOneBinder.startButton.onClick.AddListener(OnStartSkillOne);
+           skillTwoBinder.startButton.onClick.AddListener(OnStartSkillTwo);
+
             btnGameSpeed.onClick.AddListener(OnChangeGameSpeed);
             btnProgressAdd.onClick.AddListener(OnProgressAdd);
             btnBuySpeed4x.onClick.AddListener(OnBuySpeed4x);
@@ -40,14 +51,26 @@ namespace Game.GamePlay.View.UI.PanelActions
 
         private void OnDisable()
         {
+            skillOneBinder.startButton.onClick.RemoveListener(OnStartSkillOne);
+            skillTwoBinder.startButton.onClick.RemoveListener(OnStartSkillTwo);
+
             btnGameSpeed.onClick.RemoveListener(OnChangeGameSpeed);
             btnProgressAdd.onClick.RemoveListener(OnProgressAdd);
             btnBuySpeed4x.onClick.RemoveListener(OnBuySpeed4x);
         }
 
+        private void OnStartSkillOne()
+        {
+            ViewModel.RequestStartSkillOne();
+        }
+
+        private void OnStartSkillTwo()
+        {
+            ViewModel.RequestStartSkillTwo();
+        }
+
         private void OnChangeGameSpeed()
         {
-            
             ViewModel.RequestGameSpeed();
             SetSpeed(ViewModel.GetCurrentSpeed());
             //_btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"x{ViewModel.GetCurrentSpeed()}";
@@ -57,6 +80,7 @@ namespace Game.GamePlay.View.UI.PanelActions
         {
             ViewModel.RequestBuySpeed4x();
         }
+
         private void OnProgressAdd()
         {
             ViewModel.RequestToProgressAdd();
@@ -86,7 +110,6 @@ namespace Game.GamePlay.View.UI.PanelActions
             {
                 speedTransform.gameObject.SetActive(speedTransform.name == nameObj);
             }
-            
         }
     }
 }

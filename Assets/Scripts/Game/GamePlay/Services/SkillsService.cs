@@ -18,17 +18,24 @@ namespace Game.GamePlay.Services
     {
         public readonly Dictionary<string,
             Dictionary<SkillParameterType, SkillParameterData>> SkillParametersMap = new();
+
         public IObservableCollection<SkillViewModel> AllSkills =>
             _allSkills; //Интерфейс менять нельзя, возвращаем через динамический массив
-        
+
         public readonly ObservableDictionary<string, int> Levels = new(); //Уровни башен по типам ConfigId
 
         private readonly List<SkillCardData> _baseSkillCards; //
         private readonly ICommandProcessor _cmd;
+        
+        //УДалить
         private readonly ObservableList<SkillViewModel> _allSkills = new();
         private readonly Dictionary<int, SkillViewModel> _skillsMap = new();
+
+        //Использовать 
+        public SkillViewModel SkillOne;
+        public SkillViewModel SkillTwo;
         
-        private readonly Dictionary<string, List<TowerLevelSettings>> _towerSettingsMap = new();
+        private readonly Dictionary<string, List<SkillLevelSettings>> _skillSettingsMap = new();
         private readonly GameplayStateProxy _gameplayState;
         private readonly DIContainer _container;
         private readonly GameplayBoosters _gameplayBoosters;
@@ -43,13 +50,13 @@ namespace Game.GamePlay.Services
         {
             _container = container;
             _gameplayState = gameplayState;
-            
+
             _cmd = container.Resolve<ICommandProcessor>();
-            
+
             var skillEntities = gameplayState.Skills;
             _baseSkillCards = gameplayEnterParams.Skills; //Базовые настройки колоды
-            _gameplayBoosters = gameplayEnterParams.GameplayBoosters; //TODO Передать в башни _castleResearch.TowerDamage 
-
+            _gameplayBoosters =
+                gameplayEnterParams.GameplayBoosters; 
         }
 
         public Dictionary<string, TypeEpic> GetAvailableSkills()
@@ -62,6 +69,21 @@ namespace Game.GamePlay.Services
             }
 
             return skills;
+        }
+
+        /**
+        * Список доступных навыков для апгрейда
+        */
+        public Dictionary<string, int> GetAvailableUpgradeSkills()
+        {
+            var towers = new Dictionary<string, int>();
+            foreach (var skillViewModel in _allSkills) //Все навыки
+            {
+                if (Levels[skillViewModel.ConfigId] < 3)
+                    towers.TryAdd(skillViewModel.ConfigId, Levels[skillViewModel.ConfigId]); //Добавлять один раз
+            }
+
+            return towers;
         }
     }
 }

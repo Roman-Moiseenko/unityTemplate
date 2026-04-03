@@ -50,7 +50,7 @@ namespace Game.GamePlay.View.Towers
         public ReactiveProperty<Vector3> Direction = new();
 
         public ReactiveProperty<int> NumberModel = new(0);
-        public float SpeedShot => TowerEntity.SpeedShot;
+        public float SpeedShot { get; private set; }
         public TypeEpic EpicLevel { get; set; }
         public ReactiveProperty<bool> FinishEffectLevelUp = new(false);
         public ReactiveProperty<bool> ShowArea = new(false);
@@ -69,16 +69,31 @@ namespace Game.GamePlay.View.Towers
             //FsmTower fsmTower
         )
         {
+            var fsmTower = container.Resolve<FsmTower>();
+            GameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            TowersService = container.Resolve<TowersService>();
+            GameplayBoosters = container.Resolve<GameplayEnterParams>().GameplayBoosters;
+            _container = container;
+            
+            
             TowerEntity = towerEntity;
             UniqueId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
             Position = towerEntity.Position;
             Position.Subscribe(v => PositionMap.Value = new Vector3(v.x, 0, v.y));
-
-            Level.Subscribe(level =>
+            SpeedShot = TowerEntity.SpeedShot;
+            //Есть бустер на скорострельность
+            var busters = TowersService.TowerBoosters[ConfigId];
+            if (busters.TryGetValue(TowerParameterType.Speed, out float value))
             {
-                //Смена модели
+                SpeedShot -= SpeedShot * value / 100f;
+            }
+            var availableTowers = TowersService.GetAvailableTowers();
+            EpicLevel = availableTowers[TowerEntity.ConfigId];        
+            
+            Level.Subscribe(level =>
+            { //Смена модели
                 NumberModel.Value = level switch
                 {
                     1 or 2 => 1,
@@ -87,19 +102,6 @@ namespace Game.GamePlay.View.Towers
                     _ => throw new Exception("Неизвестный уровень")
                 };
             });
-
-            //if (container == null) return;
-
-            var fsmTower = container.Resolve<FsmTower>();
-            GameplayState = container.Resolve<IGameStateProvider>().GameplayState;
-            TowersService = container.Resolve<TowersService>();
-            GameplayBoosters = container.Resolve<GameplayEnterParams>().GameplayBoosters;
-
-            _container = container;
-
-            var availableTowers = TowersService.GetAvailableTowers();
-            EpicLevel = availableTowers[TowerEntity.ConfigId];
-
 
             fsmTower?.Fsm.StateCurrent.Subscribe(state =>
             {
