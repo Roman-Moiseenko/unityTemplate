@@ -12,6 +12,7 @@ namespace Game.State.Inventory.SkillCards
         public TypeDefence Defence { get; set; }
 
         public TypeEpic EpicLevel;
+        public TypeTarget TypeTarget;
         public int Level;
         public Dictionary<SkillParameterType, SkillParameterData> Parameters;
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Commands.CastleCommands;
@@ -8,6 +9,7 @@ using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Commands.WaveCommands;
 using Game.Settings;
 using Game.State.Gameplay;
+using Game.State.Maps.Skills;
 using Game.State.Root;
 using MVVM.CMD;
 using UnityEngine;
@@ -29,8 +31,14 @@ namespace Game.GamePlay.Commands.MapCommand
             _cmd = cmd;
         }
 
+        /**
+         * Вызывается один раз только перед входом в уровень с Главного меню.
+         * При загрузке сохранения не вызывается
+         */
         public bool Handle(CommandCreateLevel command)
         {
+         //   Debug.Log("Создаем уровень");
+            
             if (_gameplayState.Towers.Any())
             {
                 Debug.Log($"Map id={command.MapId} already exist");
@@ -69,6 +77,29 @@ namespace Game.GamePlay.Commands.MapCommand
                 var commandTower = new CommandPlaceTower(towerSettings.ConfigId, towerSettings.Position);
                 _cmd.Process(commandTower, false);
             }
+            
+            //Создаем навыки из базовых настроек
+            var skillsSettings = _gameSettings.SkillsSettings.AllSkills;
+            
+            foreach (var skillCardData in _gameplayState.EnterParams.Skills)
+            {
+                var skillSettings = skillsSettings.FirstOrDefault(s => s.ConfigId == skillCardData.ConfigId);
+                if (skillSettings == null) throw new Exception("Ошибка");
+                
+                var skillEntityData = new SkillEntityData
+                {
+                    ConfigId = skillCardData.ConfigId,
+                    Defence = skillCardData.Defence,
+                    Level = 1,
+                    TypeTarget =  skillSettings.TypeTarget,
+                    TypeEpic = skillCardData.EpicLevel,
+                    OnRoad = skillSettings.OnRoad,
+                };
+                _gameplayState.Skills.Add(new SkillEntity(skillEntityData));
+            }
+            
+            //TODO Создаем Героя из базовых настроек            
+            
             /*
              _gameplayState.CurrentWave.Value = 0;
             _gameplayState.CountWaves = newMapInitialStateSettings.Waves.Count;

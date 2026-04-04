@@ -35,6 +35,7 @@ namespace Game.MainMenu.Commands.SkillCommands
                 Amount = 1, 
                 Parameters = new Dictionary<SkillParameterType, SkillParameterData>(),
                 Defence = skillConfig.Defence,
+                TypeTarget = skillConfig.TypeTarget,
             };
                
             foreach (var baseParameter in skillConfig.BaseParameters)

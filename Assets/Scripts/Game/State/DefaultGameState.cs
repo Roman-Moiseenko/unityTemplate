@@ -4,6 +4,7 @@ using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Roads;
+using Game.State.Maps.Skills;
 using Game.State.Maps.Towers;
 using Game.State.Root;
 using R3;
@@ -33,6 +34,11 @@ namespace Game.State
                 WayDisabled = new List<RoadEntityData>(),
                 Grounds = new List<GroundEntityData>(),
                 StatisticGameData = new StatisticGameData(),
+                Skills = new List<SkillEntityData>(),
+                
+                SkillOne = new SkillEntityData(),
+                SkillTwo = new SkillEntityData(),
+                
                 //GateWave = Vector2.zero,
                 //GateWaveSecond = Vector2.zero,
             };

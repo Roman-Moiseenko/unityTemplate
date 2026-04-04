@@ -25,8 +25,8 @@ namespace Game.GamePlay.View.UI.PanelActions
         protected override void OnBind(PanelActionsViewModel viewModel)
         {
             var d = Disposable.CreateBuilder();
-            skillOneBinder.Bind();
-            skillTwoBinder.Bind();
+            skillOneBinder.Bind(viewModel.SkillOneViewModel);
+            skillTwoBinder.Bind(viewModel.SkillTwoViewModel);
             
             // _btnGameSpeed.GetComponentInChildren<TMP_Text>().text = $"{ViewModel.GetCurrentSpeed()}x";
             SetSpeed(ViewModel.GetCurrentSpeed());
@@ -41,8 +41,8 @@ namespace Game.GamePlay.View.UI.PanelActions
 
         private void OnEnable()
         {
-           skillOneBinder.startButton.onClick.AddListener(OnStartSkillOne);
-           skillTwoBinder.startButton.onClick.AddListener(OnStartSkillTwo);
+    //       skillOneBinder.startButton.onClick.AddListener(OnStartSkillOne);
+    //       skillTwoBinder.startButton.onClick.AddListener(OnStartSkillTwo);
 
             btnGameSpeed.onClick.AddListener(OnChangeGameSpeed);
             btnProgressAdd.onClick.AddListener(OnProgressAdd);
@@ -51,14 +51,14 @@ namespace Game.GamePlay.View.UI.PanelActions
 
         private void OnDisable()
         {
-            skillOneBinder.startButton.onClick.RemoveListener(OnStartSkillOne);
-            skillTwoBinder.startButton.onClick.RemoveListener(OnStartSkillTwo);
+    //        skillOneBinder.startButton.onClick.RemoveListener(OnStartSkillOne);
+  //          skillTwoBinder.startButton.onClick.RemoveListener(OnStartSkillTwo);
 
             btnGameSpeed.onClick.RemoveListener(OnChangeGameSpeed);
             btnProgressAdd.onClick.RemoveListener(OnProgressAdd);
             btnBuySpeed4x.onClick.RemoveListener(OnBuySpeed4x);
         }
-
+/*
         private void OnStartSkillOne()
         {
             ViewModel.RequestStartSkillOne();
@@ -68,7 +68,7 @@ namespace Game.GamePlay.View.UI.PanelActions
         {
             ViewModel.RequestStartSkillTwo();
         }
-
+*/
         private void OnChangeGameSpeed()
         {
             ViewModel.RequestGameSpeed();

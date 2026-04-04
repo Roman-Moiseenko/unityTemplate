@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DI;
 using Game.GamePlay.Root;
 using Game.GamePlay.View.Skills;
@@ -10,7 +11,10 @@ using Game.State.Inventory.SkillCards;
 using Game.State.Maps.Skills;
 using Game.State.Research;
 using MVVM.CMD;
+using Newtonsoft.Json;
 using ObservableCollections;
+using R3;
+using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
@@ -50,13 +54,37 @@ namespace Game.GamePlay.Services
         {
             _container = container;
             _gameplayState = gameplayState;
-
             _cmd = container.Resolve<ICommandProcessor>();
 
-            var skillEntities = gameplayState.Skills;
+            if (_gameplayState.Skills.Count > 0) SkillOne = new SkillViewModel(_gameplayState.Skills[0], _container);
+            if (_gameplayState.Skills.Count > 1) SkillTwo = new SkillViewModel(_gameplayState.Skills[1], _container);
+
+            _gameplayState.Skills.ObserveAdd().Subscribe(e =>
+            {
+                if (_gameplayState.Skills.Count > 2) throw new Exception("Ошибка");
+                
+                if (SkillOne != null && SkillTwo == null) SkillTwo = new SkillViewModel(e.Value, _container);
+                if (SkillOne == null) SkillOne = new SkillViewModel(e.Value, _container);
+            
+//                Debug.Log(JsonConvert.SerializeObject(e.Value, Formatting.Indented));
+            });
+            
+            
+         //   var skillEntities = gameplayState.Skills;
             _baseSkillCards = gameplayEnterParams.Skills; //Базовые настройки колоды
+//            Debug.Log(JsonConvert.SerializeObject(SkillOne, Formatting.Indented));
+            
+         //   Debug.Log(JsonConvert.SerializeObject(gameplayState.SkillOne, Formatting.Indented));
+            //Создаем из настроек модели
+            
+         //   Debug.Log(JsonConvert.SerializeObject(gameplayState.EnterParams, Formatting.Indented));
             _gameplayBoosters =
                 gameplayEnterParams.GameplayBoosters; 
+        }
+
+        private void CreateSkillViewModel(SkillEntity skillEntity)
+        {
+            var skillViewModel = new SkillViewModel(skillEntity, _container);
         }
 
         public Dictionary<string, TypeEpic> GetAvailableSkills()

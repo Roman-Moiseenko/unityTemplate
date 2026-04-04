@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using Game.GamePlay.Classes;
+using Game.GamePlay.Root;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Roads;
+using Game.State.Maps.Skills;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
 
@@ -34,16 +36,20 @@ namespace Game.State.Gameplay
    //     public Vector2 GateWave { get; set; }
      //   public Vector2 GateWaveSecond { get; set; }
         public bool HasWaySecond { get; set; }
+        public GameplayEnterParams EnterParams {get; set; }
 
         public List<RewardEntityData> RewardEntities = new(); 
         public List<TowerEntityData> Towers;  //Либо разделить на Tower и Ground 
-
+        public List<SkillEntityData> Skills;
+        
         public List<GroundEntityData> Grounds;
         public List<WarriorEntityData> Warriors = new();
         public List<RoadEntityData> Way; //Основная Дорога
         public List<RoadEntityData> WaySecond;
         public List<RoadEntityData> WayDisabled;
         
+        public SkillEntityData SkillOne { get; set; }
+        public SkillEntityData SkillTwo { get; set; }
         
         public int CreateEntityID()
         {

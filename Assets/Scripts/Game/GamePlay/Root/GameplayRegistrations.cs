@@ -43,7 +43,8 @@ namespace Game.GamePlay.Root
             
             var gameplayState = gameStateProvider.GameplayState; //Состояние игры игрока
             var settingsState = gameStateProvider.SettingsState; //Настройки игры
-
+            
+            gameplayState.SetEnterParams(gameplayEnterParams);
 
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;

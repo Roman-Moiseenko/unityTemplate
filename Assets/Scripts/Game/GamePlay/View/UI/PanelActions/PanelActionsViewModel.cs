@@ -2,6 +2,8 @@
 using DI;
 using Game.GamePlay.Commands.RewardCommand;
 using Game.GamePlay.Fsm;
+using Game.GamePlay.Services;
+using Game.GamePlay.View.Skills;
 using Game.State;
 using Game.State.Gameplay;
 using Game.State.Root;
@@ -15,14 +17,17 @@ namespace Game.GamePlay.View.UI.PanelActions
     public class PanelActionsViewModel : PanelViewModel
     {
         public override string Id => "PanelActions";
-        public override string Path => "Gameplay/Panels/";
+        public override string Path => "Gameplay/Panels/Actions/";
         
-        public readonly GameplayUIManager _uiManager;
+       // public readonly GameplayUIManager _uiManager;
         
         //public readonly ReactiveProperty<int> CurrentSpeed;
         private readonly GameplayStateProxy _gameplayStateProxy;
-        
+        private SkillsService _skillService;
         private IDisposable _disposable;
+
+        public SkillViewModel SkillOneViewModel;
+        public SkillViewModel SkillTwoViewModel;
         
         public PanelActionsViewModel(
             GameplayUIManager uiManager, 
@@ -31,14 +36,14 @@ namespace Game.GamePlay.View.UI.PanelActions
         {
             var d = Disposable.CreateBuilder();
             IsShow = true; //По-умолчанию показываем
-            _uiManager = uiManager;
+            var _uiManager = uiManager;
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             var fsmGameplay = container.Resolve<FsmGameplay>();
             fsmGameplay.Fsm.StateCurrent.Subscribe();
             _disposable = d.Build();
-            
-            
-            
+            _skillService = container.Resolve<SkillsService>();
+            SkillOneViewModel = _skillService.SkillOne;
+            SkillTwoViewModel = _skillService.SkillTwo;
         }
         public void RequestGameSpeed()
         {

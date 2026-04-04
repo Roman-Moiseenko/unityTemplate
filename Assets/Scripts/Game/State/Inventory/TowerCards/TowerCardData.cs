@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Game.State.Common;
 using Game.State.Inventory.Common;
-using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
 
 namespace Game.State.Inventory.TowerCards
@@ -19,7 +18,6 @@ namespace Game.State.Inventory.TowerCards
         public Dictionary<TowerParameterType, TowerParameterData> Parameters; 
         public Dictionary<TowerParameterType, TowerParameterData> BaseParameters = new();
         public Dictionary<TowerParameterType, TowerParameterData> UpdateParameters = new();
-        
         
     }
 }

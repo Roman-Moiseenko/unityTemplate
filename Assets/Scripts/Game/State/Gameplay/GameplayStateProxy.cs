@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Game.GamePlay.Classes;
+using Game.GamePlay.Root;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
@@ -7,6 +8,7 @@ using Game.State.Maps.Mobs;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Shots;
+using Game.State.Maps.Skills;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
 using ObservableCollections;
@@ -40,7 +42,8 @@ namespace Game.State.Gameplay
         
         public ObservableList<RewardEntityData> RewardEntities { get; } = new(); 
         public ObservableList<TowerEntity> Towers { get; } = new();
-        public ObservableList<TowerEntity> Skills { get; } = new();
+        public ObservableList<SkillEntity> Skills { get; } = new();
+        
         public ObservableList<GroundEntity> Grounds { get; } = new();
         public ObservableList<RoadEntity> Way { get; } = new();
         public ObservableList<RoadEntity> WaySecond { get; } = new();
@@ -49,7 +52,9 @@ namespace Game.State.Gameplay
         public ObservableList<MobEntity> Mobs { get; } = new();
         public ObservableList<MobEntity> BufferMobs { get; } = new();
         public ObservableList<MobEntity> SecondBufferMobs { get; } = new();
-        
+
+        public ReactiveProperty<SkillEntity> SkillOne;
+        public ReactiveProperty<SkillEntity> SkillTwo;
 
         public readonly ReactiveProperty<bool> MapFinished = new(false);
         public ObservableList<ShotData> Shots { get; } = new();
@@ -57,6 +62,9 @@ namespace Game.State.Gameplay
         public ReactiveProperty<Vector2> GateWave { get; set; } = new(Vector2.zero);
         public ReactiveProperty<Vector2> GateWaveSecond { get; set; } = new(Vector2.zero);
 
+        //Необходимо сохранить входные параметры игры для загрузки из сейва
+        public GameplayEnterParams EnterParams => Origin.EnterParams; 
+        
         public GameplayStateProxy(GameplayState origin)
         {
             Origin = origin;
@@ -87,6 +95,10 @@ namespace Game.State.Gameplay
 
             TotalTimeInScene = new ReactiveProperty<float>(0f);
             TotalTimeInScene.Subscribe(newValue => origin.TotalTimeInScene = newValue);
+
+            SkillOne = new ReactiveProperty<SkillEntity>(new SkillEntity(origin.SkillOne));
+            SkillTwo = new ReactiveProperty<SkillEntity>(new SkillEntity(origin.SkillTwo));
+            
         //    GateWave = new ReactiveProperty<Vector2>(origin.GateWave);
         //    GateWave.Subscribe(newValue => origin.GateWave = newValue);
             
@@ -130,6 +142,13 @@ namespace Game.State.Gameplay
                 var removedMapState = gameplayState.Towers.FirstOrDefault(b => b.UniqueId == e.Value.UniqueId);
                 gameplayState.Towers.Remove(removedMapState);
             });
+            //Навыки
+            gameplayState.Skills.ForEach(
+                skillOriginal => Skills.Add(new SkillEntity(skillOriginal))
+            );
+            Skills.ObserveAdd().Subscribe(e => gameplayState.Skills.Add(e.Value.Origin));
+            
+            
             //Воины
             gameplayState.Warriors.ForEach(
                 warriorOriginal => Warriors.Add(new WarriorEntity(warriorOriginal))
@@ -261,6 +280,10 @@ namespace Game.State.Gameplay
         {
             Origin.TypeGameplay = typeGameplay;
         }
-        
+
+        public void SetEnterParams(GameplayEnterParams gameplayEnterParams)
+        {
+            Origin.EnterParams = gameplayEnterParams;
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace Game.Settings.Gameplay.Entities.Skill
         public string DescriptionLid;
         public string PrefabPath;
         public TypeTarget TypeTarget;
+        public bool OnRoad;
         public List<SkillParameterSettings> BaseParameters { get; set; }
 
         public TypeDefence Defence { get; set; }

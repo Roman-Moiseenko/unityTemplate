@@ -57,7 +57,7 @@ namespace Game.MainMenu.Commands.InventoryCommands
                 {
                     ConfigId = towerCard.ConfigId,
                     EpicLevel = towerCard.epicCardLevel,
-                    Level = towerCard.Level
+                    Level = towerCard.Level,
                 };
                 _cmd.Process(commandTowerCard, false);
             }

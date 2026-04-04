@@ -10,6 +10,8 @@ namespace Game.State.Maps.Skills
         public TypeTarget TypeTarget { get; set; }
         public bool OnRoad { get; set; }
         
+        public TypeEpic TypeEpic { get; set; }
+        
         public TypeDefence Defence { get; set; }
 
     }
