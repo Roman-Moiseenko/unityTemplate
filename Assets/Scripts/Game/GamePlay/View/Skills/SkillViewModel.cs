@@ -1,9 +1,12 @@
 ﻿using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.SkillStates;
+using Game.GamePlay.Services;
 using Game.State.Common;
 using Game.State.Maps.Skills;
+using Newtonsoft.Json;
 using R3;
+using UnityEngine;
 
 namespace Game.GamePlay.View.Skills
 {
@@ -12,32 +15,40 @@ namespace Game.GamePlay.View.Skills
         private readonly SkillEntity _skillEntity;
         public string ConfigId => _skillEntity.ConfigId;
         public int UniqueId => _skillEntity.UniqueId;
-        public ReactiveProperty<int> Level { get; set; }
+        public ReactiveProperty<int> Level;
         public TypeEpic EpicLevel { get; set; }
-        public FsmSkill FsmSkill;
+      //  public FsmSkill FsmSkill;
 
         public float Cooldown = 0f;
 
-        public float TimeOut = 0;
-        
-        public SkillViewModel(SkillEntity skillEntity,
-            DIContainer container)
-        {
-            _skillEntity = skillEntity;
+        public readonly ReactiveProperty<float> TimeOut = new(0f);
 
+        public readonly ReactiveProperty<bool> IsEnabled = new(true);
+        public readonly ReactiveProperty<bool> IsActive = new(false);
+        private readonly SkillsService _service;
+
+        public SkillViewModel(SkillEntity skillEntity,
+            SkillsService service)
+        {
+            _service = service;
+            _skillEntity = skillEntity;
+            Level =  skillEntity.Level;
             //Время отката
+            Debug.Log(JsonConvert.SerializeObject(skillEntity.Parameters, Formatting.Indented));
             if (skillEntity.Parameters.TryGetValue(SkillParameterType.Cooldown, out var parameterData)) 
                 Cooldown = parameterData.Value;
-            
-            FsmSkill = container.Resolve<FsmSkill>();
-            
-            //TODO Подписка на FsmSkill Запуска TimeOut
-            
         }
 
         public void StartSkill()
         {
-            FsmSkill.Fsm.SetState<FsmSkillBegin>(ConfigId);
+            _service.StartSkill(ConfigId);
+
+        }
+
+        public void StartCooldown()
+        {
+            Debug.Log(Cooldown + " StartCooldown");
+            TimeOut.OnNext(Cooldown);
         }
     }
 }

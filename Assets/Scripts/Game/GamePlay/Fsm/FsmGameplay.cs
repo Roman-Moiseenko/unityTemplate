@@ -10,7 +10,7 @@ namespace Game.GamePlay.Fsm
     public class FsmGameplay
     {
         public FsmProxy Fsm;
-
+        public ReactiveProperty<Vector2Int> Position = new();
         public ReactiveProperty<bool> IsGamePause; //Во все состояния, кроме FsmStateGamePlay пауза для движения
 
         public FsmGameplay(DIContainer container)
@@ -80,12 +80,15 @@ namespace Game.GamePlay.Fsm
 
         public void SetPosition(Vector2Int position)
         {
-            Fsm.Position.Value = position;
+            Position.Value = position;
+            
+       //     Fsm.Position.Value = position;
         }
 
         public Vector2Int GetPosition()
         {
-            return Fsm.Position.CurrentValue;
+           // return Fsm.Position.CurrentValue;
+            return Position.CurrentValue;
         }
     }
 }

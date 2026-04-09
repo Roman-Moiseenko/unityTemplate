@@ -65,6 +65,27 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: 66d794141f9d9414bb57a078629771e2, type: 3}
   - TypeEpic: 9
     Sprite: {fileID: 21300000, guid: 7aed88ffc5811b046b434b374f49c5a5, type: 3}
+  epicSkillLevels:
+  - TypeEpic: 0
+    Sprite: {fileID: 21300000, guid: 1cd8d43eebf41124fb8031710a7b6d29, type: 3}
+  - TypeEpic: 1
+    Sprite: {fileID: 21300000, guid: a606ac703d9422549a10866f749589b0, type: 3}
+  - TypeEpic: 2
+    Sprite: {fileID: 21300000, guid: fd89bbcbf398312419d0727167db2503, type: 3}
+  - TypeEpic: 3
+    Sprite: {fileID: 21300000, guid: 6530ed8cd6d5c264dbddaaab33d21872, type: 3}
+  - TypeEpic: 4
+    Sprite: {fileID: 21300000, guid: cfaff08d0dd31364e943b4eb9308496b, type: 3}
+  - TypeEpic: 5
+    Sprite: {fileID: 21300000, guid: 453efb8340e1bb149a8ec9fd8b3a0fa4, type: 3}
+  - TypeEpic: 6
+    Sprite: {fileID: 21300000, guid: f79d88d5afd322a4ba6e721a1ba2a32c, type: 3}
+  - TypeEpic: 7
+    Sprite: {fileID: 21300000, guid: c2f9825bc2e90d94ab217a54ce884a27, type: 3}
+  - TypeEpic: 8
+    Sprite: {fileID: 21300000, guid: 7200fa38aecedf24fb1ae9bac13fc628, type: 3}
+  - TypeEpic: 8
+    Sprite: {fileID: 21300000, guid: c2f9825bc2e90d94ab217a54ce884a27, type: 3}
   towerPlan:
   - ConfigId: Background
     Sprite: {fileID: 21300000, guid: 79ebbc9508155e949b7897bbabe0824e, type: 3}
@@ -187,10 +208,37 @@ MonoBehaviour:
     Texture: {fileID: 0}
   skillCard:
   - ConfigId: Skill01
-    Sprite: {fileID: 21300000, guid: bc55d8d5a4f7eaf44aac25e97ec52787, type: 3}
+    Sprite: {fileID: 21300000, guid: 8a851aa6da94f0e43841f416d13e6ce2, type: 3}
     Texture: {fileID: 0}
   - ConfigId: Skill02
-    Sprite: {fileID: 21300000, guid: bd148d7b42805be40a3f4d4e28f86579, type: 3}
+    Sprite: {fileID: 21300000, guid: 35081954d26df624a966b0e254724bcf, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: Skill03
+    Sprite: {fileID: 21300000, guid: 4eec80495dbdf234bbe286adf1942958, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: Skill04
+    Sprite: {fileID: 21300000, guid: d251104d963bc9b4994dfa3bdea56b5f, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: Skill05
+    Sprite: {fileID: 21300000, guid: 64103c3071ad4404e8e4f027dd9965b8, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: Skill06
+    Sprite: {fileID: 21300000, guid: d3b31e2994b2a374f8ebeb4f6012ab97, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: Skill07
+    Sprite: {fileID: 21300000, guid: 9941ba72e2c872d43977effe7f9bc049, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: Skill08
+    Sprite: {fileID: 21300000, guid: edbbf6cb6f37ade42b574afe2e987885, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: Skill09
+    Sprite: {fileID: 21300000, guid: f283577224d2d4e448166620aaea60e1, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: Skill10
+    Sprite: {fileID: 21300000, guid: f9f5a17445956194889e54a092bf4a20, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: Skill11
+    Sprite: {fileID: 21300000, guid: feb5bd0c7b097974db1da345b1a6516a, type: 3}
     Texture: {fileID: 0}
   towerParameters:
   - TypeParameter: 0
@@ -221,25 +269,25 @@ MonoBehaviour:
   - TypeParameter: 1
     Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
   - TypeParameter: 2
-    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+    Sprite: {fileID: 21300000, guid: f069e0960b2e48b48ab846715acc6327, type: 3}
   - TypeParameter: 3
-    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+    Sprite: {fileID: 21300000, guid: 0e5da563160c9e74293eb8830cb12137, type: 3}
   - TypeParameter: 4
-    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+    Sprite: {fileID: 21300000, guid: dfdab5ed16ca802459ac151ede7c7aaf, type: 3}
   - TypeParameter: 5
-    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+    Sprite: {fileID: 21300000, guid: 6f951cd9201bbd249bf26de6d006398e, type: 3}
   - TypeParameter: 6
-    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+    Sprite: {fileID: 21300000, guid: 30a21bb3403de004e93e74056d5388b3, type: 3}
   - TypeParameter: 7
-    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+    Sprite: {fileID: 21300000, guid: adc65bca8d1a12e4e9e17a923df89300, type: 3}
   - TypeParameter: 8
-    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+    Sprite: {fileID: 21300000, guid: 70e692710dacb4e4bb706ad1c2570010, type: 3}
   - TypeParameter: 9
-    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+    Sprite: {fileID: 21300000, guid: 37f76305009983248b214e7ac8f97fb5, type: 3}
   - TypeParameter: 10
-    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
-  - TypeParameter: 10
-    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+    Sprite: {fileID: 21300000, guid: 30a21bb3403de004e93e74056d5388b3, type: 3}
+  - TypeParameter: 11
+    Sprite: {fileID: 21300000, guid: d03218f7a0ce6874a87652c142a6c8bf, type: 3}
   otherSprite:
   - ConfigId: TowerUpCard
     Sprite: {fileID: 21300000, guid: 60fedadfae431dd498d14edf921ec65e, type: 3}

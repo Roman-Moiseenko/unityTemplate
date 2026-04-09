@@ -494,14 +494,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.21465474, g: 0, b: 0.31132078, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bc55d8d5a4f7eaf44aac25e97ec52787, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5e3311d8f73a75d488be1dc407e35a44, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -626,7 +626,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -112, y: 7.799988}
+  m_AnchoredPosition: {x: -101.2, y: 0}
   m_SizeDelta: {x: 180, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3858627872494596443
@@ -694,7 +694,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.GamePlay.View.UI.PanelActions.ButtonSkillBinder
   startButton: {fileID: 8784717741952573066}
-  selected: {fileID: 4188763782856483353}
+  selectedBackground: {fileID: 0}
+  selectedIcon: {fileID: 0}
   imageEpicBackground: {fileID: 125517035491090891}
   imageSkill: {fileID: 2916007306489883103}
   stars:
@@ -1639,8 +1640,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 30}
-  m_SizeDelta: {x: 185, y: 540}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 185, y: 600}
   m_Pivot: {x: 1, y: 0}
 --- !u!1 &7511910299626683611
 GameObject:
@@ -1700,15 +1701,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0.29472923, g: 0.28484336, b: 0.3490566, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 9d997d752576d0746a32884289897083, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -2000,8 +2001,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: -20}
+  m_AnchoredPosition: {x: 0, y: 2}
+  m_SizeDelta: {x: -32, y: -36}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5321967691696165117
 CanvasRenderer:
@@ -2024,14 +2025,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bc55d8d5a4f7eaf44aac25e97ec52787, type: 3}
+  m_Sprite: {fileID: 21300000, guid: feb5bd0c7b097974db1da345b1a6516a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2283,7 +2284,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3987781250098052510, guid: 5e7565c7890a5994eb44cd3f88888914, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 94.6
+      value: 120
       objectReference: {fileID: 0}
     - target: {fileID: 3987781250098052510, guid: 5e7565c7890a5994eb44cd3f88888914, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2653,7 +2654,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3987781250098052510, guid: 5e7565c7890a5994eb44cd3f88888914, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -87.3
+      value: -120
       objectReference: {fileID: 0}
     - target: {fileID: 3987781250098052510, guid: 5e7565c7890a5994eb44cd3f88888914, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

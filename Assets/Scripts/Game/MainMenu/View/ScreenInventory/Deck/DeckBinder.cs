@@ -18,7 +18,7 @@ namespace Game.MainMenu.View.ScreenInventory.Deck
         [SerializeField] private Transform containerSkillCards;
 
         private readonly Dictionary<int, TowerCardBinder> _createdTowerCardMap = new();
-        private readonly Dictionary<int, SkillCardBinder> _createdSkillCardMap = new();
+        private readonly Dictionary<int, SkillCardHexBinder> _createdSkillCardMap = new();
         private readonly List<Transform> _createdTowerCellMap = new();
         private readonly List<Transform> _createdSkillCellMap = new();
         private IDisposable _disposable;
@@ -117,8 +117,8 @@ namespace Game.MainMenu.View.ScreenInventory.Deck
         private void CreateSkillCard(SkillCardViewModel viewModel)
         {
             var prefabSkillCardPath =
-                $"Prefabs/UI/MainMenu/ScreenInventory/SkillCard";
-            var skillPrefab = Resources.Load<SkillCardBinder>(prefabSkillCardPath);
+                $"Prefabs/UI/MainMenu/ScreenInventory/SkillCardHex";
+            var skillPrefab = Resources.Load<SkillCardHexBinder>(prefabSkillCardPath);
             var createdSkill = Instantiate(skillPrefab, containerSkillCards);
             createdSkill.Bind(viewModel);
             createdSkill.transform.SetSiblingIndex(0);

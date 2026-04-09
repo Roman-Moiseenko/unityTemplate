@@ -64,12 +64,13 @@ namespace Game.GamePlay.View.UI
                 {
                     rootUI.HidePanel<PanelConfirmationViewModel>();
                     rootUI.ShowPanel<PanelBuildViewModel>();
-                    rootUI.HidePanel<PanelActionsViewModel>();
+                    
                 }
                 if (newValue.GetType() == typeof(FsmStateBuild))
                 {
                     rootUI.HidePanel<PanelBuildViewModel>();
                     rootUI.ShowPanel<PanelConfirmationViewModel>();
+                    rootUI.HidePanel<PanelActionsViewModel>();
                 }
                 if (newValue.GetType() == typeof(FsmStateBuildEnd))
                 {
@@ -79,6 +80,8 @@ namespace Game.GamePlay.View.UI
                 }
             });
             
+            //Скрываем панель при первом вхождении в геймплей
+            rootUI.HidePanel<PanelActionsViewModel>();
             //Панели Tower
             _fsmTower.Fsm.StateCurrent.Subscribe(newState =>
             {

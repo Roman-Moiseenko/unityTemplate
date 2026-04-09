@@ -11,7 +11,8 @@ namespace MVVM.FSM
 
         public ReactiveProperty<FSMState> StateCurrent = new();
         public FSMState PreviousState { get; private set; }
-        public ReactiveProperty<Vector2Int> Position = new();
+        
+       // public ReactiveProperty<Vector2Int> Position = new();
         public object Params { get; private set; } //Хранение параметров для всех состояний
         private Dictionary<Type, FSMState> _states = new();
 
@@ -25,16 +26,23 @@ namespace MVVM.FSM
             */
         }
 
-        public object GetParamsState()
+        public object GetParam()
         {
-            return StateCurrent.CurrentValue?.Params;
+            return Params;
+            //return StateCurrent.CurrentValue?.Params;
         }
 
-        public void SetParamsState(object obj)
+        public void SetParam(object obj)
         {
-            StateCurrent.Value.Params = obj;
+            Params = obj;
+           // StateCurrent.Value.Params = obj;
         }
 
+        public void ClearParam()
+        {
+            Params = null;
+        }
+        
         public void AddState(FSMState state)
         {
             _states.Add(state.GetType(), state);
@@ -43,7 +51,7 @@ namespace MVVM.FSM
         public void SetState<T>(object enterParams = null) where T : FSMState
         {
             if (enterParams != null) Params = enterParams;
-
+            
             var type = typeof(T);
             //if (StateCurrent.Value != null && StateCurrent.Value.GetType() == type) return;
 
@@ -84,7 +92,8 @@ namespace MVVM.FSM
         public void Dispose()
         {
             StateCurrent?.Dispose();
-            Position?.Dispose();
+          //  Position?.Dispose();
         }
+
     }
 }

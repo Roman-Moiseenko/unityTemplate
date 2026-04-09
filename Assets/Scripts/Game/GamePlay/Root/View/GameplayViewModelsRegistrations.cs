@@ -22,12 +22,12 @@ namespace Game.GamePlay.Root.View
 
             //Клик по башне
             container.RegisterFactory(_ => new Subject<TowerViewModel>()).AsSingle();
-            
-            
+
+
             //Добавить сервис если нужен в UIGameplayRootViewModel и WorldGameplayRootViewModel
             container.RegisterFactory(c => new UIGameplayRootViewModel(container)).AsSingle();
             //container.RegisterFactory(c => new GateWaveViewModel(c.Resolve<WaveService>())).AsSingle();
-            container.RegisterFactory(c => new GameplayUIManager(container)).AsSingle();          
+            container.RegisterFactory(c => new GameplayUIManager(container)).AsSingle();
             //Всегда последний
             container.RegisterFactory(c => new WorldGameplayRootViewModel(
                 //   c.Resolve<BuildingsService>(),
@@ -36,6 +36,7 @@ namespace Game.GamePlay.Root.View
                 c.Resolve<CastleService>(),
                 c.Resolve<FrameService>(),
                 c.Resolve<FramePlacementService>(),
+                c.Resolve<FrameSkillService>(),
                 c.Resolve<PlacementService>(),
                 c.Resolve<RoadsService>(),
                 c.Resolve<WaveService>(),

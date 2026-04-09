@@ -15,6 +15,7 @@ namespace Game.GameRoot.ImageManager
     public class ImageManagerBinder : MonoBehaviour
     {
         [SerializeField] private List<ImageItemByEpicType> epicLevels;
+        [SerializeField] private List<ImageItemByEpicType> epicSkillLevels;
         [SerializeField] private List<ImageItemByConfig> towerPlan;
         [SerializeField] private List<ImageItemByConfigLevel> towerCard;
         [SerializeField] private List<ImageItemByConfig> skillPlan;
@@ -44,6 +45,11 @@ namespace Game.GameRoot.ImageManager
         public Sprite GetEpicLevel(TypeEpic typeEpicCard)
         {
             return epicLevels.FirstOrDefault(t => t.TypeEpic == typeEpicCard)!.Sprite;
+        }
+        
+        public Sprite GetEpicSkillLevel(TypeEpic typeEpicCard)
+        {
+            return epicSkillLevels.FirstOrDefault(t => t.TypeEpic == typeEpicCard)!.Sprite;
         }
         
         public Sprite GetEpicLevel(string indexEpic)

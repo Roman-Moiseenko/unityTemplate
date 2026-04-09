@@ -185,6 +185,18 @@ namespace Game.GamePlay.Root
                 container
                 );
             container.RegisterInstance(skillsService);
+
+            var frameSkillService = new FrameSkillService(
+                gameplayState, 
+                placementService,
+                skillsService,
+                roadsService,
+                gameSettings.SkillsSettings,
+                qrc,
+                container
+                );
+            container.RegisterInstance(frameSkillService);
+            
             //TODO Команды для скилла ??
             
             var frameService = new FrameService(gameplayState, placementService, towersService, roadsService,

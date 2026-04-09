@@ -53,7 +53,7 @@ namespace Game.GamePlay.Fsm
 
         public Vector3 GetPosition()
         {
-            return (Vector3)Fsm.GetParamsState();
+            return (Vector3)Fsm.GetParam();
         }
 
         public bool IsGoToRepair()

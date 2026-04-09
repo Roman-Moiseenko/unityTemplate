@@ -28,6 +28,7 @@ namespace Game.GamePlay.Root.View
 
         private FrameBlockBinder _frameBlockBinder;
         private FramePlacementBinder _framePlacementBinder;
+        private FrameSkillBinder _frameSkillBinder;
         private readonly Dictionary<int, RoadBinder> _createdRoadsMap = new();
         private readonly Dictionary<int, MobBinder> _createMobsMap = new();
         private readonly List<GateWaveBinder> _createGateMap = new();
@@ -75,16 +76,16 @@ namespace Game.GamePlay.Root.View
                 .AddTo(ref d);
 
             //Воины
-      /*      foreach (var warriorViewModel in viewModel.AllWarriors)
-            {
-                CreateWarrior(warriorViewModel);
-            }
+            /*      foreach (var warriorViewModel in viewModel.AllWarriors)
+                  {
+                      CreateWarrior(warriorViewModel);
+                  }
 
-            viewModel.AllWarriors.ObserveAdd().Subscribe(e => { CreateWarrior(e.Value); }).AddTo(ref d);
-            viewModel.AllWarriors.ObserveRemove()
-                .Subscribe(e => DestroyWarrior(e.Value))
-                .AddTo(ref d);
-*/
+                  viewModel.AllWarriors.ObserveAdd().Subscribe(e => { CreateWarrior(e.Value); }).AddTo(ref d);
+                  viewModel.AllWarriors.ObserveRemove()
+                      .Subscribe(e => DestroyWarrior(e.Value))
+                      .AddTo(ref d);
+      */
             //
 
             //Мобы
@@ -134,6 +135,13 @@ namespace Game.GamePlay.Root.View
             viewModel.FramePlacementViewModels.ObserveRemove()
                 .Subscribe(e => DestroyFramePlacement())
                 .AddTo(ref d);
+            //3. Фрейм навыков 
+            viewModel.FrameSkillViewModels.ObserveAdd()
+                .Subscribe(e => CreateFrameSkill(e.Value))
+                .AddTo(ref d);
+            viewModel.FrameSkillViewModels.ObserveClear()
+                .Subscribe(e => DestroyFrameSkill())
+                .AddTo(ref d);
 
             //Создаем view-модель ворот из прехаба
             CreateGateWave(_viewModel.GateWaveViewModel);
@@ -167,6 +175,7 @@ namespace Game.GamePlay.Root.View
             createdGate.Bind(viewModel);
             _createGateMap.Add(createdGate);
         }
+
 /*
         private void CreateWarrior(WarriorViewModel warriorViewModel)
         {
@@ -181,8 +190,8 @@ namespace Game.GamePlay.Root.View
         private void CreateMob(MobViewModel mobViewModel)
         {
             var bossPath = mobViewModel.IsBoss ? "Bosses/" : "";
-            
-            var prefabPath = $"Prefabs/Gameplay/Mobs/{bossPath}{mobViewModel.ConfigId}"; 
+
+            var prefabPath = $"Prefabs/Gameplay/Mobs/{bossPath}{mobViewModel.ConfigId}";
             var mobPrefab = Resources.Load<MobBinder>(prefabPath);
             var createdMob = Instantiate(mobPrefab, transform);
 
@@ -236,8 +245,7 @@ namespace Game.GamePlay.Root.View
 */
         private void CreateTowerBase(TowerViewModel towerViewModel)
         {
-             
-        //    var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/TowerBase"; //Перенести в настройки уровня
+            //    var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/TowerBase"; //Перенести в настройки уровня
             if (towerViewModel.GetType() == typeof(TowerAttackViewModel))
             {
                 var prefabTowerLevelPath = $"Prefabs/Gameplay/Towers/TowerBaseAttack";
@@ -255,8 +263,6 @@ namespace Game.GamePlay.Root.View
                 createdTower.Bind(towerViewModel);
                 _createTowersMap[towerViewModel.UniqueId] = createdTower;
             }
-
-
         }
 
         private void CreateRoad(RoadViewModel roadViewModel, Transform parentTransform = null)
@@ -307,16 +313,26 @@ namespace Game.GamePlay.Root.View
             _framePlacementBinder = createdFrame;
         }
 
-        //DESTROY
-     /*   private void DestroyWarrior(WarriorViewModel warriorViewModel)
+        private void CreateFrameSkill(FrameSkillViewModel frameSkillViewModel)
         {
-            if (_createWarriorsMap.TryGetValue(warriorViewModel.UniqueId, out var warriorBinder))
-            {
-                Destroy(warriorBinder.gameObject);
-                _createWarriorsMap.Remove(warriorViewModel.UniqueId);
-            }
+            var prefabFrame = $"Prefabs/Gameplay/Frames/FrameSkill";
+            var framePrefab = Resources.Load<FrameSkillBinder>(prefabFrame);
+            var createdFrame = Instantiate(framePrefab, transform);
+            createdFrame.Bind(frameSkillViewModel);
+            _frameSkillBinder = createdFrame;
         }
-*/
+
+
+        //DESTROY
+        /*   private void DestroyWarrior(WarriorViewModel warriorViewModel)
+           {
+               if (_createWarriorsMap.TryGetValue(warriorViewModel.UniqueId, out var warriorBinder))
+               {
+                   Destroy(warriorBinder.gameObject);
+                   _createWarriorsMap.Remove(warriorViewModel.UniqueId);
+               }
+           }
+   */
         private void DestroyRoad(RoadViewModel roadViewModel)
         {
             if (_createdRoadsMap.TryGetValue(roadViewModel.RoadEntityId, out var roadBinder))
@@ -338,12 +354,19 @@ namespace Game.GamePlay.Root.View
             Destroy(_framePlacementBinder);
         }
 
+        private void DestroyFrameSkill()
+        {
+            Destroy(_frameSkillBinder.gameObject);
+            Destroy(_frameSkillBinder);
+        }
+
+
         private void DestroyTowerBase(TowerViewModel towerViewModel)
         {
             if (_createTowersMap.TryGetValue(towerViewModel.UniqueId, out var towerBinder))
             {
                 towerBinder.DestroyGameObject();
-               // Destroy(towerBinder.gameObject);
+                // Destroy(towerBinder.gameObject);
                 _createTowersMap.Remove(towerViewModel.UniqueId);
             }
         }
