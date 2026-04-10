@@ -5,6 +5,7 @@ using Game.Common;
 using Game.GamePlay.View.Skills;
 using Game.GameRoot.ImageManager;
 using R3;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -19,11 +20,12 @@ namespace Game.GamePlay.View.UI.PanelActions
         [SerializeField] private Image imageEpicBackground;
         [SerializeField] private Image imageSkill;
         [SerializeField] private Image imageCooldown;
+        [SerializeField] private TMP_Text txtCooldown;
         [SerializeField] private List<Transform> stars;
         private SkillViewModel _viewModel;
         private ImageManagerBinder _imageManager;
         private IDisposable _disposable;
-        
+
         private void Awake()
         {
             _imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
@@ -32,7 +34,6 @@ namespace Game.GamePlay.View.UI.PanelActions
         //TODO Передать колбек для вызова функции по нажатию и данные по скиллу
         public void Bind(SkillViewModel viewModel)
         {
-            
             _viewModel = viewModel;
             imageEpicBackground.sprite = _imageManager.GetEpicSkillLevel(viewModel.EpicLevel);
             imageSkill.sprite = _imageManager.GetSkillCard(viewModel.ConfigId);
@@ -44,57 +45,49 @@ namespace Game.GamePlay.View.UI.PanelActions
                 foreach (var star in stars)
                 {
                     index++;
-                    if (index <= level)
-                    {
-                        star.Find("starFill").gameObject.SetActive(true);
-                    }
-                    else
-                    {
-                        star.Find("starFill").gameObject.SetActive(false);
-                    }
+                    star.Find("starFill").gameObject.SetActive(index <= level);
                 }
             }).AddTo(ref d);
             //selected.Find("Icon").transform.SetAsLastSibling();
             selectedIcon.SetAsLastSibling();
             viewModel.IsActive.Subscribe(v =>
             {
-   //             Debug.Log(viewModel.ConfigId + " " + v);
+                //             Debug.Log(viewModel.ConfigId + " " + v);
                 selectedBackground.gameObject.SetActive(v);
                 selectedIcon.gameObject.SetActive(v);
             }).AddTo(ref d);
-            viewModel.TimeOut.Subscribe(v =>
+            imageCooldown.gameObject.SetActive(false);
+            txtCooldown.gameObject.SetActive(false);
+            viewModel.IsCooldown.Where(x => x).Subscribe(v =>
             {
-                if (v == viewModel.Cooldown)
-                {
-                    imageCooldown.fillAmount = 0f;
-                    imageCooldown.gameObject.SetActive(true);
-                    //Запуск корутины таймера
-                    return;
-                }
-                imageCooldown.fillAmount = _viewModel.TimeOut.Value / _viewModel.Cooldown;
-                if (v == 0)
-                {
-                    imageCooldown.gameObject.SetActive(false);
-                    //Остановка 
-                    return;
-                }
+                imageCooldown.fillAmount = 1f;
+                txtCooldown.text = Mathf.RoundToInt(_viewModel.Cooldown).ToString();
                 
+                imageCooldown.gameObject.SetActive(true);
+                txtCooldown.gameObject.SetActive(true);
+                StartCoroutine(TimeOut());
+                //Запуск корутины таймера
             }).AddTo(ref d);
-//            SelectedToggle();
-            
+
             _disposable = d.Build();
         }
 
         private IEnumerator TimeOut()
         {
             yield return new WaitForSeconds(1f);
-            _viewModel.TimeOut.Value--;
-        }
-        
-        private void SelectedToggle()
-        {
-            selectedBackground.gameObject.SetActive(!selectedBackground.gameObject.activeSelf);
-            selectedIcon.gameObject.SetActive(!selectedIcon.gameObject.activeSelf);
+            _viewModel.TimeOut--;
+            imageCooldown.fillAmount = _viewModel.TimeOut / _viewModel.Cooldown;
+            txtCooldown.text = Mathf.RoundToInt(_viewModel.TimeOut).ToString();
+            if (_viewModel.TimeOut > 0)
+            {
+                StartCoroutine(TimeOut());
+            }
+            else
+            {
+                _viewModel.IsCooldown.Value = false;
+                imageCooldown.gameObject.SetActive(false);
+                txtCooldown.gameObject.SetActive(false);
+            }
         }
 
         private void OnEnable()
@@ -109,9 +102,7 @@ namespace Game.GamePlay.View.UI.PanelActions
 
         private void OnStartSkill()
         {
-            if (!_viewModel.IsEnabled.CurrentValue) return;
             _viewModel.StartSkill();
-            //SelectedToggle();
         }
 
         private void OnDestroy()

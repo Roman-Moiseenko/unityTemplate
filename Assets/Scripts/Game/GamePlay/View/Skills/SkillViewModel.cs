@@ -19,11 +19,12 @@ namespace Game.GamePlay.View.Skills
         public TypeEpic EpicLevel { get; set; }
       //  public FsmSkill FsmSkill;
 
+        public ReactiveProperty<bool> IsCooldown = new(false);
         public float Cooldown = 0f;
 
-        public readonly ReactiveProperty<float> TimeOut = new(0f);
+        public float TimeOut = 0f;
 
-        public readonly ReactiveProperty<bool> IsEnabled = new(true);
+//        public readonly ReactiveProperty<bool> IsEnabled = new(true);
         public readonly ReactiveProperty<bool> IsActive = new(false);
         private readonly SkillsService _service;
 
@@ -41,14 +42,15 @@ namespace Game.GamePlay.View.Skills
 
         public void StartSkill()
         {
+//            if (!IsEnabled.CurrentValue) return;
+            if (TimeOut > 0) return;
             _service.StartSkill(ConfigId);
-
         }
 
         public void StartCooldown()
         {
-            Debug.Log(Cooldown + " StartCooldown");
-            TimeOut.OnNext(Cooldown);
+            TimeOut = Cooldown;
+            IsCooldown.OnNext(true);
         }
     }
 }
