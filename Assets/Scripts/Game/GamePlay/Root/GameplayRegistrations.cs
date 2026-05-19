@@ -234,7 +234,7 @@ namespace Game.GamePlay.Root
             container.RegisterFactory(_ => new DamageService(gameplayState, settingsState)).AsSingle();
 
             //Загружаем уровень из настроек, если gameplayState пуст.
-            if (gameplayState.Towers.Any() != true)
+            if (!gameplayState.Towers.Any())
             {
                 var success = false;
                 switch (gameplayEnterParams.TypeGameplay)

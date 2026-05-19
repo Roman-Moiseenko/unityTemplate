@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using DI;
-using Game.Common;
 using Game.GamePlay.Classes;
-using Game.GamePlay.Root;
-using Game.GamePlay.Services;
 using Game.GameRoot;
 using Game.MainMenu.Root.View;
 using Game.MainMenu.Services;
@@ -13,16 +9,10 @@ using Game.MainMenu.View;
 using Game.MainMenu.View.MainScreen;
 using Game.MainMenu.View.ScreenPlay;
 using Game.State;
-using Game.State.GameResources;
 using Game.State.GameStates;
-using Game.State.Inventory;
 using Game.State.Inventory.Chests;
 using Game.State.Inventory.Common;
-using Game.State.Inventory.TowerCards;
-using MVVM.CMD;
-using Newtonsoft.Json;
 using R3;
-using Scripts.Game.GameRoot;
 using UnityEngine;
 
 namespace Game.MainMenu.Root

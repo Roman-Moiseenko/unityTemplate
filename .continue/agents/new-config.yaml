@@ -1,0 +1,24 @@
+name: Local Config
+version: 1.0.0
+schema: v1
+models:
+  - name: DeepSeek Chat
+    provider: openai
+    model: deepseek-chat
+    apiKey: sk-2760b598bc764d9c94b0d577a49dade3
+    apiBase: https://api.deepseek.com/v1
+    roles: [chat, edit, apply]
+
+  - name: DeepSeek Coder
+    provider: openai
+    model: deepseek-coder
+    apiKey: sk-2760b598bc764d9c94b0d577a49dade3
+    apiBase: https://api.deepseek.com/v1
+    roles: [chat, edit, apply]
+
+tabAutocompleteModel:
+  name: DeepSeek Coder
+  provider: openai
+  model: deepseek-coder
+  apiKey: sk-2760b598bc764d9c94b0d577a49dade3
+  apiBase: https://api.deepseek.com/v1

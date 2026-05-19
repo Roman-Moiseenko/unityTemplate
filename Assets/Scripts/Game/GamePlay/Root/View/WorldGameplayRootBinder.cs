@@ -4,6 +4,7 @@ using System.Linq;
 using Game.GamePlay.Classes;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
+using Game.GamePlay.View.Frames.SkillFrames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Map;
 using Game.GamePlay.View.Mobs;

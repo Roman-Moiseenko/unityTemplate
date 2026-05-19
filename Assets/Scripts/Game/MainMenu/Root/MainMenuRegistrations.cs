@@ -112,14 +112,7 @@ namespace Game.MainMenu.Root
             //TODO Загружаем настройки и другое с сервера. Либо перенести в GameRoot 
             
             //Сервисы для play screen
-       /*     var mapService = new MapCardService(
-                gameState,
-                gameSettings.MapsSettings,
-                cmd,
-                container
-                );
-            container.RegisterInstance(mapService);
-*/
+
             //Сервисы карточек
             var towerCardService = new TowerCardPlanService(
                 gameState.Inventory,

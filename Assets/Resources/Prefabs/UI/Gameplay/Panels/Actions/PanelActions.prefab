@@ -698,6 +698,8 @@ MonoBehaviour:
   selectedIcon: {fileID: 0}
   imageEpicBackground: {fileID: 125517035491090891}
   imageSkill: {fileID: 2916007306489883103}
+  imageCooldown: {fileID: 0}
+  txtCooldown: {fileID: 0}
   stars:
   - {fileID: 1606361726947668712}
   - {fileID: 4142295160481266978}
@@ -2346,6 +2348,10 @@ PrefabInstance:
     - target: {fileID: 4177989366510365286, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
       propertyPath: m_Name
       value: btnKillMob
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177989366510365286, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9206070933231182775, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
       propertyPath: m_Pivot.x

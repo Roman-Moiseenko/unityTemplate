@@ -35,7 +35,7 @@ namespace Game.GamePlay.View.Skills
             _skillEntity = skillEntity;
             Level =  skillEntity.Level;
             //Время отката
-            Debug.Log(JsonConvert.SerializeObject(skillEntity.Parameters, Formatting.Indented));
+//            Debug.Log(JsonConvert.SerializeObject(skillEntity.Parameters, Formatting.Indented));
             if (skillEntity.Parameters.TryGetValue(SkillParameterType.Cooldown, out var parameterData)) 
                 Cooldown = parameterData.Value;
         }

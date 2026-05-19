@@ -1,8 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using DI;
 using Game.Common;
 using Game.GamePlay.Root;
@@ -13,14 +9,10 @@ using Game.GameRoot.ImageManager;
 using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.Settings;
-using Game.Settings.Gameplay.Maps;
 using Game.State;
-using Game.State.Inventory;
-using Game.State.Inventory.Chests;
 using Game.State.Root;
 using MVVM.CMD;
 using MVVM.Storage;
-using Newtonsoft.Json;
 using R3;
 using Scripts.Utils;
 using UnityEngine;
@@ -85,7 +77,7 @@ namespace Scripts.Game.GameRoot
                     userId = Path.GetRandomFileName();
                     PlayerPrefs.SetString(AppConstants.USER_ID, userId);
                     webService.FirstAuthorization(userId);
-                    //TODO Первичная авторизация клиента
+    
                 }
                 else
                 {
@@ -142,9 +134,8 @@ namespace Scripts.Game.GameRoot
         {
             _uiRoot.ShowLoadingFirstScreen();
             _cachedSceneContainer?.Dispose();
-            yield return LoadScene(Scenes.BOOT); //TODO Заменить на Scenes.FIRST_BOOT 
+            yield return LoadScene(Scenes.BOOT);
             yield return LoadScene(Scenes.MAINMENU);
-            //yield return new WaitForSeconds(1);
 
             //Загружаем пользователя
             var provider = _rootContainer.Resolve<IGameStateProvider>();
@@ -221,7 +212,7 @@ namespace Scripts.Game.GameRoot
             _uiRoot.ShowLoadingScreen();
             _cachedSceneContainer?.Dispose();
             yield return LoadScene(Scenes.BOOT);
-            //   Debug.Log("0");
+            
             yield return LoadScene(Scenes.GAMEPLAY);
 
             //  yield return new WaitForSeconds(1);

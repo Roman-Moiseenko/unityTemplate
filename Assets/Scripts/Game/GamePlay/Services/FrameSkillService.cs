@@ -2,6 +2,7 @@ using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.SkillStates;
 using Game.GamePlay.View.Frames;
+using Game.GamePlay.View.Frames.SkillFrames;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.State.Gameplay;
 using MVVM.CMD;
