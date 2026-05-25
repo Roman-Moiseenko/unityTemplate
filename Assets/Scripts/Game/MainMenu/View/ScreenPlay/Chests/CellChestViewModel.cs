@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using DI;
 using Game.MainMenu.Services;
 using Game.State.Inventory.Chests;
@@ -7,22 +8,25 @@ using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenPlay.Chests
 {
-    public class CellChestViewModel
+    public class CellChestViewModel : IDisposable
     {
-        public ReactiveProperty<Chest> ChestEntity;
+        public readonly ReactiveProperty<Chest> ChestEntity;
 
-        public ReactiveProperty<bool> IsOpening;
+        public readonly ReactiveProperty<bool> IsOpening;
         private readonly PlayUIManager _uiManager;
-        public ChestService ChestService { get; set; }
+        private ChestService ChestService { get; set; }
 
-        public ReactiveProperty<int> TimeLeft = new(0);
-        public ReactiveProperty<int> CostLeft = new(0);
+        public readonly ReactiveProperty<int> TimeLeft = new(0);
+        public readonly ReactiveProperty<int> CostLeft = new(0);
+        private DisposableBag _disposables;
         
         public CellChestViewModel(ContainerChests containerChests, DIContainer container, Chest chestEntity)
         {
             IsOpening = new ReactiveProperty<bool>();
             ChestService = container.Resolve<ChestService>();
-            containerChests.CellOpening.Subscribe(v => IsOpening.OnNext(v == 0));
+            containerChests.CellOpening
+                .Subscribe(v => IsOpening.OnNext(v == 0))
+                .AddTo(ref _disposables);
             ChestEntity = new ReactiveProperty<Chest>(chestEntity);
             ChestService.TimeLeft.Subscribe(t =>
             {
@@ -32,20 +36,18 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
                 if (ChestService.CellOpening.Value != ChestEntity.Value.Cell) return;
                 //Debug.Log("3 = " + t);
                 TimeLeft.Value = t;
-            });
+            }).AddTo(ref _disposables);
             ChestService.CostLeft.Subscribe(t =>
             {
                 if (ChestEntity.Value == null) return;
                 if (ChestService.CellOpening.Value != ChestEntity.Value.Cell) return;
                 CostLeft.Value = t;
-            });
+            }).AddTo(ref _disposables);
             
             //TODO 
             _uiManager = container.Resolve<PlayUIManager>();
         }
-
         
-
         public void SetChest(Chest chestEntity)
         {
             ChestEntity.OnNext(chestEntity);
@@ -75,6 +77,15 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
                 }
                 _uiManager.OpenPopupRewardChest(type, rewards);
             }
+        }
+
+        public void Dispose()
+        {
+            ChestEntity?.Dispose();
+            IsOpening?.Dispose();
+            TimeLeft?.Dispose();
+            CostLeft?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

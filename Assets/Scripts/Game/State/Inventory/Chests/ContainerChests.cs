@@ -72,10 +72,16 @@ namespace Game.State.Inventory.Chests
 
         public void Dispose()
         {
-            _disposables.Dispose();
+            foreach (var (key, chest) in Chests)
+            {
+                chest?.Dispose();
+            }
+            Chests.Clear();
+            
             StartOpening?.Dispose();
             CellOpening?.Dispose();
             UpdateData?.Dispose();
+            _disposables.Dispose(); 
         }
     }
 }

@@ -28,7 +28,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Root.View
 {
-    public class WorldGameplayRootViewModel
+    public class WorldGameplayRootViewModel : IDisposable
     {
         public readonly IObservableCollection<TowerViewModel> AllTowers;
 
@@ -66,6 +66,7 @@ namespace Game.GamePlay.Root.View
         private readonly FsmSkill _fsmSkill;
         private readonly FrameSkillService _frameSkillService;
 
+        private DisposableBag _disposables;
         //  private readonly Coroutines _coroutines;
 
         public WorldGameplayRootViewModel(
@@ -221,7 +222,7 @@ namespace Game.GamePlay.Root.View
                         frameService.RemoveFrame();
                     //Удаляем фреймы
                 }
-            });
+            }).AddTo(ref _disposables);
 
             _fsmGameplay.Position.Subscribe(newPosition =>
             {
@@ -239,7 +240,7 @@ namespace Game.GamePlay.Root.View
                 {
                     framePlacementService.MoveFrame(newPosition);
                 }
-            });
+            }).AddTo(ref _disposables);
 
 
         }
@@ -427,6 +428,11 @@ namespace Game.GamePlay.Root.View
             {
                 _cameraService.OnPointMove(mousePosition);
             }
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
     }
 }

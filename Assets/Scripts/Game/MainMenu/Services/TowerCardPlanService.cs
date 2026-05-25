@@ -318,6 +318,9 @@ namespace Game.MainMenu.Services
         }
 
 
+        /**
+         * Проверить на утечку подписок new TowerCard
+         */
         public InfoUpgradedViewModel GetInfoUpgradedViewModel(string configId,
             TypeEpic epicLevel, int level)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using Game.State.Common;
 using Game.State.Inventory.Common;
 using Game.State.Maps.Mobs;
@@ -22,10 +23,10 @@ namespace Game.State.Inventory.TowerCards
         {
          //   Defence = data.Defence;
             EpicLevel = new ReactiveProperty<TypeEpic>(data.EpicLevel);
-            EpicLevel.Subscribe(newValue => data.EpicLevel = newValue);
+            EpicLevel.Subscribe(newValue => data.EpicLevel = newValue).AddTo(ref _disposables);
             
             Level = new ReactiveProperty<int>(data.Level);
-            Level.Subscribe(newAmount => data.Level = newAmount);
+            Level.Subscribe(newAmount => data.Level = newAmount).AddTo(ref _disposables);
             
             Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
             //Debug.Log(JsonConvert.SerializeObject(data, Formatting.Indented));
@@ -39,23 +40,23 @@ namespace Game.State.Inventory.TowerCards
                 var key = e.Value.Key;
                 var value = e.Value.Value;
                 Origin.As<TowerCardData>().Parameters.Add(key, value.Origin);
-            });
+            }).AddTo(ref _disposables);
             Parameters.ObserveRemove().Subscribe(e =>
             {
                 var key = e.Value.Key;
                 Origin.As<TowerCardData>().Parameters.Remove(key);
-            });
+            }).AddTo(ref _disposables);
             Parameters.ObserveClear().Subscribe(_ =>
             {
                 Origin.As<TowerCardData>().Parameters.Clear();
-            });
+            }).AddTo(ref _disposables);
             Parameters.ObserveChanged().Subscribe(newValue =>
             {
                 var ket = newValue.NewItem.Key;
                 var value = newValue.NewItem.Value;
                // Debug.Log($"{ket} + {value}");
                 //TODO Протестить, может и не понадобится
-            });
+            }).AddTo(ref _disposables);
 
             //     TowerType = data.TowerType;
         }
@@ -78,6 +79,19 @@ namespace Game.State.Inventory.TowerCards
         {
             var levelCost = (Level.CurrentValue / 5 + 1); 
             return levelCost * 1000;
-        } 
+        }
+
+        public override void Dispose()
+        {
+            //TODO Очистить параметры
+            EpicLevel?.Dispose();
+            foreach (var (key, parameter) in Parameters)
+            {
+                parameter?.Dispose();
+            }
+            Parameters.Clear();
+            Level?.Dispose();
+            base.Dispose();
+        }
     }
 }

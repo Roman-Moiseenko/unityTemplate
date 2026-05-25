@@ -28,5 +28,12 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             if (HasSecondWay) InfoSecondWaveViewModel = new InfoWaveViewModel(container, false);
         }
 
+        public override void Dispose()
+        {
+            InfoWaveViewModel?.Dispose();
+            InfoSecondWaveViewModel?.Dispose();
+            InfoTowerViewModel?.Dispose();
+            base.Dispose();
+        }
     }
 }

@@ -10,19 +10,22 @@ using R3;
 
 namespace Game.MainMenu.Services
 {
-    public class ResourcesService
+    public class ResourcesService : IDisposable
     {
         public readonly ObservableList<ResourceViewModel> Resources = new();
         private readonly Dictionary<ResourceType, ResourceViewModel> _resourcesMap = new();
-
         private readonly ICommandProcessor _cmd;
-
+        private DisposableBag _disposables;
         public ResourcesService(ObservableList<Resource> resources, ICommandProcessor cmd)
         {
             _cmd = cmd;
             resources.ForEach(resource => CreateResourceViewModel(resource));
-            resources.ObserveAdd().Subscribe(e => CreateResourceViewModel(e.Value));
-            resources.ObserveRemove().Subscribe(e => RemoveResourceViewModel(e.Value));
+            resources.ObserveAdd()
+                .Subscribe(e => CreateResourceViewModel(e.Value))
+                .AddTo(ref _disposables);
+            resources.ObserveRemove()
+                .Subscribe(e => RemoveResourceViewModel(e.Value))
+                .AddTo(ref _disposables);
         }
 
         public bool AddResource(ResourceType resourceType, int amount)
@@ -76,6 +79,11 @@ namespace Game.MainMenu.Services
                 Resources.Remove(resourceViewModel);
                 _resourcesMap.Remove(resource.ResourceType);
             }
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
     }
 }

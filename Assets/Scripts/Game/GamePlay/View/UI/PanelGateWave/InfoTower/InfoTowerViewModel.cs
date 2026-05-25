@@ -21,18 +21,18 @@ using UnityEngine;
 
 namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
 {
-    public class InfoTowerViewModel
+    public class InfoTowerViewModel : IDisposable
     {
-        public ReactiveProperty<bool> ShowInfoTower = new(false);
-        public ReactiveProperty<bool> UpdateInfoBackgroundTower = new(false);
-        public ReactiveProperty<Vector3> PositionInfoTower = new(Vector3.zero);
+        public readonly ReactiveProperty<bool> ShowInfoTower = new(false);
+        public readonly ReactiveProperty<bool> UpdateInfoBackgroundTower = new(false);
+        public readonly ReactiveProperty<Vector3> PositionInfoTower = new(Vector3.zero);
         private readonly GameplayCamera _cameraService;
         
-        public Dictionary<TowerParameterType, Vector2> BaseParameters = new(); 
-        public Dictionary<TowerParameterType, float> BoosterParameters = new();
+        public readonly Dictionary<TowerParameterType, Vector2> BaseParameters = new(); 
+        public readonly Dictionary<TowerParameterType, float> BoosterParameters = new();
         
         private Vector2Int _towerPrevious = Vector2Int.zero;
-        public TowerViewModel TowerViewModel;
+       // public TowerViewModel TowerViewModel;
 
         public string NameTower;
         public TypeEpic EpicLevel;
@@ -44,6 +44,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
         private readonly GameplayBoosters _gameplayBooster;
         private readonly Dictionary<string,Dictionary<TowerParameterType,float>> _towerBoosters;
 
+        private DisposableBag _disposables;
         public InfoTowerViewModel(DIContainer container)
         {
             var positionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
@@ -68,7 +69,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
                     PrepareAndShowInfo(fsmTower.GetTowerViewModel());
                 }
                 //TODO Сделать для других состояний
-            });
+            }).AddTo(ref _disposables);
             
             _cameraService = container.Resolve<GameplayCamera>();
  
@@ -76,7 +77,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
             positionCamera.Subscribe(n =>
             {
                 if (ShowInfoTower.CurrentValue) NewPositionTowerInfo();
-            });
+            }).AddTo(ref _disposables);
         }
         
         private void NewPositionTowerInfo()
@@ -97,7 +98,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
             }
             else
             {
-                TowerViewModel = towerViewModel;
+                //TowerViewModel = towerViewModel;
 
                 var config = _settingsTowers.Find(t => t.ConfigId == towerViewModel.ConfigId);
                 NameTower = config.TitleLid;
@@ -181,6 +182,13 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
             }
         }
 
-        
+
+        public void Dispose()
+        {
+            ShowInfoTower?.Dispose();
+            UpdateInfoBackgroundTower?.Dispose();
+            PositionInfoTower?.Dispose();
+            _disposables.Dispose();
+        }
     }
 }

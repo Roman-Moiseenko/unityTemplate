@@ -1,4 +1,5 @@
-﻿using Game.State.Common;
+﻿using Cysharp.Threading.Tasks;
+using Game.State.Common;
 using Game.State.Inventory.Common;
 using R3;
 
@@ -12,10 +13,15 @@ namespace Game.State.Inventory.HeroCards
         public HeroCard(HeroCardData data) : base(data)
         {
             EpicLevel = new ReactiveProperty<TypeEpic>(data.EpicLevel);
-            EpicLevel.Subscribe(newValue => data.EpicLevel = newValue);
+            EpicLevel
+                .Subscribe(newValue => data.EpicLevel = newValue)
+                .AddTo(ref _disposables);
             
             Level = new ReactiveProperty<int>(data.Level);
-            Level.Subscribe(newAmount => data.Level = newAmount);
+            Level
+                .Subscribe(newAmount => data.Level = newAmount)
+                .AddTo(ref _disposables);
         }
+        
     }
 }

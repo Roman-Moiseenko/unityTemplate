@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
@@ -16,16 +17,17 @@ using UnityEngine;
 
 namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
 {
-    public class InfoWaveViewModel
+    public class InfoWaveViewModel : IDisposable
     {
         //Состояния отображения окон
-        public ReactiveProperty<bool> ShowButtonWave = new(true);
-        public ReactiveProperty<bool> ShowInfoWave = new(false);
-        public ObservableList<EnemyDataInfo> AllEnemyDataInfo = new(); //Информация о мобе в волн
-        public ReactiveProperty<float> FillAmountBtn = new(1f);
-        public ReactiveProperty<Vector3> PositionInfoBtn = new(Vector3.zero);
+        public readonly ReactiveProperty<bool> ShowButtonWave = new(true);
+        public readonly ReactiveProperty<bool> ShowInfoWave = new(false);
+        public readonly ObservableList<EnemyDataInfo> AllEnemyDataInfo = new(); //Информация о мобе в волн
+        public readonly ReactiveProperty<float> FillAmountBtn = new(1f);
+        public readonly ReactiveProperty<Vector3> PositionInfoBtn = new(Vector3.zero);
         private readonly WaveService _waveService;
         private readonly GameplayCamera _cameraService;
+        private DisposableBag _disposables;
         
         public InfoWaveViewModel(DIContainer container, bool isWay = true)
         {
@@ -39,14 +41,14 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
             var positionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
 
             //Закрываем окно, если нажатие за пределами UI
-            entityClick.Subscribe(_ => ShowInfoWave.Value = false);
+            entityClick.Subscribe(_ => ShowInfoWave.Value = false).AddTo(ref _disposables);
 
             //Показываем/скрываем кнопку Волны в зависимости от состояния волны
             fsmWave.Fsm.StateCurrent.Subscribe(state =>
             {
                 if (state.GetType() == typeof(FsmStateWaveBegin)) ShowButtonWave.OnNext(false);
                 if (state.GetType() == typeof(FsmStateWaveWait)) ShowButtonWave.OnNext(true);
-            });
+            }).AddTo(ref _disposables);
             //При изменении счетчика текущей волны, получаем информацию о след.волне
             // Skip(1) - пропускаем начальное значение CurrentWave = 0 (волна еще не началась),
             // иначе NumberWave - 1 = -1 вызовет ArgumentOutOfRangeException в QueryInfoWaveHandler
@@ -60,14 +62,17 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
                 {
                     AllEnemyDataInfo.Add(dataInfo);
                 }
-            });
+            }).AddTo(ref _disposables);
             //Изменилась позиция камеры
-            positionCamera.Subscribe(n => NewPositionButtonInfo(isWay));
+            positionCamera.Subscribe(n => NewPositionButtonInfo(isWay)).AddTo(ref _disposables);
             _waveService.TimeOutNewWaveValue.
-                Subscribe(n => FillAmountBtn.Value = 1 - n);
+                Subscribe(n => FillAmountBtn.Value = 1 - n)
+                .AddTo(ref _disposables);
             
             //Изменилась позиция ворот
-            _waveService.GateWaveViewModel.Position.Subscribe(_ => NewPositionButtonInfo(isWay));
+            _waveService.GateWaveViewModel.Position
+                .Subscribe(_ => NewPositionButtonInfo(isWay))
+                .AddTo(ref _disposables);
         }
         
         private void NewPositionButtonInfo(bool isWay)
@@ -84,6 +89,15 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
         public void StartForcedWave()
         {
             _waveService.StartForcedNewWave();
+        }
+
+        public void Dispose()
+        {
+            ShowButtonWave?.Dispose();
+            ShowInfoWave?.Dispose();
+            FillAmountBtn?.Dispose();
+            PositionInfoBtn?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

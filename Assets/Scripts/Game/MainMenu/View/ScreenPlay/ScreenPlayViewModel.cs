@@ -90,5 +90,11 @@ namespace Game.MainMenu.View.ScreenPlay
             _exitSceneRequest.OnNext(mainMenuExitParams);
             
         }
+
+        public override void Dispose()
+        {
+            ChestsViewModel?.Dispose();
+            base.Dispose();
+        }
     }
 }

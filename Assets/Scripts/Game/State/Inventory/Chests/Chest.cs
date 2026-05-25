@@ -1,13 +1,14 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using Game.GamePlay.Classes;
 using R3;
 using UnityEngine;
 
 namespace Game.State.Inventory.Chests
 {
-    public class Chest
+    public class Chest : IDisposable
     {
-        public ChestEntityData Origin;
+        public readonly ChestEntityData Origin;
 
         public TypeChest TypeChest => Origin.TypeChest;
         public int Cell => Origin.Cell;
@@ -15,18 +16,21 @@ namespace Game.State.Inventory.Chests
 
         public TypeGameplay Gameplay => Origin.Gameplay;
         
-        public ReactiveProperty<bool> TimeOut = new(false);
+        public readonly ReactiveProperty<bool> TimeOut = new(false);
 
-        public ReactiveProperty<StatusChest> Status;
+        public readonly ReactiveProperty<StatusChest> Status;
         public int Level => Origin.Level;
 
         public int MapId => Origin.MapId;
 
+        private DisposableBag _disposables;
         public Chest(ChestEntityData chestEntityData)
         {
             Origin = chestEntityData;
             Status = new ReactiveProperty<StatusChest>(chestEntityData.Status);
-            Status.Subscribe(newValue => chestEntityData.Status = newValue);
+            Status
+                .Subscribe(newValue => chestEntityData.Status = newValue)
+                .AddTo(ref _disposables);
         }
 
         public void StartOpenChest()
@@ -60,6 +64,12 @@ namespace Game.State.Inventory.Chests
             return time;*/
           return Vector2Int.zero;
         }
-        
+
+        public void Dispose()
+        {
+            TimeOut?.Dispose();
+            Status?.Dispose();
+            _disposables.Dispose();
+        }
     }
 }

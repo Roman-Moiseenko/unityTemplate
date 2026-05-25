@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DI;
 using Game.State.Inventory.Chests;
 using Game.State.Root;
@@ -8,9 +9,10 @@ using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenPlay.Chests
 {
-    public class ChestsViewModel
+    public class ChestsViewModel : IDisposable
     {
-        public Dictionary<int, CellChestViewModel> CellsViewModel = new();  
+        public Dictionary<int, CellChestViewModel> CellsViewModel = new();
+        private DisposableBag _disposables;
 
         public ChestsViewModel(GameStateProxy gameState, DIContainer container)
         {
@@ -26,8 +28,8 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
                 {
                     CellsViewModel.Add(i, new CellChestViewModel(gameState.ContainerChests, container, null));
                 }
-                
             }
+
             //Заполняем модели сундуками
             /*
             foreach (var (cell, chest) in gameState.ContainerChests.Chests)
@@ -35,19 +37,32 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
                 CellsViewModel[cell].SetChest(chest);
             }
             */
-            gameState.ContainerChests.Chests.ObserveAdd().Subscribe(e =>
+            gameState.ContainerChests.Chests
+                .ObserveAdd()
+                .Subscribe(e =>
+                {
+                    var cell = e.Value.Key;
+                    var chestEntity = e.Value.Value;
+                    CellsViewModel[cell].SetChest(chestEntity);
+                }).AddTo(ref _disposables);
+
+            gameState.ContainerChests.Chests
+                .ObserveRemove()
+                .Subscribe(e =>
+                {
+                    var cell = e.Value.Key;
+                    CellsViewModel[cell].ClearCell();
+                }).AddTo(ref _disposables);
+        }
+
+        public void Dispose()
+        {
+            foreach (var (key, cellChestViewModel) in CellsViewModel)
             {
-                var cell = e.Value.Key;
-                var chestEntity = e.Value.Value;
-                CellsViewModel[cell].SetChest(chestEntity);
-            });
-            
-            gameState.ContainerChests.Chests.ObserveRemove().Subscribe(e =>
-            {
-                var cell = e.Value.Key;
-                CellsViewModel[cell].ClearCell();
-            }); 
-            
+                cellChestViewModel?.Dispose();
+            }
+            CellsViewModel.Clear();
+            _disposables.Dispose();
         }
     }
 }
