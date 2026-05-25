@@ -60,8 +60,8 @@ namespace Game.State.Gameplay
         public readonly ReactiveProperty<bool> MapFinished = new(false);
         public ObservableList<ShotData> Shots { get; } = new();
 
-        public ReactiveProperty<Vector2> GateWave { get; set; } = new(Vector2.zero);
-        public ReactiveProperty<Vector2> GateWaveSecond { get; set; } = new(Vector2.zero);
+        public ReadOnlyReactiveProperty<Vector2> GateWave { get; set; } // = new(Vector2.zero);
+        public ReadOnlyReactiveProperty<Vector2> GateWaveSecond { get; set; } // = new(Vector2.zero);
 
         //Необходимо сохранить входные параметры игры для загрузки из сейва
         public GameplayEnterParams EnterParams => Origin.EnterParams;

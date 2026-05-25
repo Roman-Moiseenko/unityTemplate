@@ -161,7 +161,6 @@ namespace Game.GamePlay.View.Towers
 
         public virtual void Dispose()
         {
-            Debug.Log("TowerViewModel Dispose");
             PositionMap?.Dispose();
             Direction?.Dispose();
             NumberModel?.Dispose();

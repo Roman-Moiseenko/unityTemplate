@@ -1,20 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Cysharp.Threading.Tasks;
 using Game.Common;
-using Game.GamePlay.Classes;
-using Game.GamePlay.Fsm;
 using Game.GamePlay.Services;
-using Game.GamePlay.View.Warriors;
 using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Roads;
-using Game.State.Maps.Warriors;
-using Game.State.Root;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using Scripts.Utils;
@@ -24,35 +16,35 @@ namespace Game.GamePlay.View.Mobs
 {
     public class MobViewModel : IDisposable
     {
-        private MobEntity _mobEntity;
+        private readonly MobEntity _mobEntity;
 
-        public ObservableList<IHasHeathViewModel> PullTargets = new();
-        public ReactiveProperty<IHasHeathViewModel> Target = new(null); //Текущая цель
+        public readonly ObservableList<IHasHeathViewModel> PullTargets = new();
+        private readonly ReactiveProperty<IHasHeathViewModel> _target = new(null); //Текущая цель
 
         public int UniqueId => _mobEntity.UniqueId;
         public bool IsFly => _mobEntity.IsFly;
         public string ConfigId => _mobEntity.ConfigId;
-        public ReactiveProperty<bool> IsMoving = new(false);
-        public ReactiveProperty<bool> IsAttack = new(false);
+        public readonly ReactiveProperty<bool> IsMoving = new(false);
+        public readonly ReactiveProperty<bool> IsAttack = new(false);
         public ReactiveProperty<Vector2> Position => _mobEntity.Position;
 
         public Vector2 StartPosition;
         public Vector2Int StartDirection;
 
-        public List<RoadPoint> RoadPoints = new();
+        public readonly List<RoadPoint> RoadPoints;
 
         //public ReactiveProperty<MobState> State; //TODO Возможно удалить или модифицировать до FSM
-        public ReactiveProperty<float> CurrentHealth;
-        public float MaxHealth;
+        public readonly ReactiveProperty<float> CurrentHealth;
+        public readonly float MaxHealth;
 
-        public ReactiveProperty<bool> FinishCurrentAnimation = new(true);
-        public ReactiveProperty<bool> AnimationDelete = new(false);
+        public readonly ReactiveProperty<bool> FinishCurrentAnimation = new(true);
+        public readonly ReactiveProperty<bool> AnimationDelete = new(false);
         public IReadOnlyObservableDictionary<string, MobDebuff> Debuffs => _mobEntity.Debuffs;
         public int Level => _mobEntity.Level;
-        public float Damage => _mobEntity.Damage;
+        private float Damage => _mobEntity.Damage;
 
         public ReactiveProperty<Vector3> PositionTarget => _mobEntity.PositionTarget;
-        public ReactiveProperty<Vector3> PositionTargetForShot = new();
+        public readonly ReactiveProperty<Vector3> PositionTargetForShot = new();
         public ReadOnlyReactiveProperty<bool> IsDead => _mobEntity.IsDead;
         public TypeDefence Defence => _mobEntity.Defence;
         public bool IsWay => _mobEntity.IsWay;
@@ -88,13 +80,13 @@ namespace Game.GamePlay.View.Mobs
 
             if (mobEntity.IsWay)
             {
-                position = waveService.GateWaveViewModel.Position.Value;
-                direction = -1 * waveService.GateWaveViewModel.Direction.Value;
+                position = waveService.GateWaveViewModel.Position.CurrentValue;
+                direction = -1 * waveService.GateWaveViewModel.Direction.CurrentValue;
             }
             else
             {
-                position = waveService.GateWaveSecondViewModel.Position.Value;
-                direction = -1 * waveService.GateWaveSecondViewModel.Direction.Value;
+                position = waveService.GateWaveSecondViewModel.Position.CurrentValue;
+                direction = -1 * waveService.GateWaveSecondViewModel.Direction.CurrentValue;
             }
             mobEntity.SetStartPosition(position, direction);
             
@@ -125,9 +117,9 @@ namespace Game.GamePlay.View.Mobs
                 var targetViewModel = e.Value;
                 var disposable = targetViewModel.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(targetViewModel));
 
-                if (Target.CurrentValue == null)
+                if (_target.CurrentValue == null)
                 {
-                    Target.OnNext(targetViewModel);
+                    _target.OnNext(targetViewModel);
                     IsMoving.OnNext(false);
                     IsAttack.OnNext(true);
                 }
@@ -138,9 +130,9 @@ namespace Game.GamePlay.View.Mobs
             PullTargets.ObserveRemove().Subscribe(e =>
             {
                 var warrior = e.Value;
-                if (Target.CurrentValue != null && warrior.UniqueId == Target.CurrentValue.UniqueId)
+                if (_target.CurrentValue != null && warrior.UniqueId == _target.CurrentValue.UniqueId)
                 {
-                    Target.OnNext(null);
+                    _target.OnNext(null);
                 }
 
                 if (_pullTargetsDisposables.TryGetValue(warrior.UniqueId, out var disposable))
@@ -153,17 +145,17 @@ namespace Game.GamePlay.View.Mobs
                 {
                     IsMoving.Value = true;
                     IsAttack.Value = false;
-                    Target.Value = null;
+                    _target.Value = null;
                 }
             }).AddTo(ref _disposables);
 
-            Target.Skip(1).Subscribe(target =>
+            _target.Skip(1).Subscribe(target =>
             {
                 if (target == null)
                 {
                     foreach (var targetViewModel in PullTargets)
                     {
-                        Target.OnNext(targetViewModel);
+                        _target.OnNext(targetViewModel);
                         IsMoving.Value = false;
                         IsAttack.Value = true;
                         return;
@@ -218,16 +210,16 @@ namespace Game.GamePlay.View.Mobs
         {
 //            Debug.Log(" AttackTarget " + Target.CurrentValue.UniqueId);
             if (_mobEntity.IsDead.CurrentValue) yield break;
-            Target.CurrentValue.DamageReceived(Damage, _mobEntity.Defence);
+            _target.CurrentValue.DamageReceived(Damage, _mobEntity.Defence);
             yield return new WaitForSeconds(_mobEntity.SpeedAttack / AppConstants.MOB_SPEED_ATTACK);
 
-            if (Target.CurrentValue == null) yield break;
-            if (!Target.CurrentValue.IsDead.CurrentValue) _coroutines.StartCoroutine(AttackTarget());
+            if (_target.CurrentValue == null) yield break;
+            if (!_target.CurrentValue.IsDead.CurrentValue) _coroutines.StartCoroutine(AttackTarget());
         }
 
         public void Dispose()
         {
-            Target?.Dispose();
+            //_target?.Dispose();
             IsMoving?.Dispose();
             IsAttack?.Dispose();
             FinishCurrentAnimation?.Dispose();

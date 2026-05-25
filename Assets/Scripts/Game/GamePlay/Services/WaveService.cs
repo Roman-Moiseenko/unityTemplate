@@ -240,17 +240,9 @@ namespace Game.GamePlay.Services
             var direction = exitPoint - lastPoint;
             //_gameplayState.GateWave.OnNext(position);
 
-            GateWaveViewModel = new GateWaveViewModel(_fsmWave)
-            {
-                Position =
-                {
-                    Value = position
-                },
-                Direction =
-                {
-                    Value = direction
-                }
-            };
+            GateWaveViewModel = new GateWaveViewModel(_fsmWave);
+            GateWaveViewModel.SetPosition(position);
+            GateWaveViewModel.SetDirection(direction);
             _gameplayState.GateWave = GateWaveViewModel.Position;
         }
 
@@ -264,17 +256,9 @@ namespace Game.GamePlay.Services
 
             //_gameplayState.GateWaveSecond.OnNext(position);
 
-            GateWaveSecondViewModel = new GateWaveViewModel(_fsmWave)
-            {
-                Position =
-                {
-                    Value = position
-                },
-                Direction =
-                {
-                    Value = direction
-                }
-            };
+            GateWaveSecondViewModel = new GateWaveViewModel(_fsmWave);
+            GateWaveSecondViewModel.SetPosition(position);
+            GateWaveSecondViewModel.SetDirection(direction);
             _gameplayState.GateWaveSecond = GateWaveSecondViewModel.Position;
         }
 
@@ -287,8 +271,8 @@ namespace Game.GamePlay.Services
             var exitPoint = _wayService.GetExitPoint(_gameplayState.Origin.Way);
             Vector2 position = new Vector2((lastPoint.x + exitPoint.x) / 2f, (lastPoint.y + exitPoint.y) / 2f);
             var direction = exitPoint - lastPoint;
-            GateWaveViewModel.Position.Value = position;
-            GateWaveViewModel.Direction.Value = direction;
+            GateWaveViewModel.SetPosition(position);
+            GateWaveViewModel.SetDirection(direction);
         }
 
         /**
@@ -300,8 +284,8 @@ namespace Game.GamePlay.Services
             var exitPoint = _wayService.GetExitPoint(_gameplayState.Origin.WaySecond);
             Vector2 position = (exitPoint + lastPoint) / 2;
             var direction = exitPoint - lastPoint;
-            GateWaveSecondViewModel.Position.Value = position;
-            GateWaveSecondViewModel.Direction.Value = direction;
+            GateWaveSecondViewModel.SetPosition(position);
+            GateWaveSecondViewModel.SetDirection(direction);
         }
 
         private void CreateMobViewModel(MobEntity mobEntity)
@@ -351,15 +335,17 @@ namespace Game.GamePlay.Services
         public void Dispose()
         {
             _isDisposed = true;
-            foreach (var mobViewModel in _allMobsOnWay)
+            foreach (var mobViewModel in _allMobsOnWay.ToArray())
             {
-                mobViewModel.Dispose();
+                mobViewModel?.Dispose();
             }
             _allMobsOnWay.Clear();
             
             TimeOutNewWaveValue?.Dispose();
             FinishWave?.Dispose();
             StartWave?.Dispose();
+            GateWaveViewModel?.Dispose();
+            GateWaveSecondViewModel?.Dispose();
             _disposables.Dispose();
         }
     }
