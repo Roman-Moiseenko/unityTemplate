@@ -23,7 +23,7 @@ namespace Game.MainMenu.View.ScreenPlay
             
             b.CloseRequested.Subscribe(e =>
             {
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(b);
             return b;
         }
@@ -35,7 +35,7 @@ namespace Game.MainMenu.View.ScreenPlay
             
             b.CloseRequested.Subscribe(e =>
             {
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(b);
             return b;
         }
@@ -47,7 +47,7 @@ namespace Game.MainMenu.View.ScreenPlay
             
             b.CloseRequested.Subscribe(e =>
             {
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(b);
             return b;
         }

@@ -27,7 +27,7 @@ using UnityEngine;
 
 namespace Game.MainMenu.Services
 {
-    public class TowerCardPlanService
+    public class TowerCardPlanService : IDisposable
     {
         private readonly IObservableCollection<InventoryItem> _items; //кешируем
         private readonly InventoryRoot _inventoryRoot;
@@ -47,7 +47,7 @@ namespace Game.MainMenu.Services
 
         public IObservableCollection<TowerPlanViewModel> AllTowerPlans =>
             _allTowerPlans; //Интерфейс менять нельзя, возвращаем через динамический массив
-
+        private DisposableBag _disposables = new();
         public TowerCardPlanService(
             InventoryRoot inventoryRoot,
             TowersSettings towersSettings,
@@ -75,8 +75,12 @@ namespace Game.MainMenu.Services
             {
                 if (item is TowerCard towerCard)
                 {
-                    towerCard.EpicLevel.Skip(1).Subscribe(e => UpdateParameterTowerCard(towerCard));
-                    towerCard.Level.Subscribe(e => UpdateParameterTowerCard(towerCard));
+                    towerCard.EpicLevel.Skip(1)
+                        .Subscribe(e => UpdateParameterTowerCard(towerCard))
+                        .AddTo(ref _disposables);
+                    towerCard.Level
+                        .Subscribe(e => UpdateParameterTowerCard(towerCard))
+                        .AddTo(ref _disposables);
                     UpdateParameterTowerCard(towerCard);
                     CreateTowerCardViewModel(towerCard);
                 }
@@ -94,8 +98,12 @@ namespace Game.MainMenu.Services
             {
                 if (e.Value is TowerCard towerCard)
                 {
-                    towerCard.EpicLevel.Subscribe(_ => UpdateParameterTowerCard(towerCard));
-                    towerCard.Level.Subscribe(_ => UpdateParameterTowerCard(towerCard));
+                    towerCard.EpicLevel
+                        .Subscribe(_ => UpdateParameterTowerCard(towerCard))
+                        .AddTo(ref _disposables);
+                    towerCard.Level
+                        .Subscribe(_ => UpdateParameterTowerCard(towerCard))
+                        .AddTo(ref _disposables);
                     CreateTowerCardViewModel(towerCard); //Создаем View Model
                 }
 
@@ -103,13 +111,13 @@ namespace Game.MainMenu.Services
                 {
                     CreateTowerPlanViewModel(towerPlan);
                 }
-            });
+            }).AddTo(ref _disposables);
             //Если у сущности изменился уровень, меняем его и во вью-модели
             _items.ObserveRemove().Subscribe(e =>
             {
                 if (e.Value is TowerCard towerCard) RemoveTowerCardViewModel(towerCard);
                 if (e.Value is TowerPlan towerPlan) RemoveTowerPlanViewModel(towerPlan);
-            });
+            }).AddTo(ref _disposables);
 
             foreach (var deckTowerCardId in _currentDeck.TowerCardIds)
             {
@@ -183,6 +191,7 @@ namespace Game.MainMenu.Services
             {
                 _allTowerCards.Remove(towerCardViewModel);
                 _towerCardsMap.Remove(towerCard.UniqueId);
+                towerCardViewModel.Dispose();
             }
         }
 
@@ -201,6 +210,7 @@ namespace Game.MainMenu.Services
             {
                 _allTowerPlans.Remove(towerPlanViewModel);
                 _towerPlansMap.Remove(towerPlan.UniqueId);
+                towerPlanViewModel.Dispose();
             }
         }
 
@@ -353,6 +363,22 @@ namespace Game.MainMenu.Services
             }
 
             return viewModel;
+        }
+
+        public void Dispose()
+        {
+            foreach (var towerCardViewModel in _allTowerCards)
+            {
+                towerCardViewModel.Dispose();
+            }
+            _allTowerCards.Clear();
+            foreach (var towerPlanViewModel in _allTowerPlans)
+            {
+                towerPlanViewModel.Dispose();
+            }
+            _allTowerPlans.Clear();
+            
+            _disposables.Dispose();
         }
     }
 }

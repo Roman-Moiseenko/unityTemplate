@@ -1,4 +1,5 @@
-﻿using DI;
+﻿using System;
+using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.SkillStates;
 using Game.GamePlay.Services;
@@ -10,7 +11,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.View.Skills
 {
-    public class SkillViewModel
+    public class SkillViewModel : IDisposable
     {
         private readonly SkillEntity _skillEntity;
         public string ConfigId => _skillEntity.ConfigId;
@@ -51,6 +52,13 @@ namespace Game.GamePlay.View.Skills
         {
             TimeOut = Cooldown;
             IsCooldown.OnNext(true);
+        }
+
+        public void Dispose()
+        {
+            Level?.Dispose();
+            IsCooldown?.Dispose();
+            IsActive?.Dispose();
         }
     }
 }

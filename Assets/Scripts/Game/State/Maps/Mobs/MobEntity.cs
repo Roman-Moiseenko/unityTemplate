@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.State.Common;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Random = UnityEngine.Random;
 
 namespace Game.State.Maps.Mobs
 {
-    public class MobEntity
+    public class MobEntity : IDisposable
     {
         private readonly MobEntityData Origin;
         
@@ -37,24 +39,26 @@ namespace Game.State.Maps.Mobs
         public ReadOnlyReactiveProperty<bool> IsDead; // = new(false);
         public readonly ReactiveProperty<Vector3> PositionTarget = new();
         public ObservableDictionary<string, MobDebuff> Debuffs = new();        
-        
+        private DisposableBag _disposables = new();
+
         
         public MobEntity(MobEntityData mobEntityData)
         {
             var h = mobEntityData.IsFly ? 0.55f : 0.1f;
             Origin = mobEntityData;
             
-            
             Position = new ReactiveProperty<Vector2>(new Vector2(0,0));
-            Position.Subscribe(newValue => PositionTarget.Value = new Vector3(newValue.x, 0 , newValue.y));
+            Position
+                .Subscribe(newValue => PositionTarget.Value = new Vector3(newValue.x, 0 , newValue.y))
+                .AddTo(ref _disposables);
             Direction = new ReactiveProperty<Vector2Int>(new Vector2Int(0, 0));
             
             Health = new ReactiveProperty<float>(mobEntityData.Health);
-            Health.Subscribe(newValue => mobEntityData.Health = newValue);
+            Health.Subscribe(newValue => mobEntityData.Health = newValue).AddTo(ref _disposables);
             IsDead = Health.Select(x => x <= 0).ToReadOnlyReactiveProperty();
             
             Armor = new ReactiveProperty<float>(mobEntityData.Armor);
-            Armor.Subscribe(newValue => mobEntityData.Armor = newValue); 
+            Armor.Subscribe(newValue => mobEntityData.Armor = newValue).AddTo(ref _disposables); 
         }
 
         public void SetStartPosition(Vector2 position, Vector2Int direction)
@@ -98,6 +102,17 @@ namespace Game.State.Maps.Mobs
         public Vector2 GetPosition()
         {
             return Position.CurrentValue;
+        }
+
+        public void Dispose()
+        {
+            Health?.Dispose();
+            Armor?.Dispose();
+            Position?.Dispose();
+            Direction?.Dispose();
+            IsDead?.Dispose();
+            PositionTarget?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Game.GamePlay.Services
 
         public int CountRepair;
         public ReactiveProperty<GameplayExitParams> GameOver = new(null);
-        private IDisposable _disposable;
+        private DisposableBag _disposables = new();
 
         public GameplayService(
             Subject<GameplayExitParams> exitSceneRequest,
@@ -50,37 +50,39 @@ namespace Game.GamePlay.Services
             TowersService towersService
         )
         {
-            var d = Disposable.CreateBuilder();
             CountRepair = 0;
             _exitSceneRequest = exitSceneRequest;
             _gameplayState = gameplayState;
             _adService = adService;
- 
+
             _resourceService = resourceService;
             _cmd = cmd;
             _gameState = gameState;
             _mapsSettings = mapsSettings;
             _towersService = towersService;
 
-            gameplayState.MapFinished.Where(x => x).Subscribe(_ => Win()).AddTo(ref d);
-            
+            gameplayState.MapFinished
+                .Where(x => x)
+                .Subscribe(_ => Win())
+                .AddTo(ref _disposables);
+
             //Для бесконечной игры добавляем автоувеличение уровня
-          /*  if (_gameplayState.IsInfinity())
-            {
-                _gameplayState.CurrentWave.Skip(1).Where(v => v == _gameplayState.Waves.Count).Subscribe(v =>
-                {
-                    var command = new CommandWaveGenerate(v + 1);
-                    cmd.Process(command);
-                }).AddTo(ref d);
-            }
-*/
-            _gameplayState.Castle.IsDead.Where(e => e)
+            /*  if (_gameplayState.IsInfinity())
+              {
+                  _gameplayState.CurrentWave.Skip(1).Where(v => v == _gameplayState.Waves.Count).Subscribe(v =>
+                  {
+                      var command = new CommandWaveGenerate(v + 1);
+                      cmd.Process(command);
+                  }).AddTo(ref d);
+              }
+  */
+            _gameplayState.Castle.IsDead
+                .Where(e => e)
                 .Subscribe(newValue =>
                 {
                     if (_gameplayState.Castle.CountResurrection.CurrentValue == 2) Lose();
                 })
-                .AddTo(ref d);
-            _disposable = d.Build();
+                .AddTo(ref _disposables);
         }
 
         public void Win()
@@ -299,7 +301,8 @@ namespace Game.GamePlay.Services
 
         public void Dispose()
         {
-            _disposable.Dispose();
+            _disposables.Dispose();
+            GameOver?.Dispose();
         }
 
         public void RepairCristal()
@@ -315,7 +318,7 @@ namespace Game.GamePlay.Services
             /*
             _fsmGameplay.Fsm.SetState<FsmStateGamePause>();
             var ad = _adService.ShowAdGoogle();
-            
+
 
             ad.CloseShow.Subscribe(v =>
             {
@@ -340,15 +343,16 @@ namespace Game.GamePlay.Services
             foreach (var entity in _gameplayState.Mobs.ToArray())
             {
                 //Если моб на дороге, наносим урон
-              //  if (entity.IsWentOut.CurrentValue) 
-                    entity.SetDamage(_gameplayState.Castle.FullHealth);    
+                //  if (entity.IsWentOut.CurrentValue) 
+                entity.SetDamage(_gameplayState.Castle.FullHealth);
             }
 
             //Очищаем атаку на всех башнях
             foreach (var towerViewModel in _towersService.AllTowers)
             {
-             //   towerViewModel.ClearTargets();
+                //   towerViewModel.ClearTargets();
             }
+
             _gameplayState.Castle.IsBusy.Value = false;
         }
     }

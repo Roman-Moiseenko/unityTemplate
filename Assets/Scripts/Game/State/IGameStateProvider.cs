@@ -1,4 +1,5 @@
-﻿using Game.State.Gameplay;
+﻿using System;
+using Game.State.Gameplay;
 using Game.State.Root;
 using R3;
 
@@ -8,32 +9,34 @@ namespace Game.State
      * Интерфейс репозитория всех данных в игре
      * Сохранение, Загрузка и Сброс до начальных
      */
-    public interface IGameStateProvider
+    public interface IGameStateProvider : IDisposable
     {
-     public DefaultGameState DefaultGameState { get; }
-        
+        public DefaultGameState DefaultGameState { get; }
+
         /**
          * Данные об игроке, его достижения за всю игру
          */
         public GameStateProxy GameState { get; } //Данные игрока
 
         public Observable<LoadingState> CheckWebAvailable();
-        
+
         public Observable<LoadingState> LoadGameState();
+
         //public Observable<GameStateProxy> LoadGameState();
         public Observable<bool> SaveGameState();
         public Observable<bool> ResetGameState();
-        
+
         /**
          * Персональные настройки игры, Settings
          */
         public GameSettingsStateProxy SettingsState { get; } //Настройки игры
 
         public Observable<LoadingState> LoadSettingsState();
+
         //public Observable<GameSettingsStateProxy> LoadSettingsState();
         public Observable<bool> SaveSettingsState();
         public Observable<bool> ResetSettingsState();
-        
+
         /**
          * Данные о сессии геймплея, если был выход из нее по причине прерывание сессии
          */
@@ -42,5 +45,6 @@ namespace Game.State
         public Observable<GameplayStateProxy> LoadGameplayState();
         public Observable<bool> SaveGameplayState();
         public Observable<bool> ResetGameplayState();
+        public void DisposeGameplay();
     }
 }

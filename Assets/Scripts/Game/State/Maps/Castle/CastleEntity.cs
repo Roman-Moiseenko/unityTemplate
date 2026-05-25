@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Game.GamePlay;
 using Game.State.Maps.Mobs;
 using ObservableCollections;
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace Game.State.Maps.Castle
 {
-    public class CastleEntity : IEntityHasHealth
+    public class CastleEntity : IEntityHasHealth, IDisposable
     {
         public CastleEntityData Origin;
         public int UniqueId => Origin.UniqueId;
@@ -116,6 +117,15 @@ namespace Game.State.Maps.Castle
             {
                 RemoveTarget(mobEntity);
             }
+        }
+
+        public void Dispose()
+        {
+            CurrenHealth?.Dispose();
+            IsDead?.Dispose();
+            IsBusy?.Dispose();
+            IsReduceHealth?.Dispose();
+            CountResurrection?.Dispose();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
@@ -24,7 +25,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
-    public class WaveService
+    public class WaveService : IDisposable
     {
         private const float SPEED_GENERATE_MOBS = 0.5f; //Скорость генерации новых мобов
         private const float TIME_END_WAVE = 0.8f; //Задержка между волнами
@@ -47,7 +48,9 @@ namespace Game.GamePlay.Services
         public GateWaveViewModel GateWaveSecondViewModel; //TODO Сделать, когда будет 2 пути
         private Coroutine _coroutineTimerNewWave;
         private readonly FsmWave _fsmWave;
-
+        private DisposableBag _disposables = new();
+        private bool _isDisposed = false;
+        
         public WaveService(
             DIContainer container,
             GameplayStateProxy gameplayState,
@@ -71,7 +74,7 @@ namespace Game.GamePlay.Services
                         _cmd.Process(command);
                         coroutines.StartCoroutine(StartNewWave());
                     }
-                );
+                ).AddTo(ref _disposables);
 
             //Подписка на всех мобов из Уровня
             gameplayState.Mobs.ObserveAdd().Subscribe(e =>
@@ -83,7 +86,7 @@ namespace Game.GamePlay.Services
 
                 mobEntity.Debuffs.ObserveRemove().Subscribe(d =>
                     coroutines.StopCoroutine(MobTimerDebuff(d.Value.Key, d.Value.Value, mobEntity)));
-            });
+            }).AddTo(ref _disposables);
 
             gameplayState.Mobs.ObserveRemove().Subscribe(e =>
             {
@@ -103,17 +106,17 @@ namespace Game.GamePlay.Services
                 {
                     _fsmWave.Fsm.SetState<FsmStateWaveTimer>();
                 }
-            });
+            }).AddTo(ref _disposables);
 
 
             //Создаем модель ворот
             CreateGateWaveViewModel();
-            roadsService.Way.ObserveAdd().Subscribe(_ => MoveGateWaveViewModel());
+            roadsService.Way.ObserveAdd().Subscribe(_ => MoveGateWaveViewModel()).AddTo(ref _disposables);
             //Если 2 пути
             if (_gameplayState.HasWaySecond.Value)
             {
                 CreateGateWaveSecondViewModel();
-                roadsService.WaySecond.ObserveAdd().Subscribe(_ => MoveGateWaveSecondViewModel());
+                roadsService.WaySecond.ObserveAdd().Subscribe(_ => MoveGateWaveSecondViewModel()).AddTo(ref _disposables);
             }
 
             //Обрабатываем текущее состояние волны
@@ -135,7 +138,7 @@ namespace Game.GamePlay.Services
                     TimeOutNewWaveValue.Value = 0;
                     _coroutineTimerNewWave = coroutines.StartCoroutine(TimerNewWave());
                 }
-            });
+            }).AddTo(ref _disposables);
         }
 
         public void Start()
@@ -155,6 +158,8 @@ namespace Game.GamePlay.Services
 
         private IEnumerator StartNewWave()
         {
+            if (_isDisposed) yield break;
+            
             yield return new WaitUntil(() => _fsmWave.IsBegin()); //Ждем когда разрешиться запуск волны
             StartWave.OnNext(true);
             yield return new WaitForSeconds(0.8f); //Пауза
@@ -162,59 +167,63 @@ namespace Game.GamePlay.Services
             yield return GenerateMob(); //Выводим мобов на дорогу
             yield return new WaitForSeconds(0.5f);
 
-            if (_gameplayState.CountWaves != _gameplayState.CurrentWave.Value) // && !_gameplayState.IsInfinity()
+            if (!_isDisposed && _gameplayState.CountWaves != _gameplayState.CurrentWave.Value) // && !_gameplayState.IsInfinity()
             {
                 _fsmWave.Fsm.SetState<FsmStateWaveWait>();
-                _gameplayState.CurrentWave.Value++;
+                    _gameplayState.CurrentWave.Value++;
             }
         }
 
         private IEnumerator GenerateMob()
         {
+            if (_isDisposed) yield break;
+            
             while (_gameplayState.BufferMobs.Count > 0 || _gameplayState.SecondBufferMobs.Count > 0)
             {
                 if (_gameplayState.BufferMobs.Count > 0)
                 {
                     var mobEntity = _gameplayState.BufferMobs[0];
-                    _gameplayState.Mobs.Add(mobEntity);
+                    if (!_isDisposed) _gameplayState.Mobs.Add(mobEntity);
                     _gameplayState.BufferMobs.Remove(mobEntity);
                 }
                 if (_gameplayState.SecondBufferMobs.Count > 0)
                 {
                     var mobEntitySecond = _gameplayState.SecondBufferMobs[0];
-                    _gameplayState.Mobs.Add(mobEntitySecond);
+                    if (!_isDisposed) _gameplayState.Mobs.Add(mobEntitySecond);
                     _gameplayState.SecondBufferMobs.Remove(mobEntitySecond);
                 }
                 yield return new WaitForSeconds(SPEED_GENERATE_MOBS);
 
             }
-            _fsmWave.Fsm.SetState<FsmStateWaveEnd>(); //Все мобы вышли
+            if (!_isDisposed) _fsmWave.Fsm.SetState<FsmStateWaveEnd>(); //Все мобы вышли
         }
 
         public IEnumerator MobTimerDebuff(string configId, MobDebuff debuff, MobEntity mobEntity)
         {
             yield return new WaitForSeconds(debuff.Time);
-            mobEntity.RemoveDebuff(configId);
+            if (!_isDisposed && mobEntity != null) mobEntity.RemoveDebuff(configId);
         }
 
         private IEnumerator TimerNewWave()
         {
             for (var i = 0; i <= AppConstants.TIME_WAVE_NEW; i++) //Ускоряем при новой скорости
             {
-                if (!_fsmWave.IsTimer()) yield break; //Если во время цикла перешли в др.состояние
+                if (_isDisposed || !_fsmWave.IsTimer()) yield break; //Если во время цикла перешли в др.состояние
                 TimeOutNewWaveValue.Value = Convert.ToSingle(i) / AppConstants.TIME_WAVE_NEW;
                 yield return new WaitForSeconds(AppConstants.TIME_PAUSE_WAVE_NEW);
             }
 
-            _fsmWave.Fsm.SetState<FsmStateWaveBegin>();
+            if (!_isDisposed) _fsmWave.Fsm.SetState<FsmStateWaveBegin>();
         }
 
         private IEnumerator RemoveMobViewModel(int mobId)
         {
+            if (_isDisposed) yield break;
             var mobViewModel = _allMobsOnWay.FirstOrDefault(e => e.UniqueId == mobId);
             if (mobViewModel == null) yield break;
             mobViewModel.StartAnimationDelete(); //Запускаем процесс удаления модели
             yield return mobViewModel.WaitFinishAnimation(); //Ждем удаления модели
+            mobViewModel.Dispose();
             _allMobsOnWay.Remove(mobViewModel);
         }
 
@@ -337,6 +346,21 @@ namespace Game.GamePlay.Services
             roads.Add(new RoadPoint(Vector2.zero, Vector2Int.left));
 
             return roads;
+        }
+
+        public void Dispose()
+        {
+            _isDisposed = true;
+            foreach (var mobViewModel in _allMobsOnWay)
+            {
+                mobViewModel.Dispose();
+            }
+            _allMobsOnWay.Clear();
+            
+            TimeOutNewWaveValue?.Dispose();
+            FinishWave?.Dispose();
+            StartWave?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

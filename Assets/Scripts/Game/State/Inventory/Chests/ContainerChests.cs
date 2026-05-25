@@ -1,4 +1,5 @@
 ﻿using System;
+using Cysharp.Threading.Tasks;
 using Game.GamePlay.Classes;
 using ObservableCollections;
 using R3;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Game.State.Inventory.Chests
 {
-    public class ContainerChests
+    public class ContainerChests : IDisposable
     {
         public ContainerChestsData Origin;
         public ObservableDictionary<int, Chest> Chests;
@@ -16,6 +17,8 @@ namespace Game.State.Inventory.Chests
         public ReactiveProperty<int> CellOpening;
         
         public Subject<Unit> UpdateData = new();
+        private DisposableBag _disposables = new();
+
         public ContainerChests(ContainerChestsData chestsData)
         {
             Origin = chestsData;
@@ -24,14 +27,14 @@ namespace Game.State.Inventory.Chests
             {
                 chestsData.StartOpening = newValue;
                 UpdateData.OnNext(Unit.Default);
-            });
+            }).AddTo(ref _disposables);
             //Debug.Log("chestsData.CellOpening = " + chestsData.CellOpening);
             CellOpening = new ReactiveProperty<int>(chestsData.CellOpening);
             CellOpening.Subscribe(newValue =>
             {
                 chestsData.CellOpening = newValue;
                 UpdateData.OnNext(Unit.Default);
-            });
+            }).AddTo(ref _disposables);
             
             Chests = new ObservableDictionary<int, Chest>();
             foreach (var (cell, chestData) in chestsData.Chests)
@@ -45,7 +48,7 @@ namespace Game.State.Inventory.Chests
                 var chest = e.Value.Value;
                 chestsData.Chests.Add(cell, chest.Origin);
                 UpdateData.OnNext(Unit.Default);
-            });
+            }).AddTo(ref _disposables);
             
             Chests
                 .ObserveRemove()
@@ -53,7 +56,7 @@ namespace Game.State.Inventory.Chests
                 {
                     chestsData.Chests.Remove(e.Value.Key);
                     UpdateData.OnNext(Unit.Default);
-                });
+                }).AddTo(ref _disposables);
         }
 
         public bool IsFreeCell()
@@ -66,6 +69,13 @@ namespace Game.State.Inventory.Chests
         {
             return CellOpening.CurrentValue == 0 ? null : Chests[CellOpening.CurrentValue];
         }
-        
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+            StartOpening?.Dispose();
+            CellOpening?.Dispose();
+            UpdateData?.Dispose();
+        }
     }
 }

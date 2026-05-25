@@ -52,12 +52,19 @@ namespace Game.GamePlay.Root
             //Регистрируем машину состояния
             var fsmGameplay = new FsmGameplay(container);
             container.RegisterInstance(fsmGameplay);
+            container.RegisterDisposableOnSceneExit(fsmGameplay);
+            
             var fsmWave = new FsmWave(container);
             container.RegisterInstance(fsmWave);
+            container.RegisterDisposableOnSceneExit(fsmWave);
+            
             var fsmTower = new FsmTower(container);
             container.RegisterInstance(fsmTower);
+            container.RegisterDisposableOnSceneExit(fsmTower);
+            
             var fsmSkill = new FsmSkill(container);
             container.RegisterInstance(fsmSkill);
+            container.RegisterDisposableOnSceneExit(fsmSkill);
 
             //Инициализируем данные из настроек карты, до создания Сервисов
             gameplayState.MapId.OnNext(gameplayEnterParams.MapId);
@@ -152,19 +159,23 @@ namespace Game.GamePlay.Root
                 cmd);
             //Регистрируем сервис по Дорогам
             container.RegisterInstance(roadsService);
-
+            container.RegisterDisposableOnSceneExit(roadsService);
+            
             //Сервис по земле
-            container.RegisterFactory(_ => new GroundsService(
-                    gameplayState.Grounds,
-                    defaultGroundConfigId,
-                    cmd,
-                    gameplayState
-                )
-            ).AsSingle();
-
+            var groundsService = new GroundsService(
+                gameplayState.Grounds,
+                defaultGroundConfigId,
+                cmd,
+                gameplayState
+            );
+            container.RegisterInstance(groundsService);
+            container.RegisterDisposableOnSceneExit(groundsService);
+            
             //Сервис воинов (нужен для башен и навыков)
             var warriorService = new WarriorService(gameplayState, cmd);
             container.RegisterInstance(warriorService);
+            container.RegisterDisposableOnSceneExit(warriorService);
+            
             //Сервис башен
             var towersService = new TowersService(
                 gameplayState,
@@ -172,8 +183,8 @@ namespace Game.GamePlay.Root
                 gameplayEnterParams,
                 container
             );
-
             container.RegisterInstance(towersService);
+            container.RegisterDisposableOnSceneExit(towersService);
             
             cmd.RegisterHandler(new CommandCreateWarriorTowerHandler(gameplayState, towersService));
             cmd.RegisterHandler(new CommandRemoveWarriorTowerHandler(gameplayState));
@@ -185,7 +196,8 @@ namespace Game.GamePlay.Root
                 container
                 );
             container.RegisterInstance(skillsService);
-
+            container.RegisterDisposableOnSceneExit(skillsService);
+            
             var frameSkillService = new FrameSkillService(
                 gameplayState, 
                 placementService,
@@ -196,28 +208,32 @@ namespace Game.GamePlay.Root
                 container
                 );
             container.RegisterInstance(frameSkillService);
-            
+            container.RegisterDisposableOnSceneExit(frameSkillService);
             //TODO Команды для скилла ??
             
             var frameService = new FrameService(gameplayState, placementService, towersService, roadsService,
                 gameSettings.TowersSettings, qrc, container);
             
             container.RegisterInstance(frameService);
+            container.RegisterDisposableOnSceneExit(frameService);
             var framePlacementService =
                 new FramePlacementService(gameplayState, placementService, fsmTower, towersService);
             container.RegisterInstance(framePlacementService);
+            container.RegisterDisposableOnSceneExit(framePlacementService);
             
             container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();
 
 
-            container.RegisterFactory(_ => new CastleService(container,
-                gameplayState.Castle, gameplayState, gameplayEnterParams)).AsSingle();
-
+            var castleService = new CastleService(container,
+                gameplayState.Castle, gameplayState, gameplayEnterParams);
+            container.RegisterInstance(castleService);
+            container.RegisterDisposableOnSceneExit(castleService);
 
             //Сервис наград
             var rewardService = new RewardProgressService(gameplayState, container, gameSettings, gameplayEnterParams);
             container.RegisterInstance(rewardService);
-
+            container.RegisterDisposableOnSceneExit(rewardService);
+            
             var gameplayService = new GameplayService(
                 container.Resolve<Subject<GameplayExitParams>>(),
                 gameplayState,
@@ -230,9 +246,10 @@ namespace Game.GamePlay.Root
             );
             //Сервис игры, следит, проиграли мы или нет, и создает выходные параметры
             container.RegisterInstance(gameplayService);
-            
-            container.RegisterFactory(_ => new DamageService(gameplayState, settingsState)).AsSingle();
-
+            container.RegisterDisposableOnSceneExit(gameplayService);
+            var damageService = new DamageService(gameplayState, settingsState);
+            container.RegisterInstance(damageService);
+            container.RegisterDisposableOnSceneExit(damageService);
             //Загружаем уровень из настроек, если gameplayState пуст.
             if (!gameplayState.Towers.Any())
             {
@@ -270,6 +287,7 @@ namespace Game.GamePlay.Root
             //В последнюю очередь создаем сервис волн мобов
             var waveService = new WaveService(container, gameplayState, cmd);
             container.RegisterInstance(waveService);
+            container.RegisterDisposableOnSceneExit(waveService);
             
 /*
             var availableSkills = skillsService.GetAvailableTowers();

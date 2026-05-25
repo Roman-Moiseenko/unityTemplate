@@ -1,4 +1,5 @@
-﻿using DI;
+﻿using System;
+using DI;
 using Game.GamePlay.Fsm.WarriorStates;
 using Game.GamePlay.View.Mobs;
 using Game.State.Maps.Roads;
@@ -8,9 +9,10 @@ using UnityEngine;
 
 namespace Game.GamePlay.Fsm
 {
-    public class FsmWarrior
+    public class FsmWarrior : IDisposable
     {
         public FsmProxy Fsm;
+        private DisposableBag _disposables = new();
 
         public bool IsMoving;
         public FsmWarrior()
@@ -37,7 +39,7 @@ namespace Game.GamePlay.Fsm
                 {
                     IsMoving = false;
                 }
-            });
+            }).AddTo(ref _disposables);
         }
 
 
@@ -86,6 +88,12 @@ namespace Game.GamePlay.Fsm
         public bool IsAttack()
         {
             return Fsm.StateCurrent.CurrentValue.GetType() == typeof(FsmWarriorAttack);
+        }
+
+        public void Dispose()
+        {
+            Fsm?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using DI;
 using Game.GamePlay.Queries.TowerQueries;
 using Game.GamePlay.View.Frames;
@@ -18,7 +20,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
-    public class FrameService
+    public class FrameService : IDisposable
     {
         public IObservableCollection<FrameBlockViewModel> ViewModels => _viewModels;    
         
@@ -33,6 +35,7 @@ namespace Game.GamePlay.Services
         private Dictionary<string, bool> _towerParametersMap = new();
         private Dictionary<int, Vector2Int> matrixRoads = new();
         private readonly DIContainer _container;
+        private DisposableBag _disposables = new();
 
         public FrameService(
             GameplayStateProxy gameplayState,
@@ -160,7 +163,7 @@ namespace Game.GamePlay.Services
                     _viewModel?.Dispose();
                     frameIsRemoveFull.Value = true;
                 }
-            );
+            ).AddTo(ref _disposables);
             //Подписка на их завершение, затем:
             return frameIsRemoveFull;
         }
@@ -361,6 +364,17 @@ namespace Game.GamePlay.Services
         {
             return _viewModel.EntityViewModels.Select(item => item.GetPosition() + _viewModel.Position.CurrentValue)
                 .ToList();
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+            _viewModel?.Dispose();
+            foreach (var viewModel in _viewModels)
+            {
+                viewModel?.Dispose();
+            }
+            _viewModels.Clear();
         }
     }
 }

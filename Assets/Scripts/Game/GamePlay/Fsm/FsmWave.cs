@@ -1,10 +1,11 @@
-﻿using DI;
+﻿using System;
+using DI;
 using Game.GamePlay.Fsm.WaveStates;
 using MVVM.FSM;
 
 namespace Game.GamePlay.Fsm
 {
-    public class FsmWave
+    public class FsmWave : IDisposable
     {
         public FsmProxy Fsm;
         
@@ -47,6 +48,11 @@ namespace Game.GamePlay.Fsm
         public bool IsTimer()
         {
             return Fsm.StateCurrent.Value.GetType() == typeof(FsmStateWaveTimer);
+        }
+
+        public void Dispose()
+        {
+            Fsm?.Dispose();
         }
     }
 }

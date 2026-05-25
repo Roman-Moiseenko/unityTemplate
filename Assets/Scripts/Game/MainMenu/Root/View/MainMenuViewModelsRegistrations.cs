@@ -19,13 +19,21 @@ namespace Game.MainMenu.Root.View
     {
         public static void Register(DIContainer container)
         {
-            
-            container.RegisterFactory(c => new MainMenuUIManager(container)).AsSingle();
             container.RegisterFactory(c => new UIMainMenuRootViewModel(container)).AsSingle();
+            
+            var mainMenuUIManager = new MainMenuUIManager(container);
+            container.RegisterInstance(mainMenuUIManager);
+            container.RegisterDisposableOnSceneExit(mainMenuUIManager);
+            
+            
+            
             var inventoryUIManager = new InventoryUIManager(container);
             container.RegisterInstance(inventoryUIManager);
+            container.RegisterDisposableOnSceneExit(inventoryUIManager);
+            
             var playUIManager = new PlayUIManager(container);
             container.RegisterInstance(playUIManager);
+            container.RegisterDisposableOnSceneExit(playUIManager);
             
           //  container.RegisterFactory(c => new UIMainMenuRootViewModel(container.Resolve<SomeMainMenuService>())).AsSingle();
         }

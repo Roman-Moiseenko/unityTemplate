@@ -35,7 +35,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         private RewardsProgress _rewards;
         private readonly GameplayStateProxy _gameplayState;
-        private readonly IDisposable _disposable;
+        
         public ObservableDictionary<int, RewardCardData> RewardsCards = new();
         public List<TowerSettings> AllTowerConfig { get; private set; }
         public readonly ObservableDictionary<string, int> Levels;
@@ -43,7 +43,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
         
         public PanelBuildViewModel(DIContainer container) : base(container)
         {
-            var d = Disposable.CreateBuilder();
+            
             var gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
             var towerService  = container.Resolve<TowersService>();
             var fsmGameplay = container.Resolve<FsmGameplay>();
@@ -68,8 +68,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
                     {
                         LoadRewardsToCards();                        
                     }
-                }).AddTo(ref d);
-            _disposable = d.Build();
+                }).AddTo(ref _disposables);
         }
 
         private void LoadRewardsToCards()
@@ -106,11 +105,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
             
             UpdateCards.Value++;
             LoadRewardsToCards(); //Перезогружаем карточки
-        }
-
-        public override void Dispose()
-        {
-            _disposable.Dispose();
         }
     }
 }

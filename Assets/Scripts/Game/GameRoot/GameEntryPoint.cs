@@ -211,6 +211,7 @@ namespace Scripts.Game.GameRoot
         {
             _uiRoot.ShowLoadingScreen();
             _cachedSceneContainer?.Dispose();
+            _cachedSceneContainer = null;
             yield return LoadScene(Scenes.BOOT);
             
             yield return LoadScene(Scenes.GAMEPLAY);
@@ -234,6 +235,8 @@ namespace Scripts.Game.GameRoot
             {
                 {
                     //Debug.Log("enterParams = " + JsonConvert.SerializeObject(gameplayExitParams, Formatting.Indented));
+                    
+                    Debug.Log("Выход со сцены");
                     _coroutines.StartCoroutine(LoadAndStartMainMenu(gameplayExitParams.MainMenuEnterParams));
                     if (gameplayExitParams.SaveGameplay == false)
                         _rootContainer.Resolve<IGameStateProvider>()
@@ -248,6 +251,7 @@ namespace Scripts.Game.GameRoot
         {
             _uiRoot.ShowLoadingScreen();
             _cachedSceneContainer?.Dispose();
+            _cachedSceneContainer = null;
             yield return LoadScene(Scenes.BOOT);
             yield return LoadScene(Scenes.MAINMENU);
 

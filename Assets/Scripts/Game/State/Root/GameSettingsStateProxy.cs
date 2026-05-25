@@ -3,7 +3,7 @@ using R3;
 
 namespace Game.State.Root
 {
-    public class GameSettingsStateProxy
+    public class GameSettingsStateProxy : IDisposable
     {
         public readonly GameSettingsState Origin;
         public ReactiveProperty<string> UserId;
@@ -16,6 +16,8 @@ namespace Game.State.Root
         
         public ReactiveProperty<int> MusicVolume { get; }
         public ReactiveProperty<int> SFXVolume { get; }
+
+        private DisposableBag _disposables = new();
 
         public GameSettingsStateProxy(GameSettingsState gameSettingsState)
         {
@@ -35,45 +37,56 @@ namespace Game.State.Root
             {
                 gameSettingsState.Vibration = value;
                 UpdateDateVersion();
-            });
+            }).AddTo(ref _disposables);
             Damage.Skip(1).Subscribe(value =>
             {
                 gameSettingsState.Damage = value;
                 UpdateDateVersion();
-            });
+            }).AddTo(ref _disposables);
             Sound.Skip(1).Subscribe(value =>
             {
                 gameSettingsState.Sound = value;
                 UpdateDateVersion();
-            });
+            }).AddTo(ref _disposables);
             Music.Skip(1).Subscribe(value =>
             {
                 gameSettingsState.Music = value;
                 UpdateDateVersion();
-            });
-            
+            }).AddTo(ref _disposables);
             MusicVolume.Skip(1).Subscribe(value =>
             {
                 gameSettingsState.MusicVolume = value;
                 UpdateDateVersion();
-            });
+            }).AddTo(ref _disposables);
             SFXVolume.Skip(1).Subscribe(value =>
             {
                 gameSettingsState.SFXVolume = value;
                 UpdateDateVersion();
-            });
-
+            }).AddTo(ref _disposables);
             UserId.Subscribe(value =>
             {
                 gameSettingsState.UserId = value;
                 UpdateDateVersion();
-            });
-            UserToken.Subscribe(value => gameSettingsState.UserToken = value);
+            }).AddTo(ref _disposables);
+            UserToken.Subscribe(value => gameSettingsState.UserToken = value).AddTo(ref _disposables);
         }
 
         private void UpdateDateVersion()
         {
             Origin.DateVersion = DateTime.Now;
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+            UserId?.Dispose();
+            UserToken?.Dispose();
+            Vibration?.Dispose();
+            Damage?.Dispose();
+            Sound?.Dispose();
+            Music?.Dispose();
+            MusicVolume?.Dispose();
+            SFXVolume?.Dispose();
         }
     }
 }

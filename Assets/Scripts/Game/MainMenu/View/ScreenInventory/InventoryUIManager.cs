@@ -1,4 +1,5 @@
-﻿using DI;
+﻿using System;
+using DI;
 using Game.MainMenu.View.ScreenInventory.PopupBlacksmith;
 using Game.MainMenu.View.ScreenInventory.PopupSkillCard;
 using Game.MainMenu.View.ScreenInventory.PopupSkillPlan;
@@ -24,14 +25,22 @@ namespace Game.MainMenu.View.ScreenInventory
             //Карточки башен
             var subjectTowerCard = Container.Resolve<Subject<TowerCardViewModel>>();
             var subjectTowerPlan = Container.Resolve<Subject<TowerPlanViewModel>>();
-            subjectTowerCard.Subscribe(e => OpenPopupTowerCard(e));
-            subjectTowerPlan.Subscribe(e => OpenPopupTowerPlan(e));
+            subjectTowerCard
+                .Subscribe(e => OpenPopupTowerCard(e))
+                .AddTo(ref _disposables);
+            subjectTowerPlan
+                .Subscribe(e => OpenPopupTowerPlan(e))
+                .AddTo(ref _disposables);
             
             //Карточки навыков
             var subjectSkillCard = Container.Resolve<Subject<SkillCardViewModel>>();
             var subjectSkillPlan = Container.Resolve<Subject<SkillPlanViewModel>>();
-            subjectSkillCard.Subscribe(e => OpenPopupSkillCard(e));
-            subjectSkillPlan.Subscribe(e => OpenPopupSkillPlan(e));
+            subjectSkillCard
+                .Subscribe(e => OpenPopupSkillCard(e))
+                .AddTo(ref _disposables);
+            subjectSkillPlan
+                .Subscribe(e => OpenPopupSkillPlan(e))
+                .AddTo(ref _disposables);
             
             
             //TODO Добавить Героя, Инвентарь
@@ -46,7 +55,7 @@ namespace Game.MainMenu.View.ScreenInventory
             b.CloseRequested.Subscribe(e =>
             {
                 //_fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(b);
             return b;
         }
@@ -58,7 +67,7 @@ namespace Game.MainMenu.View.ScreenInventory
             b.CloseRequested.Subscribe(e =>
             {
                 //_fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(b);
             return b;
         }
@@ -70,7 +79,7 @@ namespace Game.MainMenu.View.ScreenInventory
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             
             b.CloseRequested.Subscribe(e =>
-            { });
+            { }).AddTo(ref _disposables);
             rootUI.OpenPopup(b);
             return b;
         }
@@ -80,7 +89,7 @@ namespace Game.MainMenu.View.ScreenInventory
             var rootUI = Container.Resolve<UIMainMenuRootViewModel>();
             
             b.CloseRequested.Subscribe(e =>
-            { });
+            { }).AddTo(ref _disposables);
             rootUI.OpenPopup(b);
             return b;
         }
@@ -95,7 +104,7 @@ namespace Game.MainMenu.View.ScreenInventory
             
             b.CloseRequested.Subscribe(e =>
             {
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(b);
             return b;
             

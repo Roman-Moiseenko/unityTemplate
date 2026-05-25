@@ -1,11 +1,12 @@
-﻿using DI;
+﻿using System;
+using DI;
 using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.View.Towers;
 using MVVM.FSM;
 
 namespace Game.GamePlay.Fsm
 {
-    public class FsmTower
+    public class FsmTower : IDisposable
     {
         public FsmProxy Fsm;
 
@@ -45,6 +46,11 @@ namespace Game.GamePlay.Fsm
         public bool IsPlacement()
         {
             return Fsm.StateCurrent.Value.GetType() == typeof(FsmTowerPlacement);
+        }
+
+        public void Dispose()
+        {
+            Fsm?.Dispose();
         }
     }
 }

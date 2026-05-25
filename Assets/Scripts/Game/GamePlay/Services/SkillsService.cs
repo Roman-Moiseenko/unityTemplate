@@ -7,7 +7,6 @@ using Game.GamePlay.Fsm.SkillStates;
 using Game.GamePlay.Root;
 using Game.GamePlay.View.Skills;
 using Game.Settings.Gameplay.Entities.Skill;
-using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Inventory.SkillCards;
@@ -21,7 +20,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
-    public class SkillsService
+    public class SkillsService : IDisposable
     {
         public readonly Dictionary<string,
             Dictionary<SkillParameterType, SkillParameterData>> SkillParametersMap = new();
@@ -49,6 +48,7 @@ namespace Game.GamePlay.Services
 
         public Dictionary<string, Dictionary<SkillParameterType, float>> SkillBoosters = new();
         private readonly FsmSkill _fsmSkill;
+        private DisposableBag _disposables = new();
 
         public SkillsService(
             GameplayStateProxy gameplayState,
@@ -123,7 +123,7 @@ namespace Game.GamePlay.Services
                     _allSkills.Add(SkillOne);
                 }
 
-            });
+            }).AddTo(ref _disposables);
             Levels.ObserveChanged().Subscribe(x =>
             {
                 var configId = x.NewItem.Key;
@@ -135,7 +135,7 @@ namespace Game.GamePlay.Services
                     if (skillEntity.ConfigId != configId) continue;
                     skillEntity.Level.OnNext(newLevel);
                 }
-            });
+            }).AddTo(ref _disposables);
             //Кешируем бустеры для башен по типам Defence
             CalculateBoosters();
             
@@ -185,7 +185,7 @@ namespace Game.GamePlay.Services
                     }
                 }
                 
-            });         
+            }).AddTo(ref _disposables);         
              
         }
 
@@ -299,6 +299,13 @@ namespace Game.GamePlay.Services
               
                 SkillBoosters.Add(skillCard.ConfigId, boosters);
             }
+        }
+
+        public void Dispose()
+        {
+            SkillOne?.Dispose();
+            SkillTwo?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

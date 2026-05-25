@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using DI;
 using Game.Common;
 using Game.GamePlay.Fsm;
@@ -7,7 +8,6 @@ using Game.GamePlay.View.Castle;
 using Game.State.Gameplay;
 using Game.State.Maps.Castle;
 using Game.State.Research;
-using Game.State.Root;
 using MVVM.CMD;
 using ObservableCollections;
 using R3;
@@ -16,17 +16,20 @@ using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
-    public class CastleService
+    public class CastleService : IDisposable
     {
-        public ObservableList<float> RepairBuffer = new();
-        public ReactiveProperty<float> CurrenHealth;
+        public readonly ObservableList<float> RepairBuffer = new();
+        private readonly ReactiveProperty<float> CurrenHealth;
         public CastleViewModel CastleViewModel { get; }
 
         private readonly ICommandProcessor _cmd;
         private readonly CastleEntity _castleEntity;
         private readonly Coroutines _coroutines;
-        private readonly FsmGameplay _fsmGameplay;
+
         private readonly GameplayBoosters _gameplayBoosters;
+        private DisposableBag _disposables = new();
+        private Coroutine _repairCoroutine; // Ссылка на активную корутину восстановления
+        private bool _isDisposed; // Флаг, что сервис уже уничтожен
 
         /**
            * При загрузке создаем все view-модели из реактивного списка всех строений
@@ -41,7 +44,6 @@ namespace Game.GamePlay.Services
         {
             _coroutines = GameObject.Find(AppConstants.COROUTINES).GetComponent<Coroutines>();
             _castleEntity = gameplayState.Castle;
-            _fsmGameplay = container.Resolve<FsmGameplay>();
             CurrenHealth = castleEntity.CurrenHealth;
             CastleViewModel = new CastleViewModel(castleEntity, gameplayState);
             //TODO Увеличить урон, скорость и HP от CastleResearch
@@ -51,19 +53,18 @@ namespace Game.GamePlay.Services
             {
                 if (h < _castleEntity.FullHealth && !_castleEntity.IsReduceHealth.Value)
                 {
-                    //Первый запуск корутина восстановления 
+                    //Первый запуск корутина восстановления
                     _castleEntity.IsReduceHealth.Value = true;
-                    _coroutines.StartCoroutine(RepairHealth());
+                    _repairCoroutine = _coroutines.StartCoroutine(RepairHealth());
                 }
-            });
+            }).AddTo(ref _disposables);
 
-            _castleEntity.IsDead.Subscribe(v =>
-            {
-                if (v)
+            _castleEntity.IsDead
+                .Where(v => v)
+                .Subscribe(v =>
                 {
                     //TODO Перенести в GameplayService
-                }
-            });
+                }).AddTo(ref _disposables);
         }
 
         /**
@@ -71,8 +72,6 @@ namespace Game.GamePlay.Services
          */
         private IEnumerator RepairHealth()
         {
-            while (_fsmGameplay.IsPause()) yield return null;
-
             RepairBuffer.Add(_castleEntity.ReduceHealth); //Буфер для отображения в UI
             _castleEntity.Repair();
 
@@ -81,12 +80,32 @@ namespace Game.GamePlay.Services
             if (_castleEntity.CurrenHealth.Value < _castleEntity.FullHealth)
             {
                 //Перезапуск, пока не восстановили
-                _coroutines.StartCoroutine(RepairHealth());
+                if (!_isDisposed)
+                    _repairCoroutine = _coroutines.StartCoroutine(RepairHealth());
             }
             else
             {
                 _castleEntity.IsReduceHealth.Value = false;
+                _repairCoroutine = null;
             }
+        }
+
+        public void Dispose()
+        {
+            if (_isDisposed) return;
+            _isDisposed = true;
+            
+            if (_repairCoroutine != null)
+            {
+                _coroutines.StopCoroutine(_repairCoroutine);
+                _repairCoroutine = null;
+            }
+            CastleViewModel.Dispose();
+            _disposables.Dispose();
+            // НЕ дизпоузим CurrenHealth — это ссылка на castleEntity.CurrenHealth (state),
+            // его дизпоузит CastleEntity.Dispose() в GameplayStateProxy.
+            // Двойной Dispose приведёт к ObjectDisposedException при повторном входе.
+            // CurrenHealth?.Dispose();
         }
     }
 }

@@ -21,7 +21,7 @@ using Random = UnityEngine.Random;
 
 namespace Game.GamePlay.Services
 {
-    public class RewardProgressService
+    public class RewardProgressService : IDisposable
     {
         public ObservableList<RewardCurrencyEntity> RewardMaps = new();
         public ReactiveProperty<RewardEntity> RewardEntity = new();       
@@ -33,6 +33,7 @@ namespace Game.GamePlay.Services
         private readonly TowersService _towersService;
         private Dictionary<int, bool> _rewardsMap = new();
         private readonly GameplayBoosters _gameplayBoosters;
+        private DisposableBag _disposables = new();
 
         public RewardProgressService(
             GameplayStateProxy gameplayState,
@@ -60,13 +61,13 @@ namespace Game.GamePlay.Services
                 //При удалении моба (когда IsDead => true) выдаем награду
                 var mobEntity = e.Value;
                 RewardKillMob(mobEntity.RewardCurrency, mobEntity.Position.CurrentValue);
-            });
+            }).AddTo(ref _disposables);
             
             gameplayState.Progress.Where(v => v >= 100).Subscribe(newValue =>
             {
                 if (!fsmGameplay.IsStateGamePlay()) return;
                 fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
-            });
+            }).AddTo(ref _disposables);
             
             //TODO Куда перенести
             fsmGameplay.Fsm.StateCurrent.Subscribe(newState =>
@@ -102,18 +103,18 @@ namespace Game.GamePlay.Services
                         fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
                     }
                 }
-            });
+            }).AddTo(ref _disposables);
             
             //Монетки долетели и удалились
             RewardMaps.ObserveRemove().Subscribe(r =>
             {
                 gameplayState.ProgressUp();
                 gameplayState.SoftCurrency.Value += r.Value.Currency;
-            });
+            }).AddTo(ref _disposables);
             RewardEntity.Where(r => r != null).Subscribe(reward =>
             {
                 gameplayState.RewardEntities.Add(reward.Origin);
-            });
+            }).AddTo(ref _disposables);
         }
 
         public void RewardKillMob(int currency, Vector2 position)
@@ -356,6 +357,13 @@ namespace Game.GamePlay.Services
             {
                 RewardType = list[index],
             };
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+            RewardEntity?.Dispose();
+            RewardMaps.Clear();
         }
     }
 }

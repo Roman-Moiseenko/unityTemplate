@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using DI;
 using Game.GamePlay.Fsm.GameplayStates;
 using MVVM.FSM;
@@ -7,11 +8,12 @@ using UnityEngine;
 
 namespace Game.GamePlay.Fsm
 {
-    public class FsmGameplay
+    public class FsmGameplay : IDisposable
     {
         public FsmProxy Fsm;
         public ReactiveProperty<Vector2Int> Position = new();
         public ReactiveProperty<bool> IsGamePause; //Во все состояния, кроме FsmStateGamePlay пауза для движения
+        private DisposableBag _disposables = new();
 
         public FsmGameplay(DIContainer container)
         {
@@ -32,7 +34,7 @@ namespace Game.GamePlay.Fsm
             Fsm.StateCurrent.Subscribe(newState =>
             {
                 IsGamePause.Value = newState.GetType() != typeof(FsmStateGamePlay);
-            });
+            }).AddTo(ref _disposables);
         }
 
 
@@ -89,6 +91,14 @@ namespace Game.GamePlay.Fsm
         {
            // return Fsm.Position.CurrentValue;
             return Position.CurrentValue;
+        }
+
+        public void Dispose()
+        {
+            Fsm?.Dispose();
+            Position?.Dispose();
+            IsGamePause?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

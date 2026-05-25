@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Game.State.Common;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Mobs;
@@ -7,10 +9,11 @@ using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game.State.Maps.Towers
 {
-    public class TowerEntity
+    public class TowerEntity : IDisposable
     {
         public TowerEntityData Origin { get; }
         public int UniqueId => Origin.UniqueId;
@@ -30,21 +33,24 @@ namespace Game.State.Maps.Towers
         public TypeDefence Defence => Origin.Defence;
         
         public Dictionary<TowerParameterType, TowerParameterData> Parameters = new();
-        
+        private DisposableBag _disposables = new();
+
         public TowerEntity(TowerEntityData towerEntityData)
         {
             Origin = towerEntityData;
             Position = new ReactiveProperty<Vector2Int>(towerEntityData.Position);
-            Position.Subscribe(newPosition => towerEntityData.Position = newPosition); //При изменении позиции Position.Value меняем в данных
+            Position
+                .Subscribe(newPosition => towerEntityData.Position = newPosition)
+                .AddTo(ref _disposables); //При изменении позиции Position.Value меняем в данных
 
             Placement = new ReactiveProperty<Vector2Int>(towerEntityData.Placement);
-            Placement.Subscribe(v => towerEntityData.Placement = v);
+            Placement.Subscribe(v => towerEntityData.Placement = v).AddTo(ref _disposables);
             
             Level = new ReactiveProperty<int>(towerEntityData.Level);
             Level.Subscribe(newLevel =>
             {
                 towerEntityData.Level = newLevel;
-            }); //При изменении позиции Position.Value меняем в данных
+            }).AddTo(ref _disposables); //При изменении позиции Position.Value меняем в данных
         }
 
         public bool PositionNear(Vector2Int position)
@@ -146,5 +152,13 @@ namespace Game.State.Maps.Towers
             return shotData;
         }
 
+        public void Dispose()
+        {
+            Debug.Log("TowerEntity Dispose");
+            Level?.Dispose();
+            Position?.Dispose();
+            Placement?.Dispose();
+            _disposables.Dispose();
+        }
     }
 }

@@ -8,6 +8,7 @@ public class DIContainer : IDisposable
         private readonly DIContainer _parentContainer;
         private readonly Dictionary<(string, Type), DIEntry> _entriesMap = new();
         private readonly HashSet<(string, Type)> _resolutionsCache = new();
+        private readonly List<IDisposable> _sceneDisposables = new();
 
         public DIContainer(DIContainer parentContainer = null)
         {
@@ -87,10 +88,42 @@ public class DIContainer : IDisposable
             throw new Exception($"Couldn't find dependency for tag {tag} and type {key.Item2.FullName}");
         }
 
+        /// <summary>
+        /// Регистрирует объект, который будет автоматически дизпознут при выходе со сцены.
+        /// Используется для gameplay-сервисов (WaveService, TowersService и т.д.)
+        /// </summary>
+        public void RegisterDisposableOnSceneExit(IDisposable disposable)
+        {
+            _sceneDisposables.Add(disposable);
+        }
+
+        /// <summary>
+        /// Дизпозит все объекты, зарегистрированные через RegisterDisposableOnSceneExit,
+        /// в порядке, обратном регистрации (сначала зависимые, потом базовые).
+        /// </summary>
+        public void DisposeSceneDisposables()
+        {
+            for (int i = _sceneDisposables.Count - 1; i >= 0; i--)
+            {
+                _sceneDisposables[i].Dispose();
+            }
+            _sceneDisposables.Clear();
+        }
+
+        public bool IsRegistered<T>(string tag = null)
+        {
+            var key = (tag, typeof(T));
+            if (_entriesMap.ContainsKey(key)) return true;
+            if (_parentContainer != null) return _parentContainer.IsRegistered<T>(tag);
+            return false;
+        }
+
         public void Dispose()
         {
+            DisposeSceneDisposables();
+
             var entries = _entriesMap.Values;
-            
+
             foreach (var entry in entries)
             {
                 entry.Dispose();

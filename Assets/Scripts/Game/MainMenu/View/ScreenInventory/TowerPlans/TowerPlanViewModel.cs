@@ -1,4 +1,5 @@
-﻿using DI;
+﻿using System;
+using DI;
 using Game.MainMenu.Services;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Inventory.TowerCards;
@@ -7,7 +8,7 @@ using R3;
 
 namespace Game.MainMenu.View.ScreenInventory.TowerPlans
 {
-    public class TowerPlanViewModel
+    public class TowerPlanViewModel : IDisposable
     {
         public TowerPlan TowerPlan => _towerPlanEntity;
         public int IdTowerPlan => _towerPlanEntity.UniqueId;
@@ -17,6 +18,7 @@ namespace Game.MainMenu.View.ScreenInventory.TowerPlans
 
         private readonly DIContainer _container;
         private readonly TowerPlan _towerPlanEntity;
+        private DisposableBag _disposables = new();
 
         public TowerPlanViewModel(TowerPlan towerPlanEntity, TowerSettings towerSettings, DIContainer container)
         {
@@ -29,6 +31,11 @@ namespace Game.MainMenu.View.ScreenInventory.TowerPlans
         public void RequestOpenPopupTowerPlan()
         {
             _container.Resolve<Subject<TowerPlanViewModel>>().OnNext(this);
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
     }
 }

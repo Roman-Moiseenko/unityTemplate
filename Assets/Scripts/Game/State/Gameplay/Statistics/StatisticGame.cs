@@ -4,7 +4,7 @@ using R3;
 
 namespace Game.State.Gameplay.Statistics
 {
-    public class StatisticGame
+    public class StatisticGame : IDisposable
     {
         public StatisticGameData Origin;
 
@@ -15,21 +15,22 @@ namespace Game.State.Gameplay.Statistics
         public ReactiveProperty<int> CountTowers { get; private set; }
         public ReactiveProperty<int> CountRoads { get; private set; }
         public ReactiveProperty<float> AllDamage { get; private set; }
+        private DisposableBag _disposables = new();
 
         public StatisticGame(StatisticGameData statisticGameData)
         {
             Origin = statisticGameData;
             CountKills = new ReactiveProperty<int>(Origin.CountKills);
-            CountKills.Subscribe(v => Origin.CountKills = v);
+            CountKills.Subscribe(v => Origin.CountKills = v).AddTo(ref _disposables);
             
             CountTowers = new ReactiveProperty<int>(Origin.CountTowers);
-            CountTowers.Subscribe(v => Origin.CountTowers = v);
+            CountTowers.Subscribe(v => Origin.CountTowers = v).AddTo(ref _disposables);
             
             CountRoads = new ReactiveProperty<int>(Origin.CountRoads);
-            CountRoads.Subscribe(v => Origin.CountRoads = v);
+            CountRoads.Subscribe(v => Origin.CountRoads = v).AddTo(ref _disposables);
             
             AllDamage = new ReactiveProperty<float>(Origin.AllDamage);
-            AllDamage.Subscribe(v => Origin.AllDamage = v);
+            AllDamage.Subscribe(v => Origin.AllDamage = v).AddTo(ref _disposables);
         }
 
         public void KillMob()
@@ -160,6 +161,15 @@ namespace Game.State.Gameplay.Statistics
             list.Sort((a, b) => b.Damage.CompareTo(a.Damage));
 
             return list;
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+            CountKills?.Dispose();
+            CountTowers?.Dispose();
+            CountRoads?.Dispose();
+            AllDamage?.Dispose();
         }
     }
 }

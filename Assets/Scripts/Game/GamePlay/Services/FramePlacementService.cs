@@ -1,21 +1,22 @@
-﻿using Game.GamePlay.Fsm;
+﻿using System;
+using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Towers;
 using Game.State.Gameplay;
-using Game.State.Root;
 using ObservableCollections;
 using R3;
 using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
-    public class FramePlacementService
+    public class FramePlacementService : IDisposable
     {
         public IObservableCollection<FramePlacementViewModel> ViewModels => _viewModels;  
         private readonly ObservableList<FramePlacementViewModel> _viewModels = new();
         private readonly PlacementService _placementService;
         private FramePlacementViewModel _viewModel;
+        private DisposableBag _disposables = new();
 
         public FramePlacementService(            
             GameplayStateProxy gameplayState,
@@ -41,7 +42,7 @@ namespace Game.GamePlay.Services
                     }
                     RemovePlacement();
                 }
-            });
+            }).AddTo(ref _disposables);
         }
 
 
@@ -96,6 +97,18 @@ namespace Game.GamePlay.Services
         public bool IsRoad(Vector2Int position)
         {
             return _placementService.IsRoad(position);
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+            foreach (var viewModel in _viewModels)
+            {
+                viewModel.Dispose();
+            }
+            _viewModels.Clear();
+            _viewModel?.Dispose();
+            _viewModel = null;
         }
     }
 }

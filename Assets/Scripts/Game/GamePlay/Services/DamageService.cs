@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Game.State.Gameplay;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
@@ -13,11 +14,12 @@ namespace Game.GamePlay.Services
      * Сервис нанесения урона мобам по выстрелам gameplayState.Shots, также проверка на урон по площади
      * запуска награды и создания списка для отображения popup урона
      */
-    public class DamageService
+    public class DamageService : IDisposable
     {
         public ObservableList<DamageEntity> AllDamages = new();
         private readonly GameplayStateProxy _gameplayState;
         private readonly GameSettingsStateProxy _settingsState;
+        private DisposableBag _disposables = new();
 
         public DamageService(
             GameplayStateProxy gameplayState,
@@ -34,10 +36,10 @@ namespace Game.GamePlay.Services
                 //Ищем моба, переделать на gameplayState.Mobs и перенести MobsEntity в gameplayState
                 if (mobEntity != null) SetDamageMob(mobEntity, shot);
                 gameplayState.Shots.Remove(shot);
-            });
+            }).AddTo(ref _disposables);
         }
 
-        public void SetDamageMob(MobEntity mobEntity, ShotData shot)
+        private void SetDamageMob(MobEntity mobEntity, ShotData shot)
         {
             var damage = new DamageEntity
             {
@@ -51,6 +53,12 @@ namespace Game.GamePlay.Services
             //Устанавливаем дебаф, если есть
             if (shot.Debuff != null) mobEntity.SetDebuff(shot.ConfigId, shot.Debuff);
             //TODO если есть продолжительный урон, добавляем мобу mobEntity.PeriodDamage(shot.ConfigId, shot.PeriodDamage)
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+            AllDamages.Clear();
         }
     }
 }

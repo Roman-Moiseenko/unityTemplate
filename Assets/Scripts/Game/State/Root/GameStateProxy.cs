@@ -14,7 +14,7 @@ namespace Game.State.Root
      * Прокси обертка всего стостояния игры (список ресурсов игрока, все данные по игре)
      * Подписка на события Добавления и удаления из списков объектов / изменения
      */
-    public class GameStateProxy
+    public class GameStateProxy : IDisposable
     {
         public readonly GameState Origin;
         public const int MaxChest = 4;
@@ -29,33 +29,33 @@ namespace Game.State.Root
         public ContainerChests ContainerChests { get; set; }
         
         //public ObservableDictionary<int, Chest> ListChests;
-
+        private DisposableBag _disposables = new();
 
         public GameStateProxy(GameState gameState)
         {
             Origin = gameState;
             //_gameState = gameState;
-
+            
             GameSpeed = new ReactiveProperty<float>(gameState.GameSpeed);
             GameSpeed.Subscribe(newValue =>
             {
                 gameState.GameSpeed = newValue;
                 UpdateDateVersion();
                // Debug.Log($"Сохраняем скорость игры в GameState = {newValue}");
-            });
+            }).AddTo(ref _disposables);
             SoftCurrency = new ReactiveProperty<long>(gameState.SoftCurrency);
             SoftCurrency.Subscribe(newValue =>
             {
                 gameState.SoftCurrency = newValue;
                 UpdateDateVersion();
-            });
+            }).AddTo(ref _disposables);
 
             HardCurrency = new ReactiveProperty<long>(gameState.HardCurrency);
             HardCurrency.Subscribe(newValue =>
             {
                 gameState.HardCurrency = newValue;
                 UpdateDateVersion();
-            });
+            }).AddTo(ref _disposables);
 
             Inventory = new InventoryRoot(gameState.Inventory);
             ContainerChests = new ContainerChests(gameState.ContainerChests);
@@ -63,47 +63,15 @@ namespace Game.State.Root
             {
                 gameState.CurrentMapId = newValue;
                 UpdateDateVersion();
-            });
+            }).AddTo(ref _disposables);
 
             MapStates = new MapStates(gameState.MapStatesData);
 
-            MapStates.UpdateData.Subscribe(_ => UpdateDateVersion());
-            Inventory.UpdateData.Subscribe(_ => UpdateDateVersion());
-            ContainerChests.UpdateData.Subscribe(_ => UpdateDateVersion());
+            MapStates.UpdateData.Subscribe(_ => UpdateDateVersion()).AddTo(ref _disposables);
+            Inventory.UpdateData.Subscribe(_ => UpdateDateVersion()).AddTo(ref _disposables);
+            ContainerChests.UpdateData.Subscribe(_ => UpdateDateVersion()).AddTo(ref _disposables);
 
         }
-
-        private void InitResource(GameState gameState)
-        {
-            // Debug.Log(" ** " + JsonUtility.ToJson(gameState.Resources));
-            /*   gameState.Resources.ForEach(originResource => Resources.Add(new Resource(originResource)));
-               Resources.ObserveAdd().Subscribe(e => gameState.Resources.Add(e.Value.Origin));
-
-               Resources.ObserveRemove().Subscribe(e =>
-               {
-                   var removedResourceData =
-                       gameState.Resources.FirstOrDefault(b => b.ResourceType == e.Value.ResourceType);
-                   gameState.Resources.Remove(removedResourceData);
-               });*/
-        }
-
-     /*   private void InitChests(GameState gameState)
-        {
-            ListChests = new ObservableDictionary<int, Chest>();
-            foreach (var (cell, chestData) in gameState.Chests)
-            {
-                ListChests.Add(cell, new Chest(chestData));
-            }
-
-            ListChests.ObserveAdd().Subscribe(e =>
-            {
-                var cell = e.Value.Key;
-                var chest = e.Value.Value;
-                gameState.Chests.Add(cell, chest.Origin);
-            });
-            ListChests.ObserveRemove().Subscribe(e => { gameState.Chests.Remove(e.Value.Key); });
-        }
-*/
 
         public int CreateInventoryID()
         {
@@ -123,6 +91,17 @@ namespace Game.State.Root
         {
             Origin.DateVersion = DateTime.Now;
         }
-        
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+            CurrentMapId?.Dispose();
+            GameSpeed?.Dispose();
+            HardCurrency?.Dispose();
+            SoftCurrency?.Dispose();
+            ContainerChests?.Dispose();
+            MapStates?.Dispose();
+            Inventory?.Dispose();
+        }
     }
 }

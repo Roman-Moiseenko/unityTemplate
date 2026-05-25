@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
 using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
@@ -25,8 +25,12 @@ namespace Game.GamePlay.Root
         //Объект сцены, куда будут вставляться/создаваться объекты игры из префабов
         [SerializeField] private WorldGameplayRootBinder _worldRootBinder;
         
+        private DIContainer _gameplayContainer;
+
         public Observable<GameplayExitParams> Run(DIContainer gameplayContainer, GameplayEnterParams enterParams)
         {
+            _gameplayContainer = gameplayContainer;
+
             Debug.Log("GameplayEntryPoint");
             var exitSceneRequest = new Subject<GameplayExitParams>();
             gameplayContainer.RegisterInstance(exitSceneRequest);
@@ -78,6 +82,29 @@ namespace Game.GamePlay.Root
             var uiManager = viewContainer.Resolve<GameplayUIManager>();
             uiManager.OpenScreenGameplay();
         }
-        
+        private void OnDestroy()
+        {
+            DisposeAll();
+        }
+
+        /// <summary>
+        /// Освобождает ресурсы сцены геймплея (сервисы, подписки, корутины).
+        /// Вызывается при уничтожении сцены (смена сцены) или явно из GameEntryPoint.
+        /// </summary>
+        private void DisposeAll()
+        {
+            Debug.Log("DisposeAll");
+            if (_gameplayContainer != null)
+            {
+                // Дизпозим все сервисы, зарегистрированные через RegisterDisposableOnSceneExit
+                _gameplayContainer.DisposeSceneDisposables();
+
+                // Дизпозим GameplayState
+                if (_gameplayContainer.IsRegistered<IGameStateProvider>())
+                {
+                    _gameplayContainer.Resolve<IGameStateProvider>().DisposeGameplay();
+                }
+            }
+        }
     }
 }

@@ -357,6 +357,7 @@ namespace Game.GamePlay.Root.View
 
         private void DestroyFrameSkill()
         {
+            if (_frameSkillBinder == null || _frameSkillBinder.gameObject == null) return;
             Destroy(_frameSkillBinder.gameObject);
             Destroy(_frameSkillBinder);
         }

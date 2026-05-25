@@ -16,9 +16,9 @@ namespace Game.State
         public GameSettingsStateProxy SettingsState { get; private set; }
         public GameplayStateProxy GameplayState { get; private set; }
 
-      //  private GameState _gameStateOrigin; //Оригинальное состояние игры
-      //  private GameSettingsState _settingsStateOrigin;
-       // private GameplayState _gameplayStateOrigin; //Оригинальное состояние игры
+        //  private GameState _gameStateOrigin; //Оригинальное состояние игры
+        //  private GameSettingsState _settingsStateOrigin;
+        // private GameplayState _gameplayStateOrigin; //Оригинальное состояние игры
         public DefaultGameState DefaultGameState { get; private set; } = new();
 
         //Игровая сессия
@@ -41,9 +41,11 @@ namespace Game.State
                 var gameplayStateOrigin = JsonConvert.DeserializeObject<GameplayState>(json);
                 GameplayState = new GameplayStateProxy(gameplayStateOrigin);
             }
+
             Debug.Log(GameplayState);
             return Observable.Return(GameplayState);
         }
+
 /*
         private GameplayStateProxy CreateGameplayStateFromSettings()
         {
@@ -76,7 +78,13 @@ namespace Game.State
             PlayerPrefs.DeleteKey(GAMEPLAY_STATE_KEY);
             return Observable.Return(true);
         }
-        
+
+        public void DisposeGameplay()
+        {
+            GameplayState?.Dispose();
+            GameplayState = null;
+        }
+
         //Данные игрока и игры
         public Observable<LoadingState> CheckWebAvailable()
         {
@@ -104,20 +112,21 @@ namespace Game.State
                 var gameStateOrigin = JsonConvert.DeserializeObject<GameState>(json);
                 GameState = new GameStateProxy(gameStateOrigin);
             }
+
             state.Set("Загружаем сохранение игрока");
             state.Loaded = true;
             return Observable.Return(state);
         }
-        
+
         public Observable<bool> SaveGameState()
         {
             Debug.Log(GameplayState);
             if (GameplayState != null) SaveGameplayState();
-            
+
             var gameJson = JsonConvert.SerializeObject(GameState.Origin, Formatting.Indented);
             Debug.Log(gameJson);
             PlayerPrefs.SetString(GAME_STATE_KEY, gameJson);
-            
+
             return Observable.Return(true);
         }
 
@@ -127,7 +136,7 @@ namespace Game.State
             SaveGameState();
             return Observable.Return(true);
         }
-        
+
         //Настройки игры
         public Observable<LoadingState> LoadSettingsState()
         {
@@ -165,6 +174,7 @@ namespace Game.State
             SaveSettingsState();
             return Observable.Return(true);
         }
+
 /*
         private GameSettingsStateProxy CreateSettingsStateDefault()
         {
@@ -177,5 +187,11 @@ namespace Game.State
             return new GameSettingsStateProxy(_settingsStateOrigin);
         }
         */
+        public void Dispose()
+        {
+            GameplayState?.Dispose();
+            GameState?.Dispose();
+            SettingsState?.Dispose();
+        }
     }
 }

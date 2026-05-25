@@ -7,14 +7,11 @@ using Game.GameRoot.Commands.HardCurrency;
 using Game.MainMenu.Commands.ChestCommands;
 using Game.MainMenu.Root;
 using Game.Settings;
-using Game.Settings.Gameplay.Maps;
-using Game.State.Inventory;
 using Game.State.Inventory.Chests;
 using Game.State.Inventory.Common;
 using Game.State.Maps.Rewards;
 using Game.State.Root;
 using MVVM.CMD;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using Scripts.Utils;
@@ -23,7 +20,7 @@ using Random = System.Random;
 
 namespace Game.MainMenu.Services
 {
-    public class ChestService
+    public class ChestService : IDisposable
     {
         private GameStateProxy _gameState;
         private readonly ICommandProcessor _cmd;
@@ -36,7 +33,8 @@ namespace Game.MainMenu.Services
         private Coroutine _opening;
         private ContainerChests _containerChests;
         public ReactiveProperty<int> CellOpening = new(0);
-
+        private DisposableBag _disposables = new();
+        
         public ChestService(GameStateProxy gameState,
             ICommandProcessor cmd,
             GameSettings gameSettings
@@ -52,7 +50,7 @@ namespace Game.MainMenu.Services
             {
                 _gameState.ContainerChests.StartOpening.Value =
                     newValue == 0 ? 0 : DateTime.Now.ToUniversalTime().ToFileTimeUtc();
-            });
+            }).AddTo(ref _disposables);
             Chests = _gameState.ContainerChests.Chests;
             _coroutines = GameObject.Find("[COROUTINES]").GetComponent<Coroutines>();
 
@@ -67,7 +65,7 @@ namespace Game.MainMenu.Services
                 {
                     if (_opening != null) _coroutines.StopCoroutine(_opening);
                 }
-            });
+            }).AddTo(ref _disposables);
 //            TimeLeft.Subscribe(v => Debug.Log("v = " + v));
             //Проверка, если время на открытие вышло
             TimeLeft.Skip(1).Where(x => x == 0).Subscribe(_ =>
@@ -76,7 +74,7 @@ namespace Game.MainMenu.Services
                 //  Debug.Log("Время вышло открываем = " + _containerChests.CellOpening.CurrentValue);
                 var command = new CommandChestOpened();
                 _cmd.Process(command);
-            });
+            }).AddTo(ref _disposables);
         }
 
         private IEnumerator ChestOpening()
@@ -391,5 +389,12 @@ namespace Game.MainMenu.Services
             return reward;
         }
 
+        public void Dispose()
+        {
+            TimeLeft?.Dispose();
+            CostLeft?.Dispose();
+            //CellOpening?.Dispose();
+            _disposables.Dispose();
+        }
     }
 }

@@ -54,7 +54,7 @@ namespace Game.GamePlay.View.Warriors
         private readonly IDisposable _disposablePullAdd;
         private readonly IDisposable _disposablePullRemove;
         private MobViewModel _targetMove;
-
+        private DisposableBag _disposables = new();
         public WarriorViewModel(WarriorEntity warriorEntity, GameplayStateProxy gameplayState, TowerEntity towerEntity,
             RoadPoint3 availablePath, ObservableList<MobViewModel> pullTargets)
         {
@@ -78,7 +78,7 @@ namespace Game.GamePlay.View.Warriors
                     Placement.x = v.x + Index * AppConstants.WARRIOR_DELTA;
                     Placement.z = v.y - (AvailablePath.Direction.z * Math.Abs(Index * AppConstants.WARRIOR_DELTA));
                 }
-            });
+            }).AddTo(ref _disposables);
 
 
             //Подписка на тех мобов которые в цели башни
@@ -116,9 +116,9 @@ namespace Game.GamePlay.View.Warriors
                         return;
                     }
                     */
-                });
+                }).AddTo(ref _disposables);
                 MobPullDisposables.Add(target.UniqueId, disposable);
-            });
+            }).AddTo(ref _disposables);
 
 
             _disposablePullRemove = _pullTargets.ObserveRemove().Subscribe(e =>
@@ -154,7 +154,7 @@ namespace Game.GamePlay.View.Warriors
                     MobTarget.Value = null;
                     _targetMove = null;
                 }
-            });
+            }).AddTo(ref _disposables);
 
             //Принудительная смена состояния, при достижении определенных точек
             FsmWarrior.Fsm.StateCurrent.Subscribe(state =>
@@ -165,13 +165,13 @@ namespace Game.GamePlay.View.Warriors
                     _warriorEntity.Health.OnNext(MaxHealth.CurrentValue);
                     FsmWarrior.Fsm.SetState<FsmWarriorGoToPlacement>(Placement);
                 }
-            });
+            }).AddTo(ref _disposables);
             
             _warriorEntity.IsDead.Where(x => x).Subscribe(_ =>
             {
                 FsmWarrior.Fsm.SetState<FsmWarriorDead>();
                 MobTarget.Value = null;
-            });
+            }).AddTo(ref _disposables);
         }
 
         private bool SetMoveOrAttackTarget(MobViewModel mobViewModel)
@@ -328,8 +328,7 @@ namespace Game.GamePlay.View.Warriors
         {
             //StartPosition?.Dispose();
             //PlacementPosition?.Dispose();
-            //MobTarget?.Dispose();
-            //Position?.Dispose();
+            Position?.Dispose();
             MobTarget?.Dispose();
             _disposablePullAdd.Dispose();
             _disposablePullRemove.Dispose();
@@ -340,7 +339,8 @@ namespace Game.GamePlay.View.Warriors
                 MobPullDisposables.Remove(key);
             }
 
-            FsmWarrior.Fsm.Dispose();
+            FsmWarrior?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
@@ -7,7 +8,7 @@ using DeckCard = Game.State.Inventory.Deck.DeckCard;
 
 namespace Game.State.Inventory.Common
 {
-    public class InventoryRoot
+    public class InventoryRoot : IDisposable
     {
         public InventoryRootData Origin;
         public ObservableDictionary<int, DeckCard> DeckCards { get; set; } //Колоды карт
@@ -17,6 +18,7 @@ namespace Game.State.Inventory.Common
         private readonly ObservableList<InventoryItem> _items = new();
 
         public readonly Subject<Unit> UpdateData = new();
+        private DisposableBag _disposables = new();
 
         public InventoryRoot(InventoryRootData rootData)
         {
@@ -32,7 +34,7 @@ namespace Game.State.Inventory.Common
                     {
                         _items.Remove(itemEntity);
                         UpdateData.OnNext(Unit.Default);
-                    });
+                    }).AddTo(ref _disposables);;
                 
                 _items.Add(itemEntity);
             }
@@ -46,21 +48,21 @@ namespace Game.State.Inventory.Common
                     {
                         _items.Remove(itemEntity);
                         UpdateData.OnNext(Unit.Default);
-                    });
+                    }).AddTo(ref _disposables);;
                 Origin.Items.Add(e.Value.Origin);
-            });
+            }).AddTo(ref _disposables);;
             _items.ObserveRemove().Subscribe(e =>
             {
                 Origin.Items.Remove(e.Value.Origin);
                 UpdateData.OnNext(Unit.Default);
-            });
+            }).AddTo(ref _disposables);;
 
             BattleDeck = new ReactiveProperty<int>(rootData.BattleDeck);
             BattleDeck.Subscribe(newValue =>
             {
                 rootData.BattleDeck = newValue;
                 UpdateData.OnNext(Unit.Default);
-            });
+            }).AddTo(ref _disposables);;
             
             DeckCards = new ObservableDictionary<int, DeckCard>();
 
@@ -73,12 +75,12 @@ namespace Game.State.Inventory.Common
             {
                 rootData.DeckCards.Add(e.Value.Key, e.Value.Value.Origin);
                 UpdateData.OnNext(Unit.Default);
-            });
+            }).AddTo(ref _disposables);;
             DeckCards.ObserveRemove().Subscribe(e =>
             {
                 rootData.DeckCards.Remove(e.Value.Key);
                 UpdateData.OnNext(Unit.Default);
-            });
+            }).AddTo(ref _disposables);;
         }
 
         public void AddItem(InventoryItemData item)
@@ -126,6 +128,13 @@ namespace Game.State.Inventory.Common
         {
             var item = _items.FirstOrDefault(item => item.UniqueId == uniqueId);
             RemoveItem(item);
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+            BattleDeck?.Dispose();
+            UpdateData?.Dispose();
         }
     }
 }

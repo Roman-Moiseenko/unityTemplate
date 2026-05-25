@@ -21,7 +21,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
-    public class TowersService
+    public class TowersService : IDisposable
     {
         public readonly Dictionary<string,
             Dictionary<TowerParameterType, TowerParameterData>> TowerParametersMap = new();
@@ -44,6 +44,7 @@ namespace Game.GamePlay.Services
         private readonly GameplayBoosters _gameplayBoosters;
 
         public readonly Dictionary<string, Dictionary<TowerParameterType, float>> TowerBoosters = new();
+        private DisposableBag _disposables = new();
 
         /**
          * При загрузке создаем все view-модели из реактивного списка всех строений.
@@ -124,7 +125,7 @@ namespace Game.GamePlay.Services
                     if (towerEntity.ConfigId != configId) continue;
                     towerEntity.Level.OnNext(newLevel);
                 }
-            });
+            }).AddTo(ref _disposables);
             //Кешируем бустеры для башен по типам Defence
             CalculateBoosters();
         }
@@ -205,6 +206,7 @@ namespace Game.GamePlay.Services
         {
             if (_towersMap.TryGetValue(towerEntity.UniqueId, out var towerViewModel))
             {
+                towerViewModel.Dispose(); 
                 _allTowers.Remove(towerViewModel);
                 _towersMap.Remove(towerEntity.UniqueId);
             }
@@ -351,6 +353,16 @@ namespace Game.GamePlay.Services
                 if (isDistance && distanceBoosterTower != 0) boosters.Add(TowerParameterType.Distance, distanceBoosterTower);
                 TowerBoosters.Add(towerCard.ConfigId, boosters);
             }
+        }
+
+        public void Dispose()
+        {
+            foreach (var towerViewModel in _allTowers)
+            {
+                towerViewModel.Dispose();
+            }
+            _allTowers.Clear();
+            _disposables.Dispose();
         }
     }
 }

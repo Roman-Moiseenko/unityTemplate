@@ -1,11 +1,12 @@
-﻿using Game.GamePlay.Services;
+﻿using System;
+using Game.GamePlay.Services;
 using Game.State.Maps.Roads;
 using R3;
 using UnityEngine;
 
 namespace Game.GamePlay.View.Roads
 {
-    public class RoadViewModel : IMovingEntityViewModel
+    public class RoadViewModel : IMovingEntityViewModel, IDisposable
 
     {
         private readonly RoadEntity _roadEntity;
@@ -51,6 +52,12 @@ namespace Game.GamePlay.View.Roads
         public Vector2Int GetPosition()
         {
             return Position.CurrentValue;
+        }
+
+        public void Dispose()
+        {
+            Position?.Dispose();
+            Rotate?.Dispose();
         }
     }
 }

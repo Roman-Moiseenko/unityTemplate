@@ -1,11 +1,12 @@
-﻿using DI;
+﻿using System;
+using DI;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.State.Inventory.SkillPlans;
 using R3;
 
 namespace Game.MainMenu.View.ScreenInventory.SkillPlans
 {
-    public class SkillPlanViewModel
+    public class SkillPlanViewModel : IDisposable
     {
         
         public SkillPlan SkillPlan => _skillPlanEntity;
@@ -16,6 +17,7 @@ namespace Game.MainMenu.View.ScreenInventory.SkillPlans
 
         private readonly DIContainer _container;
         private readonly SkillPlan _skillPlanEntity;
+        private DisposableBag _disposables = new();
         public SkillPlanViewModel(
             SkillPlan skillPlanEntity,
             SkillSettings skillSettings,
@@ -30,6 +32,11 @@ namespace Game.MainMenu.View.ScreenInventory.SkillPlans
         public void RequestOpenPopupSkillPlan()
         {
             _container.Resolve<Subject<SkillPlanViewModel>>().OnNext(this);
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
         }
     }
 }

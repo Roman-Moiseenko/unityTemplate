@@ -34,10 +34,9 @@ namespace Game.GamePlay.View.Towers
         private readonly List<int> _freeIndex = new();
 
         public bool IsWay;
-        
+
         public Dictionary<int, RoadPoint3> AvailablePath = new();
 
-        private List<IDisposable> _disposables = new();
 
         //Кеш подписок на смерть моба
         private readonly Dictionary<int, IDisposable> _mobDisposables = new();
@@ -45,7 +44,8 @@ namespace Game.GamePlay.View.Towers
         public bool IsFly { get; set; }
         public ReactiveProperty<bool> EnabledPlacement { get; set; }
 
-        public TowerPlacementViewModel(TowerEntity towerEntity, DIContainer container, FsmWave fsmWave, PlacementService placementService) : base(towerEntity, container)
+        public TowerPlacementViewModel(TowerEntity towerEntity, DIContainer container, FsmWave fsmWave,
+            PlacementService placementService) : base(towerEntity, container)
         {
             EnabledPlacement = new ReactiveProperty<bool>(true);
             IsFly = TowerEntity.TypeTarget == TypeTarget.Air;
@@ -56,10 +56,15 @@ namespace Game.GamePlay.View.Towers
 
             //При изменении точки спавна и обновлении дорог, меняем доступный путь Warriors
             Placement.Subscribe(_ => UpdateWayPath());
-            var d1 = GameplayState.Way.ObserveAdd().Subscribe(_ => UpdateWayPath());
-            _disposables.Add(d1);
-            var d2 = GameplayState.WaySecond.ObserveAdd().Subscribe(_ => UpdateWayPath());
-            _disposables.Add(d2);
+            GameplayState.Way
+                .ObserveAdd()
+                .Subscribe(_ => UpdateWayPath())
+                .AddTo(ref _disposables);
+
+            GameplayState.WaySecond
+                .ObserveAdd().Subscribe(_ => UpdateWayPath())
+                .AddTo(ref _disposables);
+
 
             foreach (var warriorEntity in _warriorEntities)
             {
@@ -68,7 +73,7 @@ namespace Game.GamePlay.View.Towers
                 Warriors.Add(warriorViewModel);
             }
 
-            var d3 = fsmWave.Fsm.StateCurrent
+            fsmWave.Fsm.StateCurrent
                 .Where(state => state.GetType() == typeof(FsmStateWaveBegin))
                 .Subscribe(state =>
                 {
@@ -80,10 +85,10 @@ namespace Game.GamePlay.View.Towers
                         CreateWarriorEntity(_freeIndex[0]);
                         _freeIndex.RemoveAt(0);
                     }
-                });
-            _disposables.Add(d3);
+                }).AddTo(ref _disposables);
+
             //Инициализация ViewModels
-            
+
             _warriorEntities.ObserveAdd().Subscribe(e =>
             {
                 var warriorEntity = e.Value;
@@ -91,7 +96,7 @@ namespace Game.GamePlay.View.Towers
                     warriorEntity, GameplayState, TowerEntity,
                     AvailablePath[warriorEntity.Index], PullTargets);
                 Warriors.Add(warriorViewModel);
-            });
+            }).AddTo(ref _disposables);
             _warriorEntities.ObserveRemove().Subscribe(e =>
             {
                 var warriorEntity = e.Value;
@@ -99,10 +104,11 @@ namespace Game.GamePlay.View.Towers
                 foreach (var warriorViewModel in Warriors.ToList())
                 {
                     if (warriorViewModel.UniqueId != warriorEntity.UniqueId) continue;
+                    warriorViewModel.Dispose();
                     Warriors.Remove(warriorViewModel);
                     break;
                 }
-            });
+            }).AddTo(ref _disposables);
 
 
             PullTargets.ObserveAdd().Subscribe(e =>
@@ -117,7 +123,7 @@ namespace Game.GamePlay.View.Towers
                     PullTargets.Remove(target);
                 });
                 _mobDisposables.TryAdd(target.UniqueId, disposable); //Кеш подписок на смерть моба
-            });
+            }).AddTo(ref _disposables);
             //При удалении из пула (убит или вышел с дистанции) - удалить из цели
             PullTargets.ObserveRemove().Subscribe(e =>
             {
@@ -128,13 +134,13 @@ namespace Game.GamePlay.View.Towers
                     disposable.Dispose();
                     _mobDisposables.Remove(target.UniqueId);
                 }
-            });
-            var d4 = Level.Subscribe(level =>
+            }).AddTo(ref _disposables);
+            Level.Subscribe(level =>
             {
                 UpdateParameterWarrior();
                 UpdateAndRestartWarriors();
-            });
-            _disposables.Add(d4);
+            }).AddTo(ref _disposables);
+          
         }
 
         private void UpdateParameterWarrior()
@@ -198,7 +204,9 @@ namespace Game.GamePlay.View.Towers
                 Index = index
             };
             //При смерти Сущности, сразу удаляем из списка сущностей
-            warriorEntity.IsDead.Where(x => x).Subscribe(_ => _warriorEntities.Remove(warriorEntity));
+            warriorEntity.IsDead.Where(x => x)
+                .Subscribe(_ => _warriorEntities.Remove(warriorEntity))
+                .AddTo(ref _disposables);
             _warriorEntities.Add(warriorEntity);
         }
 
@@ -227,11 +235,11 @@ namespace Game.GamePlay.View.Towers
                 {
                     var result = new RoadPoint3();
 
-                    var direction = MyFunc.Vector2To3(way[i + 1].Position) - MyFunc.Vector2To3(way[i].Position); 
+                    var direction = MyFunc.Vector2To3(way[i + 1].Position) - MyFunc.Vector2To3(way[i].Position);
                     result.Direction = direction.normalized;
 
                     Vector2 position = way[i + 1].Position;
-                    
+
                     if (position.x > Position.CurrentValue.x + 2 ||
                         position.x < Position.CurrentValue.x - 2 ||
                         position.y > Position.CurrentValue.y + 2 ||
@@ -251,15 +259,6 @@ namespace Game.GamePlay.View.Towers
             }
 
             throw new Exception("Точка на дороге не нашлась");
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            foreach (var disposable in _disposables)
-            {
-                disposable?.Dispose();
-            }
         }
     }
 }

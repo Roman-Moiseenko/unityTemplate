@@ -1,4 +1,5 @@
-﻿using DI;
+﻿using System;
+using DI;
 using Game.MainMenu.Services;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
@@ -12,7 +13,7 @@ using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenInventory.TowerCards
 {
-    public class TowerCardViewModel
+    public class TowerCardViewModel : IDisposable
     {
         public TowerCard TowerCard => _towerCardEntity;
         public readonly TowerSettings TowerSettings;
@@ -35,7 +36,8 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
         public ReactiveProperty<int> CostPlan = new();
         public ReactiveProperty<int> CostCurrency = new();
         public ReactiveProperty<bool> IsCanUpdate = new();
-        
+        private DisposableBag _disposables = new();
+
         public TowerCardViewModel(
             TowerCard towerCardEntity, 
             TowerSettings towerSettings, 
@@ -56,13 +58,18 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
             {
                 CostPlan.OnNext(TowerCard.GetCostPlanLevelUpTowerCard());
                 CostCurrency.OnNext(TowerCard.GetCostCurrencyLevelUpTowerCard());
-            });
+            }).AddTo(ref _disposables);
 
-            Observable.Merge(
-                TowerCard.Level, CostCurrency
-                ).Subscribe(_ => IsCanUpdate.OnNext(CardCanUpdate()));
-            AmountPlans.Subscribe(_ => IsCanUpdate.OnNext(CardCanUpdate()));
-            SoftCurrency.Subscribe(_ => IsCanUpdate.OnNext(CardCanUpdate()));
+            Observable
+                .Merge(TowerCard.Level, CostCurrency)
+                .Subscribe(_ => IsCanUpdate.OnNext(CardCanUpdate()))
+                .AddTo(ref _disposables);
+            AmountPlans
+                .Subscribe(_ => IsCanUpdate.OnNext(CardCanUpdate()))
+                .AddTo(ref _disposables);
+            SoftCurrency
+                .Subscribe(_ => IsCanUpdate.OnNext(CardCanUpdate()))
+                .AddTo(ref _disposables);
             
         }
         
@@ -77,6 +84,20 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
             return (AmountPlans.CurrentValue >= CostPlan.CurrentValue) && 
                    (SoftCurrency.CurrentValue >= CostCurrency.CurrentValue) && 
                    (TowerCard.MaxLevel() > TowerCard.Level.CurrentValue);
+        }
+
+        public void Dispose()
+        {
+            IsDeck?.Dispose();
+            // НЕ Дизпоузим SoftCurrency, AmountPlans — это внешние объекты,
+            // принадлежащие GameState (SoftCurrency) и Inventory (AmountPlans).
+            // Их Dispose приведёт к ObjectDisposedException при повторном входе в MainMenu
+            // SoftCurrency?.Dispose();
+            // AmountPlans?.Dispose();
+            CostPlan?.Dispose();
+            CostCurrency?.Dispose();
+            IsCanUpdate?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

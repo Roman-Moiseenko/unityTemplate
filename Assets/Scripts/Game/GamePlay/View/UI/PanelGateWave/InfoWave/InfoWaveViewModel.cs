@@ -48,7 +48,9 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
                 if (state.GetType() == typeof(FsmStateWaveWait)) ShowButtonWave.OnNext(true);
             });
             //При изменении счетчика текущей волны, получаем информацию о след.волне
-            gameplayState.CurrentWave.Subscribe(number =>
+            // Skip(1) - пропускаем начальное значение CurrentWave = 0 (волна еще не началась),
+            // иначе NumberWave - 1 = -1 вызовет ArgumentOutOfRangeException в QueryInfoWaveHandler
+            gameplayState.CurrentWave.Skip(1).Subscribe(number =>
             {
                 AllEnemyDataInfo.Clear();
                 //Получить данные О Новой Волне

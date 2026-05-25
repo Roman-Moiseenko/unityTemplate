@@ -55,6 +55,7 @@ namespace Game.GamePlay.View.Towers
         public ReactiveProperty<bool> FinishEffectLevelUp = new(false);
         public ReactiveProperty<bool> ShowArea = new(false);
         public TypeTarget TypeTarget => TowerEntity.TypeTarget;
+        protected DisposableBag _disposables = new();
 
 
         //Флаг для передачи в Панели подтверждения из различных состояния
@@ -81,7 +82,7 @@ namespace Game.GamePlay.View.Towers
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
             Position = towerEntity.Position;
-            Position.Subscribe(v => PositionMap.Value = new Vector3(v.x, 0, v.y));
+            Position.Subscribe(v => PositionMap.Value = new Vector3(v.x, 0, v.y)).AddTo(ref _disposables);
             SpeedShot = TowerEntity.SpeedShot;
             //Есть бустер на скорострельность
             var busters = TowersService.TowerBoosters[ConfigId];
@@ -101,14 +102,14 @@ namespace Game.GamePlay.View.Towers
                     5 or 6 => 3,
                     _ => throw new Exception("Неизвестный уровень")
                 };
-            });
+            }).AddTo(ref _disposables);
 
             fsmTower?.Fsm.StateCurrent.Subscribe(state =>
             {
                 if (state.GetType() == typeof(FsmTowerNone)) ShowArea.Value = false;
                 if (state.GetType() == typeof(FsmTowerSelected) && fsmTower.GetTowerViewModel().UniqueId == UniqueId)
                     ShowArea.Value = true;
-            });
+            }).AddTo(ref _disposables);
         }
 
         public bool IsPosition(Vector2 position)
@@ -160,13 +161,13 @@ namespace Game.GamePlay.View.Towers
 
         public virtual void Dispose()
         {
+            Debug.Log("TowerViewModel Dispose");
             PositionMap?.Dispose();
             Direction?.Dispose();
             NumberModel?.Dispose();
             FinishEffectLevelUp?.Dispose();
             ShowArea?.Dispose();
-            Level?.Dispose();
-            Position?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

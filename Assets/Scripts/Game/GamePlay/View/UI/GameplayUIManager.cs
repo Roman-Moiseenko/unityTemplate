@@ -1,4 +1,6 @@
-﻿using DI;
+﻿using System;
+using Cysharp.Threading.Tasks;
+using DI;
 using Game.Common;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
@@ -78,7 +80,7 @@ namespace Game.GamePlay.View.UI
                     rootUI.HidePanel<PanelBuildViewModel>();
                     rootUI.ShowPanel<PanelActionsViewModel>();
                 }
-            });
+            }).AddTo(ref _disposables);
             
             //Скрываем панель при первом вхождении в геймплей
             rootUI.HidePanel<PanelActionsViewModel>();
@@ -116,7 +118,7 @@ namespace Game.GamePlay.View.UI
                         rootUI.ShowPanel<PanelActionsViewModel>();
                     }
                 }
-            });
+            }).AddTo(ref _disposables);
             
             var gameService = container.Resolve<GameplayService>();
             gameService.GameOver
@@ -128,7 +130,8 @@ namespace Game.GamePlay.View.UI
                         _fsmGameplay.Fsm.SetState<FsmStateGamePause>();
                         OpenFinishPopup(exitParams);
                     }
-                );
+                )
+                .AddTo(ref _disposables);
         }
 
         public ScreenGameplayViewModel OpenScreenGameplay()
@@ -148,7 +151,7 @@ namespace Game.GamePlay.View.UI
             a.CloseRequested.Subscribe(e =>
             {
                 _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(a);
             return a;
         }
@@ -161,7 +164,7 @@ namespace Game.GamePlay.View.UI
             a.CloseRequested.Subscribe(e =>
             {
                 _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(a);
             return a; 
         }
@@ -190,7 +193,7 @@ namespace Game.GamePlay.View.UI
                 //При выходе возвращаем скорость игры и отключаем состояние Башня
                 _fsmTower.Fsm.SetState<FsmTowerNone>();
                 _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(delete);
             return delete;
             
@@ -204,7 +207,7 @@ namespace Game.GamePlay.View.UI
             lose.CloseRequested.Subscribe(e =>
             {
                 _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(lose);
             return lose;
         }
@@ -217,7 +220,7 @@ namespace Game.GamePlay.View.UI
             settings.CloseRequested.Subscribe(e =>
             {
                 _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(settings);
             return settings;
         }
@@ -230,10 +233,9 @@ namespace Game.GamePlay.View.UI
             statistics.CloseRequested.Subscribe(e =>
             {
                 _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-            });
+            }).AddTo(ref _disposables);
             rootUI.OpenPopup(statistics);
             return statistics;
         }
-        
     }
 }

@@ -1,4 +1,5 @@
-﻿using DI;
+﻿using System;
+using DI;
 using Game.GamePlay.Fsm.SkillStates;
 using MVVM.FSM;
 using R3;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Fsm
 {
-    public class FsmSkill
+    public class FsmSkill : IDisposable
     {
         public FsmProxy Fsm;
         
@@ -53,6 +54,12 @@ namespace Game.GamePlay.Fsm
         public bool IsTarget()
         {
             return Fsm.StateCurrent.CurrentValue.GetType() == typeof(FsmSkillSetTarget);
+        }
+
+        public void Dispose()
+        {
+            Fsm?.Dispose();
+            Position?.Dispose();
         }
     }
 }

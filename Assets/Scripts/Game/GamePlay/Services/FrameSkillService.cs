@@ -1,3 +1,4 @@
+using System;
 using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.SkillStates;
@@ -12,7 +13,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
-    public class FrameSkillService
+    public class FrameSkillService : IDisposable
     {
         public IObservableCollection<FrameSkillViewModel> ViewModels => _viewModels;   
         private readonly ObservableList<FrameSkillViewModel> _viewModels = new();
@@ -24,6 +25,7 @@ namespace Game.GamePlay.Services
         private FrameSkillViewModel _viewModel;
         public bool IsPlacement;
         private readonly FsmSkill _fsmSkill;
+        private DisposableBag _disposables = new();
 
         public FrameSkillService(
             GameplayStateProxy gameplayState,
@@ -59,12 +61,12 @@ namespace Game.GamePlay.Services
 
                 if (newState.GetType() == typeof(FsmSkillNone)) _viewModels.Clear();
                 
-            });
+            }).AddTo(ref _disposables);
             _fsmSkill.Position.Subscribe(newPosition => 
                 {
                     if (_fsmSkill.IsTarget()) MoveFrame(newPosition); //Переносим объект
                 }
-            );
+            ).AddTo(ref _disposables);
             
         }
 
@@ -88,6 +90,17 @@ namespace Game.GamePlay.Services
             
             _viewModel = new FrameSkillViewModel(configId);
             _viewModels.Add(_viewModel);
+        }
+
+        public void Dispose()
+        {
+            foreach (var viewModel in _viewModels)
+            {
+                viewModel.Dispose();
+            }
+            _viewModels.Clear();
+            _viewModel?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

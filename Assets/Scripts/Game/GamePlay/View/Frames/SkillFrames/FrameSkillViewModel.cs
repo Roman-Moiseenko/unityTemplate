@@ -1,10 +1,11 @@
-﻿using R3;
+﻿using System;
+using R3;
 using UnityEngine;
 
 namespace Game.GamePlay.View.Frames.SkillFrames
 {
     
-    public class FrameSkillViewModel
+    public class FrameSkillViewModel : IDisposable
     {
         public ReactiveProperty<Vector2Int> Position { get; set; }
         public ReactiveProperty<bool> Enable;
@@ -21,7 +22,12 @@ namespace Game.GamePlay.View.Frames.SkillFrames
         {
             Position.Value = position;
         }
-        
+
+        public void Dispose()
+        {
+            Enable?.Dispose();
+            Position?.Dispose();
+        }
     }
     
 

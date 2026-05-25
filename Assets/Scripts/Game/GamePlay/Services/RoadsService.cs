@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Game.GamePlay.Commands.RoadCommand;
 using Game.GamePlay.View.Roads;
 using Game.State.Entities;
@@ -11,7 +13,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
-    public class RoadsService
+    public class RoadsService : IDisposable
     {
         private readonly IObservableCollection<RoadEntity> _way; //кешируем
         private readonly IObservableCollection<RoadEntity> _waySecond; //кешируем
@@ -28,6 +30,7 @@ namespace Game.GamePlay.Services
 
         public IObservableCollection<RoadEntity> Way => _way;
         public IObservableCollection<RoadEntity> WaySecond => _waySecond;
+        private DisposableBag _disposables = new();
 
         public RoadsService(
             IObservableCollection<RoadEntity> way,
@@ -45,19 +48,31 @@ namespace Game.GamePlay.Services
             
             //Основной путь
             foreach (var roadEntity in way) CreateRoadViewModel(roadEntity);
-            way.ObserveAdd().Subscribe(e => CreateRoadViewModel(e.Value));
-            way.ObserveRemove().Subscribe(e => RemoveRoadViewModel(e.Value));
+            way.ObserveAdd()
+                .Subscribe(e => CreateRoadViewModel(e.Value))
+                .AddTo(ref _disposables);
+            way.ObserveRemove()
+                .Subscribe(e => RemoveRoadViewModel(e.Value))
+                .AddTo(ref _disposables);
             
             
             //Второй путь
             foreach (var roadEntity in waySecond) CreateRoadViewModel(roadEntity);
-            waySecond.ObserveAdd().Subscribe(e => CreateRoadViewModel(e.Value));
-            waySecond.ObserveRemove().Subscribe(e => RemoveRoadViewModel(e.Value));
+            waySecond.ObserveAdd()
+                .Subscribe(e => CreateRoadViewModel(e.Value))
+                .AddTo(ref _disposables);
+            waySecond.ObserveRemove()
+                .Subscribe(e => RemoveRoadViewModel(e.Value))
+                .AddTo(ref _disposables);
             
             //Бонусный путь (не доступный)
             foreach (var roadEntity in wayDisabled) CreateRoadViewModel(roadEntity);
-            wayDisabled.ObserveAdd().Subscribe(e => CreateRoadViewModel(e.Value));
-            wayDisabled.ObserveRemove().Subscribe(e => RemoveRoadViewModel(e.Value));
+            wayDisabled.ObserveAdd()
+                .Subscribe(e => CreateRoadViewModel(e.Value))
+                .AddTo(ref _disposables);
+            wayDisabled.ObserveRemove()
+                .Subscribe(e => RemoveRoadViewModel(e.Value))
+                .AddTo(ref _disposables);
         }
 
         public bool PlaceRoad(Vector2Int position, bool isTurn, int rotate, bool isMainWay = true)
@@ -66,22 +81,7 @@ namespace Game.GamePlay.Services
             var command = new CommandPlaceRoad(_configIdDefault, position, isTurn, rotate, isMainWay);
             return _cmd.Process(command);
         }
-
-
-        public bool MoveRoad(int roadId, Vector2Int position)
-        {
-            //var command = new CommandMoveTower(towerId, position);
-            //return _cmd.Process(command);
-            return false;
-        }
         
-        public bool RotateRoad(int roadId, Vector2Int position)
-        {
-            
-            //var command = new CommandMoveTower(towerId, position);
-            //return _cmd.Process(command);
-            return false;
-        }
         
         private void RemoveRoadViewModel(RoadEntity roadEntity)
         {
@@ -104,5 +104,14 @@ namespace Game.GamePlay.Services
             }
         }
 
+        public void Dispose()
+        {
+            foreach (var roadViewModel in _allRoads.ToList())
+            {
+                roadViewModel.Dispose();
+            }
+            _allRoads.Clear();
+            _disposables.Dispose();
+        }
     }
 }

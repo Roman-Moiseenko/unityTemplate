@@ -1,4 +1,5 @@
-﻿using DI;
+﻿using System;
+using DI;
 using Game.Common;
 using Game.MainMenu.Root;
 using Game.MainMenu.Services;
@@ -24,7 +25,7 @@ namespace Game.MainMenu.View
         private readonly Subject<MainMenuExitParams> _exitSceneRequest;
         private readonly MainMenuExitParamsService _exitParamsService;
         private readonly UIMainMenuRootViewModel _rootUI;
-
+        
        // public Vector3 ScaleUI;
         public MainMenuUIManager(DIContainer container) : base(container)
         {
@@ -91,7 +92,7 @@ namespace Game.MainMenu.View
             b.CloseRequested.Subscribe(e =>
             {
                 //_fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
-            });
+            }).AddTo(ref _disposables);
             _rootUI.OpenPopup(b);
             return b;
         }
@@ -111,7 +112,7 @@ namespace Game.MainMenu.View
             
             b.CloseRequested.Subscribe(e =>
             {
-            });
+            }).AddTo(ref _disposables);
             _rootUI.OpenPopup(b);
             return b;
         }

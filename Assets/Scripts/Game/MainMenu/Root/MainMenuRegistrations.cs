@@ -121,6 +121,7 @@ namespace Game.MainMenu.Root
                 container
             );
             container.RegisterInstance(towerCardService);
+            container.RegisterDisposableOnSceneExit(towerCardService);
 
             var skillCardService = new SkillCardPlanService(
                 gameState.Inventory,
@@ -129,9 +130,11 @@ namespace Game.MainMenu.Root
                 container
                 );
             container.RegisterInstance(skillCardService);
+            container.RegisterDisposableOnSceneExit(skillCardService);
             
             var chestService = new ChestService(gameState, cmd, gameSettings);
             container.RegisterInstance(chestService);
+            container.RegisterDisposableOnSceneExit(chestService);
             
             container.RegisterFactory(_ => new InventoryService(cmd, gameState, chestService)).AsSingle();
             

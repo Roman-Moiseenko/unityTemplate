@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.State.Entities;
 using R3;
 using UnityEngine;
 
 namespace Game.State.Maps.Roads
 {
-    public class RoadEntity
+    public class RoadEntity : IDisposable
     {
         public RoadEntityData Origin { get; }
         public int UniqueId => Origin.UniqueId;
@@ -14,7 +15,8 @@ namespace Game.State.Maps.Roads
         public readonly ReactiveProperty<int> Rotate;
 
         public readonly ReactiveProperty<Vector2Int> Position;
-        
+        private DisposableBag _disposables = new();
+
   //      public readonly ReactiveProperty<Vector2Int> PointEnter;
  //       public readonly ReactiveProperty<Vector2Int> PointExit;
         
@@ -26,7 +28,7 @@ namespace Game.State.Maps.Roads
             Rotate.Subscribe(newRotate =>
             {
                 roadData.Rotate = newRotate % 4;
-            });
+            }).AddTo(ref _disposables);
             
             Position = new ReactiveProperty<Vector2Int>(roadData.Position);
             Position.Subscribe(newPosition => roadData.Position = newPosition);
@@ -180,6 +182,13 @@ namespace Game.State.Maps.Roads
             }
 
             return list;
+        }
+
+        public void Dispose()
+        {
+            Rotate?.Dispose();
+            Position?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

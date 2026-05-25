@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Game.Common;
 using Game.GamePlay.Commands.GroundCommands;
@@ -13,7 +14,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
-    public class GroundsService
+    public class GroundsService : IDisposable
     {
         private readonly string _configIdDefault;
         private readonly ICommandProcessor _cmd;
@@ -30,7 +31,7 @@ namespace Game.GamePlay.Services
         private readonly Dictionary<int, BoardViewModel> _boardsMap = new();
 
         private List<BoardEntityData> _listBoardEntityData = new();
-
+        //private DisposableBag _disposables = new();
         //     private readonly Dictionary<string, GroundSettings> _groundSettingsMap = new();
 
         public IObservableCollection<GroundViewModel> AllGrounds =>
@@ -284,6 +285,14 @@ namespace Game.GamePlay.Services
 
             _listBoardEntityData.Add(boardEntityData);
             return boardEntityData;
+        }
+
+        public void Dispose()
+        {
+            MapFogs.Clear();
+            _allGrounds.Clear();
+            _groundsMap.Clear();
+            _allBoards.Clear();
         }
     }
 }

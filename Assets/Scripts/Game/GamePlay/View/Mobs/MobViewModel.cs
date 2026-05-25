@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
@@ -21,7 +22,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.View.Mobs
 {
-    public class MobViewModel
+    public class MobViewModel : IDisposable
     {
         private MobEntity _mobEntity;
 
@@ -62,6 +63,8 @@ namespace Game.GamePlay.View.Mobs
         private readonly Coroutines _coroutines;
 
         private readonly Dictionary<int, IDisposable> _pullTargetsDisposables = new();
+        private DisposableBag _disposables = new();
+        
         public MobViewModel(
             MobEntity mobEntity,
             GameplayStateProxy gameplayState,
@@ -108,7 +111,7 @@ namespace Game.GamePlay.View.Mobs
                     h = 0.3f;
                 }
                 PositionTargetForShot.Value = new Vector3(v.x, h, v.z);
-            });
+            }).AddTo(ref _disposables);
             
             StartPosition = mobEntity.Position.CurrentValue;
             StartDirection = mobEntity.Direction.CurrentValue;
@@ -130,7 +133,7 @@ namespace Game.GamePlay.View.Mobs
                 }
 
                 _pullTargetsDisposables.Add(targetViewModel.UniqueId, disposable);
-            });
+            }).AddTo(ref _disposables);
 
             PullTargets.ObserveRemove().Subscribe(e =>
             {
@@ -152,7 +155,7 @@ namespace Game.GamePlay.View.Mobs
                     IsAttack.Value = false;
                     Target.Value = null;
                 }
-            });
+            }).AddTo(ref _disposables);
 
             Target.Skip(1).Subscribe(target =>
             {
@@ -171,7 +174,7 @@ namespace Game.GamePlay.View.Mobs
                     return;
                 }
                 _coroutines.StartCoroutine(AttackTarget());
-            });
+            }).AddTo(ref _disposables);
         }
 
         public IEnumerator WaitFinishAnimation()
@@ -221,6 +224,16 @@ namespace Game.GamePlay.View.Mobs
             if (Target.CurrentValue == null) yield break;
             if (!Target.CurrentValue.IsDead.CurrentValue) _coroutines.StartCoroutine(AttackTarget());
         }
-        
+
+        public void Dispose()
+        {
+            Target?.Dispose();
+            IsMoving?.Dispose();
+            IsAttack?.Dispose();
+            FinishCurrentAnimation?.Dispose();
+            AnimationDelete?.Dispose();
+            PositionTargetForShot?.Dispose();
+            _disposables.Dispose();
+        }
     }
 }

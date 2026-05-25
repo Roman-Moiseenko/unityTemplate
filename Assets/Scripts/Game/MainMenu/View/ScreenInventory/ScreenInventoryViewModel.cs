@@ -58,9 +58,6 @@ namespace Game.MainMenu.View.ScreenInventory
             towerCards = towerCardPlanService.AllTowerCards;
             TowerPlansInventory = towerCardPlanService.AllTowerPlans;
             TowerCardsUpload();
-
-            
-            
             
             var skillCardPlanService = container.Resolve<SkillCardPlanService>();
             skillCards = skillCardPlanService.AllSkillCards;
@@ -105,12 +102,12 @@ namespace Game.MainMenu.View.ScreenInventory
             {
                 var towerCardViewModel = e.Value;
                 TowerDeckSubscription(towerCardViewModel);
-            });
+            }).AddTo(ref _disposables);
             towerCards.ObserveRemove().Subscribe(e =>
             {
                 var towerCardViewModel = e.Value;
                 TowerDeckUnsubscription(towerCardViewModel);
-            });
+            }).AddTo(ref _disposables);
         }
 
         private void TowerDeckSubscription(TowerCardViewModel towerCardViewModel)
@@ -127,7 +124,7 @@ namespace Game.MainMenu.View.ScreenInventory
                     TowerCardsDeck.Remove(towerCardViewModel);
                     TowerCardsInventory.Add(towerCardViewModel);
                 }
-            });
+            }).AddTo(ref _disposables);
             _disposableMap.Add(towerCardViewModel.IdTowerCard, d);
         }
 
@@ -161,7 +158,7 @@ namespace Game.MainMenu.View.ScreenInventory
                         SkillCardsDeck.Remove(skillCardViewModel);
                         SkillCardsInventory.Add(skillCardViewModel);
                     }
-                });
+                }).AddTo(ref _disposables);
             }
 
             skillCards.ObserveAdd().Subscribe(e =>
@@ -187,7 +184,7 @@ namespace Game.MainMenu.View.ScreenInventory
                 {
                     SkillCardsInventory.Remove(skillCardViewModel);
                 }
-            });
+            }).AddTo(ref _disposables);
         }
     }
 }

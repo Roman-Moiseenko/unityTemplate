@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Services
 {
-    public class WarriorService
+    public class WarriorService : IDisposable
     {
         private readonly ObservableList<WarriorEntity> _allWarriorEntities = new();
         private readonly ObservableList<WarriorViewModel> _allWarriors = new();
@@ -23,7 +23,8 @@ namespace Game.GamePlay.Services
         private readonly TowersService _towersService;
         private readonly GameplayStateProxy _gameplayState;
         private readonly ICommandProcessor _cmd;
-
+        private DisposableBag _disposables = new();
+        
         //private readonly Dictionary<string, Dictionary<TowerParameterType, TowerParameterData>> TowerParametersMap = new();
         public WarriorService(GameplayStateProxy gameplayState, ICommandProcessor cmd)
         {
@@ -40,16 +41,16 @@ namespace Game.GamePlay.Services
                 var warriorEntity = e.Value;
         //        CreateWarriorViewModel(warriorEntity);
                 warriorEntity.IsDead.Skip(1).Where(x => x).Subscribe(
-                    _ => RemoveWarrior(warriorEntity));
-            });
-            gameplayState.Warriors.ObserveRemove().Subscribe();
+                    _ => RemoveWarrior(warriorEntity)).AddTo(ref _disposables);
+            }).AddTo(ref _disposables);
+            gameplayState.Warriors.ObserveRemove().Subscribe().AddTo(ref _disposables);
             
             gameplayState.Warriors.ObserveRemove().Subscribe(e =>
             {
                 var warriorEntity = e.Value;
 //                Debug.Log(" Удален warriorEntity " + warriorEntity.UniqueId);
                 RemoveWarriorViewModel(warriorEntity);
-            });
+            }).AddTo(ref _disposables);
             
         }
 
@@ -59,6 +60,7 @@ namespace Game.GamePlay.Services
             {
                 if (warriorViewModel.UniqueId == warriorEntity.UniqueId)
                 {
+                    warriorViewModel.Dispose();
                     _allWarriors.Remove(warriorViewModel);
                 }
             }
@@ -104,6 +106,15 @@ namespace Game.GamePlay.Services
                 UniqueId = warriorEntity.UniqueId,
             };
             _cmd.Process(command);
+        }
+
+        public void Dispose()
+        {
+            foreach (var warriorViewModel in _allWarriors.ToList())
+            {
+                warriorViewModel.Dispose();
+            }
+            _disposables.Dispose();
         }
     }
 }

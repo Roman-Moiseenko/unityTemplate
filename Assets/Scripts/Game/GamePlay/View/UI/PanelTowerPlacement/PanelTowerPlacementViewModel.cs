@@ -18,7 +18,6 @@ namespace Game.GamePlay.View.UI.PanelTowerPlacement
         public override string Path => "Gameplay/Panels/";
         
         public ReactiveProperty<bool> IsEnable;
-        private readonly List<IDisposable> _disposables = new();
 
         public PanelTowerPlacementViewModel(GameplayUIManager uiManager, DIContainer container) : base(container)
         {
@@ -31,16 +30,13 @@ namespace Game.GamePlay.View.UI.PanelTowerPlacement
             frameModelViews.ObserveAdd().Subscribe(e =>
             {
                 var viewModel = e.Value;
-                var disposable = viewModel.Enable.Subscribe(v => IsEnable.Value = v);
-                _disposables.Add(disposable);
+                viewModel.Enable.Subscribe(v => IsEnable.Value = v)
+                    .AddTo(ref _disposables);
             });
 
             frameModelViews.ObserveRemove().Subscribe(v =>
             {
-                foreach (var disposable in _disposables)
-                {
-                    disposable.Dispose();
-                }
+                _disposables.Dispose();
             });
         }
 

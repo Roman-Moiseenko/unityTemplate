@@ -16,7 +16,7 @@ namespace MVVM.UI
         public Vector3 ScaleUI;
         public DIContainer Container;
         private readonly Subject<WindowViewModel> _closeRequested = new(); //Создаем событие для закрытия окна
-
+        protected DisposableBag _disposables = new();
         protected WindowViewModel(DIContainer container)
         {
             Container = container;
@@ -32,7 +32,10 @@ namespace MVVM.UI
             _closeRequested.OnNext(this);
         }
 
-        public virtual void Dispose() {}
+        public virtual void Dispose()
+        {
+            _disposables.Dispose();
+        }
 
 
     }

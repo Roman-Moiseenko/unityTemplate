@@ -23,7 +23,8 @@ namespace Game.GamePlay.View.Towers
         
         public ReactiveProperty<float> MaxDistance = new(0f);
         public float MinDistance = 0f;  
-        
+        //private DisposableBag _disposables = new();
+
         //Кеш подписок на смерть моба
         private readonly Dictionary<int, IDisposable> _mobDisposables = new();        
 
@@ -44,7 +45,7 @@ namespace Game.GamePlay.View.Towers
                     MaxDistance.Value = towerDistance.Value;
                 if (towerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var towerMaxDistance))
                     MaxDistance.Value = towerMaxDistance.Value;
-            });
+            }).AddTo(ref _disposables);
             
             //** Логика ведения целей **//
             PullTargets.ObserveAdd().Subscribe(e =>
@@ -55,7 +56,7 @@ namespace Game.GamePlay.View.Towers
                 var disposable = target.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(target));
                 _mobDisposables.TryAdd(target.UniqueId, disposable); //Кеш подписок на смерть моба
                 SetTarget(target); //Добавляем его цель (если мультишот, то добавляется, для одиночного идет проверка)
-            });
+            }).AddTo(ref _disposables);
 
             //При удалении из пула (убит или вышел с дистанции) - удалить из цели
             PullTargets.ObserveRemove().Subscribe(e =>
@@ -64,14 +65,14 @@ namespace Game.GamePlay.View.Towers
                 if (_mobDisposables.TryGetValue(target.UniqueId, out var disposable)) disposable.Dispose();
                 _mobDisposables.Remove(target.UniqueId);
                 MobTargets.Remove(target.UniqueId);
-            });
+            }).AddTo(ref _disposables);
 
             //При удалении из цели, попытка добавить из пулла
             MobTargets.ObserveRemove().Subscribe(e =>
             {
                 //При мультишоте цель автоматически добавляется при попадании в Пулл
                 if (!IsMultiShot && PullTargets.Count > 0) SetTarget(PullTargets[0]); //Первый из списка
-            });
+            }).AddTo(ref _disposables);
         }
 
         private void SetTarget(MobViewModel viewModel)

@@ -24,7 +24,7 @@ using UnityEngine;
 
 namespace Game.MainMenu.Services
 {
-    public class SkillCardPlanService
+    public class SkillCardPlanService : IDisposable
     {
         private readonly IObservableCollection<InventoryItem> _items; //кешируем
         private readonly InventoryRoot _inventoryRoot;
@@ -44,6 +44,7 @@ namespace Game.MainMenu.Services
 
         public IObservableCollection<SkillPlanViewModel> AllSkillPlans =>
             _allSkillPlans; //Интерфейс менять нельзя, возвращаем через динамический массив
+        private DisposableBag _disposables = new();
         public SkillCardPlanService(
             InventoryRoot inventoryRoot,
             SkillsSettings skillsSettings,
@@ -66,8 +67,12 @@ namespace Game.MainMenu.Services
             {
                 if (item is SkillCard skillCard)
                 {
-                    skillCard.EpicLevel.Skip(1).Subscribe(e => UpdateParameterSkillCard(skillCard));
-                    skillCard.Level.Subscribe(e => UpdateParameterSkillCard(skillCard));
+                    skillCard.EpicLevel.Skip(1)
+                        .Subscribe(e => UpdateParameterSkillCard(skillCard))
+                        .AddTo(ref _disposables);
+                    skillCard.Level
+                        .Subscribe(e => UpdateParameterSkillCard(skillCard))
+                        .AddTo(ref _disposables);
                     UpdateParameterSkillCard(skillCard);
                     CreateSkillCardViewModel(skillCard);
 
@@ -85,8 +90,12 @@ namespace Game.MainMenu.Services
             {
                 if (e.Value is SkillCard skillCard)
                 {
-                    skillCard.EpicLevel.Subscribe(_ => UpdateParameterSkillCard(skillCard));
-                    skillCard.Level.Subscribe(_ => UpdateParameterSkillCard(skillCard));
+                    skillCard.EpicLevel
+                        .Subscribe(_ => UpdateParameterSkillCard(skillCard))
+                        .AddTo(ref _disposables);
+                    skillCard.Level
+                        .Subscribe(_ => UpdateParameterSkillCard(skillCard))
+                        .AddTo(ref _disposables);
                     CreateSkillCardViewModel(skillCard); //Создаем View Model
                 }
 
@@ -94,13 +103,13 @@ namespace Game.MainMenu.Services
                 {
                     CreateSkillPlanViewModel(skillPlan);
                 }
-            });
+            }).AddTo(ref _disposables);
             //Если у сущности изменился уровень, меняем его и во вью-модели
             _items.ObserveRemove().Subscribe(e =>
             {
                 if (e.Value is SkillCard skillCard) RemoveSkillCardViewModel(skillCard);
                 if (e.Value is SkillPlan skillPlan) RemoveSkillPlanViewModel(skillPlan);
-            });
+            }).AddTo(ref _disposables);
 
             foreach (var deckSkillCardId in _currentDeck.SkillCardIds)
             {
@@ -188,6 +197,7 @@ namespace Game.MainMenu.Services
         {
             if (_skillCardsMap.TryGetValue(skillCard.UniqueId, out var skillCardViewModel))
             {
+                skillCardViewModel.Dispose();
                 _allSkillCards.Remove(skillCardViewModel);
                 _skillCardsMap.Remove(skillCard.UniqueId);
             }
@@ -206,6 +216,7 @@ namespace Game.MainMenu.Services
         {
             if (_skillPlansMap.TryGetValue(skillPlan.UniqueId, out var skillPlanViewModel))
             {
+                skillPlanViewModel.Dispose();
                 _allSkillPlans.Remove(skillPlanViewModel);
                 _skillPlansMap.Remove(skillPlan.UniqueId);
             }
@@ -214,7 +225,7 @@ namespace Game.MainMenu.Services
         /**
          * Пересчитываем параметры навыка в зависимости от уровня и эпичности
          */
-        public void UpdateParameterSkillCard(SkillCard skillCard)
+        private void UpdateParameterSkillCard(SkillCard skillCard)
         {
             var settings = _skillSettingsMap[skillCard.ConfigId];
             
@@ -253,11 +264,8 @@ namespace Game.MainMenu.Services
                     skillParam.Value.Value += rateEpic * levelParam.BaseValue * (skillCard.Level.Value - 1);
                 }
             }
-
- 
         }
-
-
+        
         public InfoUpgradedViewModel GetInfoUpgradedViewModel(string configId,
             TypeEpic epicLevel, int level)
         {
@@ -303,6 +311,23 @@ namespace Game.MainMenu.Services
             }
 
             return viewModel;
+        }
+
+        public void Dispose()
+        {
+            foreach (var skillPlanViewModel in _allSkillPlans)
+            {
+                skillPlanViewModel.Dispose();
+            }
+            _allSkillPlans.Clear();
+
+            foreach (var skillCardViewModel in _allSkillCards)
+            {
+                skillCardViewModel.Dispose();
+            }
+            _allSkillCards.Clear();
+            
+            _disposables.Dispose();
         }
     }
 }

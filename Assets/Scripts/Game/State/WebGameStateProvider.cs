@@ -408,5 +408,20 @@ namespace Game.State
             state.Loaded = true;
             request.Dispose();
         }
+
+        public void DisposeGameplay()
+        {
+            GameplayState?.Dispose();
+            GameplayState = null;
+        }
+
+        public void Dispose()
+        {
+            _response?.Dispose();
+            WebAvailable?.Dispose();
+            GameplayState?.Dispose();
+            GameState?.Dispose();
+            SettingsState?.Dispose();
+        }
     }
 }

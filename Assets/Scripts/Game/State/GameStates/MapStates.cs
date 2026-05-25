@@ -1,15 +1,18 @@
-﻿using ObservableCollections;
+﻿using System;
+using Cysharp.Threading.Tasks;
+using ObservableCollections;
 using R3;
 
 namespace Game.State.GameStates
 {
-    public class MapStates
+    public class MapStates : IDisposable
     {
         public ReactiveProperty<int> LastMap;
         public ObservableDictionary<int, MapState> Maps;
 
         public Subject<Unit> UpdateData = new();
-        
+        private DisposableBag _disposables = new();
+
         public MapStates(MapStatesData mapStatesData)
         {
             LastMap = new ReactiveProperty<int>(mapStatesData.LastMap);
@@ -17,7 +20,7 @@ namespace Game.State.GameStates
             {
                 mapStatesData.LastMap = v;
                 UpdateData.OnNext(Unit.Default);
-            });
+            }).AddTo(ref _disposables);
 
             Maps = new ObservableDictionary<int, MapState>();
 
@@ -31,7 +34,14 @@ namespace Game.State.GameStates
                 var newValue = e.Value;
                 mapStatesData.Maps.Add(newValue.Key, newValue.Value.Origin);
                 UpdateData.OnNext(Unit.Default);
-            });
+            }).AddTo(ref _disposables);
+        }
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+            LastMap?.Dispose();
+            UpdateData?.Dispose();
         }
     }
 }
