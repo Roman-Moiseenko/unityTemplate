@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using Cysharp.Threading.Tasks;
+using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Common;
 using Game.State.Inventory.Common;
 using Game.State.Maps.Mobs;
@@ -44,10 +46,16 @@ namespace Game.State.Inventory.TowerCards
             Parameters.ObserveRemove().Subscribe(e =>
             {
                 var key = e.Value.Key;
+                var param = e.Value.Value;
+                param?.Dispose();
                 Origin.As<TowerCardData>().Parameters.Remove(key);
             }).AddTo(ref _disposables);
             Parameters.ObserveClear().Subscribe(_ =>
             {
+                foreach (var (key, param) in Parameters.ToList())
+                {
+                    param?.Dispose();
+                }
                 Origin.As<TowerCardData>().Parameters.Clear();
             }).AddTo(ref _disposables);
             Parameters.ObserveChanged().Subscribe(newValue =>
@@ -61,8 +69,13 @@ namespace Game.State.Inventory.TowerCards
             //     TowerType = data.TowerType;
         }
 
-        
-
+        public void AddParameter(TowerParameterSettings parameterSettings)
+        {
+            Parameters.Add(
+                parameterSettings.ParameterType,
+                new TowerParameter(new TowerParameterData(parameterSettings))
+                );
+        }
 
         public int MaxLevel()
         {
@@ -85,11 +98,12 @@ namespace Game.State.Inventory.TowerCards
         {
             //TODO Очистить параметры
             EpicLevel?.Dispose();
-            foreach (var (key, parameter) in Parameters)
+           /* foreach (var (key, parameter) in Parameters)
             {
                 parameter?.Dispose();
             }
-            Parameters.Clear();
+            */
+            Parameters.Clear(); //Dispose вызывается в подписке
             Level?.Dispose();
             base.Dispose();
         }

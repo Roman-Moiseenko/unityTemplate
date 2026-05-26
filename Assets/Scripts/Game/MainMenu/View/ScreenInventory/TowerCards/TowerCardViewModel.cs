@@ -89,11 +89,6 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
         public void Dispose()
         {
             IsDeck?.Dispose();
-            // НЕ Дизпоузим SoftCurrency, AmountPlans — это внешние объекты,
-            // принадлежащие GameState (SoftCurrency) и Inventory (AmountPlans).
-            // Их Dispose приведёт к ObjectDisposedException при повторном входе в MainMenu
-            // SoftCurrency?.Dispose();
-            // AmountPlans?.Dispose();
             CostPlan?.Dispose();
             CostCurrency?.Dispose();
             IsCanUpdate?.Dispose();

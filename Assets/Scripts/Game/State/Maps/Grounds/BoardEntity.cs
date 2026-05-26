@@ -1,22 +1,26 @@
-﻿using R3;
+﻿using System;
+using R3;
 using UnityEngine;
 
 namespace Game.State.Maps.Grounds
 {
-    public class BoardEntity
+    public class BoardEntity : IDisposable
     {
         public BoardEntityData Origin { get; }
         public int UniqueId => Origin.UniqueId;
         public string ConfigId => Origin.ConfigId;
         
         public readonly ReactiveProperty<Vector2Int> Position;
-        public readonly ReactiveProperty<int> Angle;
+        //public readonly ReactiveProperty<int> Angle;
+        private DisposableBag _disposables;
 
         public BoardEntity(BoardEntityData boardData)
         {
             Origin = boardData;
             Position = new ReactiveProperty<Vector2Int>(boardData.Position);
-            Position.Subscribe(newPosition => boardData.Position = newPosition); 
+            Position
+                .Subscribe(newPosition => boardData.Position = newPosition)
+                .AddTo(ref _disposables); 
         }
 
         public bool EqualsData(BoardEntityData val)
@@ -28,6 +32,12 @@ namespace Game.State.Maps.Grounds
                 Origin.LeftInAngle == val.LeftInAngle && Origin.LeftSide == val.LeftSide &&
                 Origin.TopOutAngle == val.TopOutAngle && Origin.BottomOutAngle == val.BottomOutAngle &&
                 Origin.RightOutAngle == val.RightOutAngle && Origin.LeftOutAngle == val.LeftOutAngle;
+        }
+
+        public void Dispose()
+        {
+            Position?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

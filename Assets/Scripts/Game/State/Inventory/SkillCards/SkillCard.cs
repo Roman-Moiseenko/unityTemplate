@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Game.State.Common;
 using Game.State.Inventory.Common;
 using Game.State.Maps.Skills;
@@ -16,11 +17,15 @@ namespace Game.State.Inventory.SkillCards
         public SkillCard(SkillCardData data) : base(data)
         {
             EpicLevel = new ReactiveProperty<TypeEpic>(data.EpicLevel);
-            EpicLevel.Subscribe(newValue => data.EpicLevel = newValue);
+            EpicLevel
+                .Subscribe(newValue => data.EpicLevel = newValue)
+                .AddTo(ref _disposables);
 
 
             Level = new ReactiveProperty<int>(data.Level);
-            Level.Subscribe(newAmount => data.Level = newAmount);
+            Level
+                .Subscribe(newAmount => data.Level = newAmount)
+                .AddTo(ref _disposables);
 
             Parameters = new ObservableDictionary<SkillParameterType, SkillParameter>();
             //Debug.Log(JsonConvert.SerializeObject(data, Formatting.Indented));
@@ -34,20 +39,32 @@ namespace Game.State.Inventory.SkillCards
                 var key = e.Value.Key;
                 var value = e.Value.Value;
                 Origin.As<SkillCardData>().Parameters.Add(key, value.Origin);
-            });
+            }).AddTo(ref _disposables);
             Parameters.ObserveRemove().Subscribe(e =>
             {
                 var key = e.Value.Key;
+                var param = e.Value.Value;
+                param?.Dispose();
                 Origin.As<SkillCardData>().Parameters.Remove(key);
-            });
-            Parameters.ObserveClear().Subscribe(_ => { Origin.As<SkillCardData>().Parameters.Clear(); });
+            }).AddTo(ref _disposables);
+            Parameters
+                .ObserveClear()
+                .Subscribe(_ =>
+                {
+                    foreach (var (key, param) in Parameters.ToList())
+                    {
+                        param?.Dispose();
+                    }
+                    Origin.As<SkillCardData>().Parameters.Clear();
+                })
+                .AddTo(ref _disposables);
             Parameters.ObserveChanged().Subscribe(newValue =>
             {
                 var ket = newValue.NewItem.Key;
                 var value = newValue.NewItem.Value;
                 // Debug.Log($"{ket} + {value}");
                 //TODO Протестить, может и не понадобится
-            });
+            }).AddTo(ref _disposables);
         }
 
         public int MaxLevel()
@@ -65,6 +82,14 @@ namespace Game.State.Inventory.SkillCards
         {
             var levelCost = (Level.CurrentValue / 5 + 1); 
             return levelCost * 1000;
-        } 
+        }
+
+        public override void Dispose()
+        {
+            Parameters.Clear(); //Dispose вызывается в подписке
+            EpicLevel?.Dispose();
+            Level?.Dispose();
+            base.Dispose();
+        }
     }
 }

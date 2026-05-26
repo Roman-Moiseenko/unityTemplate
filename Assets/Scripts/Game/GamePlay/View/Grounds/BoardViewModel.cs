@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.State.Maps.Grounds;
 using R3;
 using UnityEngine;
 
 namespace Game.GamePlay.View.Grounds
 {
-    public class BoardViewModel
+    public class BoardViewModel : IDisposable
     {
         public readonly BoardEntity BoardEntity;
         public ReadOnlyReactiveProperty<Vector2Int> Position { get; set; }
@@ -13,7 +14,8 @@ namespace Game.GamePlay.View.Grounds
         public readonly int BoardEntityId;
 
         public List<BoardWallViewModel> Walls = new();
-
+        private DisposableBag _disposables;
+        
         public BoardViewModel(BoardEntity boardEntity)
         {
             BoardEntity = boardEntity;
@@ -176,6 +178,13 @@ namespace Game.GamePlay.View.Grounds
                     }
                 );
             }
+        }
+
+        public void Dispose()
+        {
+            BoardEntity?.Dispose();
+            Position?.Dispose();
+            _disposables.Dispose();
         }
     }
 }

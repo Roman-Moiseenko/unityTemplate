@@ -141,6 +141,7 @@ namespace Game.GamePlay.Services
                     _listBoardEntityData.Find(e => e.Position == boardViewModel.Position.CurrentValue);
                 if (boardEntityData == null)
                 {
+                    boardViewModel?.Dispose();
                     _allBoards.Remove(boardViewModel);
                 }
                 else
@@ -148,6 +149,7 @@ namespace Game.GamePlay.Services
                     //Проверяем данные
                     if (!boardViewModel.BoardEntity.EqualsData(boardEntityData))
                     {
+                        boardViewModel?.Dispose();
                         _allBoards.Remove(boardViewModel);
                         var model = new BoardViewModel(new BoardEntity(boardEntityData));
                         _allBoards.Add(model);
@@ -250,9 +252,6 @@ namespace Game.GamePlay.Services
                         board.RightOutAngle = true;
                     }
                 }
-
-  
-
                 //Если есть, то со
             }
         }
@@ -289,7 +288,10 @@ namespace Game.GamePlay.Services
 
         public void Dispose()
         {
-            MapFogs.Clear();
+            foreach (var board in _allBoards)
+            {
+                board?.Dispose();
+            }
             _allGrounds.Clear();
             _groundsMap.Clear();
             _allBoards.Clear();

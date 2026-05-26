@@ -1,10 +1,11 @@
-﻿using Game.State.Maps.Mobs;
+﻿using System;
+using Game.State.Maps.Mobs;
 using UnityEngine;
 using R3;
 
 namespace Game.State.Maps.Shots
 {
-    public class ShotEntity
+    public class ShotEntity : IDisposable
     {
         public ShotEntityData Origin;
         public string ConfigId => Origin.ConfigId;
@@ -21,16 +22,24 @@ namespace Game.State.Maps.Shots
         public bool NotPrefab => Origin.NotPrefab;
         public MobDebuff Debuff => Origin.Debuff;
         public DamageType DamageType => Origin.DamageType;
-        
+        private DisposableBag _disposables;
         public ShotEntity(ShotEntityData shotEntityData)
         {
             Origin = shotEntityData;
             Position = new ReactiveProperty<Vector3>(shotEntityData.Position);
-            Position.Subscribe(newValue => shotEntityData.Position = newValue);
+            Position
+                .Subscribe(newValue => shotEntityData.Position = newValue)
+                .AddTo(ref _disposables);
             
           //  FinishPosition = position; //Конечная позиция снаряда меняется при движении моба
             //FinishPosition.Subscribe(newValue => shotEntityData.FinishPosition = newValue);
         }
-        
+
+        public void Dispose()
+        {
+            Position?.Dispose();
+            FinishPosition?.Dispose();
+            _disposables.Dispose();
+        }
     }
 }

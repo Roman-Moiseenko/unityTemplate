@@ -24,7 +24,7 @@ namespace Game.GamePlay.View.UI.PanelActions
         //public readonly ReactiveProperty<int> CurrentSpeed;
         private readonly GameplayStateProxy _gameplayStateProxy;
         private SkillsService _skillService;
-        private IDisposable _disposable;
+        //private IDisposable _disposable;
 
         public SkillViewModel SkillOneViewModel;
         public SkillViewModel SkillTwoViewModel;
@@ -34,13 +34,13 @@ namespace Game.GamePlay.View.UI.PanelActions
             DIContainer container
         ) : base(container)
         {
-            var d = Disposable.CreateBuilder();
+            //var d = Disposable.CreateBuilder();
             IsShow = true; //По-умолчанию показываем
             var _uiManager = uiManager;
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             var fsmGameplay = container.Resolve<FsmGameplay>();
             fsmGameplay.Fsm.StateCurrent.Subscribe();
-            _disposable = d.Build();
+          //  _disposable = d.Build();
             _skillService = container.Resolve<SkillsService>();
             SkillOneViewModel = _skillService.SkillOne;
             SkillTwoViewModel = _skillService.SkillTwo;
@@ -55,11 +55,6 @@ namespace Game.GamePlay.View.UI.PanelActions
             var cmd = Container.Resolve<ICommandProcessor>();
             var command = new CommandRewardKillMob(25, 1);
             cmd.Process(command);
-        }
-        
-        public override void Dispose()
-        {
-            _disposable.Dispose();
         }
 
         public float GetCurrentSpeed()

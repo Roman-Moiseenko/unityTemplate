@@ -23,13 +23,10 @@ namespace Game.GamePlay.View.UI.PanelTowerAction
         private readonly GameplayStateProxy _gameplayStateProxy;
         
         //Для теста
-        private readonly FsmGameplay _fsmGameplay;
-        private readonly FrameService _frameService;
+        //private readonly FsmGameplay _fsmGameplay;
+        //private readonly FrameService _frameService;
 
-        public ReactiveProperty<bool> IsPlacement = new(false);
-
-
-        private IDisposable _disposable;
+        public readonly ReactiveProperty<bool> IsPlacement = new(false);
         private readonly FsmTower _fsmTower;
 
         public PanelTowerActionViewModel(
@@ -37,12 +34,11 @@ namespace Game.GamePlay.View.UI.PanelTowerAction
             DIContainer container
         ) : base(container)
         {
-            var d = Disposable.CreateBuilder();
             _uiManager = uiManager;
 
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             
-            _fsmGameplay = container.Resolve<FsmGameplay>();
+            //_fsmGameplay = container.Resolve<FsmGameplay>();
             _fsmTower = container.Resolve<FsmTower>();
             _fsmTower.Fsm.StateCurrent.Subscribe(state =>
             {
@@ -51,11 +47,8 @@ namespace Game.GamePlay.View.UI.PanelTowerAction
                     var towerViewModel = _fsmTower.GetTowerViewModel();
                     IsPlacement.OnNext(towerViewModel.IsPlacement);    
                 }
-            });
-            _frameService = container.Resolve<FrameService>();
-            
-            
-            _disposable = d.Build();
+            }).AddTo(ref _disposables);
+           // _frameService = container.Resolve<FrameService>();
         }
 
         public void RequestPlacement()
@@ -67,12 +60,11 @@ namespace Game.GamePlay.View.UI.PanelTowerAction
         {
             _fsmTower.Fsm.SetState<FsmTowerDelete>();
         }
-        
-        
+
         public override void Dispose()
         {
-            _disposable.Dispose();
+            IsPlacement?.Dispose();
+            base.Dispose();
         }
-        
     }
 }

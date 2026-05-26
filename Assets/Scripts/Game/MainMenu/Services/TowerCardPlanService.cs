@@ -217,7 +217,7 @@ namespace Game.MainMenu.Services
         /**
          * Пересчитываем параметры башни в зависимости от уровня и эпичности
          */
-        public void UpdateParameterTowerCard(TowerCard towerCard)
+        private void UpdateParameterTowerCard(TowerCard towerCard)
         {
             //    var epic = towerCard.EpicLevel.Value;
             //    var level = towerCard.Level.Value;
@@ -228,8 +228,8 @@ namespace Game.MainMenu.Services
             towerCard.Parameters.Clear();
             foreach (var baseParameter in settings.BaseParameters)
             {
-                towerCard.Parameters.Add(baseParameter.ParameterType,
-                    new TowerParameter(new TowerParameterData(baseParameter)));
+                towerCard.AddParameter(baseParameter);
+                //Parameters.Add(baseParameter.ParameterType, new TowerParameter(new TowerParameterData(baseParameter)));
             }
 
             //Debug.Log(JsonConvert.SerializeObject(towerCard.Parameters, Formatting.Indented));
@@ -338,12 +338,15 @@ namespace Game.MainMenu.Services
                 Parameters = new Dictionary<TowerParameterType, TowerParameterData>(),
                 Defence = towerSetting.Defence,
             };
-            foreach (var baseParameter in towerSetting.BaseParameters)
-            {
-                towerCardData.Parameters.Add(baseParameter.ParameterType, new TowerParameterData(baseParameter));
-            }
+
 
             var towerCard = new TowerCard(towerCardData);
+            
+            foreach (var baseParameter in towerSetting.BaseParameters)
+            {
+                towerCard.AddParameter(baseParameter);
+                //towerCardData.Parameters.Add(baseParameter.ParameterType, new TowerParameterData(baseParameter));
+            }            
             towerCardData.EpicLevel = towerCardData.EpicLevel.Next();
             var towerCardAfter = new TowerCard(towerCardData);
 

@@ -30,13 +30,16 @@ namespace Game.GamePlay.View.UI.PanelTowerPlacement
             frameModelViews.ObserveAdd().Subscribe(e =>
             {
                 var viewModel = e.Value;
-                viewModel.Enable.Subscribe(v => IsEnable.Value = v)
+                viewModel.Enable
+                    .Subscribe(v => IsEnable.Value = v)
                     .AddTo(ref _disposables);
-            });
+            }).AddTo(ref _disposables);
 
             frameModelViews.ObserveRemove().Subscribe(v =>
             {
-                _disposables.Dispose();
+                var viewModel = v.Value;
+                viewModel?.Dispose();
+                //_disposables.Dispose();
             });
         }
 

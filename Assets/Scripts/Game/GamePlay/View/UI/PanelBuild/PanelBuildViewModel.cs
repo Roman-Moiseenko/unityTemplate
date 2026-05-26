@@ -106,5 +106,11 @@ namespace Game.GamePlay.View.UI.PanelBuild
             UpdateCards.Value++;
             LoadRewardsToCards(); //Перезогружаем карточки
         }
+
+        public override void Dispose()
+        {
+            CardViewModels.Clear();
+            base.Dispose();
+        }
     }
 }

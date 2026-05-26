@@ -1,13 +1,9 @@
-﻿using System;
-using Cysharp.Threading.Tasks;
-using DI;
-using Game.Common;
+﻿using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
-using Game.GamePlay.View.Towers;
 using Game.GamePlay.View.UI.PanelActions;
 using Game.GamePlay.View.UI.PanelBuild;
 using Game.GamePlay.View.UI.PanelConfirmation;
@@ -24,10 +20,8 @@ using Game.GamePlay.View.UI.PopupTowerDelete;
 using Game.GamePlay.View.UI.ScreenGameplay;
 using Game.State;
 using MVVM.UI;
-using Newtonsoft.Json;
 using R3;
 using UnityEngine;
-
 
 namespace Game.GamePlay.View.UI
 {
@@ -41,12 +35,13 @@ namespace Game.GamePlay.View.UI
         public GameplayUIManager(DIContainer container) : base(container)
         {
             var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
-
+            var rootUI = Container.Resolve<UIGameplayRootViewModel>();
+            var gameService = container.Resolve<GameplayService>();            
+            
             _fsmGameplay = container.Resolve<FsmGameplay>();
             _fsmTower = container.Resolve<FsmTower>();
+            _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>();
             
-            var rootUI = Container.Resolve<UIGameplayRootViewModel>();
- 
             //Создаем панели, необходимые для Геймплея
             rootUI.AddPanel(new PanelGateWaveViewModel(this, container));
             rootUI.AddPanel(new PanelBuildViewModel(container));
@@ -54,8 +49,8 @@ namespace Game.GamePlay.View.UI
             rootUI.AddPanel(new PanelConfirmationViewModel(this, container));
             rootUI.AddPanel(new PanelTowerActionViewModel(this, container));
             rootUI.AddPanel(new PanelTowerPlacementViewModel(this, container));
-            
-            _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>();
+            //Скрываем панель при первом вхождении в геймплей
+            rootUI.HidePanel<PanelActionsViewModel>();            
 
             //Логика показа/скрытия панелей от состояний FSM (Gameplay и Tower)
             //Основные панели
@@ -81,9 +76,6 @@ namespace Game.GamePlay.View.UI
                     rootUI.ShowPanel<PanelActionsViewModel>();
                 }
             }).AddTo(ref _disposables);
-            
-            //Скрываем панель при первом вхождении в геймплей
-            rootUI.HidePanel<PanelActionsViewModel>();
             //Панели Tower
             _fsmTower.Fsm.StateCurrent.Subscribe(newState =>
             {
@@ -120,12 +112,11 @@ namespace Game.GamePlay.View.UI
                 }
             }).AddTo(ref _disposables);
             
-            var gameService = container.Resolve<GameplayService>();
             gameService.GameOver
                 .Where(x => x != null)
                 .Subscribe(exitParams =>
                     {
-                        Debug.Log(exitParams);
+                        //Debug.Log(exitParams);
                         if (exitParams.MainMenuEnterParams == null) return;
                         _fsmGameplay.Fsm.SetState<FsmStateGamePause>();
                         OpenFinishPopup(exitParams);

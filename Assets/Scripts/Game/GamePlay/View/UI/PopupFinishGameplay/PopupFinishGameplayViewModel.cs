@@ -24,19 +24,19 @@ namespace Game.GamePlay.View.UI.PopupFinishGameplay
     {
         public readonly MainMenuEnterParams EnterParams;
 
-        public TypeChest RewardChest;
+        public readonly TypeChest RewardChest;
         public override string Id => "PopupFinishGameplay";
         public override string Path => "Gameplay/Popups/";
-        public List<ResourceRewardViewModel> RewardResources = new();
-        public int MapId;
+        public readonly List<ResourceRewardViewModel> RewardResources = new();
+        public readonly int MapId;
         public StatisticGame StatisticGame;
-        public float TotalTimeInScene;
+        public readonly float TotalTimeInScene;
         private readonly List<RewardEntityData> _rewards = new();
         private readonly GameplayExitParams _exitParams;
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
         
-        public List<StatisticElementViewModel> Elements = new();
-        public int AllDamage;
+        public readonly List<StatisticElementViewModel> Elements = new();
+        public readonly int AllDamage;
         public PopupFinishGameplayViewModel(
             GameplayExitParams exitParams, 
             Subject<GameplayExitParams> exitSceneRequest,

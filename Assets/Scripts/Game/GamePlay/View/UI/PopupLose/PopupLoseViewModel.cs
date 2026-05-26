@@ -17,7 +17,7 @@ namespace Game.GamePlay.View.UI.PopupLose
         private readonly Subject<GameplayExitParams> _exitSceneRequest;
 
         private readonly GameplayService _gameplayService;
-        public ReactiveProperty<bool> ShowButtonAd = new();
+        public readonly ReactiveProperty<bool> ShowButtonAd = new();
 
         public PopupLoseViewModel(
             GameplayUIManager uiManager, 
@@ -50,6 +50,12 @@ namespace Game.GamePlay.View.UI.PopupLose
         {
             base.RequestClose();
             _gameplayService.RepairAd();
+        }
+
+        public override void Dispose()
+        {
+            ShowButtonAd?.Dispose();
+            base.Dispose();
         }
     }
 }

@@ -16,7 +16,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.View.UI.PanelBuild
 {
-    public class CardViewModel
+    public class CardViewModel 
     {
         public string Caption;
         public string Description;

@@ -7,7 +7,6 @@ using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
 using Game.State;
-using Game.State.Gameplay;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Shots;
 using Game.State.Root;
@@ -21,39 +20,34 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 {
     public class ScreenGameplayViewModel : WindowViewModel
     {
-        public readonly GameplayUIManager _uiManager;
-
-        public GameplayCamera CameraService;
-
-        public Subject<Unit> PositionCamera;
-
-        //TODO Возможно удалить
-        private readonly Subject<GameplayExitParams> _exitSceneRequest;
-        private readonly GameplayStateProxy _gameplayState;
-        private readonly CastleService _castleService;
-        private WaveService _waveService;
+        
+        
+        public readonly GameplayCamera CameraService;
+        public readonly Subject<Unit> PositionCamera;
 
         public readonly ReactiveProperty<int> ProgressData = new();
         public readonly ReactiveProperty<int> ProgressLevel = new();
         public readonly ReactiveProperty<long> SoftCurrency = new();
         public readonly ReactiveProperty<long> HardCurrency;
         public readonly ReactiveProperty<string> WaveText = new();
-        public ObservableList<DamageEntity> AllDamages;
-        public ObservableList<RewardCurrencyEntity> AllRewards;
-        public ObservableList<float> RepairBuffer;
+        public readonly ObservableList<DamageEntity> AllDamages;
+        public readonly ObservableList<RewardCurrencyEntity> AllRewards;
+        public readonly ObservableList<float> RepairBuffer;
 
-        public ReactiveProperty<float> CastleHealth;
-        public float CastleFullHealth;
-        private readonly RewardProgressService _rewardService;
+        public readonly ReactiveProperty<float> CastleHealth;
+        public readonly float CastleFullHealth;
 
-        public ReactiveProperty<bool> ShowStartWave = new(false);
-        public ReactiveProperty<bool> ShowFinishWave = new(false);
-        public ReactiveProperty<RewardEntity> RewardEntity;
+        public readonly ReactiveProperty<bool> ShowStartWave = new(false);
+        public readonly ReactiveProperty<bool> ShowFinishWave = new(false);
+        public readonly ReactiveProperty<RewardEntity> RewardEntity;
         public override string Id => "ScreenGameplay";
         public override string Path => "Gameplay/ScreenGameplay/";
-        private IDisposable _disposable;
 
-        public ReactiveProperty<bool> ShowTopMenu = new(true);
+        public readonly ReactiveProperty<bool> ShowTopMenu = new(true);
+        
+        private readonly GameplayUIManager _uiManager;
+        //TODO Возможно удалить
+        private readonly Subject<GameplayExitParams> _exitSceneRequest;
 
         public ScreenGameplayViewModel(
             GameplayUIManager uiManager,
@@ -61,60 +55,62 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
             DIContainer container
         ) : base(container)
         {
-            var d = Disposable.CreateBuilder();
-            _uiManager = uiManager;
-            _exitSceneRequest = exitSceneRequest;
-            _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
-            _castleService = container.Resolve<CastleService>();
-            _waveService = container.Resolve<WaveService>();
-            _rewardService = container.Resolve<RewardProgressService>();
+            var gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
+            var castleService = container.Resolve<CastleService>();
+            var waveService = container.Resolve<WaveService>();
+            var rewardService = container.Resolve<RewardProgressService>();
             var fsmTower = container.Resolve<FsmTower>();
+            var damageService = container.Resolve<DamageService>();
+            
+            _uiManager = uiManager;
+            _exitSceneRequest = exitSceneRequest;            
+            
+            HardCurrency = container.Resolve<IGameStateProvider>().GameState.HardCurrency;
+            AllRewards = rewardService.RewardMaps;
+            RewardEntity = rewardService.RewardEntity;
+            CastleHealth = gameplayState.Castle.CurrenHealth;
+            CastleFullHealth = gameplayState.Castle.FullHealth;
+            AllDamages = damageService.AllDamages;
+            CameraService = container.Resolve<GameplayCamera>();
+            RepairBuffer = castleService.RepairBuffer;
+            PositionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
+            WaveText.Value = 1 + "/" + gameplayState.CountWaves;
+            
             fsmTower.Fsm.StateCurrent.Subscribe(v =>
             {
                 if (v.GetType() == typeof(FsmTowerDelete)) _uiManager.OpenPopupTowerDelete();
-            }).AddTo(ref d);
-
-            HardCurrency = container.Resolve<IGameStateProvider>().GameState.HardCurrency;
-            AllRewards = _rewardService.RewardMaps;
-            RewardEntity = _rewardService.RewardEntity;
-
-            CastleHealth = _gameplayState.Castle.CurrenHealth;
-            CastleFullHealth = _gameplayState.Castle.FullHealth;
-
-            var damageService = container.Resolve<DamageService>();
-            AllDamages = damageService.AllDamages;
-            CameraService = container.Resolve<GameplayCamera>();
-            RepairBuffer = _castleService.RepairBuffer;
-            PositionCamera = container.Resolve<Subject<Unit>>(AppConstants.CAMERA_MOVING);
-            WaveText.Value = 1 + "/" + _gameplayState.CountWaves;
-
-            _waveService.FinishWave.Where(v => v).Subscribe(v =>
+            }).AddTo(ref _disposables);
+            
+            waveService.FinishWave.Where(v => v).Subscribe(v =>
             {
                 ShowFinishWave.Value = true;
-                _waveService.FinishWave.Value = false; //Сбрасываем флаг окончания волны
-            }).AddTo(ref d);
-            _waveService.StartWave.Where(v => v).Subscribe(v =>
+                waveService.FinishWave.Value = false; //Сбрасываем флаг окончания волны
+            }).AddTo(ref _disposables);
+            waveService.StartWave.Where(v => v).Subscribe(v =>
             {
                 ShowStartWave.Value = true;
-                _waveService.StartWave.Value = false; //Сбрасываем флаг окончания волны
+                waveService.StartWave.Value = false; //Сбрасываем флаг окончания волны
                 //Меняем номер волны
-                WaveText.Value = _gameplayState.CurrentWave.CurrentValue + "/" + _gameplayState.CountWaves;
-            }).AddTo(ref d);
+                WaveText.Value = gameplayState.CurrentWave.CurrentValue + "/" + gameplayState.CountWaves;
+            }).AddTo(ref _disposables);
             
-            _gameplayState.Progress.Subscribe(newValue => ProgressData.Value = newValue).AddTo(ref d);
-            _gameplayState.ProgressLevel.Subscribe(newValue => ProgressLevel.Value = newValue).AddTo(ref d);
-            _gameplayState.SoftCurrency.Subscribe(newValue => SoftCurrency.Value = newValue).AddTo(ref d);
-            _gameplayState.Castle.IsDead.Where(e => e)
+            gameplayState.Progress
+                .Subscribe(newValue => ProgressData.Value = newValue)
+                .AddTo(ref _disposables);
+            gameplayState.ProgressLevel
+                .Subscribe(newValue => ProgressLevel.Value = newValue)
+                .AddTo(ref _disposables);
+            gameplayState
+                .SoftCurrency
+                .Subscribe(newValue => SoftCurrency.Value = newValue).AddTo(ref _disposables);
+            gameplayState.Castle.IsDead
+                .Where(e => e)
                 .Subscribe(newValue =>
                 {
-                    if (_gameplayState.Castle.CountResurrection.CurrentValue < 2)
-                    {
+                    if (gameplayState.Castle.CountResurrection.CurrentValue < 2)
                         _uiManager.OpenPopupLose();                        
-                    }
-                    
                 })
-                .AddTo(ref d);
-            _disposable = d.Build();
+                .AddTo(ref _disposables);
         }
 
         public void RequestOpenPopupPause()
@@ -124,7 +120,10 @@ namespace Game.GamePlay.View.UI.ScreenGameplay
 
         public override void Dispose()
         {
-            _disposable.Dispose();
+            ShowStartWave?.Dispose();
+            ShowFinishWave?.Dispose();
+            ShowTopMenu?.Dispose();
+            base.Dispose();
         }
     }
 }

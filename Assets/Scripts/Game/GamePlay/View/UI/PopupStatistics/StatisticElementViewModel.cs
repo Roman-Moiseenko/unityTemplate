@@ -27,7 +27,6 @@ namespace Game.GamePlay.View.UI.PopupStatistics
         public StatisticElementViewModel(DIContainer container)
         {
             GameplayState = container.Resolve<IGameStateProvider>().GameplayState;
-
         }
 
     }

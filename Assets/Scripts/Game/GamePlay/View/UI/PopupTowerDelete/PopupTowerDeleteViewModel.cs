@@ -16,7 +16,6 @@ namespace Game.GamePlay.View.UI.PopupTowerDelete
         {
             _fsmTower = container.Resolve<FsmTower>();
             _towerService = container.Resolve<TowersService>();
-
         }
 
         public override string Id => "PopupTowerDelete";

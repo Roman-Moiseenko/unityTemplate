@@ -68,10 +68,10 @@ namespace Game.GamePlay.View.Frames
 
         public void Dispose()
         {
-            _disposables.Dispose();
             Enable?.Dispose();
             IsSelected?.Dispose();
             Position?.Dispose();
+            _disposables.Dispose();
         }
 
 

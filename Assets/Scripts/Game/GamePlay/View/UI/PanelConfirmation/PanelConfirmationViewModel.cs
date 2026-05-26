@@ -32,14 +32,13 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
         public ReactiveProperty<bool> IsRotate;
 
         private IObservableCollection<FrameBlockViewModel> _frameBlocksView;
-        private IDisposable _disposable;
+        
 
         public PanelConfirmationViewModel(
             GameplayUIManager uiManager, 
             DIContainer container
         ) : base(container)
         {
-            var d = Disposable.CreateBuilder();
             _uiManager = uiManager;
 
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
@@ -56,14 +55,13 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
                 IsEnable.Value = viewModel.Enable.Value;
                 viewModel.Enable.Subscribe(ev => IsEnable.Value = ev);
                 IsRotate.Value = viewModel.IsRotate();
-            }).AddTo(ref d);
+            }).AddTo(ref _disposables);
 
             _frameBlocksView.ObserveRemove().Subscribe(_ =>
             {
                 IsEnable.Value = true;
                 IsRotate.Value = true;
-            }).AddTo(ref d);
-            _disposable = d.Build();
+            }).AddTo(ref _disposables);
         }
 
         public void RequestConfirmation()
@@ -83,11 +81,6 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
         public void RequestRotate()
         {
             _frameService.RotateFrame();
-        }
-        
-        public override void Dispose()
-        {
-            _disposable.Dispose();
         }
         
     }

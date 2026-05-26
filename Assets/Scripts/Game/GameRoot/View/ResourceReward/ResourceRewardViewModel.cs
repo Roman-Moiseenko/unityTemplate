@@ -6,9 +6,9 @@ namespace Game.GameRoot.View.ResourceReward
 {
     public class ResourceRewardViewModel
     {
-        public long Amount;
-        public InventoryType InventoryType;
-        public string ConfigId;
+        public readonly long Amount;
+        public readonly InventoryType InventoryType;
+        public readonly string ConfigId;
 
         public ResourceRewardViewModel(RewardEntityData rewardEntityData)
         {
