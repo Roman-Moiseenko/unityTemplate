@@ -58,8 +58,12 @@ namespace DI
             {
                 if (_instance == null)
                 {
-                    _instance = Factory(Container);
+                    var instance = Factory(Container);
                     
+                    // Присваиваем Instance только после успешного создания,
+                    // чтобы при исключении в Factory _instance остался null
+                    // и повторный Resolve попробовал создать заново.
+                    _instance = instance;
                     if (_instance is IDisposable disposableInstance)
                     {
                         _disposableInstance = disposableInstance;

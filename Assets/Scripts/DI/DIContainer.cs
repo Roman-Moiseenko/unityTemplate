@@ -17,21 +17,34 @@ public class DIContainer : IDisposable
 
         public DIEntry RegisterFactory<T>(Func<DIContainer, T> factory)
         {
-            return RegisterFactory(null, factory);
+            return RegisterFactory(null, factory, false);
         }
 
         public DIEntry RegisterFactory<T>(string tag, Func<DIContainer, T> factory)
         {
+            return RegisterFactory(tag, factory, false);
+        }
+        /// <summary>
+        /// Регистрирует фабрику для создания T.
+        /// </summary>
+        /// <param name="tag">Необязательный тег для именованной регистрации.</param>
+        /// <param name="factory">Фабрика, принимающая контейнер и возвращающая T.</param>
+        /// <param name="overrideIfExists">
+        /// Если true — перезаписывает существующую регистрацию (tag, T) без исключения.
+        /// Полезно в дочерних контейнерах для переопределения сервисов родителя.
+        /// Если false — кидает исключение при повторной регистрации (поведение по умолчанию).
+        /// </param>
+        public DIEntry RegisterFactory<T>(string tag, Func<DIContainer, T> factory, bool overrideIfExists)
+        {
             var key = (tag, typeof(T));
-            
-            if (_entriesMap.ContainsKey(key))
+
+            if (!overrideIfExists && _entriesMap.ContainsKey(key))
             {
                 throw new Exception(
                     $"DI: Factory with tag {key.Item1} and type {key.Item2.FullName} has already registered");
             }
 
             var diEntry = new DIEntry<T>(this, factory);
-
             _entriesMap[key] = diEntry;
 
             return diEntry;
@@ -39,21 +52,33 @@ public class DIContainer : IDisposable
 
         public void RegisterInstance<T>(T instance)
         {
-            RegisterInstance(null, instance);
+            RegisterInstance(null, instance, false);
         }
 
         public void RegisterInstance<T>(string tag, T instance)
         {
+            RegisterInstance(tag, instance, false);
+        }
+        /// <summary>
+        /// Регистрирует готовый экземпляр T.
+        /// </summary>
+        /// <param name="tag">Необязательный тег для именованной регистрации.</param>
+        /// <param name="instance">Готовый экземпляр.</param>
+        /// <param name="overrideIfExists">
+        /// Если true — перезаписывает существующую регистрацию (tag, T) без исключения.
+        /// Если false — кидает исключение при повторной регистрации (поведение по умолчанию).
+        /// </param>
+        public void RegisterInstance<T>(string tag, T instance, bool overrideIfExists)
+        {
             var key = (tag, typeof(T));
-            
-            if (_entriesMap.ContainsKey(key))
+
+            if (!overrideIfExists && _entriesMap.ContainsKey(key))
             {
                 throw new Exception(
                     $"DI: Instance with tag {key.Item1} and type {key.Item2.FullName} has already registered");
             }
 
             var diEntry = new DIEntry<T>(instance);
-
             _entriesMap[key] = diEntry;
         }
 
@@ -77,15 +102,53 @@ public class DIContainer : IDisposable
 
                 if (_parentContainer != null)
                 {
+                    // Рекурсивный вызов родительского контейнера.
+                    // Если в цепочке родителей произойдёт исключение,
+                    // finally внешнего блока гарантированно очистит _resolutionsCache
+                    // текущего контейнера (finally выполняется до раскрутки стека исключения).
                     return _parentContainer.Resolve<T>(tag);
                 }
             }
             finally
             {
                 _resolutionsCache.Remove(key);
-            } 
-            
+            }
+
+            // Если запросили Lazy<T>, а зарегистрирован T — автоматически оборачиваем
+            if (typeof(T).IsGenericType && typeof(T).GetGenericTypeDefinition() == typeof(Lazy<>))
+            {
+                var valueType = typeof(T).GetGenericArguments()[0];
+                if (IsRegistered(valueType, tag))
+                {
+                    return (T)Activator.CreateInstance(
+                        typeof(Lazy<>).MakeGenericType(valueType),
+                        new Func<object>(() => ResolveUntyped(valueType, tag)));
+                }
+            }
+
             throw new Exception($"Couldn't find dependency for tag {tag} and type {key.Item2.FullName}");
+        }
+
+        /// <summary>
+        /// Проверяет, зарегистрирован ли тип (с опциональным тегом) в текущем контейнере или родителях.
+        /// </summary>
+        public bool IsRegistered(Type type, string tag = null)
+        {
+            var key = (tag, type);
+            if (_entriesMap.ContainsKey(key)) return true;
+            if (_parentContainer != null) return _parentContainer.IsRegistered(type, tag);
+            return false;
+        }
+
+        /// <summary>
+        /// Разрешает зависимость по типу без generic-параметра (через рефлексию).
+        /// Используется для Lazy<T>-обёртки.
+        /// </summary>
+        private object ResolveUntyped(Type type, string tag)
+        {
+            var method = typeof(DIContainer).GetMethod(nameof(Resolve), new[] { typeof(string) });
+            var genericMethod = method.MakeGenericMethod(type);
+            return genericMethod.Invoke(this, new object[] { tag });
         }
 
         /// <summary>
