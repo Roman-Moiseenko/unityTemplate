@@ -130,7 +130,7 @@ namespace Game.GamePlay.Services
             var towerEntityId = _gameplayState.CreateEntityID();
 
             var query = new QueryInfoTower {ConfigId = configId};
-            var settings = (TowerSettings)_qrc.Request(query);
+            var settings = _qrc.Request<QueryInfoTower, TowerSettings>(query);
             var towerEntity = new TowerEntity(new TowerEntityData
             {
                 UniqueId = towerEntityId,

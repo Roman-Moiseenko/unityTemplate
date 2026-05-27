@@ -2,9 +2,9 @@
 
 namespace MVVM.CMD
 {
-    public interface IQueryHandler<in TQuery> where TQuery : IQuery
+    public interface IQueryHandler<in TQuery, TResult> where TQuery : IQuery<TResult>
     {
-        object Handle(TQuery query, ISettingsProvider settingsProvider);
+        TResult Handle(TQuery query, ISettingsProvider settingsProvider);
         
     }
 }

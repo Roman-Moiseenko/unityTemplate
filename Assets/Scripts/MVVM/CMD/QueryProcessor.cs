@@ -15,16 +15,18 @@ namespace MVVM.CMD
             _settingsProvider = settingsProvider;
         }
         
-        public void RegisterHandler<TQuery>(IQueryHandler<TQuery> handler) where TQuery : IQuery
+        public void RegisterHandler<TQuery, TResult>(IQueryHandler<TQuery, TResult> handler) 
+            where TQuery : IQuery<TResult>
         {
             _handlesMap[typeof(TQuery)] = handler;
         }
 
-        public object Request<TQuery>(TQuery query) where TQuery : IQuery
+        public TResult Request<TQuery, TResult>(TQuery query) 
+            where TQuery : IQuery<TResult>
         {
             if (_handlesMap.TryGetValue(typeof(TQuery), out var handler))
             {
-                var typeHandler = (IQueryHandler<TQuery>)handler;
+                var typeHandler = (IQueryHandler<TQuery, TResult>)handler;
                 if (typeHandler == null)
                 {
                     throw new Exception("Не загружен запрос " + typeof(TQuery));
@@ -32,7 +34,6 @@ namespace MVVM.CMD
                 return typeHandler.Handle(query, _settingsProvider);
             }
             throw new Exception("Не загружен запрос " + typeof(TQuery));
-
         }
         
     }

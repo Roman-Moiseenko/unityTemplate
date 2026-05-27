@@ -57,7 +57,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoWave
                 AllEnemyDataInfo.Clear();
                 //Получить данные О Новой Волне
                 var query = new QueryInfoWave { NumberWave = number, IsWay = isWay};
-                var list = (List<EnemyDataInfo>)qrc.Request(query);
+                var list = qrc.Request<QueryInfoWave, List<EnemyDataInfo>>(query);
                 foreach (var dataInfo in list)
                 {
                     AllEnemyDataInfo.Add(dataInfo);

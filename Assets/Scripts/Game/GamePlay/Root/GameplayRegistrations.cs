@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DI;
 using Game.GamePlay.Classes;
@@ -13,11 +14,13 @@ using Game.GamePlay.Commands.WarriorCommands;
 using Game.GamePlay.Commands.WaveCommands;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
+using Game.GamePlay.Queries.Classes;
 using Game.GamePlay.Queries.TowerQueries;
 using Game.GamePlay.Queries.WaveQueries;
 using Game.GamePlay.Services;
 using Game.GameRoot.Services;
 using Game.Settings;
+using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
 using Game.State.Gameplay.Statistics;
 using MVVM.CMD;
@@ -108,9 +111,11 @@ namespace Game.GamePlay.Root
             }
 
             var qrc = container.Resolve<IQueryProcessor>();
-            qrc.RegisterHandler(new QueryInfoWaveHandler(gameplayState));
-            qrc.RegisterHandler(new QueryInfoTowerHandler(gameplayState));
+            qrc.RegisterHandler<QueryInfoWave, List<EnemyDataInfo>>(new QueryInfoWaveHandler(gameplayState));
+            qrc.RegisterHandler<QueryInfoTower, TowerSettings>(new QueryInfoTowerHandler(gameplayState));
 
+            
+            
             // var subjectExitParams = new Subject<GameplayExitParams>();
             //  container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
             //  var generateService = new GenerateService();

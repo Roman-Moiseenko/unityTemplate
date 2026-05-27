@@ -1,11 +1,12 @@
 ﻿using Game.Settings;
+using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Gameplay;
 using Game.State.Root;
 using MVVM.CMD;
 
 namespace Game.GamePlay.Queries.TowerQueries
 {
-    public class QueryInfoTowerHandler : IQueryHandler<QueryInfoTower>
+    public class QueryInfoTowerHandler : IQueryHandler<QueryInfoTower, TowerSettings>
     {
         private readonly GameplayStateProxy _gameplayState;
 
@@ -13,7 +14,7 @@ namespace Game.GamePlay.Queries.TowerQueries
         {
             _gameplayState = gameplayState;
         }
-        public object Handle(QueryInfoTower query, ISettingsProvider settingsProvider)
+        public TowerSettings Handle(QueryInfoTower query, ISettingsProvider settingsProvider)
         {
             var gameSettings = settingsProvider.GameSettings;
             var towerSettings = gameSettings.TowersSettings.AllTowers.Find(t => t.ConfigId == query.ConfigId);

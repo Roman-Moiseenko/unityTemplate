@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Game.GamePlay.Queries.WaveQueries
 {
-    public class QueryInfoWaveHandler : IQueryHandler<QueryInfoWave>
+    public class QueryInfoWaveHandler : IQueryHandler<QueryInfoWave, List<EnemyDataInfo>>
     {
         private readonly int _mapId;
 
@@ -18,7 +18,7 @@ namespace Game.GamePlay.Queries.WaveQueries
         {
             _mapId = gameplayState.MapId.CurrentValue;
         }
-        public object Handle(QueryInfoWave query, ISettingsProvider settingsProvider)
+        public List<EnemyDataInfo> Handle(QueryInfoWave query, ISettingsProvider settingsProvider)
         {
             var gameSettings = settingsProvider.GameSettings;
             var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == _mapId).InitialStateSettings;
