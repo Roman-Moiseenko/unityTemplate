@@ -339,5 +339,87 @@ namespace Game.GamePlay.Services
 
             return positionPlacement;
         }
+        
+        //Направление участков дорог от текущего
+        
+                /// <summary>
+        /// Вычисляет направление дороги в указанной точке.
+        /// Направление от начала пути (замок) к концу пути (ворота/спавн врагов).
+        /// Для последней дороги — направление за пределы карты (туда, где будут новые участки).
+        /// </summary>
+        public Vector2Int GetRoadDirectionNext(Vector2Int position)
+        {
+            var (roadEntity, roadList, index) = FindRoadWithIndex(position);
+            if (roadEntity == null) return Vector2Int.zero;
+
+            if (index < roadList.Count - 1)
+            {
+                var nextRoad = roadList[index + 1];
+                return nextRoad.Position.CurrentValue - position;
+            }
+            else
+            {
+                // Последняя дорога — направление вычисляем через WayService (GetVectorExit)
+                var roadData = new RoadEntityData
+                {
+                    Position = roadEntity.Position.CurrentValue,
+                    Rotate = roadEntity.Rotate.CurrentValue,
+                    IsTurn = roadEntity.IsTurn
+                };
+                var exitPoint = _wayService.GetExitPoint(new List<RoadEntityData> { roadData });
+                return exitPoint - position;
+            }
+        }
+
+        /// <summary>
+        /// Вычисляет направление дороги в указанной точке.
+        /// Направление от текущей дороги к предыдущей (к началу пути, замку).
+        /// Для первой дороги — направление за пределы карты (туда, где замок).
+        /// </summary>
+        public Vector2Int GetRoadDirectionPrevious(Vector2Int position)
+        {
+            var (roadEntity, roadList, index) = FindRoadWithIndex(position);
+            if (roadEntity == null) return Vector2Int.zero;
+
+            if (index > 0)
+            {
+                var prevRoad = roadList[index - 1];
+                return prevRoad.Position.CurrentValue - position;
+            }
+            else
+            {
+                // Первая дорога — направление вычисляем через WayService (GetVectorEnter)
+                var roadData = new RoadEntityData
+                {
+                    Position = roadEntity.Position.CurrentValue,
+                    Rotate = roadEntity.Rotate.CurrentValue,
+                    IsTurn = roadEntity.IsTurn
+                };
+                var enterPoint = _wayService.GetEnterPoint(new List<RoadEntityData> { roadData });
+                return enterPoint - position;
+            }
+        }
+
+        /// <summary>
+        /// Поиск дороги в указанной позиции, а также списка дорог и индекса в нём
+        /// </summary>
+        private (RoadEntity roadEntity, IList<RoadEntity> roadList, int index) FindRoadWithIndex(Vector2Int position)
+        {
+            for (var i = 0; i < _gameplayState.Way.Count; i++)
+            {
+                if (_gameplayState.Way[i].Position.CurrentValue == position)
+                    return (_gameplayState.Way[i], _gameplayState.Way, i);
+            }
+
+            for (var i = 0; i < _gameplayState.WaySecond.Count; i++)
+            {
+                if (_gameplayState.WaySecond[i].Position.CurrentValue == position)
+                    return (_gameplayState.WaySecond[i], _gameplayState.WaySecond, i);
+            }
+
+            return (null, null, -1);
+        }
+
+        
     }
 }

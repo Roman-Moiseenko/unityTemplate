@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.SkillStates;
-using Game.GamePlay.View.Frames;
+using Game.GamePlay.Queries.SkillQueries;
 using Game.GamePlay.View.Frames.SkillFrames;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.State.Gameplay;
@@ -23,16 +24,22 @@ namespace Game.GamePlay.Services
         private readonly SkillsService _skillService;
         private readonly RoadsService _roadsService;
         private FrameSkillViewModel _viewModel;
-        public bool IsPlacement;
+
         private readonly FsmSkill _fsmSkill;
         private DisposableBag _disposables = new();
+        private readonly IQueryProcessor _qrc;
 
+        //Вычисляемые параметры для моделей в Binder
+        public readonly ReactiveProperty<bool> IsPlacement = new(false);
+        public readonly ReactiveProperty<Vector2Int> Direction = new(Vector2Int.zero);
+        public readonly List<int> Cells = new(); //TODO доделать, (position, direction) Observable
+        
         public FrameSkillService(
             GameplayStateProxy gameplayState,
             PlacementService placementService,
             SkillsService skillService,
             RoadsService roadsService,
-            SkillsSettings skillsSettings,
+            SkillsSettings skillsSettings, //Удалить?
             IQueryProcessor qrc,
             DIContainer container
         )
@@ -42,7 +49,7 @@ namespace Game.GamePlay.Services
             _placementService = placementService;
             _skillService = skillService;
             _roadsService = roadsService;
-            
+            _qrc = qrc;
             _fsmSkill = container.Resolve<FsmSkill>();
             
             //Подписка на те варианты, которые влияют на FrameSkill 
@@ -56,51 +63,73 @@ namespace Game.GamePlay.Services
 
                 if (newState.GetType() == typeof(FsmSkillSetTarget) && _viewModel != null)
                 {
-                    _viewModel.Enable.Value = true;
+                    _viewModel.IsEnable.Value = true;
                 }
 
-                if (newState.GetType() == typeof(FsmSkillNone)) _viewModels.Clear();
+                if (newState.GetType() == typeof(FsmSkillNone)) ClearViewModel();
                 
             }).AddTo(ref _disposables);
+            
             _fsmSkill.Position.Subscribe(newPosition => 
                 {
-                    if (_fsmSkill.IsTarget()) MoveFrame(newPosition); //Переносим объект
+                    if (_fsmSkill.IsTarget()) MoveFrame(newPosition);
                 }
             ).AddTo(ref _disposables);
             
         }
 
-        public void MoveFrame(Vector2Int position)
+        private void MoveFrame(Vector2Int position)
         {
             _viewModel.MoveFrame(position);
-            CheckPlacement();
+            CheckPlacement(position);
         }
 
         /**
          * Проверяем размещение для _viewModel
          */
-        private void CheckPlacement()
+        private void CheckPlacement(Vector2Int position)
         {
-            IsPlacement = true;
+            if (!_viewModel.OnRoad)
+            {
+                IsPlacement.Value = true;
+                return;
+            }
+            IsPlacement.Value = _placementService.IsRoad(position);
+            if (!_placementService.IsRoad(position)) return;
+            
+            if (_viewModel.MultiCells == 0)
+            {
+                Direction.Value = _placementService.GetRoadDirectionNext(position);
+            }
+            else
+            {
+                //TODO Вычисляем координаты всех ячеек и их направление
+            }
         }
 
-        public void CreateViewModel(string configId)
+
+        private void CreateViewModel(string configId)
         {
-            if (_viewModels.Count > 0) _viewModels.Clear();
-            
-            _viewModel = new FrameSkillViewModel(configId);
+            if (_viewModels.Count > 0) ClearViewModel();
+
+            var query = new QueryInfoSkill { ConfigId = configId };
+            var settings = _qrc.Request<QueryInfoSkill, SkillSettings>(query);
+            _viewModel = new FrameSkillViewModel(configId, settings, this);
             _viewModels.Add(_viewModel);
         }
 
         public void Dispose()
         {
-            foreach (var viewModel in _viewModels)
-            {
-                viewModel.Dispose();
-            }
-            _viewModels.Clear();
-            _viewModel?.Dispose();
+            ClearViewModel();
+            IsPlacement?.Dispose();
             _disposables.Dispose();
+        }
+
+        private void ClearViewModel()
+        {
+            _viewModel?.Dispose();
+            _viewModel = null;
+            _viewModels.Clear();
         }
     }
 }

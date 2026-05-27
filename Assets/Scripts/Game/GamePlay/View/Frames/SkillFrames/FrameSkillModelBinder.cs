@@ -1,3 +1,5 @@
+using System;
+using R3;
 using UnityEngine;
 
 namespace Game.GamePlay.View.Frames.SkillFrames
@@ -5,6 +7,7 @@ namespace Game.GamePlay.View.Frames.SkillFrames
     public abstract class FrameSkillModelBinder : MonoBehaviour
     {
         protected FrameSkillViewModel ViewModel;
+        protected DisposableBag _disposables;
 
         public void Bind(FrameSkillViewModel viewModel)
         {
@@ -13,5 +16,11 @@ namespace Game.GamePlay.View.Frames.SkillFrames
         }
 
         protected abstract void OnBind();
+
+
+        protected virtual void OnDestroy()
+        {
+            _disposables.Dispose();
+        }
     }
 }

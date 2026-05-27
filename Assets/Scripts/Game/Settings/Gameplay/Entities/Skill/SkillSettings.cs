@@ -10,7 +10,9 @@ namespace Game.Settings.Gameplay.Entities.Skill
         public string DescriptionLid;
         public string PrefabPath;
         public TypeTarget TypeTarget;
-        public bool OnRoad;
+        public bool OnRoad; // Размещается на дороге
+        
+        
         public List<SkillParameterSettings> BaseParameters { get; set; }
 
         public TypeDefence Defence { get; set; }
@@ -25,5 +27,5 @@ namespace Game.Settings.Gameplay.Entities.Skill
         public List<LevelCardParameters> LevelCardParameters = new();
         
         //Характеристики, которые растут только от Эпичности карты башни
-        public List<EpicCardParameters> EpicCardParameters = new();    }
+        public readonly List<EpicCardParameters> EpicCardParameters = new();    }
 }

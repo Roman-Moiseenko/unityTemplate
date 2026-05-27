@@ -379,7 +379,7 @@ namespace Game.GamePlay.Root.View
                 var position = _cameraService.GetWorldPoint(mousePosition);
                 _fsmSkill.SetPosition(position);
                 
-                if (_frameSkillService.IsPlacement)
+                if (_frameSkillService.IsPlacement.CurrentValue)
                 {
                     _fsmSkill.Fsm.SetState<FsmSkillShowEffect>();
                 }

@@ -21,7 +21,7 @@ namespace Game.GamePlay.View.Frames.SkillFrames
 //                Debug.Log("Position " + p);
                 transform.position = new Vector3(p.x, 0, p.y);
             }).AddTo(ref d);
-            viewModel.Enable.Subscribe(v => gameObject.SetActive(v));
+            viewModel.IsEnable.Subscribe(v => gameObject.SetActive(v));
             _disposable = d.Build();
         }
 

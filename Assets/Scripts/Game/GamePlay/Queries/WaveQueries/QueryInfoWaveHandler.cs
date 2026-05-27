@@ -14,9 +14,9 @@ namespace Game.GamePlay.Queries.WaveQueries
     {
         private readonly int _mapId;
 
-        public QueryInfoWaveHandler(GameplayStateProxy gameplayState)
+        public QueryInfoWaveHandler(int mapId)
         {
-            _mapId = gameplayState.MapId.CurrentValue;
+            _mapId = mapId;
         }
         public List<EnemyDataInfo> Handle(QueryInfoWave query, ISettingsProvider settingsProvider)
         {
