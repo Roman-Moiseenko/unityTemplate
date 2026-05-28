@@ -1,11 +1,7 @@
 ﻿using System;
-using DI;
-using Game.GamePlay.Fsm;
-using Game.GamePlay.Fsm.SkillStates;
 using Game.GamePlay.Services;
 using Game.State.Common;
 using Game.State.Maps.Skills;
-using Newtonsoft.Json;
 using R3;
 using UnityEngine;
 
@@ -16,12 +12,16 @@ namespace Game.GamePlay.View.Skills
         private readonly SkillEntity _skillEntity;
         public string ConfigId => _skillEntity.ConfigId;
         public int UniqueId => _skillEntity.UniqueId;
-        public ReactiveProperty<int> Level;
+        public readonly ReactiveProperty<int> Level;
+        public readonly ReactiveProperty<bool> ToDestroy = new(false);
         public TypeEpic EpicLevel { get; set; }
-      //  public FsmSkill FsmSkill;
 
-        public ReactiveProperty<bool> IsCooldown = new(false);
-        public float Cooldown = 0f;
+        public ReactiveProperty<Vector2Int> EffectPosition = new(Vector2Int.zero);
+        public ReactiveProperty<Vector2Int> EffectDirection = new(Vector2Int.zero);
+        //  public FsmSkill FsmSkill;
+
+        public readonly ReactiveProperty<bool> IsCooldown = new(false);
+        public readonly float Cooldown = 0f;
 
         public float TimeOut = 0f;
 
@@ -56,6 +56,7 @@ namespace Game.GamePlay.View.Skills
 
         public void Dispose()
         {
+            ToDestroy?.Dispose();
             Level?.Dispose();
             IsCooldown?.Dispose();
             IsActive?.Dispose();

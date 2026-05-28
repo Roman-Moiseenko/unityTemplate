@@ -15,6 +15,7 @@ using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Map;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
+using Game.GamePlay.View.Skills;
 using Game.GamePlay.View.Towers;
 using Game.GamePlay.View.Warriors;
 using Game.GamePlay.View.Waves;
@@ -37,6 +38,8 @@ namespace Game.GamePlay.Root.View
         public readonly IObservableCollection<GroundViewModel> AllGrounds;
         public readonly IObservableCollection<BoardViewModel> AllBoards;
         public readonly IObservableCollection<RoadViewModel> AllRoads;
+        public readonly IObservableCollection<SkillViewModel> AllSkills;
+        
         public readonly IObservableCollection<FrameBlockViewModel> FrameBlockViewModels;
         public readonly IObservableCollection<FramePlacementViewModel> FramePlacementViewModels;
         public readonly IObservableCollection<FrameSkillViewModel> FrameSkillViewModels;
@@ -81,6 +84,7 @@ namespace Game.GamePlay.Root.View
             WaveService waveService,
             GameplayCamera cameraService,
             DamageService damageService,
+            SkillsService skillsService,
             //WarriorService warriorService,
             DIContainer container
         )
@@ -105,6 +109,8 @@ namespace Game.GamePlay.Root.View
             AllBoards = groundsService.AllBoards;
             AllTowers = towersService.AllTowers;
             AllMobs = waveService.AllMobsOnWay;
+            AllSkills = skillsService.AllSkills;
+            
             //AllWarriors = warriorService.AllWarriors;
 
             FrameBlockViewModels = frameService.ViewModels;
@@ -241,8 +247,7 @@ namespace Game.GamePlay.Root.View
                     framePlacementService.MoveFrame(newPosition);
                 }
             }).AddTo(ref _disposables);
-
-
+            
         }
 
         public void ClickEntity(Vector2 mousePosition)
@@ -379,11 +384,12 @@ namespace Game.GamePlay.Root.View
                 var position = _cameraService.GetWorldPoint(mousePosition);
                 _fsmSkill.SetPosition(position);
                 
+                //Если Навык можно применить/разместить
                 if (_frameSkillService.IsPlacement.CurrentValue)
                 {
                     _fsmSkill.Fsm.SetState<FsmSkillShowEffect>();
                 }
-                else
+                else //Отменяем применение навыки
                 {
                     _fsmSkill.Fsm.SetState<FsmSkillNone>();
                 }

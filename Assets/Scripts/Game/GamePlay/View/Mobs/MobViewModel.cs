@@ -50,7 +50,7 @@ namespace Game.GamePlay.View.Mobs
         public bool IsWay => _mobEntity.IsWay;
 
         public bool IsBoss => _mobEntity.IsBoss;
-
+        private Coroutine _attackCoroutine;
         //private readonly GameplayStateProxy _gameplayState;
         private readonly Coroutines _coroutines;
 
@@ -165,7 +165,7 @@ namespace Game.GamePlay.View.Mobs
                     IsAttack.Value = false;
                     return;
                 }
-                _coroutines.StartCoroutine(AttackTarget());
+                _attackCoroutine = _coroutines.StartCoroutine(AttackTarget());
             }).AddTo(ref _disposables);
         }
 
@@ -214,12 +214,21 @@ namespace Game.GamePlay.View.Mobs
             yield return new WaitForSeconds(_mobEntity.SpeedAttack / AppConstants.MOB_SPEED_ATTACK);
 
             if (_target.CurrentValue == null) yield break;
-            if (!_target.CurrentValue.IsDead.CurrentValue) _coroutines.StartCoroutine(AttackTarget());
+            if (!_target.CurrentValue.IsDead.CurrentValue) 
+                _attackCoroutine = _coroutines.StartCoroutine(AttackTarget());
         }
-
+        public void StopAttack()
+        {
+            if (_attackCoroutine != null)
+            {
+                _coroutines.StopCoroutine(_attackCoroutine);
+                _attackCoroutine = null;
+            }
+        }
         public void Dispose()
         {
-            //_target?.Dispose();
+            StopAttack();
+            
             IsMoving?.Dispose();
             IsAttack?.Dispose();
             FinishCurrentAnimation?.Dispose();

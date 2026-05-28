@@ -32,15 +32,15 @@ namespace Game.GamePlay.Services
 
         private readonly List<SkillCardData> _baseSkillCards; //
         private readonly ICommandProcessor _cmd;
-        
-        //УДалить
-        private readonly ObservableList<SkillViewModel> _allSkills = new();
-        private readonly Dictionary<int, SkillViewModel> _skillsMap = new();
+
+
+        private readonly ObservableList<SkillViewModel> _allSkills = new(); //Список примененных навыков
+        private readonly List<SkillViewModel> _skillsMap = new(); //Доступные навыки в GamePlay
 
         //Использовать 
         public SkillViewModel SkillOne;
         public SkillViewModel SkillTwo;
-        
+
         private readonly Dictionary<string, List<SkillLevelSettings>> _skillSettingsMap = new();
         private readonly GameplayStateProxy _gameplayState;
         private readonly DIContainer _container;
@@ -62,67 +62,69 @@ namespace Game.GamePlay.Services
             _fsmSkill = container.Resolve<FsmSkill>();
             _baseSkillCards = gameplayEnterParams.Skills; //Базовые настройки колоды
             _gameplayBoosters = gameplayEnterParams.GameplayBoosters;
-            
-            //Кешируем настройки зданий / объектов
+
+            //Кешируем настройки навыков
             foreach (var skillSettings in skillsSettings.AllSkills)
             {
                 _skillSettingsMap[skillSettings.ConfigId] = skillSettings.GameplayLevels;
                 Levels[skillSettings.ConfigId] = 1;
             }
-            //Кешируем уровень башни по конфигу, если башня этого типа есть на карте
+
+            //Кешируем уровень навыков по конфигу, если башня этого типа есть на карте
             foreach (var skillEntity in _gameplayState.Skills)
             {
                 Levels[skillEntity.ConfigId] = skillEntity.Level.CurrentValue;
             }
-            
-            
-            foreach (var skillCardData in  _baseSkillCards)
+
+
+            foreach (var skillCardData in _baseSkillCards)
             {
                 var param = new Dictionary<SkillParameterType, SkillParameterData>();
                 foreach (var parameterData in skillCardData.Parameters)
                 {
                     param.Add(parameterData.Key, parameterData.Value.GetCopy());
                 }
+
                 SkillParametersMap.Add(skillCardData.ConfigId, param);
                 for (var i = 1; i <= Levels[skillCardData.ConfigId]; i++)
                 {
                     UpdateParams(skillCardData.ConfigId, i); //Увеличиваем параметры по геймплей уровню башни
                 }
             }
-            
-            
+
             if (_gameplayState.Skills.Count > 0)
             {
-                _gameplayState.Skills[0].Parameters = SkillParametersMap[_gameplayState.Skills[0].ConfigId]; 
+                _gameplayState.Skills[0].Parameters = SkillParametersMap[_gameplayState.Skills[0].ConfigId];
                 SkillOne = new SkillViewModel(_gameplayState.Skills[0], this);
-                _allSkills.Add(SkillOne);
+                _skillsMap.Add(SkillOne);
             }
+
             if (_gameplayState.Skills.Count > 1)
             {
-                _gameplayState.Skills[1].Parameters = SkillParametersMap[_gameplayState.Skills[1].ConfigId]; 
+                _gameplayState.Skills[1].Parameters = SkillParametersMap[_gameplayState.Skills[1].ConfigId];
                 SkillTwo = new SkillViewModel(_gameplayState.Skills[1], this);
-                _allSkills.Add(SkillTwo);
+                _skillsMap.Add(SkillTwo);
             }
-            
-            
+
+
             _gameplayState.Skills.ObserveAdd().Subscribe(e =>
             {
                 var skillEntity = e.Value;
                 skillEntity.Level.Value = Levels[skillEntity.ConfigId]; //Устанавливаем уровень апгрейда
                 skillEntity.Parameters = SkillParametersMap[skillEntity.ConfigId];
                 if (_gameplayState.Skills.Count > 2) throw new Exception("Ошибка");
-                
+
                 if (SkillOne != null && SkillTwo == null)
                 {
                     SkillTwo = new SkillViewModel(skillEntity, this);
-                    _allSkills.Add(SkillTwo);
+                    _skillsMap.Add(SkillTwo);
                 }
+
                 if (SkillOne == null)
                 {
                     SkillOne = new SkillViewModel(skillEntity, this);
-                    _allSkills.Add(SkillOne);
+                    _skillsMap.Add(SkillOne);
                 }
-
             }).AddTo(ref _disposables);
             Levels.ObserveChanged().Subscribe(x =>
             {
@@ -138,21 +140,17 @@ namespace Game.GamePlay.Services
             }).AddTo(ref _disposables);
             //Кешируем бустеры для башен по типам Defence
             CalculateBoosters();
-            
-         //   var skillEntities = gameplayState.Skills;
-            
 
-            
+            //   var skillEntities = gameplayState.Skills;
 
 
-            
 //            Debug.Log(JsonConvert.SerializeObject(SkillOne, Formatting.Indented));
-            
-         //   Debug.Log(JsonConvert.SerializeObject(gameplayState.SkillOne, Formatting.Indented));
+
+            //   Debug.Log(JsonConvert.SerializeObject(gameplayState.SkillOne, Formatting.Indented));
             //Создаем из настроек модели
-            
-         //   Debug.Log(JsonConvert.SerializeObject(gameplayState.EnterParams, Formatting.Indented));
-         
+
+            //   Debug.Log(JsonConvert.SerializeObject(gameplayState.EnterParams, Formatting.Indented));
+
             //Подписка на те варианты, которые влияют на SkillViewModel 
             _fsmSkill.Fsm.StateCurrent.Subscribe(newState =>
             {
@@ -160,7 +158,7 @@ namespace Game.GamePlay.Services
                 if (newState.GetType() == typeof(FsmSkillBegin))
                 {
                     //Проходим все навыки и включаем или выключаем
-                    foreach (var skillViewModel  in _allSkills)
+                    foreach (var skillViewModel in _skillsMap) // ← список ПУСТ!
                     {
                         skillViewModel.IsActive.Value = skillViewModel.ConfigId == _fsmSkill.GetConfigId();
                     }
@@ -168,7 +166,6 @@ namespace Game.GamePlay.Services
 
                 if (newState.GetType() == typeof(FsmSkillSetTarget))
                 {
-                    
                 }
 
                 if (newState.GetType() == typeof(FsmSkillShowEffect))
@@ -179,14 +176,12 @@ namespace Game.GamePlay.Services
 
                 if (newState.GetType() == typeof(FsmSkillNone))
                 {
-                    foreach (var skillViewModel  in _allSkills)
+                    foreach (var skillViewModel in _skillsMap)
                     {
                         skillViewModel.IsActive.Value = false;
                     }
                 }
-                
-            }).AddTo(ref _disposables);         
-             
+            }).AddTo(ref _disposables);
         }
 
         private void UpdateParams(string configId, int level)
@@ -204,7 +199,7 @@ namespace Game.GamePlay.Services
                 }
             }
         }
-        
+
         private void CreateSkillViewModel(SkillEntity skillEntity)
         {
             var skillViewModel = new SkillViewModel(skillEntity, this);
@@ -228,7 +223,7 @@ namespace Game.GamePlay.Services
         public Dictionary<string, int> GetAvailableUpgradeSkills()
         {
             var towers = new Dictionary<string, int>();
-            foreach (var skillViewModel in _allSkills) //Все навыки
+            foreach (var skillViewModel in _skillsMap) //Все навыки
             {
                 if (Levels[skillViewModel.ConfigId] < 3)
                     towers.TryAdd(skillViewModel.ConfigId, Levels[skillViewModel.ConfigId]); //Добавлять один раз
@@ -239,13 +234,25 @@ namespace Game.GamePlay.Services
 
         private void SetSkillEffect(string configId)
         {
-            var skillViewModel = _allSkills.FirstOrDefault(v => v.ConfigId == configId);
-            //TODO Запуск эффекта
+            var skillViewModel = _skillsMap.FirstOrDefault(v => v.ConfigId == configId);
+            if (skillViewModel == null) return;
+
+            skillViewModel.ToDestroy.Value = false;
+            skillViewModel.EffectPosition.Value = _fsmSkill.Position.Value;
+            skillViewModel.EffectDirection.Value = _fsmSkill.Direction.Value;
             
+            _allSkills.Add(skillViewModel); //Запуск эффекта
+            skillViewModel.ToDestroy
+                .Where(x => x)
+                .Take(1)
+                .Subscribe(_ => { _allSkills.Remove(skillViewModel); })
+                .AddTo(ref _disposables);
+
+
             //Запуск кулдауна
             skillViewModel?.StartCooldown();
             //Смена состояния
-            _fsmSkill.Fsm.SetState<FsmSkillNone>(); 
+            _fsmSkill.Fsm.SetState<FsmSkillNone>();
         }
 
 
@@ -254,15 +261,15 @@ namespace Game.GamePlay.Services
             if (_fsmSkill.IsBegin() && _fsmSkill.GetConfigId() == configId)
             {
                 _fsmSkill.Fsm.SetState<FsmSkillNone>();
-            } else
+            }
+            else
             {
                 _fsmSkill.Fsm.SetState<FsmSkillBegin>(configId);
             }
         }
-        
+
         private void CalculateBoosters()
         {
-
             //бустеры общие
             var damageBooster = _gameplayBoosters.SkillDamage;
 
@@ -270,7 +277,7 @@ namespace Game.GamePlay.Services
             if (_gameplayBoosters.HeroSkillBust.TryGetValue(SkillParameterType.Damage, out var damage))
                 damageBooster += damage;
 
-            
+
             //бустеры от типа защиты и от наличия параметра в карточке
             foreach (var skillCard in _baseSkillCards)
             {
@@ -280,23 +287,22 @@ namespace Game.GamePlay.Services
 
                 var damageBoosterSkill = damageBooster;
 
-                
+
                 //бустеры от типа Defence о героя
                 if (_gameplayBoosters.HeroSkillDefenceBust.TryGetValue(skillCard.Defence, out var parameterDatas))
                 {
                     if (parameterDatas.TryGetValue(SkillParameterType.Damage, out var damageDefence))
                         damageBoosterSkill += damageDefence;
-
                 }
 
-                Dictionary<SkillParameterType, float> boosters = new(); 
-                
+                Dictionary<SkillParameterType, float> boosters = new();
+
                 if (isDamage && damageBoosterSkill != 0)
                 {
                     boosters.Add(SkillParameterType.Damage, damageBoosterSkill);
                     boosters.Add(SkillParameterType.DPS, damageBoosterSkill);
-                }  
-              
+                }
+
                 SkillBoosters.Add(skillCard.ConfigId, boosters);
             }
         }

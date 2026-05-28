@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using DI;
 using Game.GamePlay.Fsm.SkillStates;
+using Game.State.Maps.Roads;
 using MVVM.FSM;
 using R3;
 using UnityEngine;
@@ -12,6 +14,8 @@ namespace Game.GamePlay.Fsm
         public FsmProxy Fsm;
         
         public ReactiveProperty<Vector2Int> Position = new();
+        public ReactiveProperty<Vector2Int> Direction = new();
+        public List<RoadPoint> Cells = new();
 
         public FsmSkill(DIContainer container)
         {
@@ -60,6 +64,7 @@ namespace Game.GamePlay.Fsm
         {
             Fsm?.Dispose();
             Position?.Dispose();
+            Direction?.Dispose();
         }
     }
 }

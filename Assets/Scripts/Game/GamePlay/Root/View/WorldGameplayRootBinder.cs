@@ -9,6 +9,7 @@ using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Map;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
+using Game.GamePlay.View.Skills;
 using Game.GamePlay.View.Towers;
 using Game.GamePlay.View.Warriors;
 using Game.GamePlay.View.Waves;
@@ -26,7 +27,8 @@ namespace Game.GamePlay.Root.View
         private readonly Dictionary<int, WarriorBinder> _createWarriorsMap = new();
         private readonly Dictionary<int, GroundBinder> _createGroundsMap = new();
         private readonly Dictionary<int, BoardBinder> _createBoardsMap = new();
-
+        private readonly Dictionary<int, SkillBinder> _createSkillsMap = new();
+        
         private FrameBlockBinder _frameBlockBinder;
         private FramePlacementBinder _framePlacementBinder;
         private FrameSkillBinder _frameSkillBinder;
@@ -36,13 +38,13 @@ namespace Game.GamePlay.Root.View
         private CastleBinder _castleBinder;
         // private AttackAreaBinder _attackAreaBinder;
 
-        private IDisposable _disposable;
+        private DisposableBag _disposables;
         private readonly Dictionary<string, List<MobBinder>> _mobsPull = new(); //Пул мобов
         private WorldGameplayRootViewModel _viewModel;
 
         public void Bind(WorldGameplayRootViewModel viewModel)
         {
-            var d = Disposable.CreateBuilder();
+           // var d = Disposable.CreateBuilder();
             _viewModel = viewModel;
             //1. Создаем все объекты мира из Прехабов
             //2. Подписываемся на добавление объектов в список (Создать) и на удаление (Уничтожить)
@@ -51,19 +53,19 @@ namespace Game.GamePlay.Root.View
             foreach (var groundViewModel in viewModel.AllGrounds) CreateGround(groundViewModel);
             viewModel.AllGrounds.ObserveAdd()
                 .Subscribe(e => CreateGround(e.Value))
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
             viewModel.AllGrounds.ObserveRemove()
                 .Subscribe(e => DestroyGround(e.Value))
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
 
             //Границы
             foreach (var boardViewModel in viewModel.AllBoards) CreateBoard(boardViewModel);
             viewModel.AllBoards.ObserveAdd()
                 .Subscribe(e => CreateBoard(e.Value))
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
             viewModel.AllBoards.ObserveRemove()
                 .Subscribe(e => DestroyBoard(e.Value))
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
 
             //Башни
             foreach (var towerViewModel in viewModel.AllTowers)
@@ -71,10 +73,13 @@ namespace Game.GamePlay.Root.View
                 CreateTowerBase(towerViewModel);
             }
 
-            viewModel.AllTowers.ObserveAdd().Subscribe(e => { CreateTowerBase(e.Value); }).AddTo(ref d);
+            viewModel.AllTowers
+                .ObserveAdd()
+                .Subscribe(e => { CreateTowerBase(e.Value); })
+                .AddTo(ref _disposables);
             viewModel.AllTowers.ObserveRemove()
                 .Subscribe(e => DestroyTowerBase(e.Value))
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
 
             //Воины
             /*      foreach (var warriorViewModel in viewModel.AllWarriors)
@@ -94,7 +99,7 @@ namespace Game.GamePlay.Root.View
             viewModel.AllMobs
                 .ObserveAdd()
                 .Subscribe(e => FindFreeOrCreateMob(e.Value))
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
             viewModel.AllMobs
                 .ObserveRemove()
                 .Subscribe(e =>
@@ -105,7 +110,7 @@ namespace Game.GamePlay.Root.View
                         mobBinder.FreeUp();
                     }
                 })
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
 
             //Замок
             CreateCastle(viewModel.CastleViewModel);
@@ -114,35 +119,43 @@ namespace Game.GamePlay.Root.View
             foreach (var roadViewModel in viewModel.AllRoads) CreateRoad(roadViewModel);
             viewModel.AllRoads.ObserveAdd()
                 .Subscribe(e => CreateRoad(e.Value))
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
             viewModel.AllRoads.ObserveRemove()
                 .Subscribe(e => DestroyRoad(e.Value))
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
 
             //Фреймы
 
             //1. Фрейм строительный //только подписка, в начале уровня его нет
             viewModel.FrameBlockViewModels.ObserveAdd()
                 .Subscribe(e => CreateFrameBlock(e.Value))
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
             viewModel.FrameBlockViewModels.ObserveRemove()
                 .Subscribe(e => DestroyFrameBlock())
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
+            
+            //Навыки
+            viewModel.AllSkills.ObserveAdd()
+                .Subscribe(e => CreateSkill(e.Value))
+                .AddTo(ref _disposables);
+            viewModel.AllSkills.ObserveRemove()
+                .Subscribe(e => DestroySkill(e.Value))
+                .AddTo(ref _disposables);
 
             //2. Фрейм расположения войск из башни
             viewModel.FramePlacementViewModels.ObserveAdd()
                 .Subscribe(e => CreateFramePlacement(e.Value))
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
             viewModel.FramePlacementViewModels.ObserveRemove()
                 .Subscribe(e => DestroyFramePlacement())
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
             //3. Фрейм навыков 
             viewModel.FrameSkillViewModels.ObserveAdd()
                 .Subscribe(e => CreateFrameSkill(e.Value))
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
             viewModel.FrameSkillViewModels.ObserveClear()
                 .Subscribe(e => DestroyFrameSkill())
-                .AddTo(ref d);
+                .AddTo(ref _disposables);
 
             //Создаем view-модель ворот из прехаба
             CreateGateWave(_viewModel.GateWaveViewModel);
@@ -154,16 +167,16 @@ namespace Game.GamePlay.Root.View
 
             //Запускаем следующую волну
             _viewModel.StartGameplayServices();
-            _disposable = d.Build();
+            //_disposable = d.Build();
         }
 
         private void OnDestroy()
         {
             if (_castleBinder != null) Destroy(_castleBinder.gameObject);
             //   if (_attackAreaBinder != null) Destroy(_attackAreaBinder.gameObject);
-
-            _disposable?.Dispose();
             _createGateMap.ForEach(item => Destroy(item.gameObject));
+            _disposables.Dispose();
+            
         }
 
         //CREATE 
@@ -323,8 +336,25 @@ namespace Game.GamePlay.Root.View
             _frameSkillBinder = createdFrame;
         }
 
+        private void CreateSkill(SkillViewModel skillViewModel)
+        {
+            var prefabPath = $"Prefabs/Gameplay/Skills/{skillViewModel.ConfigId}/Effect{skillViewModel.ConfigId}";
+            var skillPrefab = Resources.Load<SkillBinder>(prefabPath);
+            var createdSkill = Instantiate(skillPrefab);
+            createdSkill.Bind(skillViewModel);
+            _createSkillsMap.Add(skillViewModel.UniqueId, createdSkill);
+        }
 
         //DESTROY
+        private void DestroySkill(SkillViewModel skillViewModel)
+        {
+            if (_createSkillsMap.TryGetValue(skillViewModel.UniqueId, out var skillBinder))
+            {
+                 Destroy(skillBinder.gameObject);
+                _createSkillsMap.Remove(skillViewModel.UniqueId);
+            }
+        }
+        
         /*   private void DestroyWarrior(WarriorViewModel warriorViewModel)
            {
                if (_createWarriorsMap.TryGetValue(warriorViewModel.UniqueId, out var warriorBinder))

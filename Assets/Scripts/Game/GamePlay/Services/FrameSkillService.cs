@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.SkillStates;
@@ -7,6 +8,7 @@ using Game.GamePlay.Queries.SkillQueries;
 using Game.GamePlay.View.Frames.SkillFrames;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.State.Gameplay;
+using Game.State.Maps.Roads;
 using MVVM.CMD;
 using ObservableCollections;
 using R3;
@@ -32,7 +34,7 @@ namespace Game.GamePlay.Services
         //Вычисляемые параметры для моделей в Binder
         public readonly ReactiveProperty<bool> IsPlacement = new(false);
         public readonly ReactiveProperty<Vector2Int> Direction = new(Vector2Int.zero);
-        public readonly List<int> Cells = new(); //TODO доделать, (position, direction) Observable
+        public List<RoadPoint> Cells = new(); //TODO доделать, (position, direction) Observable
         
         public FrameSkillService(
             GameplayStateProxy gameplayState,
@@ -81,6 +83,7 @@ namespace Game.GamePlay.Services
         private void MoveFrame(Vector2Int position)
         {
             _viewModel.MoveFrame(position);
+            _fsmSkill.Position.Value = position;
             CheckPlacement(position);
         }
 
@@ -100,10 +103,13 @@ namespace Game.GamePlay.Services
             if (_viewModel.MultiCells == 0)
             {
                 Direction.Value = _placementService.GetRoadDirectionNext(position);
+                _fsmSkill.Direction.Value = Direction.Value;
             }
             else
             {
                 //TODO Вычисляем координаты всех ячеек и их направление
+                Cells = new List<RoadPoint>();
+                _fsmSkill.Cells = Cells.ToList();
             }
         }
 

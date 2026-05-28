@@ -24,7 +24,7 @@ namespace Game.GamePlay.Services
 
         private readonly ICommandProcessor _cmd;
         private readonly CastleEntity _castleEntity;
-        private readonly Coroutines _coroutines;
+        private Coroutines _coroutines;
 
         private readonly GameplayBoosters _gameplayBoosters;
         private DisposableBag _disposables = new();
@@ -97,11 +97,16 @@ namespace Game.GamePlay.Services
             
             if (_repairCoroutine != null)
             {
-                _coroutines.StopCoroutine(_repairCoroutine);
+                // Проверяем, не уничтожен ли уже объект корутин
+                if (_coroutines != null)
+                {
+                    _coroutines.StopCoroutine(_repairCoroutine);
+                }
                 _repairCoroutine = null;
             }
             CastleViewModel.Dispose();
             _disposables.Dispose();
+            _coroutines = null;
             // НЕ дизпоузим CurrenHealth — это ссылка на castleEntity.CurrenHealth (state),
             // его дизпоузит CastleEntity.Dispose() в GameplayStateProxy.
             // Двойной Dispose приведёт к ObjectDisposedException при повторном входе.
