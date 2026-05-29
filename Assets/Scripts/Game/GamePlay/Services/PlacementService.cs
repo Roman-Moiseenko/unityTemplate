@@ -345,7 +345,7 @@ namespace Game.GamePlay.Services
                 /// <summary>
         /// Вычисляет направление дороги в указанной точке.
         /// Направление от начала пути (замок) к концу пути (ворота/спавн врагов).
-        /// Для последней дороги — направление за пределы карты (туда, где будут новые участки).
+        /// Для последней дороги — направление на точку выхода (туда, где будут новые участки или GateWave).
         /// </summary>
         public Vector2Int GetRoadDirectionNext(Vector2Int position)
         {
@@ -359,15 +359,14 @@ namespace Game.GamePlay.Services
             }
             else
             {
-                // Последняя дорога — направление вычисляем через WayService (GetVectorExit)
-                var roadData = new RoadEntityData
-                {
-                    Position = roadEntity.Position.CurrentValue,
-                    Rotate = roadEntity.Rotate.CurrentValue,
-                    IsTurn = roadEntity.IsTurn
-                };
-                var exitPoint = _wayService.GetExitPoint(new List<RoadEntityData> { roadData });
-                return exitPoint - position;
+                // Последняя дорога — направление от последней точки пути к точке выхода (GateWave)
+                // Определяем, какой путь содержит эту дорогу, по UniqueId
+                var isMainWay = _gameplayState.Way.Any(r => r.UniqueId == roadEntity.UniqueId);
+                var way = isMainWay ? _gameplayState.Origin.Way : _gameplayState.Origin.WaySecond;
+
+                var lastPoint = _wayService.GetLastPoint(way);
+                var exitPoint = _wayService.GetExitPoint(way);
+                return exitPoint - lastPoint;
             }
         }
 

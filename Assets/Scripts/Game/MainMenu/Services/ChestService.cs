@@ -83,6 +83,10 @@ namespace Game.MainMenu.Services
             if (!CheckOpeningChest()) yield break;
 //            Debug.Log("Проверка на ChestOpening");
             yield return new WaitForSeconds(60);
+            
+            // Повторная проверка: если объект уже задиспожен, не запускаем рекурсию
+            if (_coroutines == null || TimeLeft == null) yield break;
+            
             _coroutines.StartCoroutine(ChestOpening());
         }
 
@@ -103,6 +107,10 @@ namespace Game.MainMenu.Services
         private bool CheckOpeningChest()
         {
             if (_containerChests.CellOpening.CurrentValue == 0) return false;
+
+            // Защита от ObjectDisposedException
+            if (TimeLeft == null || CostLeft == null)
+                return false;
 
             var tNow = DateTime.Now.ToUniversalTime();
             var tStart = DateTime.FromFileTimeUtc(_containerChests.StartOpening.CurrentValue);
@@ -391,6 +399,10 @@ namespace Game.MainMenu.Services
 
         public void Dispose()
         {
+            // Останавливаем корутину при dispose, чтобы избежать ObjectDisposedException
+            if (_opening != null && _coroutines != null)
+                _coroutines.StopCoroutine(_opening);
+            
             TimeLeft?.Dispose();
             CostLeft?.Dispose();
             //CellOpening?.Dispose();

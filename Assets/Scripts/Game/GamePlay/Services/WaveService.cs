@@ -335,6 +335,22 @@ namespace Game.GamePlay.Services
         public void Dispose()
         {
             _isDisposed = true;
+            
+            // Останавливаем корутины до того, как объект Coroutines будет уничтожен
+            try
+            {
+                var coroutines = GameObject.Find("[COROUTINES]")?.GetComponent<Coroutines>();
+                if (coroutines != null && _coroutineTimerNewWave != null)
+                {
+                    coroutines.StopCoroutine(_coroutineTimerNewWave);
+                    _coroutineTimerNewWave = null;
+                }
+            }
+            catch (MissingReferenceException)
+            {
+                // Coroutines уже уничтожен
+            }
+            
             foreach (var mobViewModel in _allMobsOnWay.ToArray())
             {
                 mobViewModel?.Dispose();

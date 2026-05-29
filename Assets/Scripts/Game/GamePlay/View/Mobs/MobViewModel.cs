@@ -165,7 +165,8 @@ namespace Game.GamePlay.View.Mobs
                     IsAttack.Value = false;
                     return;
                 }
-                _attackCoroutine = _coroutines.StartCoroutine(AttackTarget());
+                if (_coroutines != null)
+                    _attackCoroutine = _coroutines.StartCoroutine(AttackTarget());
             }).AddTo(ref _disposables);
         }
 
@@ -214,20 +215,37 @@ namespace Game.GamePlay.View.Mobs
             yield return new WaitForSeconds(_mobEntity.SpeedAttack / AppConstants.MOB_SPEED_ATTACK);
 
             if (_target.CurrentValue == null) yield break;
-            if (!_target.CurrentValue.IsDead.CurrentValue) 
+            if (!_target.CurrentValue.IsDead.CurrentValue && _coroutines != null) 
                 _attackCoroutine = _coroutines.StartCoroutine(AttackTarget());
         }
         public void StopAttack()
         {
             if (_attackCoroutine != null)
             {
-                _coroutines.StopCoroutine(_attackCoroutine);
+                // Проверка, что объект Coroutines всё ещё существует (не уничтожен при выгрузке сцены)
+                try
+                {
+                    if (_coroutines != null)
+                        _coroutines.StopCoroutine(_attackCoroutine);
+                }
+                catch (MissingReferenceException)
+                {
+                    // Объект [COROUTINES] уже уничтожен, корутина остановится сама
+                }
                 _attackCoroutine = null;
             }
         }
         public void Dispose()
         {
-            StopAttack();
+            try
+            {
+                if (_coroutines != null)
+                    StopAttack();
+            }
+            catch (MissingReferenceException)
+            {
+                // Coroutines уже уничтожен (при выгрузке сцены)
+            }
             
             IsMoving?.Dispose();
             IsAttack?.Dispose();
