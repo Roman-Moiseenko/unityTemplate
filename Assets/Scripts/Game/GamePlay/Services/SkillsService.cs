@@ -170,7 +170,6 @@ namespace Game.GamePlay.Services
 
                 if (newState.GetType() == typeof(FsmSkillShowEffect))
                 {
-                    Debug.Log("FsmSkillShowEffect");
                     SetSkillEffect(_fsmSkill.GetConfigId()); //Применяем эффекты
                 }
 
