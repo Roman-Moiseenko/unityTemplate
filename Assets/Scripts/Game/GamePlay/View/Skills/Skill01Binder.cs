@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using Game.GamePlay.View.Mobs;
 using Game.State.Maps.Skills;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Game.GamePlay.View.Skills
 {
     public class Skill01Binder : SkillBinder
     {
+        [SerializeField] private List<Skill01RocketBinder> rockets = new();
+        [SerializeField] private VisualEffect bottomArea;
+        
         private float _dps;
         private float _duration;
         private float _range;
@@ -26,8 +30,33 @@ namespace Game.GamePlay.View.Skills
                 _range = paramRange.Value;
 
             _radius = _range / 2f;
-
+            bottomArea.SetFloat("Radius", _radius);
+            
+            foreach (var rocket in rockets)
+            {
+                rocket.Bind();
+            }
+            
             StartCoroutine(DamageCoroutine());
+            StartCoroutine(RocketsCoroutine());
+        }
+
+        private IEnumerator RocketsCoroutine()
+        {
+            // Время полёта одной ракеты от Y=15 до Y=0
+            float flyTime = Skill01RocketBinder.StartY / Skill01RocketBinder.Speed; // 15 / 50 = 0.3с
+            // Задержка между стартами ракет, чтобы равномерно распределить их в полёте
+            float delayBetweenRockets = flyTime / rockets.Count; // 0.3 / 3 = 0.1с
+
+            // Запускаем каждую ракету с задержкой
+            for (int i = 0; i < rockets.Count; i++)
+            {
+                rockets[i].StartLoop();
+                yield return new WaitForSeconds(delayBetweenRockets);
+            }
+
+            // После того как все ракеты запущены, они работают autonomously,
+            // каждая сама летит вниз, взрывается, возвращается и повторяет цикл.
         }
 
         private IEnumerator DamageCoroutine()
