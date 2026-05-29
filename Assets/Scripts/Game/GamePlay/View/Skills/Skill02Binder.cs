@@ -1,11 +1,12 @@
 using System;
+using Game.State.Common;
 using Game.State.Maps.Skills;
 using R3;
 using UnityEngine;
 
 namespace Game.GamePlay.View.Skills
 {
-    public class Skill02Binder : SkillBinder
+    public class Skill02Binder : SkillBinder, IHasHeathViewModel
     {
         [SerializeField] private Transform bar;
         [SerializeField] private Renderer barRenderer;
@@ -19,8 +20,14 @@ namespace Game.GamePlay.View.Skills
         private float _maxHealth;
         private bool _initialized;
 
+        public int UniqueId { get; set; }
+        public ReadOnlyReactiveProperty<bool> IsDead => _isDead;
+        private readonly ReactiveProperty<bool> _isDead = new(false);
+        
+        public float Duration => _duration;
         protected override void OnBind()
         {
+            UniqueId = -1; //Костыль. Навыки не имеют UniqueId, для стены ставим значение, которое не может быть у других, это < 0
             _camera = Camera.main;
 
             // Поворот эффекта по направлению
@@ -72,6 +79,7 @@ namespace Game.GamePlay.View.Skills
             // Проверка на уничтожение
             if (_duration <= 0 || _health <= 0)
             {
+                _isDead.Value = true;
                 ViewModel.ToDestroy.Value = true;
             }
 
@@ -115,6 +123,12 @@ namespace Game.GamePlay.View.Skills
                 Destroy(_barMaterial);
             }
             base.OnDestroy();
+        }
+
+
+        public void DamageReceived(float damage, TypeDefence defence)
+        {
+            _health -= damage;
         }
     }
 }

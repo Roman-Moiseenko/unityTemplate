@@ -1,5 +1,6 @@
 ﻿using System;
 using Game.GamePlay.View.Castle;
+using Game.GamePlay.View.Skills;
 using Game.GamePlay.View.Warriors;
 using UnityEngine;
 
@@ -34,9 +35,11 @@ namespace Game.GamePlay.View.Mobs
 
             if (other.gameObject.CompareTag("Wall"))
             {
+                var wall = other.gameObject.GetComponent<Skill02Binder>();
+                //Debug.Log("Wall = " + wall.Duration);
                 //TODO Наносим урон стене
-                //var wall = other.gameObject.GetComponent<WallBinder>();
-                //ViewModel.PullTargets.Add(wall.ViewModel);
+                
+                ViewModel.PullTargets.Add(wall);
             }
         }
         
