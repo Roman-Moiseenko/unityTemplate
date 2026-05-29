@@ -340,7 +340,7 @@ namespace Game.GamePlay.Root.View
         {
             var prefabPath = $"Prefabs/Gameplay/Skills/{skillViewModel.ConfigId}/Effect{skillViewModel.ConfigId}";
             var skillPrefab = Resources.Load<SkillBinder>(prefabPath);
-            var createdSkill = Instantiate(skillPrefab);
+            var createdSkill = Instantiate(skillPrefab, transform);
             createdSkill.Bind(skillViewModel);
             _createSkillsMap.Add(skillViewModel.UniqueId, createdSkill);
         }

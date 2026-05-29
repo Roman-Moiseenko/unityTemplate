@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.State.Common;
 using Game.State.Maps.Skills;
@@ -10,6 +11,7 @@ namespace Game.GamePlay.View.Skills
     public class SkillViewModel : IDisposable
     {
         private readonly SkillEntity _skillEntity;
+        
         public string ConfigId => _skillEntity.ConfigId;
         public int UniqueId => _skillEntity.UniqueId;
         public readonly ReactiveProperty<int> Level;
@@ -20,6 +22,8 @@ namespace Game.GamePlay.View.Skills
         public ReactiveProperty<Vector2Int> EffectDirection = new(Vector2Int.zero);
         //  public FsmSkill FsmSkill;
 
+        public Dictionary<SkillParameterType, SkillParameterData> Parameters => _skillEntity.Parameters;
+        
         public readonly ReactiveProperty<bool> IsCooldown = new(false);
         public readonly float Cooldown = 0f;
 
@@ -39,6 +43,8 @@ namespace Game.GamePlay.View.Skills
 //            Debug.Log(JsonConvert.SerializeObject(skillEntity.Parameters, Formatting.Indented));
             if (skillEntity.Parameters.TryGetValue(SkillParameterType.Cooldown, out var parameterData)) 
                 Cooldown = parameterData.Value;
+            
+            
         }
 
         public void StartSkill()
