@@ -14,7 +14,7 @@ namespace Game.GamePlay.View.Mobs
         private float _maxHealth = 1f;
         private float _currentHealth = 1f;
         private Material _material;
-        public void Bind(float maxHealth, ReactiveProperty<float> currentHealth, int level)
+        public void Bind(float maxHealth, ReadOnlyReactiveProperty<float> currentHealth, int level)
         {
             _camera = Camera.main; //camera;
             _maxHealth = maxHealth;

@@ -95,14 +95,14 @@ namespace Game.GamePlay.Services
             if (_gameplayState.Skills.Count > 0)
             {
                 _gameplayState.Skills[0].Parameters = SkillParametersMap[_gameplayState.Skills[0].ConfigId];
-                SkillOne = new SkillViewModel(_gameplayState.Skills[0], this);
+                SkillOne = new SkillViewModel(_gameplayState.Skills[0], this, gameplayState);
                 _skillsMap.Add(SkillOne);
             }
 
             if (_gameplayState.Skills.Count > 1)
             {
                 _gameplayState.Skills[1].Parameters = SkillParametersMap[_gameplayState.Skills[1].ConfigId];
-                SkillTwo = new SkillViewModel(_gameplayState.Skills[1], this);
+                SkillTwo = new SkillViewModel(_gameplayState.Skills[1], this,gameplayState);
                 _skillsMap.Add(SkillTwo);
             }
 
@@ -116,13 +116,13 @@ namespace Game.GamePlay.Services
 
                 if (SkillOne != null && SkillTwo == null)
                 {
-                    SkillTwo = new SkillViewModel(skillEntity, this);
+                    SkillTwo = new SkillViewModel(skillEntity, this, gameplayState);
                     _skillsMap.Add(SkillTwo);
                 }
 
                 if (SkillOne == null)
                 {
-                    SkillOne = new SkillViewModel(skillEntity, this);
+                    SkillOne = new SkillViewModel(skillEntity, this, gameplayState);
                     _skillsMap.Add(SkillOne);
                 }
             }).AddTo(ref _disposables);
@@ -198,11 +198,6 @@ namespace Game.GamePlay.Services
                     parameter.Value *= 1 + settingsParameter.Value / 100;
                 }
             }
-        }
-
-        private void CreateSkillViewModel(SkillEntity skillEntity)
-        {
-            var skillViewModel = new SkillViewModel(skillEntity, this);
         }
 
         public Dictionary<string, TypeEpic> GetAvailableSkills()

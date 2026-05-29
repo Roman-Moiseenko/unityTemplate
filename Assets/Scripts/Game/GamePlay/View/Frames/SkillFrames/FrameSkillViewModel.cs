@@ -11,7 +11,7 @@ namespace Game.GamePlay.View.Frames.SkillFrames
     
     public class FrameSkillViewModel : IDisposable
     {
-        public ReactiveProperty<Vector2Int> Position { get; set; }
+        public ReactiveProperty<Vector2> Position { get; set; }
         public ReactiveProperty<bool> IsEnable;
         public string ConfigId;
         private DisposableBag _disposables;
@@ -31,7 +31,7 @@ namespace Game.GamePlay.View.Frames.SkillFrames
         {
             ConfigId = configId;
             Parameters = parameters;
-            Position = new ReactiveProperty<Vector2Int>(Vector2Int.zero);
+            Position = new ReactiveProperty<Vector2>(Vector2.zero);
             IsEnable = new ReactiveProperty<bool>(false);
             _skillSettings = skillSettings;
             OnRoad = skillSettings.OnRoad;
@@ -49,7 +49,7 @@ namespace Game.GamePlay.View.Frames.SkillFrames
 
         }
         
-        public void MoveFrame(Vector2Int position)
+        public void MoveFrame(Vector2 position)
         {
             Position.Value = position;
         }

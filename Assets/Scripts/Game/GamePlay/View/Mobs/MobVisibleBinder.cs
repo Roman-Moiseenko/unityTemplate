@@ -18,10 +18,14 @@ namespace Game.GamePlay.View.Mobs
         
         private void OnTriggerEnter(Collider other)
         {
+            // Защита: если ViewModel уже задиспожена, игнорируем столкновение
+            if (ViewModel == null) return;
+            
             if (other.gameObject.CompareTag("Warrior"))
             {
                 var warrior = other.gameObject.GetComponent<WarriorAttackBinder>();
-              //  Debug.Log(warrior.ViewModel.UniqueId + " " + warrior.ViewModel.ConfigId);
+                if (warrior?.ViewModel == null) return;
+                //  Debug.Log(warrior.ViewModel.UniqueId + " " + warrior.ViewModel.ConfigId);
                 ViewModel.PullTargets.Add(warrior.ViewModel);
                 
             }
@@ -30,6 +34,7 @@ namespace Game.GamePlay.View.Mobs
             {
 //                Debug.Log("В зоне атаки Замка" + ViewModel.UniqueId);
                 var castle = other.gameObject.GetComponent<CastleBinder>();
+                if (castle?.ViewModel == null) return;
                 ViewModel.PullTargets.Add(castle.ViewModel);
             }
 
@@ -38,7 +43,7 @@ namespace Game.GamePlay.View.Mobs
                 var wall = other.gameObject.GetComponent<Skill02Binder>();
                 //Debug.Log("Wall = " + wall.Duration);
                 //TODO Наносим урон стене
-                
+                if (wall == null) return;
                 ViewModel.PullTargets.Add(wall);
             }
         }

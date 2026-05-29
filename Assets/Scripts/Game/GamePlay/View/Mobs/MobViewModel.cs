@@ -34,7 +34,7 @@ namespace Game.GamePlay.View.Mobs
         public readonly List<RoadPoint> RoadPoints;
 
         //public ReactiveProperty<MobState> State; //TODO Возможно удалить или модифицировать до FSM
-        public readonly ReactiveProperty<float> CurrentHealth;
+        public ReadOnlyReactiveProperty<float> CurrentHealth => _mobEntity.Health;
         public readonly float MaxHealth;
 
         public readonly ReactiveProperty<bool> FinishCurrentAnimation = new(true);
@@ -68,7 +68,7 @@ namespace Game.GamePlay.View.Mobs
 
            // _gameplayState = gameplayState;
             _mobEntity = mobEntity;
-            CurrentHealth = mobEntity.Health;
+            //CurrentHealth = mobEntity.Health;
             MaxHealth = mobEntity.Health.CurrentValue;
 
             
@@ -115,7 +115,18 @@ namespace Game.GamePlay.View.Mobs
             {
               //  Debug.Log("Добавили в пул " + e.Value.GetType());
                 var targetViewModel = e.Value;
-                var disposable = targetViewModel.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(targetViewModel));
+                
+                // Защита: подписываемся на IsDead только если он ещё не задиспожен
+                IDisposable disposable = null;
+                try
+                {
+                    disposable = targetViewModel.IsDead.Where(x => x).Subscribe(_ => PullTargets.Remove(targetViewModel));
+                }
+                catch (ObjectDisposedException)
+                {
+                    // Цель уже задиспожена, игнорируем
+                    return;
+                }
 
                 if (_target.CurrentValue == null)
                 {
@@ -190,6 +201,11 @@ namespace Game.GamePlay.View.Mobs
             return _mobEntity.Speed();
         }
 
+      /*  public void SetDamage(float damage)
+        {
+            _mobEntity.SetDamage(damage);
+        }
+        */
         public Vector3 GetTargetPosition(int index)
         {
             var newValue = RoadPoints[index].Point; //_currentIndexListPoint
@@ -246,6 +262,9 @@ namespace Game.GamePlay.View.Mobs
             {
                 // Coroutines уже уничтожен (при выгрузке сцены)
             }
+            
+            // Очищаем PullTargets до диспоуза подписок, чтобы избежать вызова колбэков
+            PullTargets.Clear();
             
             IsMoving?.Dispose();
             IsAttack?.Dispose();

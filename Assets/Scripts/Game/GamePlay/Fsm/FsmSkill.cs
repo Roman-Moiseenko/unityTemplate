@@ -13,8 +13,9 @@ namespace Game.GamePlay.Fsm
     {
         public FsmProxy Fsm;
         
-        public ReactiveProperty<Vector2Int> Position = new();
-        public ReactiveProperty<Vector2Int> Direction = new();
+        public readonly ReactiveProperty<Vector2> PositionCursor = new();
+        public readonly ReactiveProperty<Vector2Int> Direction = new();
+        public readonly ReactiveProperty<Vector2> Position = new();
         public List<RoadPoint> Cells = new();
 
         public FsmSkill(DIContainer container)
@@ -31,14 +32,18 @@ namespace Game.GamePlay.Fsm
 
         public void SetPosition(Vector2Int position)
         {
-            Position.Value = position;
+            PositionCursor.Value = position;
         }
+        
         public void SetPosition(Vector2 position)
         {
+            PositionCursor.Value = position;
+            /*
             Position.Value = new Vector2Int(
                 Mathf.FloorToInt(position.x + 0.5f),
                 Mathf.FloorToInt(position.y + 0.5f)
             );
+            */
         }
         public string GetConfigId()
         {
@@ -63,7 +68,7 @@ namespace Game.GamePlay.Fsm
         public void Dispose()
         {
             Fsm?.Dispose();
-            Position?.Dispose();
+            PositionCursor?.Dispose();
             Direction?.Dispose();
         }
     }

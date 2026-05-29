@@ -325,12 +325,9 @@ namespace Game.GamePlay.Root.View
                 Mathf.FloorToInt(position.x + 0.5f),
                 Mathf.FloorToInt(position.y + 0.5f)
             );
+            
             _isFrameDownClick = _frameService.IsPosition(vectorInt);
-            if (_fsmTower.IsPlacement())
-            {
-                //Попытаться выделить, если совпали координаты
-                if (_framePlacementService.TrySelectedFrame(vectorInt)) return;
-            }
+
 
             //Запущен режим Навыка
             if (_fsmSkill.IsBegin())
@@ -338,6 +335,12 @@ namespace Game.GamePlay.Root.View
                 _fsmSkill.Fsm.SetState<FsmSkillSetTarget>();
                 _fsmSkill.SetPosition(position);
                 return;
+            }
+            
+            if (_fsmTower.IsPlacement())
+            {
+                //Попытаться выделить, если совпали координаты
+                if (_framePlacementService.TrySelectedFrame(vectorInt)) return;
             }
             
             if (_isFrameDownClick)

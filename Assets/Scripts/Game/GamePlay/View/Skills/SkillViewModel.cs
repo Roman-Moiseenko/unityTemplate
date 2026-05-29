@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.State.Common;
+using Game.State.Gameplay;
+using Game.State.Gameplay.Statistics;
+using Game.State.Maps.Shots;
 using Game.State.Maps.Skills;
 using R3;
 using UnityEngine;
@@ -10,6 +13,8 @@ namespace Game.GamePlay.View.Skills
 {
     public class SkillViewModel : IDisposable
     {
+        
+        protected GameplayStateProxy GameplayState;
         private readonly SkillEntity _skillEntity;
         
         public string ConfigId => _skillEntity.ConfigId;
@@ -18,7 +23,7 @@ namespace Game.GamePlay.View.Skills
         public readonly ReactiveProperty<bool> ToDestroy = new(false);
         public TypeEpic EpicLevel { get; set; }
 
-        public ReactiveProperty<Vector2Int> EffectPosition = new(Vector2Int.zero);
+        public ReactiveProperty<Vector2> EffectPosition = new(Vector2.zero);
         public ReactiveProperty<Vector2Int> EffectDirection = new(Vector2Int.zero);
         //  public FsmSkill FsmSkill;
 
@@ -34,16 +39,16 @@ namespace Game.GamePlay.View.Skills
         private readonly SkillsService _service;
 
         public SkillViewModel(SkillEntity skillEntity,
-            SkillsService service)
+            SkillsService service, GameplayStateProxy gameplayState)
         {
             _service = service;
+            GameplayState = gameplayState;
             _skillEntity = skillEntity;
             Level =  skillEntity.Level;
             //Время отката
 
             if (skillEntity.Parameters.TryGetValue(SkillParameterType.Cooldown, out var parameterData)) 
                 Cooldown = parameterData.Value;
-            
             
         }
 
@@ -66,6 +71,20 @@ namespace Game.GamePlay.View.Skills
             Level?.Dispose();
             IsCooldown?.Dispose();
             IsActive?.Dispose();
+        }
+
+        public void SetDamageShot(int mobUniqueId, float damage)
+        {
+            var shotData = new ShotData
+            {
+                MobEntityId = mobUniqueId,
+                ConfigId = ConfigId,
+                Single = true,
+                Damage = damage, 
+                DamageType = DamageType.MassDamage,
+                TypeEntity = TypeEntityStatisticDamage.Skill,
+            };
+            GameplayState.Shots.Add(shotData);
         }
     }
 }

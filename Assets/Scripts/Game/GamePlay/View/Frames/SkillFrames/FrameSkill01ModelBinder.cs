@@ -14,7 +14,6 @@ namespace Game.GamePlay.View.Frames.SkillFrames
             {
                 var currentRadius = range.Value / 2;
                 bottomArea.SetFloat("Radius", currentRadius);
-              //  bottomArea.Play();
             }
             else
             {

@@ -9,6 +9,7 @@ using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Commands.WaveCommands;
 using Game.Settings;
 using Game.State.Gameplay;
+using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Skills;
 using Game.State.Root;
 using MVVM.CMD;
@@ -88,6 +89,7 @@ namespace Game.GamePlay.Commands.MapCommand
                 
                 var skillEntityData = new SkillEntityData
                 {
+                    UniqueId = _gameplayState.CreateEntityID(),
                     ConfigId = skillCardData.ConfigId,
                     Defence = skillCardData.Defence,
                     Level = 1,
@@ -96,6 +98,7 @@ namespace Game.GamePlay.Commands.MapCommand
                     OnRoad = skillSettings.OnRoad,
                 };
                 _gameplayState.Skills.Add(new SkillEntity(skillEntityData));
+                _gameplayState.StatisticGame.Add(skillCardData.ConfigId, TypeEntityStatisticDamage.Skill);
             }
             
             //TODO Создаем Героя из базовых настроек            

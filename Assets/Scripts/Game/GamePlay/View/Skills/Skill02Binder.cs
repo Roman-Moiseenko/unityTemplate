@@ -112,13 +112,13 @@ namespace Game.GamePlay.View.Skills
             {
                 Destroy(_barMaterial);
             }
+            _isDead?.Dispose();
             base.OnDestroy();
         }
 
 
         public void DamageReceived(float damage, TypeDefence defence)
         {
-            _isDead?.Dispose();
             _health -= damage;
             UpdateShaderProperties();
         }

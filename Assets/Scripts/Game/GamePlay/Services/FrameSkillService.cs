@@ -72,37 +72,68 @@ namespace Game.GamePlay.Services
                 
             }).AddTo(ref _disposables);
             
-            _fsmSkill.Position.Subscribe(newPosition => 
+            _fsmSkill.PositionCursor.Subscribe(newPosition => 
                 {
-                    if (_fsmSkill.IsTarget()) MoveFrame(newPosition);
+                    if (_fsmSkill.IsTarget())
+                    {
+                        if (_viewModel.OnRoad)
+                        {
+                            _fsmSkill.Position.Value = new Vector2Int(
+                                Mathf.FloorToInt(newPosition.x + 0.5f),
+                                Mathf.FloorToInt(newPosition.y + 0.5f)
+                            );
+                        }
+                        else
+                        {
+                            _fsmSkill.Position.Value = newPosition;
+                        }
+                        MoveFrame(newPosition);
+                    }
                 }
             ).AddTo(ref _disposables);
             
         }
 
-        private void MoveFrame(Vector2Int position)
-        {
-            _viewModel.MoveFrame(position);
-            _fsmSkill.Position.Value = position;
+        private void MoveFrame(Vector2 position)
+        {         
+            
+            if (_viewModel.OnRoad)
+            {
+                var vectorInt = new Vector2Int(
+                    Mathf.FloorToInt(position.x + 0.5f),
+                    Mathf.FloorToInt(position.y + 0.5f)
+                );
+                _viewModel.MoveFrame(vectorInt);
+            }
+            else
+            {
+                _viewModel.MoveFrame(position);
+            }
+            
+            //_fsmSkill.Position.Value = position;
             CheckPlacement(position);
         }
 
         /**
          * Проверяем размещение для _viewModel
          */
-        private void CheckPlacement(Vector2Int position)
+        private void CheckPlacement(Vector2 position)
         {
             if (!_viewModel.OnRoad)
             {
                 IsPlacement.Value = true;
                 return;
             }
-            IsPlacement.Value = _placementService.IsRoad(position);
-            if (!_placementService.IsRoad(position)) return;
+            var vectorInt = new Vector2Int(
+                Mathf.FloorToInt(position.x + 0.5f),
+                Mathf.FloorToInt(position.y + 0.5f)
+            );
+            IsPlacement.Value = _placementService.IsRoad(vectorInt);
+            if (!_placementService.IsRoad(vectorInt)) return;
             
             if (_viewModel.MultiCells == 0)
             {
-                Direction.Value = _placementService.GetRoadDirectionNext(position);
+                Direction.Value = _placementService.GetRoadDirectionNext(vectorInt);
                 _fsmSkill.Direction.Value = Direction.Value;
             }
             else
