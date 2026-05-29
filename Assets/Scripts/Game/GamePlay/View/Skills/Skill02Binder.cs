@@ -20,14 +20,13 @@ namespace Game.GamePlay.View.Skills
         private float _maxHealth;
         private bool _initialized;
 
-        public int UniqueId { get; set; }
+        public int UniqueId => ViewModel.UniqueId;
         public ReadOnlyReactiveProperty<bool> IsDead => _isDead;
         private readonly ReactiveProperty<bool> _isDead = new(false);
         
         public float Duration => _duration;
         protected override void OnBind()
         {
-            UniqueId = -1; //Костыль. Навыки не имеют UniqueId, для стены ставим значение, которое не может быть у других, это < 0
             _camera = Camera.main;
 
             // Поворот эффекта по направлению
@@ -85,16 +84,7 @@ namespace Game.GamePlay.View.Skills
 
             AlignCamera();
         }
-
-        /// <summary>
-        /// Устанавливает текущее значение здоровья (вызывается извне, например, при получении урона)
-        /// </summary>
-        public void SetHealth(float value)
-        {
-            _health = Mathf.Max(0, value);
-            UpdateShaderProperties();
-        }
-
+        
         private void UpdateShaderProperties()
         {
             if (_barMaterial == null) return;
@@ -128,7 +118,9 @@ namespace Game.GamePlay.View.Skills
 
         public void DamageReceived(float damage, TypeDefence defence)
         {
+            _isDead?.Dispose();
             _health -= damage;
+            UpdateShaderProperties();
         }
     }
 }

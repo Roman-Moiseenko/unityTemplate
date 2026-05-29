@@ -2,11 +2,13 @@ using System;
 using System.Collections;
 using R3;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Game.GamePlay.View.Skills
 {
     public class Skill01Binder : SkillBinder
     {
+        
 
         protected override void OnBind()
         {

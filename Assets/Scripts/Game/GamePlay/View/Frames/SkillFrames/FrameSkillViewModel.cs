@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.State.Maps.Skills;
@@ -20,11 +21,16 @@ namespace Game.GamePlay.View.Frames.SkillFrames
 
         public ReadOnlyReactiveProperty<bool> IsPlacement;
         public ReadOnlyReactiveProperty<Vector2Int> Direction;
+        public Dictionary<SkillParameterType, SkillParameterData> Parameters;
         
-        
-        public FrameSkillViewModel(string configId, SkillSettings skillSettings, FrameSkillService service)
+        public FrameSkillViewModel(
+            string configId, 
+            SkillSettings skillSettings, 
+            FrameSkillService service, 
+            Dictionary<SkillParameterType, SkillParameterData> parameters)
         {
             ConfigId = configId;
+            Parameters = parameters;
             Position = new ReactiveProperty<Vector2Int>(Vector2Int.zero);
             IsEnable = new ReactiveProperty<bool>(false);
             _skillSettings = skillSettings;

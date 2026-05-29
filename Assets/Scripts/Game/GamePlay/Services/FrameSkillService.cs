@@ -120,7 +120,8 @@ namespace Game.GamePlay.Services
 
             var query = new QueryInfoSkill { ConfigId = configId };
             var settings = _qrc.Request<QueryInfoSkill, SkillSettings>(query);
-            _viewModel = new FrameSkillViewModel(configId, settings, this);
+            var param = _skillService.GetParameters(configId);
+            _viewModel = new FrameSkillViewModel(configId, settings, this, param);
             _viewModels.Add(_viewModel);
         }
 

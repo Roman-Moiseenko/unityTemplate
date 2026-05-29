@@ -88,7 +88,7 @@ namespace Game.GamePlay.Services
                 SkillParametersMap.Add(skillCardData.ConfigId, param);
                 for (var i = 1; i <= Levels[skillCardData.ConfigId]; i++)
                 {
-                    UpdateParams(skillCardData.ConfigId, i); //Увеличиваем параметры по геймплей уровню башни
+                    UpdateParams(skillCardData.ConfigId, i); //Увеличиваем параметры по геймплей уровню навыка
                 }
             }
 
@@ -217,6 +217,12 @@ namespace Game.GamePlay.Services
             return skills;
         }
 
+        public Dictionary<SkillParameterType, SkillParameterData> GetParameters(string configId)
+        {
+            var skillViewModel = _skillsMap.FirstOrDefault(v => v.ConfigId == configId);
+            if (skillViewModel == null) return null;
+            return skillViewModel.Parameters;
+        }
         /**
         * Список доступных навыков для апгрейда
         */
@@ -247,15 +253,13 @@ namespace Game.GamePlay.Services
                 .Take(1)
                 .Subscribe(_ => { _allSkills.Remove(skillViewModel); })
                 .AddTo(ref _disposables);
-
-
+            
             //Запуск кулдауна
             skillViewModel?.StartCooldown();
             //Смена состояния
             _fsmSkill.Fsm.SetState<FsmSkillNone>();
         }
-
-
+        
         public void StartSkill(string configId)
         {
             if (_fsmSkill.IsBegin() && _fsmSkill.GetConfigId() == configId)

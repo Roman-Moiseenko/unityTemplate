@@ -342,6 +342,14 @@ namespace Game.GamePlay.Root.View
             var skillPrefab = Resources.Load<SkillBinder>(prefabPath);
             var createdSkill = Instantiate(skillPrefab, transform);
             createdSkill.Bind(skillViewModel);
+            
+            // Если такой UniqueId уже есть (при повторном применении навыка), удаляем старый объект
+            if (_createSkillsMap.TryGetValue(skillViewModel.UniqueId, out var existingBinder))
+            {
+                Destroy(existingBinder.gameObject);
+                _createSkillsMap.Remove(skillViewModel.UniqueId);
+            }
+            
             _createSkillsMap.Add(skillViewModel.UniqueId, createdSkill);
         }
 
