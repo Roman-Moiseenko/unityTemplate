@@ -289,7 +289,7 @@ MonoBehaviour:
   - TypeParameter: 11
     Sprite: {fileID: 21300000, guid: d03218f7a0ce6874a87652c142a6c8bf, type: 3}
   otherSprite:
-  - ConfigId: TowerUpCard
+  - ConfigId: UpgradeCard
     Sprite: {fileID: 21300000, guid: 60fedadfae431dd498d14edf921ec65e, type: 3}
     Texture: {fileID: 0}
   - ConfigId: UpgradeBtnCard
@@ -426,7 +426,7 @@ MonoBehaviour:
     Header: {fileID: 21300000, guid: 70ab79a94a1f0694a9a675fc6140e882, type: 3}
     Output: {fileID: 21300000, guid: 851c191abc4b4624c8a2efd97d34d265, type: 3}
     Background: {fileID: 21300000, guid: 1c49bd898a6c7084d91b1b26c53b0dd6, type: 3}
-  - Epic: 6
+  - Epic: 9
     Card: {fileID: 21300000, guid: bf7e213deff3e1740800ab10288f2c35, type: 3}
     Header: {fileID: 21300000, guid: 70ab79a94a1f0694a9a675fc6140e882, type: 3}
     Output: {fileID: 21300000, guid: 851c191abc4b4624c8a2efd97d34d265, type: 3}

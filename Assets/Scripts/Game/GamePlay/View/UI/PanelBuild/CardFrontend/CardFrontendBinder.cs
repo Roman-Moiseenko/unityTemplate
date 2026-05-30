@@ -73,6 +73,7 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardFrontend
                     RewardType.Road => _imageManager.GetRoad(viewModel.ImageCard),
                     RewardType.TowerLevelUp => _imageManager.GetTowerCard(viewModel.ImageCard, viewModel.NumberModel),
                     RewardType.Tower => _imageManager.GetTowerCard(viewModel.ImageCard, viewModel.NumberModel),
+                    RewardType.SkillLevelUp => _imageManager.GetSkillCard(viewModel.ImageCard),
                     _ => _imageManager.GetOther(viewModel.ImageCard),
                 };
                 

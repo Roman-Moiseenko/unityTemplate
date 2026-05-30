@@ -48,6 +48,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
             var towerService  = container.Resolve<TowersService>();
             var fsmGameplay = container.Resolve<FsmGameplay>();
             var gameSettings = container.Resolve<ISettingsProvider>().GameSettings;
+            var skillsService = container.Resolve<SkillsService>();
             
             UpdateCards = gameplayState.UpdateCards;
             _gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
@@ -55,9 +56,9 @@ namespace Game.GamePlay.View.UI.PanelBuild
             _rewardService = container.Resolve<RewardProgressService>();
             Levels = towerService.Levels;
             
-            CardViewModels.Add(1, new CardViewModel(gameSettings, fsmGameplay, towerService));
-            CardViewModels.Add(2, new CardViewModel(gameSettings, fsmGameplay, towerService));
-            CardViewModels.Add(3, new CardViewModel(gameSettings, fsmGameplay, towerService));
+            CardViewModels.Add(1, new CardViewModel(gameSettings, fsmGameplay, towerService, skillsService));
+            CardViewModels.Add(2, new CardViewModel(gameSettings, fsmGameplay, towerService, skillsService));
+            CardViewModels.Add(3, new CardViewModel(gameSettings, fsmGameplay, towerService, skillsService));
             
             AllTowerConfig = container.Resolve<ISettingsProvider>().GameSettings.TowersSettings.AllTowers;
             fsmGameplay.Fsm.StateCurrent

@@ -311,5 +311,10 @@ namespace Game.GamePlay.Services
             SkillTwo?.Dispose();
             _disposables.Dispose();
         }
+
+        public void LevelUpSkill(string cardConfigId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -72,7 +72,11 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
             viewModel.UpdateInfoBackgroundTower.Where(x => x).Subscribe(_ =>
             {
                 //Фон от эпичности 
+                Debug.Log(viewModel.EpicLevel);
                 var epicImage = _imageManager.GetEpicData(viewModel.EpicLevel);
+                
+                Debug.Log(epicImage);
+                
                 header.sprite = epicImage.Header;
                 output.sprite = epicImage.Output;
                 background.sprite = epicImage.Background;

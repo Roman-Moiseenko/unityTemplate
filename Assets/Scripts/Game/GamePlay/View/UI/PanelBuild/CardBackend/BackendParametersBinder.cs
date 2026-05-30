@@ -34,13 +34,18 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardBackend
                 
                 //Заполняем блок параметров
                 var index = 0;
-                foreach (var paramData in viewModel.InfoCardParameters)
+                foreach (var paramData in viewModel.InfoCardTowerParameters)
                 {
                     parameterBinders[index].Bind(paramData.Key, paramData.Value);
                     index++;
                     if (index >= 4) break;
                 }
-                
+                foreach (var paramData in viewModel.InfoCardSkillParameters)
+                {
+                    parameterBinders[index].Bind(paramData.Key, paramData.Value);
+                    index++;
+                    if (index >= 4) break;
+                }
                 transform.gameObject.SetActive(true);
             }).AddTo(ref d);
             _disposable = d.Build();

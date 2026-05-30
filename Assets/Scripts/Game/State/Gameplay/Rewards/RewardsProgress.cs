@@ -8,6 +8,6 @@ namespace Game.State.Gameplay.Rewards
     //    public RewardCardData Card2 = new();
      //   public RewardCardData Card3 = new();
 
-        public Dictionary<int, RewardCardData> Cards = new(3);
+        public readonly Dictionary<int, RewardCardData> Cards = new(3);
     }
 }

@@ -10,6 +10,7 @@ using Game.State.Gameplay;
 using Game.State.Gameplay.Rewards;
 using Game.State.Inventory;
 using Game.State.Maps.Mobs;
+using Game.State.Maps.Skills;
 using Game.State.Maps.Towers;
 using R3;
 using UnityEngine;
@@ -25,7 +26,8 @@ namespace Game.GamePlay.View.UI.PanelBuild
         public string DescriptionBack;
         public int Level = 0;
         public int NumberModel;
-        public readonly Dictionary<TowerParameterType, Vector2> InfoCardParameters = new(); //Параметры для отображения на Backend
+        public readonly Dictionary<TowerParameterType, Vector2> InfoCardTowerParameters = new(); //Параметры для отображения на Backend
+        public readonly Dictionary<SkillParameterType, Vector2> InfoCardSkillParameters = new(); //Параметры для отображения на Backend
 
         public TypeDefence? Defence = null;
         public ReactiveProperty<bool> Updated = new(true);
@@ -37,29 +39,45 @@ namespace Game.GamePlay.View.UI.PanelBuild
         private readonly TowersService _towersService;
         public RewardType RewardType => _rewardData.RewardType; 
         
-        public readonly Dictionary<TowerParameterType, float> UpgradeParameters = new(); //Параметры которые увеличиваются на текущем уровне
+        public readonly Dictionary<TowerParameterType, float> UpgradeTowerParameters = new(); //Параметры которые увеличиваются на текущем уровне
+        public readonly Dictionary<SkillParameterType, float> UpgradeSkillParameters = new(); //Параметры которые увеличиваются на текущем уровне
+        private readonly SkillsService _skillsService;
 
-        public CardViewModel(GameSettings gameSettings, FsmGameplay fsmGameplay, TowersService towersService)
+        public CardViewModel(GameSettings gameSettings, FsmGameplay fsmGameplay, TowersService towersService, SkillsService skillsService)
         {
             _gameSettings = gameSettings;
             _fsmGameplay = fsmGameplay;
             _towersService = towersService;
+            _skillsService = skillsService;
         }
 
+        private void ClearViewModel()
+        {
+            Caption = "";
+            Level = 0;
+            Defence = null;
+            ImageCard = "";
+            ImageBack = "";
+            DescriptionBack = "";
+            
+            InfoCardTowerParameters.Clear();
+            InfoCardSkillParameters.Clear();
+            UpgradeTowerParameters.Clear();
+            UpgradeSkillParameters.Clear();
+        }
 
         public void UpdateRewardInfo(RewardCardData rewardData)
         {
+            ClearViewModel();
+            
             _rewardData = rewardData;
-            InfoCardParameters.Clear();
             switch (rewardData.RewardType)
             {
                 case RewardType.Tower: InfoTower(); break;
                 case RewardType.Ground: InfoGround(); break;
                 case RewardType.Road: InfoRoad(); break;
                 case RewardType.TowerLevelUp: InfoTowerUp(); break;
-                case RewardType.SkillLevelUp:
-                            
-                    break;
+                case RewardType.SkillLevelUp: InfoSkillUp(); break;
                 case RewardType.HeroLevelUp:
                          
                     break;
@@ -72,7 +90,52 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 default: throw new Exception("Не известное значение");
             }
         }
-    
+
+        private void InfoSkillUp()
+        {
+            var config = _gameSettings.SkillsSettings.AllSkills.Find(s => s.ConfigId == _rewardData.ConfigId);
+            Level = _rewardData.Level;
+            Caption= "УЛУЧШЕНИЕ";
+            DescriptionBack = Caption;
+            Defence = null;
+            ImageCard = _rewardData.ConfigId;
+            ImageBack = "UpgradeCard";
+            
+            List<SkillParameterType> listUpgradeParameter = new(); //Временный список всех параметров по всем геймплей уровням
+            foreach (var configGameplayLevel in config.GameplayLevels)
+            {
+                foreach (var param in configGameplayLevel.Parameters)
+                {
+                    listUpgradeParameter.Add(param.ParameterType);
+                }
+            }
+            List<SkillParameterType> allUpgradeParameter = listUpgradeParameter.Distinct().ToList(); //Уникальный список
+            var gameplayParameters = config.GameplayLevels.Find(v => v.Level == Level + 1).Parameters;
+            
+            foreach (var parameter in gameplayParameters)
+                UpgradeSkillParameters.Add(parameter.ParameterType, parameter.Value);
+            
+            
+            var settingsParameters = _skillsService.SkillParametersMap[_rewardData.ConfigId];
+            foreach (var parameterType in allUpgradeParameter)
+            {
+                var data = new Vector2();
+
+                //Основная характеристика
+                if (settingsParameters.TryGetValue(parameterType, out var value))
+                    data.x = value.Value;
+                
+                var  skillParameter = gameplayParameters.Find(p => p.ParameterType == parameterType);
+                //Процент роста
+                if (skillParameter != null)
+                    data.y = skillParameter.Value;
+                
+                InfoCardSkillParameters.Add(parameterType, data);
+            }
+            
+            Updated.OnNext(true);
+        }
+        
         private void InfoTowerUp()
         {
             var config = _gameSettings.TowersSettings.AllTowers.Find(t => t.ConfigId == _rewardData.ConfigId);
@@ -83,7 +146,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
             
             Defence = null;
             ImageCard = _rewardData.ConfigId;
-            ImageBack = "TowerUpCard";
+            ImageBack = "UpgradeCard";
 
             List<TowerParameterType> listUpgradeParameter = new(); //Временный список всех параметров по всем геймплей уровням
             foreach (var configGameplayLevel in config.GameplayLevels)
@@ -99,11 +162,9 @@ namespace Game.GamePlay.View.UI.PanelBuild
             var gameplayParameters = config.GameplayLevels.Find(v => v.Level == Level + 1).Parameters;
             
             //Список на Frontend параметров, которые вырастут
-            UpgradeParameters.Clear();
             foreach (var parameter in gameplayParameters)
-                UpgradeParameters.Add(parameter.ParameterType, parameter.Value);
-
-            InfoCardParameters.Clear();
+                UpgradeTowerParameters.Add(parameter.ParameterType, parameter.Value);
+            
             var settingsParameters = _towersService.TowerParametersMap[_rewardData.ConfigId];
             foreach (var parameterType in allUpgradeParameter)
             {
@@ -118,7 +179,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 if (towerParameter != null)
                     data.y = towerParameter.Value;
                 
-                InfoCardParameters.Add(parameterType, data);
+                InfoCardTowerParameters.Add(parameterType, data);
             }
             
             Updated.OnNext(true);
@@ -172,10 +233,10 @@ namespace Game.GamePlay.View.UI.PanelBuild
             Defence = config.Defence;
             ImageCard = _rewardData.ConfigId;
             ImageBack = _rewardData.EpicLevel.Index().ToString();
-            InfoCardParameters.Clear();
+            InfoCardTowerParameters.Clear();
             foreach (var parameterData in _towersService.TowerParametersMap[_rewardData.ConfigId])
             {
-                InfoCardParameters.Add(parameterData.Key, new Vector2(parameterData.Value.Value, 0));
+                InfoCardTowerParameters.Add(parameterData.Key, new Vector2(parameterData.Value.Value, 0));
             }
             
             Updated.OnNext(true);

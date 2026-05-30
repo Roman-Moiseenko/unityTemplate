@@ -6,14 +6,13 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Root;
 using Game.Settings;
+using Game.Settings.Gameplay.Entities.Skill;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Gameplay;
 using Game.State.Gameplay.Rewards;
-using Game.State.Inventory;
 using Game.State.Inventory.Common;
 using Game.State.Maps.Rewards;
 using Game.State.Research;
-using Game.State.Root;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -34,6 +33,8 @@ namespace Game.GamePlay.Services
         private Dictionary<int, bool> _rewardsMap = new();
         private readonly GameplayBoosters _gameplayBoosters;
         private DisposableBag _disposables = new();
+        private readonly SkillsService _skillService;
+        private readonly SkillsSettings _skillsSettings;
 
         public RewardProgressService(
             GameplayStateProxy gameplayState,
@@ -48,7 +49,9 @@ namespace Game.GamePlay.Services
             _gameSettings = gameSettings;
             _gameplayBoosters = gameplayEnterParams.GameplayBoosters;
             _towersService = container.Resolve<TowersService>();
+            _skillService = container.Resolve<SkillsService>();
             _towersSettings = gameSettings.TowersSettings;
+            _skillsSettings = gameSettings.SkillsSettings;
             
             //gameplayState.Waves.
             //TODO Подписка на мобов из текущей волны, что на карте, при удалении => выдать награду
@@ -207,6 +210,7 @@ namespace Game.GamePlay.Services
                 GetTowerUpgrade,
                 GetGround,
                 GetRoad,
+                GetSkillUpgrade,
                 //GetTowerMovement //TODO Добавить перемещения башен, после реализации
             };
 
@@ -310,7 +314,8 @@ namespace Game.GamePlay.Services
         {
             var availableUpgradeTowers = _towersService.GetAvailableUpgradeTowers(); //Список доступных улучшений
             //Исключить повторения
-            foreach (var rewardCardData in progress.Cards.Where(rewardCardData =>
+            foreach (var rewardCardData in progress.Cards
+                         .Where(rewardCardData =>
                          rewardCardData.Value.RewardType == RewardType.TowerLevelUp))
             {
                 availableUpgradeTowers.Remove(rewardCardData.Value.ConfigId);
@@ -318,8 +323,12 @@ namespace Game.GamePlay.Services
 
             if (availableUpgradeTowers.Count == 0) return null;
             
-            var index = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % availableUpgradeTowers.Count;
+            //var index = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % availableUpgradeTowers.Count;
 
+            var random = new System.Random();
+            var index = random.Next(1, availableUpgradeTowers.Count) - 1;
+            
+            
             var i = 0;
             foreach (var tower in availableUpgradeTowers)
             {
@@ -357,6 +366,38 @@ namespace Game.GamePlay.Services
             {
                 RewardType = list[index],
             };
+        }
+
+        private RewardCardData GetSkillUpgrade(RewardsProgress progress)
+        {
+            //Доступные скиллы для апгрейда 
+            var availableUpgradeSkills = _skillService.GetAvailableUpgradeSkills();
+            //Удаляем повторы
+            foreach (var rewardCardData in progress.Cards
+                         .Where(rewardCardData =>
+                             rewardCardData.Value.RewardType == RewardType.SkillLevelUp))
+            {
+                availableUpgradeSkills.Remove(rewardCardData.Value.ConfigId);
+            }
+
+            if (availableUpgradeSkills.Count == 0) return null; //Нет доступных
+            var random = new System.Random();
+            var index = random.Next(1, availableUpgradeSkills.Count) - 1;
+            var i = 0;
+            foreach (var skill in availableUpgradeSkills)
+            {
+                if (i == index)
+                {
+                    return new RewardCardData
+                    {
+                        RewardType = RewardType.SkillLevelUp,
+                        ConfigId = skill.Key,
+                        Level = skill.Value, //текущий уровень, для звездочек
+                    };
+                }
+                i++;
+            }
+            return null;
         }
 
         public void Dispose()
