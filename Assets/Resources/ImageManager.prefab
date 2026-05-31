@@ -304,6 +304,12 @@ MonoBehaviour:
   - ConfigId: CardGround
     Sprite: {fileID: 21300000, guid: 303ac3c4525551449bc66d68a0da07a1, type: 3}
     Texture: {fileID: 0}
+  - ConfigId: CardMove
+    Sprite: {fileID: 21300000, guid: e8a473233ed8c834bba622fb0c81d2b2, type: 3}
+    Texture: {fileID: 0}
+  - ConfigId: CardReplace
+    Sprite: {fileID: 21300000, guid: cca5ac1221504ec459aac5268176bc8a, type: 3}
+    Texture: {fileID: 0}
   - ConfigId: TypeInfinity
     Sprite: {fileID: 21300000, guid: fa3ea0caeb4ca8d40846edc4794b8a35, type: 3}
     Texture: {fileID: 0}

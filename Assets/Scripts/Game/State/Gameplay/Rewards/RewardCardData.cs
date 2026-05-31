@@ -24,8 +24,7 @@ namespace Game.State.Gameplay.Rewards
 
         public bool IsBuild()
         {
-            if (RewardType == RewardType.Ground || RewardType == RewardType.Tower ||
-                RewardType == RewardType.Road)
+            if (RewardType is RewardType.Ground or RewardType.Tower or RewardType.Road or RewardType.TowerMove or RewardType.TowerReplace)
                 return true;
             return false;
         }

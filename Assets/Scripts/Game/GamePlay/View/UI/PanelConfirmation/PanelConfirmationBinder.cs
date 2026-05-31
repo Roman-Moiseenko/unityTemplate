@@ -20,6 +20,8 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             {
                 _btnConfirmation.interactable = newValue;
             }).AddTo(ref d);
+            
+            
             ViewModel.IsRotate.Subscribe(isRotation =>
             {
                 _btnRotate.gameObject.SetActive(isRotation);
@@ -40,6 +42,10 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
                 _btnConfirmation.transform.localPosition = confirmY;
                 _btnCancel.transform.localPosition = cancelY;
             }).AddTo(ref d);
+            
+            ViewModel.IsConfirmation
+                .Subscribe(v => _btnConfirmation.gameObject.SetActive(v))
+                .AddTo(ref d);
             _disposable = d.Build();
         }
         

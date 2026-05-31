@@ -16,21 +16,20 @@ using Game.State.Research;
 using ObservableCollections;
 using R3;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Game.GamePlay.Services
 {
     public class RewardProgressService : IDisposable
     {
-        public ObservableList<RewardCurrencyEntity> RewardMaps = new();
-        public ReactiveProperty<RewardEntity> RewardEntity = new();       
+        public readonly ObservableList<RewardCurrencyEntity> RewardMaps = new();
+        public readonly ReactiveProperty<RewardEntity> RewardEntity = new();       
         
         private readonly GameplayStateProxy _gameplayState;
         private readonly DIContainer _container;
         private readonly GameSettings _gameSettings;
         private readonly TowersSettings _towersSettings;
         private readonly TowersService _towersService;
-        private Dictionary<int, bool> _rewardsMap = new();
+        private readonly Dictionary<int, bool> _rewardsMap = new();
         private readonly GameplayBoosters _gameplayBoosters;
         private DisposableBag _disposables = new();
         private readonly SkillsService _skillService;
@@ -53,16 +52,11 @@ namespace Game.GamePlay.Services
             _towersSettings = gameSettings.TowersSettings;
             _skillsSettings = gameSettings.SkillsSettings;
             
-            //gameplayState.Waves.
-            //TODO Подписка на мобов из текущей волны, что на карте, при удалении => выдать награду
-            
             var fsmGameplay = container.Resolve<FsmGameplay>();
-
             
             gameplayState.Mobs.ObserveRemove().Subscribe(e =>
             {
-                //При удалении моба (когда IsDead => true) выдаем награду
-                var mobEntity = e.Value;
+                var mobEntity = e.Value; //При удалении моба (когда IsDead => true) выдаем награду
                 RewardKillMob(mobEntity.RewardCurrency, mobEntity.Position.CurrentValue);
             }).AddTo(ref _disposables);
             
@@ -75,36 +69,18 @@ namespace Game.GamePlay.Services
             //TODO Куда перенести
             fsmGameplay.Fsm.StateCurrent.Subscribe(newState =>
             {
-                if (newState.GetType() == typeof(FsmStateBuild))
-                {
-                    //TODO Имитируем работу контроллера ввода
-                    /*
-                    var card = ((FsmStateBuild)newState).GetRewardCard();
-                    card.Direction = 2;
-                    card.Position = new Vector2Int(Random.Range(0, 5), Random.Range(0, 2));
-                    fsm.Fsm.SetState<FsmStateBuildEnd>(card); */
-                    //
-                }
+                if (newState.GetType() == typeof(FsmStateBuild)) { }
 
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
-                  //  Debug.Log("Построено");
                     if (gameplayState.Progress.Value >= 100) gameplayState.Progress.Value -= 100;
-                //    Debug.Log("Прогресс остаточный = " + gameplayStateProxy.Progress.Value);
-
-                gameplayState.ProgressLevel.Value++;
-                    
+                    gameplayState.ProgressLevel.Value++;
                 }
                 
                 if (newState.GetType() == typeof(FsmStateGamePlay))
                 {
-                    //При завершении строительства, если еще остались очки прогресса
-                    if (gameplayState.Progress.Value >= 100)
-                    {
-                     //   Debug.Log("Прогресс остаточный > 100 ");
-                       // var rewards = GenerateRewardProgress();
+                    if (gameplayState.Progress.Value >= 100) //При завершении строительства, если еще остались очки прогресса
                         fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
-                    }
                 }
             }).AddTo(ref _disposables);
             
@@ -120,7 +96,7 @@ namespace Game.GamePlay.Services
             }).AddTo(ref _disposables);
         }
 
-        public void RewardKillMob(int currency, Vector2 position)
+        private void RewardKillMob(int currency, Vector2 position)
         {
             RewardMaps.Add(new RewardCurrencyEntity
             {
@@ -168,7 +144,7 @@ namespace Game.GamePlay.Services
             //_gameplayState.RewardEntities.Add(reward);
         }
         
-        public void StartRewardCard()
+  /*      public void StartRewardCard()
         {
             var fsm = _container.Resolve<FsmGameplay>();
             var rewards = new RewardsProgress();
@@ -177,7 +153,7 @@ namespace Game.GamePlay.Services
             rewards.Cards.Add(3, GetTower(rewards));
             fsm.Fsm.SetState<FsmStateBuildBegin>(rewards);
         }
-
+*/
         public RewardsProgress StartRewardProgress()
         {
             var rewards = new RewardsProgress();
@@ -207,19 +183,22 @@ namespace Game.GamePlay.Services
             List<Func<RewardsProgress, RewardCardData>> getReward = new()
             {
                 GetTower,
-                GetTowerUpgrade,
-                GetGround,
-                GetRoad,
-                GetSkillUpgrade,
-                //GetTowerMovement //TODO Добавить перемещения башен, после реализации
+           //     GetTowerUpgrade,
+            //    GetGround,
+           //     GetRoad,
+          //      GetSkillUpgrade,
+                GetTowerMovement,  //TODO Добавить перемещения башен, после реализации
             };
 
+            var random = new System.Random();
             for (var i = 1; i <= 3; i++)
             {
                 RewardCardData card = null;
                 while (card == null)
                 {
-                    var typeReward = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % getReward.Count;
+                    //var typeReward = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % getReward.Count;
+                    var typeReward = random.Next(0, getReward.Count);
+                    
                     var func = getReward[typeReward]; //Получаем случайную ф-цию для расчета награды
                     card = func(rewards);
                     if (card == null) getReward.Remove(func); //Если тек.награду получить не можем, удаляем из списка, и ищем следующую
@@ -248,8 +227,9 @@ namespace Game.GamePlay.Services
                     listRoads.Remove(progressCard.Value.ConfigId);
                 }
             }
-            
-            var number = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % listRoads.Count;
+
+            var random = new System.Random();
+            var number = random.Next(listRoads.Count); //Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % listRoads.Count);
             var rewardId = listRoads[number];
             
             return new RewardCardData
@@ -266,7 +246,6 @@ namespace Game.GamePlay.Services
                 )
                 return null;
             
-
             return new RewardCardData
             {
                 RewardType = RewardType.Ground,
@@ -326,7 +305,7 @@ namespace Game.GamePlay.Services
             //var index = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % availableUpgradeTowers.Count;
 
             var random = new System.Random();
-            var index = random.Next(1, availableUpgradeTowers.Count) - 1;
+            var index = random.Next(0, availableUpgradeTowers.Count);
             
             
             var i = 0;
@@ -351,7 +330,7 @@ namespace Game.GamePlay.Services
             var list = new List<RewardType>()
             {
                 RewardType.TowerMove,
-                RewardType.TowerReplace
+                RewardType.TowerMove, //TODO заменить на RewardType.TowerReplace
             };
 
             foreach (var progressCard  in progress.Cards)
@@ -359,8 +338,10 @@ namespace Game.GamePlay.Services
                 if (progressCard.Value.RewardType is RewardType.TowerMove or RewardType.TowerReplace)
                     return null;
             }
-            
-            var index = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % 2;
+
+            var random = new System.Random();
+            var index = random.Next(0, 2);
+            //var index = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % 2;
             
             return new RewardCardData
             {
@@ -382,7 +363,7 @@ namespace Game.GamePlay.Services
 
             if (availableUpgradeSkills.Count == 0) return null; //Нет доступных
             var random = new System.Random();
-            var index = random.Next(1, availableUpgradeSkills.Count) - 1;
+            var index = random.Next(0, availableUpgradeSkills.Count);
             var i = 0;
             foreach (var skill in availableUpgradeSkills)
             {

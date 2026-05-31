@@ -81,9 +81,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 case RewardType.HeroLevelUp:
                          
                     break;
-                case RewardType.TowerMove:
-                            
-                    break;
+                case RewardType.TowerMove: InfoTowerMove(); break;
                 case RewardType.TowerReplace:
                             
                     break;
@@ -185,11 +183,25 @@ namespace Game.GamePlay.View.UI.PanelBuild
             Updated.OnNext(true);
         }
 
+        private void InfoTowerMove()
+        {
+            ImageCard = "CardMove";
+            ImageBack = "CardBuild";
+            Description = "ПЕРЕМЕЩЕНИЕ";
+            DescriptionBack = "ДВИГАЕТ БАШНИ";
+            Updated.OnNext(true);
+        }
+        private void InfoTowerReplace()
+        {
+            ImageCard = "CardReplace";
+            ImageBack = "CardBuild";
+            Description = "ЗАМЕНА";
+            DescriptionBack = "МЕНЯЕТ МЕСТАМИ БАШНИ";
+            Updated.OnNext(true);
+        }
+        
         private void InfoRoad()
         {
-            //Caption = "";
-            //Level = 0;
-            //Defence = null;
             ImageCard = _rewardData.ConfigId;
             ImageBack = "CardBuild";
             var text = _rewardData.ConfigId switch
@@ -205,9 +217,6 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         private void InfoGround()
         {
-            //Caption = "";
-            //Level = 0;
-            //Defence = null;
             ImageCard = "CardGround";
             ImageBack = "CardBuild";
             Description = "ДОП.ПОЛЕ";
@@ -219,7 +228,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
         {
             var config = _gameSettings.TowersSettings.AllTowers
                 .Find(t => t.ConfigId == _rewardData.ConfigId);
-            //Caption = "";
+            
             Level = _rewardData.Level;
             NumberModel = _rewardData.Level switch
             {

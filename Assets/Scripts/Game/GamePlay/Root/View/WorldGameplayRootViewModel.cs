@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using DI;
 using Game.Common;
 using Game.GamePlay.Classes;
@@ -151,6 +152,13 @@ namespace Game.GamePlay.Root.View
                         frameService.CreateFrameGround(position);
                     }
 
+                    if (reward.RewardType == RewardType.TowerMove)
+                    {
+                        position = AllTowers.First().GetPosition(); //Проверка если нет башен
+                        _fsmGameplay.SelectFirstTower.Value = null;
+                        //Перемещаем башню, сделать
+                    }
+
                     //position вычисляется для разных сущностей, сразу допустимое значение
                     _fsmGameplay.SetPosition(position); //Сохраняем позицию сущности в состоянии
                     _cameraService.MoveCamera(position); //центрируем карту на объект
@@ -202,6 +210,7 @@ namespace Game.GamePlay.Root.View
                                 .Subscribe(_ => _fsmGameplay.Fsm.SetState<FsmStateGamePlay>());
                             break;
                         case RewardType.TowerMove:
+                            //TODO Удалить Фрейм перемещения 
                             towersService.MoveTower(card.UniqueId, position);
                             _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             break;
@@ -306,7 +315,7 @@ namespace Game.GamePlay.Root.View
                     Mathf.FloorToInt(position.x + 0.5f),
                     Mathf.FloorToInt(position.y + 0.5f)
                 ));
-                var card = (RewardCardData)_fsmGameplay.Fsm.GetParam();
+                var card = _fsmGameplay.GetReward();
                 card.Position.x = Mathf.FloorToInt(position.x + 0.5f);
                 card.Position.y = Mathf.FloorToInt(position.y + 0.5f);
                 _fsmGameplay.Fsm.SetParam(card);

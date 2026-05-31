@@ -75,6 +75,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: btnConfirmation
       objectReference: {fileID: 0}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 2709125538498547735}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_Colors.m_ColorMultiplier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.b
+      value: 0.509434
+      objectReference: {fileID: 0}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.g
+      value: 0.509434
+      objectReference: {fileID: 0}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.r
+      value: 0.509434
+      objectReference: {fileID: 0}
     - target: {fileID: 9206070933231182775, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
       propertyPath: m_Pivot.x
       value: 1
@@ -160,6 +184,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+--- !u!114 &2709125538498547735 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3153637808634539463, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+  m_PrefabInstance: {fileID: 1034499369438690768}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!114 &5085665369957580680 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
@@ -196,6 +231,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: btnCancel
       objectReference: {fileID: 0}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 8683376422809748219}
     - target: {fileID: 9206070933231182775, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
       propertyPath: m_Pivot.x
       value: 1
@@ -297,6 +336,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 9206070933231182775, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
   m_PrefabInstance: {fileID: 5999485443005280060}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8683376422809748219 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3153637808634539463, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+  m_PrefabInstance: {fileID: 5999485443005280060}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!1001 &7333130412881921458
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -321,6 +371,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 5622598599043442805}
     - target: {fileID: 9206070933231182775, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
       propertyPath: m_Pivot.x
       value: 1
@@ -422,3 +476,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5622598599043442805 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3153637808634539463, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+  m_PrefabInstance: {fileID: 7333130412881921458}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image

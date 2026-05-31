@@ -29,6 +29,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
         private readonly FrameService _frameService;
 
         public ReactiveProperty<bool> IsEnable;
+        public ReactiveProperty<bool> IsConfirmation;
         public ReactiveProperty<bool> IsRotate;
 
         private IObservableCollection<FrameBlockViewModel> _frameBlocksView;
@@ -46,11 +47,23 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             _frameService = container.Resolve<FrameService>();
             _frameBlocksView = _frameService.ViewModels;
 
-            IsEnable = new ReactiveProperty<bool>(true);
-            IsRotate = new ReactiveProperty<bool>(true);
+            IsEnable = new ReactiveProperty<bool>(false);
+            IsRotate = new ReactiveProperty<bool>(false);
+            IsConfirmation = new ReactiveProperty<bool>(false);
             
+            _fsmGameplay.Fsm.StateCurrent.Subscribe(v =>
+            {
+                if (v.GetType() == typeof(FsmStateBuildBegin))
+                {
+                    IsEnable.Value = false;
+                    IsRotate.Value = false;
+                    IsConfirmation.Value = false;
+                }
+                
+            }).AddTo(ref _disposables);
             _frameBlocksView.ObserveAdd().Subscribe(e =>
             {
+                IsConfirmation.Value = true;
                 var viewModel = e.Value; 
                 IsEnable.Value = viewModel.Enable.Value;
                 viewModel.Enable.Subscribe(ev => IsEnable.Value = ev);
@@ -60,7 +73,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             _frameBlocksView.ObserveRemove().Subscribe(_ =>
             {
                 IsEnable.Value = true;
-                IsRotate.Value = true;
+                IsRotate.Value = false;
             }).AddTo(ref _disposables);
         }
 
