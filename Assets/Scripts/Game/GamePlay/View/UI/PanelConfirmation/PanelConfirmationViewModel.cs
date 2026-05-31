@@ -3,7 +3,6 @@ using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Services;
-using Game.GamePlay.View.Frames;
 using Game.State;
 using Game.State.Gameplay;
 using Game.State.Root;
@@ -19,11 +18,11 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
     {
         public override string Id => "PanelConfirmation";
         public override string Path => "Gameplay/Panels/";
-        
+
         public readonly GameplayUIManager _uiManager;
 
         private readonly GameplayStateProxy _gameplayStateProxy;
-        
+
         //Для теста
         private readonly FsmGameplay _fsmGameplay;
         private readonly FrameService _frameService;
@@ -32,11 +31,9 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
         public ReactiveProperty<bool> IsConfirmation;
         public ReactiveProperty<bool> IsRotate;
 
-        private IObservableCollection<FrameBlockViewModel> _frameBlocksView;
-        
 
         public PanelConfirmationViewModel(
-            GameplayUIManager uiManager, 
+            GameplayUIManager uiManager,
             DIContainer container
         ) : base(container)
         {
@@ -45,12 +42,11 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             _gameplayStateProxy = container.Resolve<IGameStateProvider>().GameplayState;
             _fsmGameplay = container.Resolve<FsmGameplay>();
             _frameService = container.Resolve<FrameService>();
-            _frameBlocksView = _frameService.ViewModels;
 
             IsEnable = new ReactiveProperty<bool>(false);
             IsRotate = new ReactiveProperty<bool>(false);
             IsConfirmation = new ReactiveProperty<bool>(false);
-            
+
             _fsmGameplay.Fsm.StateCurrent.Subscribe(v =>
             {
                 if (v.GetType() == typeof(FsmStateBuildBegin))
@@ -59,22 +55,24 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
                     IsRotate.Value = false;
                     IsConfirmation.Value = false;
                 }
-                
             }).AddTo(ref _disposables);
-            _frameBlocksView.ObserveAdd().Subscribe(e =>
-            {
-                IsConfirmation.Value = true;
-                var viewModel = e.Value; 
-                IsEnable.Value = viewModel.Enable.Value;
-                viewModel.Enable.Subscribe(ev => IsEnable.Value = ev);
-                IsRotate.Value = viewModel.IsRotate();
-            }).AddTo(ref _disposables);
-
-            _frameBlocksView.ObserveRemove().Subscribe(_ =>
-            {
-                IsEnable.Value = true;
-                IsRotate.Value = false;
-            }).AddTo(ref _disposables);
+            _frameService.CurrentFrame
+                .Subscribe(viewModel =>
+                {
+                    if (viewModel != null)
+                    {
+                        IsConfirmation.Value = true;
+                        IsEnable.Value = viewModel.Enable.Value;
+                        viewModel.Enable.Subscribe(ev => IsEnable.Value = ev);
+                        IsRotate.Value = viewModel.IsRotate();
+                    }
+                    else
+                    {
+                        IsEnable.Value = true;
+                        IsRotate.Value = false;
+                    }
+                })
+                .AddTo(ref _disposables);
         }
 
         public void RequestConfirmation()
@@ -85,7 +83,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             _fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(card);
             //_fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
         }
-        
+
         public void RequestCancel()
         {
             _fsmGameplay.Fsm.SetState<FsmStateBuildBegin>();
@@ -95,6 +93,5 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
         {
             _frameService.RotateFrame();
         }
-        
     }
 }

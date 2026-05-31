@@ -41,7 +41,7 @@ namespace Game.GamePlay.Root.View
         public readonly IObservableCollection<RoadViewModel> AllRoads;
         public readonly IObservableCollection<SkillViewModel> AllSkills;
         
-        public readonly IObservableCollection<FrameBlockViewModel> FrameBlockViewModels;
+        public readonly ReadOnlyReactiveProperty<FrameBlockViewModel> FrameBlockViewModel;
         public readonly IObservableCollection<FramePlacementViewModel> FramePlacementViewModels;
         public readonly IObservableCollection<FrameSkillViewModel> FrameSkillViewModels;
         public CastleViewModel CastleViewModel { get; private set; }
@@ -114,7 +114,7 @@ namespace Game.GamePlay.Root.View
             
             //AllWarriors = warriorService.AllWarriors;
 
-            FrameBlockViewModels = frameService.ViewModels;
+            FrameBlockViewModel = frameService.CurrentFrame;
             FramePlacementViewModels = framePlacementService.ViewModels;
             FrameSkillViewModels = frameSkillService.ViewModels;
             CastleViewModel = castleService.CastleViewModel;

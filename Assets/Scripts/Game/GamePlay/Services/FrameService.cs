@@ -22,15 +22,16 @@ namespace Game.GamePlay.Services
 {
     public class FrameService : IDisposable
     {
-        public IObservableCollection<FrameBlockViewModel> ViewModels => _viewModels;    
-        
         private readonly GameplayStateProxy _gameplayState;
         private readonly PlacementService _placementService;
         private readonly TowersService _towerService;
         private readonly RoadsService _roadsService;
         private readonly IQueryProcessor _qrc;
+        
         private FrameBlockViewModel _viewModel;
-        private readonly ObservableList<FrameBlockViewModel> _viewModels = new();
+        private readonly ReactiveProperty<FrameBlockViewModel> _currentFrame = new(); 
+        public ReadOnlyReactiveProperty<FrameBlockViewModel> CurrentFrame => _currentFrame;
+        
         private Dictionary<string, bool> _towerOnRoadMap = new();
         private Dictionary<string, bool> _towerParametersMap = new();
         private Dictionary<int, Vector2Int> matrixRoads = new();
@@ -145,9 +146,11 @@ namespace Game.GamePlay.Services
 
             _viewModel = new FrameBlockViewModel(position, _placementService);
             _viewModel.AddItem(towerViewModel);
-            _viewModels.Add(_viewModel);
+            
             _viewModel.Enable.Value =
                 _placementService.CheckPlacementTower(position, towerEntityId, towerEntity.IsOnRoad, towerEntity.IsPlacement);
+            _currentFrame.Value = _viewModel;
+            
         }
 
         /**
@@ -159,7 +162,7 @@ namespace Game.GamePlay.Services
             //Запуск всех анимаций удаления
             _viewModel.StartRemove().Where(x => x).Subscribe(e =>
                 {
-                    _viewModels.Remove(_viewModel);
+                    _currentFrame.Value = null;
                     _viewModel?.Dispose();
                     frameIsRemoveFull.Value = true;
                 }
@@ -173,14 +176,13 @@ namespace Game.GamePlay.Services
          */
         public void RemoveFrame()
         {
-            _viewModels.Remove(_viewModel);
-            _viewModels.Clear();
+            _currentFrame.Value = null;
             _viewModel?.Dispose();
         }
 
         public bool IsPosition(Vector2Int position)
         {
-            if (_viewModels.Count == 0) return false;
+            if (_viewModel == null) return false;
             if (_viewModel.IsTower() || _viewModel.IsGround()) return _viewModel.Position.CurrentValue == position;
             if (_viewModel.IsRoad())
             {
@@ -266,7 +268,7 @@ namespace Game.GamePlay.Services
             }
 
             _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());
-            _viewModels.Add(_viewModel);
+            _currentFrame.Value = _viewModel;
         }
 
         /**
@@ -357,7 +359,8 @@ namespace Game.GamePlay.Services
             _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, 2)));
             _viewModel.AddItem(new GroundFrameViewModel(new Vector2Int(0, -2)));
 
-            _viewModels.Add(_viewModel);
+            _currentFrame.Value = _viewModel;
+            //_viewModels.Add(_viewModel);
         }
 
         public IEnumerable<Vector2Int> GetGrounds()
@@ -368,13 +371,9 @@ namespace Game.GamePlay.Services
 
         public void Dispose()
         {
-            _disposables.Dispose();
+            _currentFrame.Value = null;
             _viewModel?.Dispose();
-            foreach (var viewModel in _viewModels)
-            {
-                viewModel?.Dispose();
-            }
-            _viewModels.Clear();
+            _disposables.Dispose();
         }
     }
 }

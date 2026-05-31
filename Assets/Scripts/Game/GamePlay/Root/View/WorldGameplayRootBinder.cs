@@ -127,11 +127,19 @@ namespace Game.GamePlay.Root.View
             //Фреймы
 
             //1. Фрейм строительный //только подписка, в начале уровня его нет
-            viewModel.FrameBlockViewModels.ObserveAdd()
-                .Subscribe(e => CreateFrameBlock(e.Value))
-                .AddTo(ref _disposables);
-            viewModel.FrameBlockViewModels.ObserveRemove()
-                .Subscribe(e => DestroyFrameBlock())
+            viewModel.FrameBlockViewModel
+                .Skip(1)
+                .Subscribe(e =>
+                {
+                    if (e != null)
+                    {
+                        CreateFrameBlock(e);
+                    }
+                    else
+                    {
+                        DestroyFrameBlock();
+                    }
+                })
                 .AddTo(ref _disposables);
             
             //Навыки
