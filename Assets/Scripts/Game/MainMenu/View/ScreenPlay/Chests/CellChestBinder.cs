@@ -29,39 +29,46 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
         [SerializeField] private TMP_Text costOpen;
         
         [SerializeField] private Transform statusOpened;
-        
-        private IDisposable _disposable;
+ 
         private CellChestViewModel _viewModel;
 
-        private static readonly Color closed = new Color(0.03f, 0.82f, 1f);
-        private static readonly Color opening = new Color(0.21f, 0.99f, 0.27f);
-        private static readonly Color opened = new Color(1f, 0.92f, 0f);
-        
+        private static readonly Color Closed = new Color(0.03f, 0.82f, 1f);
+        private static readonly Color Opening = new Color(0.21f, 0.99f, 0.27f);
+        private static readonly Color Opened = new Color(1f, 0.92f, 0f);
 
+
+        private DisposableBag _disposables;
+        private DisposableBag _bagOne = new();
+        private DisposableBag _bagTwo = new();
+        
         public void Bind(CellChestViewModel viewModel)
         {
-            var d = Disposable.CreateBuilder();
+            //var d = Disposable.CreateBuilder();
             var imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
             _viewModel = viewModel;
             viewModel.ChestEntity.Subscribe(chest =>
             {
-                IDisposable dd = null;
+                
                 if (chest == null)
                 {
                     showContainer.gameObject.SetActive(false);
-                    if (dd != null) dd.Dispose();
+                    _bagOne.Dispose();
+                    _bagTwo.Dispose();
                 }
                 else
                 {
-                    dd = chest.Status.Subscribe(status =>
+                    _bagOne.Dispose();
+                    _bagTwo.Dispose();
+                    _bagOne = new DisposableBag();
+                    chest.Status.Subscribe(status =>
                     {
-
+                        if (!this || !gameObject) return;
                         imageBack.color = status switch
                         {
-                            StatusChest.Close => closed,
-                            StatusChest.Opening => opening,
-                            StatusChest.Opened => opened,
-                            _ => closed
+                            StatusChest.Close => Closed,
+                            StatusChest.Opening => Opening,
+                            StatusChest.Opened => Opened,
+                            _ => Closed
                         };
                         
                         statusClose.gameObject.SetActive(false);
@@ -70,34 +77,37 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
                         
                       //  Debug.Log("Сундук - " + chest.Cell + " " + status);
                         //От статуса заполняем и показываем разные блоки
-                        IDisposable d = null;
+                        
                         switch (status)
                         {
                             case StatusChest.Close:
+                                _bagTwo.Dispose();
+                                _bagTwo = new DisposableBag();
                                 statusClose.gameObject.SetActive(true);
-                                d = viewModel.IsOpening.Subscribe(v =>
+                                viewModel.IsOpening.Subscribe(v =>
                                 {
                                     statusClose.gameObject.SetActive(true);
                                     toOpening.gameObject.SetActive(v);
                                     isClosed.gameObject.SetActive(!v);
-                                });
+                                }).AddTo(ref _bagTwo);
                                 
                                 timeChest.text = $"{chest.TypeChest.FullHourOpening()}ч";
                                 levelChest.text = $"Глава {chest.MapId}";
                                 
                                 break;
                             case StatusChest.Opening:
-                                if (d != null) d.Dispose();
+                                _bagTwo.Dispose();
+                                
                                 
                                 statusOpening.gameObject.SetActive(true);
                                 break;
                             case StatusChest.Opened:
-                                if (d != null) d.Dispose();
+                                _bagTwo.Dispose();
                                 statusOpened.gameObject.SetActive(true);
                                 break;
                             //default: throw new ArgumentOutOfRangeException(nameof(status), status, null);
                         }
-                    });
+                    }).AddTo(ref _bagOne);
 
                     
                     imageChest.sprite = imageManager.GetChest(viewModel.ChestEntity.Value.TypeChest);
@@ -105,15 +115,15 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
                     showContainer.gameObject.SetActive(true);
                 }
                 
-            }).AddTo(ref d);
+            }).AddTo(ref _disposables);
             viewModel.TimeLeft.Where(x => x != 0).Subscribe(t =>
             {
                 timeLeft.text = t / 60 > 0 ? $"{t / 60}ч {t % 60}мин" : $"{t % 60}мин";
-            }).AddTo(ref d);
+            }).AddTo(ref _disposables);
             viewModel.CostLeft.Where(x => x!= 0).Subscribe(c =>
                 costOpen.text = $"{c}"
-                ).AddTo(ref d);
-            _disposable = d.Build();
+                ).AddTo(ref _disposables);
+           // _disposable = d.Build();
         }
 
         private void Update()
@@ -133,7 +143,9 @@ namespace Game.MainMenu.View.ScreenPlay.Chests
 
         private void OnDestroy()
         {
-            _disposable.Dispose();
+            _disposables.Dispose();
+            _bagOne.Dispose();
+            _bagTwo.Dispose();
         }
 
         private void OnClickCellChest()

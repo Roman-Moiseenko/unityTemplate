@@ -9,9 +9,14 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardFrontend
         [SerializeField] private List<RectTransform> stars;
         private int _animationStart = 0;
 
-        public void Show(int currentLevel)
+        public void Show(int currentLevel, int maxLevel)
         {
             var index = 0;
+
+            for (int i = 0; i < stars.Count; i++)
+            {
+                stars[i].gameObject.SetActive(i < maxLevel);
+            }
             foreach (var star in stars)
             {
                 

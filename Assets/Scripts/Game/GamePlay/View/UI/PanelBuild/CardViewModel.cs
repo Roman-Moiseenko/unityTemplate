@@ -87,7 +87,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 case RewardType.TowerReplace:
                             
                     break;
-                default: throw new Exception("Не известное значение");
+                default: throw new Exception("Неизвестное значение");
             }
         }
 
@@ -97,7 +97,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
             Level = _rewardData.Level;
             Caption= "УЛУЧШЕНИЕ";
             DescriptionBack = Caption;
-            Defence = null;
+            //Defence = null;
             ImageCard = _rewardData.ConfigId;
             ImageBack = "UpgradeCard";
             
@@ -144,7 +144,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
             Caption= "УЛУЧШЕНИЕ";
             DescriptionBack = Caption;
             
-            Defence = null;
+            //Defence = null;
             ImageCard = _rewardData.ConfigId;
             ImageBack = "UpgradeCard";
 
@@ -187,9 +187,9 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         private void InfoRoad()
         {
-            Caption = "";
-            Level = 0;
-            Defence = null;
+            //Caption = "";
+            //Level = 0;
+            //Defence = null;
             ImageCard = _rewardData.ConfigId;
             ImageBack = "CardBuild";
             var text = _rewardData.ConfigId switch
@@ -205,9 +205,9 @@ namespace Game.GamePlay.View.UI.PanelBuild
 
         private void InfoGround()
         {
-            Caption = "";
-            Level = 0;
-            Defence = null;
+            //Caption = "";
+            //Level = 0;
+            //Defence = null;
             ImageCard = "CardGround";
             ImageBack = "CardBuild";
             Description = "ДОП.ПОЛЕ";
@@ -219,7 +219,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
         {
             var config = _gameSettings.TowersSettings.AllTowers
                 .Find(t => t.ConfigId == _rewardData.ConfigId);
-            Caption = "";
+            //Caption = "";
             Level = _rewardData.Level;
             NumberModel = _rewardData.Level switch
             {

@@ -72,11 +72,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
             viewModel.UpdateInfoBackgroundTower.Where(x => x).Subscribe(_ =>
             {
                 //Фон от эпичности 
-                Debug.Log(viewModel.EpicLevel);
                 var epicImage = _imageManager.GetEpicData(viewModel.EpicLevel);
-                
-                Debug.Log(epicImage);
-                
                 header.sprite = epicImage.Header;
                 output.sprite = epicImage.Output;
                 background.sprite = epicImage.Background;
@@ -84,7 +80,6 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
                 nameEpic.text = viewModel.EpicLevel.GetString();
                 nameTower.text = viewModel.NameTower;
                 defenceBinder.Bind(viewModel.Defence);
-                
                 
                 //Звездочки
                 for (var i = 1; i <= 6; i++)

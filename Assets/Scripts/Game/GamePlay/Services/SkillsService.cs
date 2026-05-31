@@ -128,6 +128,7 @@ namespace Game.GamePlay.Services
             }).AddTo(ref _disposables);
             Levels.ObserveChanged().Subscribe(x =>
             {
+                //Debug.Log("Повышаем уровень навыка " + x.NewItem.Key + " уровень = " + x.NewItem.Value);
                 var configId = x.NewItem.Key;
                 var newLevel = x.NewItem.Value;
                 UpdateParams(configId, newLevel);
@@ -140,16 +141,6 @@ namespace Game.GamePlay.Services
             }).AddTo(ref _disposables);
             //Кешируем бустеры для башен по типам Defence
             CalculateBoosters();
-
-            //   var skillEntities = gameplayState.Skills;
-
-
-//            Debug.Log(JsonConvert.SerializeObject(SkillOne, Formatting.Indented));
-
-            //   Debug.Log(JsonConvert.SerializeObject(gameplayState.SkillOne, Formatting.Indented));
-            //Создаем из настроек модели
-
-            //   Debug.Log(JsonConvert.SerializeObject(gameplayState.EnterParams, Formatting.Indented));
 
             //Подписка на те варианты, которые влияют на SkillViewModel 
             _fsmSkill.Fsm.StateCurrent.Subscribe(newState =>
@@ -312,9 +303,11 @@ namespace Game.GamePlay.Services
             _disposables.Dispose();
         }
 
-        public void LevelUpSkill(string cardConfigId)
+        public void LevelUpSkill(string configId)
         {
-            throw new NotImplementedException();
+            var model = _skillsMap.Find(v => v.ConfigId == configId);
+            if (model == null) return;
+            Levels[configId] += 1;
         }
     }
 }

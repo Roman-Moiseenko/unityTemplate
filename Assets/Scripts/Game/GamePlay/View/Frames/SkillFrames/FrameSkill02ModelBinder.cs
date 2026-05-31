@@ -19,7 +19,7 @@ namespace Game.GamePlay.View.Frames.SkillFrames
             ViewModel.Direction.Subscribe(p =>
             {
                 var v3 = new Vector3(p.x, 0, p.y);
-                model.rotation = Quaternion.LookRotation(v3);
+                if (v3 != Vector3.zero) model.rotation = Quaternion.LookRotation(v3);
             }).AddTo(ref _disposables);
 
             //Поворот model в сторону дороги

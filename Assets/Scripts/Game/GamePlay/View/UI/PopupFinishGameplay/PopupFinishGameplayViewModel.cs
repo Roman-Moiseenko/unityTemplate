@@ -91,7 +91,8 @@ namespace Game.GamePlay.View.UI.PopupFinishGameplay
             var statisticGame = gameplayState.StatisticGame;
             var gameSettings = container.Resolve<ISettingsProvider>().GameSettings;
             var towersSettings = gameSettings.TowersSettings.AllTowers;
-            
+            var skillsSettings = gameSettings.SkillsSettings.AllSkills;
+            var skillsService = container.Resolve<SkillsService>();
             
             AllDamage = Mathf.RoundToInt(statisticGame.AllDamage.CurrentValue); 
             
@@ -120,9 +121,12 @@ namespace Game.GamePlay.View.UI.PopupFinishGameplay
 
                 if (entityDamage.TypeEntity == TypeEntityStatisticDamage.Skill)
                 {
-                  //  var skillSetting = skillsSettings.FirstOrDefault(s => s.ConfigId == entityDamage.ConfigId);
-                  //  if (skillSetting == null) throw new Exception("Skill no exists");
-                    // Повторить
+                    var skillSetting = skillsSettings.FirstOrDefault(s => s.ConfigId == entityDamage.ConfigId);
+                    if (skillSetting == null) throw new Exception("Skill no exists");
+                    stat.Name = skillSetting.TitleLid;
+                    stat.Defence = skillSetting.Defence;
+                    stat.Level = skillsService.Levels[entityDamage.ConfigId];
+                    stat.EpicCard = skillsService.GetAvailableSkills()[entityDamage.ConfigId];
                     
                     stat.MaxLevel = 3;
 

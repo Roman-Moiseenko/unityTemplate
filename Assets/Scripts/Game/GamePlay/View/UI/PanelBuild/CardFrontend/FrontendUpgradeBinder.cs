@@ -52,7 +52,6 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardFrontend
                 {
                     parameterBinders[index].Bind(value, parameter);
                     index++;
-                    
                 }
 
                 foreach (var (parameter, value) in viewModel.UpgradeSkillParameters)
@@ -63,9 +62,12 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardFrontend
                 
 
                 upgradeLevel.gameObject.SetActive(true);
+                //
                 //TODO в зависимоти от типа показать кол-во зведочек 6(Tower) или 3(Skill/Hero)
+                var stars = 6;
+                if (viewModel.RewardType is RewardType.SkillLevelUp or RewardType.HeroLevelUp) stars = 3;
                 
-                upgradeLevel.GetComponent<LevelUpBinder>().Show(viewModel.Level);
+                upgradeLevel.GetComponent<LevelUpBinder>().Show(viewModel.Level, stars);
                 //upgradeDescription вставить описание списком и цветом 
                 gameObject.SetActive(true);
                 

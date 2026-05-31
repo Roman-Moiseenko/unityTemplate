@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Game.GamePlay.View.UI.PopupStatistics;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Game.GamePlay.View.UI.Statistics

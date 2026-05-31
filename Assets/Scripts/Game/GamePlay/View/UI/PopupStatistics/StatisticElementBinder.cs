@@ -45,7 +45,7 @@ namespace Game.GamePlay.View.UI.PopupStatistics
             if (viewModel.TypeEntity == TypeEntityStatisticDamage.Skill)
             {
                 backgroundCard.sprite = _imageManager.GetEpicLevel(viewModel.EpicCard);
-                //iconCard.sprite = _imageManager.GetSkillCard(viewModel.ConfigId, 1);
+                iconCard.sprite = _imageManager.GetSkillCard(viewModel.ConfigId);
                 iconCard.GetComponent<RectTransform>().localScale = _scaleSmall;
             }
             

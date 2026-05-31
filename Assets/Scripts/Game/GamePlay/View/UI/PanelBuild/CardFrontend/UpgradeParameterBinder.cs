@@ -26,7 +26,5 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardFrontend
             textValue.text = $"{value}%";
             transform.gameObject.SetActive(true);
         }
-        
-        //SkillParameterType
     }
 }

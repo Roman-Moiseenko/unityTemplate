@@ -211,7 +211,6 @@ namespace Game.GamePlay.Root.View
                             break;
                         case RewardType.SkillLevelUp:
                             skillsService.LevelUpSkill(card.ConfigId);
-                            Debug.Log("Усиление навыка. В разработке");
                             _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             break;
                         case RewardType.HeroLevelUp:
