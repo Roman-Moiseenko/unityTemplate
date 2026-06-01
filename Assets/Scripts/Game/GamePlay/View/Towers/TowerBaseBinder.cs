@@ -36,18 +36,24 @@ namespace Game.GamePlay.View.Towers
 
         public void Bind(TowerViewModel viewModel)
         {
+            // ПОДПИСКИ //
+            var d = Disposable.CreateBuilder();
             ViewModel = (T)viewModel;
-            transform.position = new Vector3(
-                viewModel.Position.CurrentValue.x,
-                transform.position.y,
-                viewModel.Position.CurrentValue.y
-            );
+            viewModel.Position.Subscribe(p =>
+            {
+                transform.position = new Vector3(
+                    p.x,
+                    transform.position.y,
+                    p.y
+                );
+            }).AddTo(ref d);
+            
+            
 
             CreateTower();
             CreateArea();
             
-            // ПОДПИСКИ //
-            var d = Disposable.CreateBuilder();
+
 
             //Если есть площадь, то подписываемся на события
             if (areaBinder != null)

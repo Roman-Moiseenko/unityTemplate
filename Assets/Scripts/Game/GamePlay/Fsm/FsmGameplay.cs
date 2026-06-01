@@ -13,8 +13,8 @@ namespace Game.GamePlay.Fsm
     {
         public FsmProxy Fsm;
         public ReactiveProperty<Vector2Int> Position = new();
-        public ReactiveProperty<string> SelectFirstTower = new(null);
-        public ReactiveProperty<string> SelectSecondTower = new(null);
+        public ReactiveProperty<int?> SelectFirstTower = new(null);
+        public ReactiveProperty<int?> SelectSecondTower = new(null);
         public ReactiveProperty<bool> IsGamePause; //Во все состояния, кроме FsmStateGamePlay пауза для движения
         private DisposableBag _disposables = new();
 
