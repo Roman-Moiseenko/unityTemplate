@@ -173,8 +173,11 @@ namespace Game.GamePlay.Services
             viewmodel = null;
             foreach (var towerViewModel in AllTowers)
             {
-                if (towerViewModel.IsPosition(position)) viewmodel = towerViewModel;
-                return true;
+                if (towerViewModel.IsPosition(position))
+                {
+                    viewmodel = towerViewModel;
+                    return true;
+                }
             }
             return false;
         }

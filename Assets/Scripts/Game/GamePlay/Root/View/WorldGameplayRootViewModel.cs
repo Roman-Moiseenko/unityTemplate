@@ -336,21 +336,10 @@ namespace Game.GamePlay.Root.View
                         _fsmGameplay.SelectFirstTower.Value = towerViewModel.ConfigId;
                         _cameraService.MoveCamera(towerViewModel.Position.Value);
                         //TODO Создаем frame
+                        Debug.Log("Будем перемещать");
                         
-                        return;
                     }
-                    /*foreach (var towerViewModel in AllTowers)
-                    {
-                        //Кликнули по башне
-                        if (towerViewModel.IsPosition(position))
-                        {
-                            _fsmGameplay.SelectFirstTower.Value = towerViewModel.ConfigId;
-                            _cameraService.MoveCamera(towerViewModel.Position.Value);
-                            
-                            
-                            return;
-                        }
-                    } */
+                    return;
                 }
                 
                 
