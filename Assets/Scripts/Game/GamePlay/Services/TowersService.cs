@@ -168,6 +168,16 @@ namespace Game.GamePlay.Services
             return _cmd.Process(command);
         }
 
+        public bool FindTowerByPosition(Vector2 position, out TowerViewModel viewmodel)
+        {
+            viewmodel = null;
+            foreach (var towerViewModel in AllTowers)
+            {
+                if (towerViewModel.IsPosition(position)) viewmodel = towerViewModel;
+                return true;
+            }
+            return false;
+        }
         /**
          * 1. По параметрам создается сущность Tower
          * 2. Оборачивается Proxy для навешивания реактивности и событий

@@ -461,16 +461,19 @@ namespace Game.GamePlay.Root.View
 
         private void HandleTap(Vector2 screenPosition)
         {
+            Debug.Log("HandleTap");
             _viewModel.ClickEntity(screenPosition);
         }
 
         private void HandlePointerDown(Vector2 screenPosition)
         {
+            Debug.Log("HandlePointerDown");
             _viewModel.StartMoving(screenPosition);
         }
 
         private void HandlePointerUp(Vector2 screenPosition)
         {
+            Debug.Log("HandlePointerUp");
             _viewModel.FinishMoving(screenPosition);
         }
 

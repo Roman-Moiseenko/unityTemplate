@@ -71,6 +71,8 @@ namespace Game.GamePlay.Root.View
         private readonly FrameSkillService _frameSkillService;
 
         private DisposableBag _disposables;
+
+        private readonly TowersService _towersService;
         //  private readonly Coroutines _coroutines;
 
         public WorldGameplayRootViewModel(
@@ -99,6 +101,7 @@ namespace Game.GamePlay.Root.View
             _waveService = waveService;
             _cameraService = cameraService;
             _damageService = damageService;
+            _towersService = towersService;
             //клики по объектам игрового мира, не UI 
             _entityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
             _towerClick = container.Resolve<Subject<TowerViewModel>>();
@@ -272,6 +275,14 @@ namespace Game.GamePlay.Root.View
                 //И с башней нет работы или выделена (для смены на другую)
                 if ((_fsmTower.IsNone() || _fsmTower.IsSelected()) && _fsmSkill.IsNone())
                 {
+                    if (_towersService.FindTowerByPosition(position, out var towerViewModel))
+                    {
+                        if (_fsmTower.IsSelected()) _fsmTower.Fsm.SetState<FsmTowerNone>(); //Сбрасываем выделение.
+                        _fsmTower.Fsm.SetState<FsmTowerSelected>(towerViewModel); //Башня выделена
+                        _cameraService.MoveCamera(towerViewModel.Position.Value);
+                        return;
+                    }
+                    /*
                     foreach (var towerViewModel in AllTowers)
                     {
                         //Кликнули по башне
@@ -282,7 +293,7 @@ namespace Game.GamePlay.Root.View
                             _cameraService.MoveCamera(towerViewModel.Position.Value);
                             return;
                         }
-                    }
+                    } */
                 }
 
                 if (_fsmTower.IsPlacement())
@@ -311,11 +322,38 @@ namespace Game.GamePlay.Root.View
 
             if (_fsmGameplay.IsStateBuild())
             {
+                
                 _fsmGameplay.SetPosition(new Vector2Int(
                     Mathf.FloorToInt(position.x + 0.5f),
                     Mathf.FloorToInt(position.y + 0.5f)
                 ));
                 var card = _fsmGameplay.GetReward();
+                //Режим перемещения башни и башня не выбрана
+                if (card.RewardType == RewardType.TowerMove && _fsmGameplay.SelectFirstTower.Value == null)
+                {
+                    if (_towersService.FindTowerByPosition(position, out var towerViewModel))
+                    {
+                        _fsmGameplay.SelectFirstTower.Value = towerViewModel.ConfigId;
+                        _cameraService.MoveCamera(towerViewModel.Position.Value);
+                        //TODO Создаем frame
+                        
+                        return;
+                    }
+                    /*foreach (var towerViewModel in AllTowers)
+                    {
+                        //Кликнули по башне
+                        if (towerViewModel.IsPosition(position))
+                        {
+                            _fsmGameplay.SelectFirstTower.Value = towerViewModel.ConfigId;
+                            _cameraService.MoveCamera(towerViewModel.Position.Value);
+                            
+                            
+                            return;
+                        }
+                    } */
+                }
+                
+                
                 card.Position.x = Mathf.FloorToInt(position.x + 0.5f);
                 card.Position.y = Mathf.FloorToInt(position.y + 0.5f);
                 _fsmGameplay.Fsm.SetParam(card);
