@@ -214,8 +214,12 @@ namespace Game.GamePlay.Root.View
                             break;
                         case RewardType.TowerMove:
                             //TODO Удалить Фрейм перемещения 
-                            towersService.MoveTower(card.UniqueId, position);
-                            _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
+                            frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
+                            {
+                                towersService.MoveTower(card.UniqueId, position);
+                                _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
+                            });
+                            
                             break;
                         case RewardType.TowerReplace:
                             towersService.ReplaceTower(card.UniqueId, card.UniqueId2);
@@ -335,9 +339,8 @@ namespace Game.GamePlay.Root.View
                     {
                         _fsmGameplay.SelectFirstTower.Value = towerViewModel.ConfigId;
                         _cameraService.MoveCamera(towerViewModel.Position.Value);
-                        //TODO Создаем frame
-                        Debug.Log("Будем перемещать");
-                        
+
+                        _frameService.CreateFrameFromExistingTower(towerViewModel);
                     }
                     return;
                 }

@@ -36,6 +36,7 @@ namespace Game.GamePlay.Services
         private Dictionary<string, bool> _towerParametersMap = new();
         private Dictionary<int, Vector2Int> matrixRoads = new();
         private readonly DIContainer _container;
+        private int _originalTowerUniqueId = -1; // Для TowerMove — уникальный ID оригинальной башни
         private DisposableBag _disposables = new();
 
         public FrameService(
@@ -67,13 +68,14 @@ namespace Game.GamePlay.Services
 
         public void MoveFrame(Vector2Int position)
         {
+            if (_currentFrame.Value == null) return;
             _viewModel.MoveFrame(position);
             
             if (_viewModel.IsTower())
             {
                 var tower = _viewModel.GetTower();
                 _viewModel.Enable.Value = _placementService.CheckPlacementTower(position,
-                    tower.UniqueId, tower.IsOnRoad, tower.IsPlacement);
+                    tower.UniqueId, tower.IsOnRoad, tower.IsPlacement, exceptUniqueId: _originalTowerUniqueId);
             }
 
             if (_viewModel.IsRoad())
@@ -126,6 +128,38 @@ namespace Game.GamePlay.Services
             _viewModel.Enable.Value = _placementService.CheckPlacementRoad(GetRoads());
         }
 
+        public void CreateFrameFromExistingTower(TowerViewModel towerViewModel)
+        {
+            var position = towerViewModel.Position.Value;
+            var configId = towerViewModel.ConfigId;
+            var level = towerViewModel.Level.Value;
+            var onRoad = towerViewModel.IsOnRoad;
+            var isPlacement = towerViewModel.IsPlacement;
+            
+            _originalTowerUniqueId = towerViewModel.UniqueId;
+            
+            // Создаём новую сущность-копию для фрейма, чтобы не влиять на оригинал
+            var frameTowerEntityId = _gameplayState.CreateEntityID();
+            var frameTowerEntity = new TowerEntity(new TowerEntityData
+            {
+                UniqueId = frameTowerEntityId,
+                Position = position,
+                Level = level,
+                ConfigId = configId,
+                IsOnRoad = onRoad,
+                IsPlacement = isPlacement,
+            });
+            frameTowerEntity.Parameters = towerViewModel.Parameters;
+            var frameTowerViewModel = new TowerViewModel(frameTowerEntity, _container);
+            
+            _viewModel = new FrameBlockViewModel(position, _placementService);
+            _viewModel.AddItem(frameTowerViewModel);
+            
+            _viewModel.Enable.Value =
+                _placementService.CheckPlacementTower(position, frameTowerEntityId, onRoad, isPlacement, exceptUniqueId: _originalTowerUniqueId);
+            _currentFrame.Value = _viewModel;
+        }
+        
         public void CreateFrameTower(Vector2Int position, int level, string configId)
         {
             var towerEntityId = _gameplayState.CreateEntityID();
@@ -150,7 +184,6 @@ namespace Game.GamePlay.Services
             _viewModel.Enable.Value =
                 _placementService.CheckPlacementTower(position, towerEntityId, towerEntity.IsOnRoad, towerEntity.IsPlacement);
             _currentFrame.Value = _viewModel;
-            
         }
 
         /**
@@ -163,6 +196,7 @@ namespace Game.GamePlay.Services
             _viewModel.StartRemove().Where(x => x).Subscribe(e =>
                 {
                     _currentFrame.Value = null;
+                    _originalTowerUniqueId = -1;
                     _viewModel?.Dispose();
                     frameIsRemoveFull.Value = true;
                 }
@@ -177,6 +211,7 @@ namespace Game.GamePlay.Services
         public void RemoveFrame()
         {
             _currentFrame.Value = null;
+            _originalTowerUniqueId = -1;
             _viewModel?.Dispose();
         }
 

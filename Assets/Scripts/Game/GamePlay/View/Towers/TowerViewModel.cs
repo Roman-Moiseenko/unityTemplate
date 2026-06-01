@@ -45,11 +45,11 @@ namespace Game.GamePlay.View.Towers
         public ReactiveProperty<int> Level { get; set; }
         public readonly string ConfigId;
         public ReactiveProperty<Vector2Int> Position { get; set; }
-        public ReactiveProperty<Vector3> PositionMap = new();
+        public readonly ReactiveProperty<Vector3> PositionMap = new();
         public bool IsOnRoad => TowerEntity.IsOnRoad;
-        public ReactiveProperty<Vector3> Direction = new();
+        public readonly ReactiveProperty<Vector3> Direction = new();
 
-        public ReactiveProperty<int> NumberModel = new(0);
+        public readonly ReactiveProperty<int> NumberModel = new(0);
         public float SpeedShot { get; private set; }
         public TypeEpic EpicLevel { get; set; }
         public ReactiveProperty<bool> FinishEffectLevelUp = new(false);

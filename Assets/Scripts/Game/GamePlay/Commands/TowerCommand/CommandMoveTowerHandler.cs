@@ -16,12 +16,12 @@ namespace Game.GamePlay.Commands.TowerCommand
         }
         public bool Handle(CommandMoveTower command)
         {
-            foreach (var entity in _gameplayState.Towers)
+            foreach (var towerEntity in _gameplayState.Towers)
             {
-                if (entity  is TowerEntity towerEntity && towerEntity.UniqueId == command.UniqueId)
+                if (towerEntity.UniqueId == command.UniqueId)
                 {
                     towerEntity.Position.Value = command.Position;
-                    return false;
+                    return true;
                 }
             }
             return false; //Не сохраняем
