@@ -170,10 +170,8 @@ namespace Game.GamePlay.Root.View
                 //Режим завершения строительства
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
-                    Debug.Log(newState.GetType());
                     var card = ((FsmStateBuildEnd)newState).GetRewardCard();
                     var position = _fsmGameplay.GetPosition();
-                    Debug.Log(card.RewardType);
 
                     switch (card.RewardType)
                     {
@@ -218,17 +216,19 @@ namespace Game.GamePlay.Root.View
                             frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
                             {
                                 if (_fsmGameplay.SelectFirstTower.CurrentValue == null) throw new Exception("Ошибка");
-                                towersService.MoveTower((int)_fsmGameplay.SelectFirstTower.CurrentValue, position);
+                                towersService.MoveTower(_fsmGameplay.SelectFirstTower.CurrentValue.UniqueId, position);
+                                _fsmGameplay.SelectFirstTower.Value = null;
                                 _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             });
                             break;
                         case RewardType.TowerReplace:
-                            Debug.Log(_fsmGameplay.SelectFirstTower.CurrentValue );
-                            Debug.Log(_fsmGameplay.SelectSecondTower.CurrentValue );
                             if (_fsmGameplay.SelectFirstTower.CurrentValue == null ||
                                 _fsmGameplay.SelectSecondTower.CurrentValue == null
                                ) throw new Exception("Ошибка");
-                            towersService.ReplaceTower((int)_fsmGameplay.SelectFirstTower.CurrentValue, (int)_fsmGameplay.SelectSecondTower.CurrentValue);
+                            towersService.ReplaceTower(
+                                _fsmGameplay.SelectFirstTower.CurrentValue.UniqueId,
+                                _fsmGameplay.SelectSecondTower.CurrentValue.UniqueId);
+                            towersService.UnSelectToReplace();
                             _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             break;
                         case RewardType.SkillLevelUp:
@@ -247,7 +247,12 @@ namespace Game.GamePlay.Root.View
                 if (newState.GetType() == typeof(FsmStateBuildBegin))
                 {
                     if (newState.Fsm.PreviousState.GetType() == typeof(FsmStateBuild)) //Возврат от режима строим
+                    {
                         frameService.RemoveFrame();
+                        _towersService.UnSelectToReplace();
+                        _fsmGameplay.SelectFirstTower.Value = null;
+                        _fsmGameplay.SelectSecondTower.Value = null;
+                    }
                     //Удаляем фреймы
                 }
             }).AddTo(ref _disposables);
@@ -292,18 +297,6 @@ namespace Game.GamePlay.Root.View
                         _cameraService.MoveCamera(towerViewModel.Position.Value);
                         return;
                     }
-                    /*
-                    foreach (var towerViewModel in AllTowers)
-                    {
-                        //Кликнули по башне
-                        if (towerViewModel.IsPosition(position))
-                        {
-                            if (_fsmTower.IsSelected()) _fsmTower.Fsm.SetState<FsmTowerNone>(); //Сбрасываем выделение.
-                            _fsmTower.Fsm.SetState<FsmTowerSelected>(towerViewModel); //Башня выделена
-                            _cameraService.MoveCamera(towerViewModel.Position.Value);
-                            return;
-                        }
-                    } */
                 }
 
                 if (_fsmTower.IsPlacement())
@@ -326,13 +319,11 @@ namespace Game.GamePlay.Root.View
                 }
 
                 //Обработать другие состояния _fsmTower
-
                 return;
             }
 
             if (_fsmGameplay.IsStateBuild())
             {
-                
                 _fsmGameplay.SetPosition(new Vector2Int(
                     Mathf.FloorToInt(position.x + 0.5f),
                     Mathf.FloorToInt(position.y + 0.5f)
@@ -343,7 +334,7 @@ namespace Game.GamePlay.Root.View
                 {
                     if (_towersService.FindTowerByPosition(position, out var towerViewModel))
                     {
-                        _fsmGameplay.SelectFirstTower.Value = towerViewModel.UniqueId;
+                        _fsmGameplay.SelectFirstTower.Value = towerViewModel;
                         _cameraService.MoveCamera(towerViewModel.Position.Value);
 
                         _frameService.CreateFrameFromExistingTower(towerViewModel);
@@ -354,26 +345,29 @@ namespace Game.GamePlay.Root.View
                 //Режим обмена башнями
                 if (card.RewardType == RewardType.TowerReplace)
                 {
-                    Debug.Log(_fsmGameplay.SelectFirstTower.Value );
                     if (_fsmGameplay.SelectFirstTower.Value == null) //Выделяем первую башню
                     {
                         if (_towersService.FindTowerByPosition(position, out var towerViewModel))
                         {
-                            _fsmGameplay.SelectFirstTower.Value = towerViewModel.UniqueId;
+                            _fsmGameplay.SelectFirstTower.Value = towerViewModel;
                             //TODO Отметить башни, которые можно выделить
-                            
-                            
+                            _towersService.SelectToReplace(towerViewModel.IsOnRoad);
+                            towerViewModel.Selected();
                         }
                         return;
                     }
                     
-                    if (_fsmGameplay.SelectFirstTower.Value != null && _fsmGameplay.SelectSecondTower.Value == null) //Выделяем вторую башню
+                    if (_fsmGameplay.SelectFirstTower.Value != null) //Выделяем вторую башню
                     {
                         if (_towersService.FindTowerByPosition(position, out var towerViewModel))
                         {
-                            if (_fsmGameplay.SelectFirstTower.Value == towerViewModel.UniqueId) return; 
-                            _fsmGameplay.SelectSecondTower.Value = towerViewModel.UniqueId;
-                            _fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(card);
+                            if (_fsmGameplay.SelectFirstTower.Value == towerViewModel) return;
+
+                            _fsmGameplay.SelectSecondTower.Value?.UnSelected();
+
+                            _fsmGameplay.SelectSecondTower.Value = towerViewModel;
+                            //_fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(card);
+                            towerViewModel.Selected();
                         }
                         return;
                     }

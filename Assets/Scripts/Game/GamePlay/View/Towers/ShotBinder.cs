@@ -17,6 +17,7 @@ namespace Game.GamePlay.View.Towers
         protected ReactiveProperty<Vector3> _target = new();
         protected readonly ReactiveProperty<bool> _isMoving = new(false);
         protected MobViewModel _mobViewModel;
+        protected IDisposable _targetSubscription;
 
         public List<string> LoggerShot = new();
 
@@ -38,13 +39,33 @@ namespace Game.GamePlay.View.Towers
         {
             _mobViewModel = mobViewModel;
             LoggerShot.Clear();
-            _target = mobViewModel.PositionTargetForShot; //Скорректирована высота для Fly, Boss и остальные
 
+            // Отписываемся от предыдущей подписки, если была
+            _targetSubscription?.Dispose();
+            _targetSubscription = null;
+
+            // Копируем значение, а не ссылку на ReactiveProperty из другой ViewModel
+            _target.Value = mobViewModel.PositionTargetForShot.Value;
             LoggerShot.Add(mobViewModel.ConfigId);
             LoggerShot.Add(_target.Value.ToString());
-            _target.Subscribe(v => LoggerShot.Add("_target move " + _target.Value.ToString()));
 
-            transform.localPosition = new Vector3(0, _baseYMissile, 0); //Размещение снаряда в точке 0
+            // Подписываемся на обновление позиции моба (с проверкой на disposed)
+            try
+            {
+                _targetSubscription = mobViewModel.PositionTargetForShot
+                    .Where(_ => _isMoving.CurrentValue)
+                    .Subscribe(v =>
+                    {
+                        _target.Value = v;
+                        LoggerShot.Add("_target move " + _target.Value.ToString());
+                    });
+            }
+            catch (ObjectDisposedException)
+            {
+                LoggerShot.Add("Target already disposed");
+            }
+
+            transform.localPosition = new Vector3(0, _baseYMissile, 0);
         }
 
         public virtual IEnumerator FireStart()
@@ -56,16 +77,8 @@ namespace Game.GamePlay.View.Towers
             {
                 var speedEntity = _viewModel.SpeedShot * AppConstants.SHOT_BASE_SPEED;
                 yield return null;
-                //TODO Расчет координат полета от типа снаряда
                 transform.position = Vector3.MoveTowards(transform.position, _target.CurrentValue,
                     Time.deltaTime * speedEntity);
-
-                if (_target == null || _target.Value == null)
-                {
-                    LoggerShot.Add("_target is null");
-                    StopShot(transform.position);
-                    yield break;
-                }
 
                 if (Vector3.Distance(transform.position, _target.CurrentValue) < 0.01)
                 {
@@ -84,7 +97,7 @@ namespace Game.GamePlay.View.Towers
             _isMoving.OnNext(false);
             if (_viewModel.IsSingleTarget)
             {
-                if (_target != null) _viewModel.SetDamageAfterShot(_mobViewModel); //Наносим урон одной цели
+                if (_mobViewModel != null) _viewModel.SetDamageAfterShot(_mobViewModel);
                 LoggerShot.Add("Set Damage Single");
             }
             else if (position != null)
@@ -95,7 +108,6 @@ namespace Game.GamePlay.View.Towers
 
         private void OnTriggerEnter(Collider other)
         {
-//            Debug.Log(other.gameObject.tag + " " + _target.Value );
             if (!other.gameObject.CompareTag("Mob")) return;
             LoggerShot.Add("OnTriggerEnter");
             StopShot(other.transform.position);
@@ -109,7 +121,6 @@ namespace Game.GamePlay.View.Towers
                 if (colliderTarget.gameObject.CompareTag("Mob"))
                 {
                     var mob = colliderTarget.gameObject.GetComponent<MobBinder>();
-                    //Проверяем на Air/Ground и наносим урон
                     if (_viewModel.IsTargetForDamage(mob.ViewModel.IsFly))
                         _viewModel.SetDamageAfterShot(mob.ViewModel);
                 }
@@ -118,9 +129,9 @@ namespace Game.GamePlay.View.Towers
             LoggerShot.Add("Set Damage By Collider");
         }
 
-
         private void OnDestroy()
         {
+            _targetSubscription?.Dispose();
             _disposable?.Dispose();
         }
     }

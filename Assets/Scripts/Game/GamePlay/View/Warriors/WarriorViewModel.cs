@@ -278,8 +278,6 @@ namespace Game.GamePlay.View.Warriors
             //Целей больше нет, возвращаемся ...
             if (CurrentHealth.CurrentValue < MaxHealth.CurrentValue) // лечиться, по прямой
             {
-                Debug.Log(" _pullTargets.Count " + _pullTargets.Count);
-                
                 FsmWarrior.Fsm.SetState<FsmWarriorGoToRepair>();
             }
             else //На базу Placement, по дороге, через точку поворота

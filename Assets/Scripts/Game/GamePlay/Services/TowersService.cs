@@ -311,6 +311,24 @@ namespace Game.GamePlay.Services
             return towerEntity.ShotCalculation(typeDefence, damageBooster, criticalBooster);
         }
 
+        public void SelectToReplace(bool isOnRoad)
+        {
+            foreach (var towerViewModel in _allTowers)
+            {
+                if (towerViewModel.IsOnRoad == isOnRoad)
+                    towerViewModel.ShowReplaceTag.OnNext(true);
+            }
+        }
+
+        public void UnSelectToReplace()
+        {
+            foreach (var towerViewModel in _allTowers)
+            {
+                towerViewModel.ShowReplaceTag.Value = false;
+                towerViewModel.UnSelected();
+            }
+        }
+        
 
         private void CalculateBoosters()
         {

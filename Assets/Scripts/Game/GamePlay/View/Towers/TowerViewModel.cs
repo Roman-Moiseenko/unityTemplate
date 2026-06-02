@@ -57,6 +57,10 @@ namespace Game.GamePlay.View.Towers
         public TypeTarget TypeTarget => TowerEntity.TypeTarget;
         protected DisposableBag _disposables = new();
 
+        //Отображение на карте для обмена башнями
+
+        public ReactiveProperty<bool> ShowReplaceTag = new(false);
+        public ReactiveProperty<bool> ShowSelected = new(false);
 
         //Флаг для передачи в Панели подтверждения из различных состояния
         //    public ReactiveProperty<bool> IsConfirmationState = new(true);
@@ -86,7 +90,7 @@ namespace Game.GamePlay.View.Towers
                 .Subscribe(v =>
                 {
                     PositionMap.Value = new Vector3(v.x, 0, v.y);
-                    Debug.Log("Subscribe = " + v);
+//                    Debug.Log("Subscribe = " + v);
                 })
                 .AddTo(ref _disposables);
             SpeedShot = TowerEntity.SpeedShot;
@@ -173,6 +177,14 @@ namespace Game.GamePlay.View.Towers
             FinishEffectLevelUp?.Dispose();
             ShowArea?.Dispose();
             _disposables.Dispose();
+        }
+        public void Selected()
+        {
+            ShowSelected.Value = true;
+        }
+        public void UnSelected()
+        {
+            if (ShowSelected.CurrentValue) ShowSelected.Value = false;
         }
     }
 }

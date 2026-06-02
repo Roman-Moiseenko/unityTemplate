@@ -46,7 +46,16 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
             IsEnable = new ReactiveProperty<bool>(false);
             IsRotate = new ReactiveProperty<bool>(false);
             IsConfirmation = new ReactiveProperty<bool>(false);
-
+            
+            _fsmGameplay.SelectFirstTower
+                .Where(x => x != null)
+                .Subscribe(_ => IsConfirmation.Value = true)
+                .AddTo(ref _disposables);
+            _fsmGameplay.SelectSecondTower
+                .Where(x => x != null)
+                .Subscribe(_ => IsEnable.Value = true)
+                .AddTo(ref _disposables);
+            
             _fsmGameplay.Fsm.StateCurrent.Subscribe(v =>
             {
                 if (v.GetType() == typeof(FsmStateBuildBegin))
@@ -55,6 +64,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
                     IsRotate.Value = false;
                     IsConfirmation.Value = false;
                 }
+                
             }).AddTo(ref _disposables);
             _frameService.CurrentFrame
                 .Subscribe(viewModel =>
@@ -68,7 +78,7 @@ namespace Game.GamePlay.View.UI.PanelConfirmation
                     }
                     else
                     {
-                        IsEnable.Value = true;
+                        //IsEnable.Value = true;
                         IsRotate.Value = false;
                     }
                 })

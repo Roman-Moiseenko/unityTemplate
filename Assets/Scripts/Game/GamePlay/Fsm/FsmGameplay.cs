@@ -2,6 +2,7 @@
 using System.Collections;
 using DI;
 using Game.GamePlay.Fsm.GameplayStates;
+using Game.GamePlay.View.Towers;
 using Game.State.Gameplay.Rewards;
 using MVVM.FSM;
 using R3;
@@ -13,8 +14,8 @@ namespace Game.GamePlay.Fsm
     {
         public FsmProxy Fsm;
         public ReactiveProperty<Vector2Int> Position = new();
-        public ReactiveProperty<int?> SelectFirstTower = new(null);
-        public ReactiveProperty<int?> SelectSecondTower = new(null);
+        public readonly ReactiveProperty<TowerViewModel> SelectFirstTower = new(null);
+        public readonly ReactiveProperty<TowerViewModel> SelectSecondTower = new(null);
         public ReactiveProperty<bool> IsGamePause; //Во все состояния, кроме FsmStateGamePlay пауза для движения
         private DisposableBag _disposables = new();
 

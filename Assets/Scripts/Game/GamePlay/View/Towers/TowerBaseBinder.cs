@@ -17,6 +17,9 @@ namespace Game.GamePlay.View.Towers
         [SerializeField] protected VisualEffect after;
         [SerializeField] protected VisualEffect before;
         [SerializeField] protected AreaBinder areaBinder;
+
+        [SerializeField] protected Transform replaceTag;
+        [SerializeField] protected Transform selected;
         
         protected Coroutine MainCoroutine;
         protected T ViewModel;
@@ -38,6 +41,17 @@ namespace Game.GamePlay.View.Towers
         {
             // ПОДПИСКИ //
             ViewModel = (T)viewModel;
+
+            ViewModel.ShowReplaceTag.Subscribe(v =>
+            {
+                replaceTag.gameObject.SetActive(v);
+            }).AddTo(ref _disposables);
+            
+            ViewModel.ShowSelected.Subscribe(v =>
+            {
+                selected.gameObject.SetActive(v);
+            }).AddTo(ref _disposables);
+            
             viewModel.Position.Subscribe(p =>
             {
                 transform.position = new Vector3(

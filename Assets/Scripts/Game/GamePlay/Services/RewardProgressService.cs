@@ -330,7 +330,6 @@ namespace Game.GamePlay.Services
             var list = new List<RewardType>()
             {
                 RewardType.TowerMove,
-                //RewardType.TowerReplace, //TODO заменить на RewardType.TowerReplace
             };
             
             //Перемещать, если 2 и более башен на карте
@@ -341,14 +340,8 @@ namespace Game.GamePlay.Services
                 if (progressCard.Value.RewardType is RewardType.TowerMove or RewardType.TowerReplace)
                     return null;
             }
-
             var random = new System.Random();
-            
             var index = random.Next(0, list.Count);
-            Debug.Log(index);
-            Debug.Log(list[index]);
-            //var index = Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % 2;
-            
             return new RewardCardData
             {
                 RewardType = list[index],
