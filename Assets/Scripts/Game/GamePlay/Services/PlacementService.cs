@@ -46,7 +46,7 @@ namespace Game.GamePlay.Services
         /**
          * Определяем возможность размещения Башни на карте
          */
-        public bool CheckPlacementTower(Vector2Int position, int towerId, bool onRoad, bool isPlacement, int exceptUniqueId = -1)
+        public bool CheckPlacementTower(Vector2Int position, int towerId, bool onRoad, bool isPlacement)
         {
             //var tower = _gameplayState.Origin.Towers.Find(t => t.UniqueId == towerId);
             var result = false;
@@ -72,9 +72,6 @@ namespace Game.GamePlay.Services
                     //Строить на башне нельзя, принудительный выход
                     //(даже для перемещаемой башни — нельзя поставить на её же место, это бессмысленно)
                     if (position == towerEntity.Position.CurrentValue) return false;
-                    
-                    //Для перемещаемой башни пропускаем проверку "рядом" с ней же
-                    if (towerEntity.UniqueId == exceptUniqueId) continue;
                     
                     if (towerEntity.PositionNear(position)) result = true;
                 }

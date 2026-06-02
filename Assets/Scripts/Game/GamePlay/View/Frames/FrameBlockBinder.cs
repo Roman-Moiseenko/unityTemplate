@@ -151,7 +151,7 @@ namespace Game.GamePlay.View.Frames
             var areaPrefab = Resources.Load<AreaBinder>(prefabAreaPath);
             _areaBinder = Instantiate(areaPrefab, transform);
             _areaBinder.Bind();
-            _areaBinder.Show(towerViewModel.GetAreaRadius());
+           // _areaBinder.Show(towerViewModel.GetAreaRadius());
         }
         
         private void CreateGroundFrame(GroundFrameViewModel groundFrameViewModel)

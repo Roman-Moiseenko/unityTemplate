@@ -24,7 +24,7 @@ namespace Game.GamePlay.View.Towers
 
         private Sequence Sequence { get; set; }
         private ReactiveProperty<Vector3> _firsTarget;
-        private IDisposable _disposable;
+        protected DisposableBag _disposables;
 
         private void OnEnable()
         {
@@ -37,7 +37,6 @@ namespace Game.GamePlay.View.Towers
         public void Bind(TowerViewModel viewModel)
         {
             // ПОДПИСКИ //
-            var d = Disposable.CreateBuilder();
             ViewModel = (T)viewModel;
             viewModel.Position.Subscribe(p =>
             {
@@ -46,15 +45,11 @@ namespace Game.GamePlay.View.Towers
                     transform.position.y,
                     p.y
                 );
-            }).AddTo(ref d);
+            }).AddTo(ref _disposables);
             
-            
-
             CreateTower();
             CreateArea();
             
-
-
             //Если есть площадь, то подписываемся на события
             if (areaBinder != null)
             {
@@ -68,7 +63,7 @@ namespace Game.GamePlay.View.Towers
                     {
                         areaBinder.Hide();
                     }
-                }).AddTo(ref d);
+                }).AddTo(ref _disposables);
             }
             
             //Запуск эффекта обновления уровня
@@ -76,7 +71,7 @@ namespace Game.GamePlay.View.Towers
             {
                 StartCoroutine(EffectsUpgradeTower());
                 RestartAfterUpdate();
-            }).AddTo(ref d);
+            }).AddTo(ref _disposables);
             //Смена модели при обновлении на четных уровнях
             ViewModel.NumberModel.Skip(1).Subscribe(number =>
             {
@@ -98,13 +93,11 @@ namespace Game.GamePlay.View.Towers
                             .DOScale(Vector3.one, 0.5f)
                             .SetEase(Ease.InCubic).SetUpdate(true))
                     .OnComplete(() => { Sequence.Kill(); }).SetUpdate(true);
-            }).AddTo(ref d);
-            _disposable = d.Build();
+            }).AddTo(ref _disposables);
             OnBind(ViewModel);
         }
         
         protected virtual void OnBind(T viewModel) { }
-        protected virtual void OnAfterDestroy() {}
         
         private IEnumerator EffectsUpgradeTower()
         {
@@ -149,7 +142,7 @@ namespace Game.GamePlay.View.Towers
          */
         protected abstract void RestartAfterUpdate();
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             //StopCoroutine(MainCoroutine);
             if (Sequence.IsActive())
@@ -160,9 +153,7 @@ namespace Game.GamePlay.View.Towers
             
             Destroy(TowerBinder.gameObject);
             Destroy(TowerBinder);
-            
-            _disposable?.Dispose();
-            OnAfterDestroy();
+            _disposables.Dispose();
         }
 
         public void DestroyGameObject()

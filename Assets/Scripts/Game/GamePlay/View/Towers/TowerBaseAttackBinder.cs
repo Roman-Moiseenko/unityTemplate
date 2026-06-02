@@ -7,24 +7,22 @@ namespace Game.GamePlay.View.Towers
 {
     public class TowerBaseAttackBinder : TowerBaseBinder<TowerAttackViewModel>
     {
-        
         [SerializeField] protected Transform shot;
         [SerializeField] protected TowerVisibleBinder visibleBinder;
         [SerializeField] protected TowerUnVisibleBinder unvisibleBinder;
 
         private readonly List<TowerShotBinder> _shotBinders = new();
-        
+
         protected override void OnBind(TowerAttackViewModel viewModel)
         {
-            
             visibleBinder.Bind(viewModel); //Подключаем коллайдер видимости
             if (viewModel.MinDistance > 0)
                 unvisibleBinder.Bind(viewModel); //Подключаем коллайдер зоны недоступности
             MainCoroutine = StartCoroutine(FireUpdateTower());
             CreateShot(); //для ускорения сразу создаем 1 снаряд в пул
         }
-        
-        
+
+
         private IEnumerator FireUpdateTower()
         {
             while (true)
@@ -51,8 +49,8 @@ namespace Game.GamePlay.View.Towers
                 yield return new WaitForSeconds(ViewModel.Speed);
             }
         }
-        
-        
+
+
         private TowerShotBinder FindFreeShot()
         {
             foreach (var shotBinder in _shotBinders)
@@ -73,7 +71,7 @@ namespace Game.GamePlay.View.Towers
             _shotBinders.Add(towerShotBinder);
             return towerShotBinder;
         }
-        
+
         protected override void RestartAfterUpdate()
         {
             foreach (var shotBinder in _shotBinders)
@@ -81,11 +79,11 @@ namespace Game.GamePlay.View.Towers
                 shotBinder.StopShot(null);
             }
         }
-        
-        private void OnDestroy()
+
+        protected override void OnDestroy()
         {
             StopCoroutine(MainCoroutine);
-            
+
             Destroy(visibleBinder.gameObject);
             Destroy(visibleBinder);
             Destroy(unvisibleBinder.gameObject);
@@ -96,9 +94,7 @@ namespace Game.GamePlay.View.Towers
                 Destroy(shotBinder);
             }
 
-
-          //  _disposable?.Dispose();
+            base.OnDestroy();
         }
-        
     }
 }

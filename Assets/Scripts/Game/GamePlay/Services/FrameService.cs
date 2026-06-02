@@ -36,7 +36,6 @@ namespace Game.GamePlay.Services
         private Dictionary<string, bool> _towerParametersMap = new();
         private Dictionary<int, Vector2Int> matrixRoads = new();
         private readonly DIContainer _container;
-        private int _originalTowerUniqueId = -1; // Для TowerMove — уникальный ID оригинальной башни
         private DisposableBag _disposables = new();
 
         public FrameService(
@@ -75,7 +74,7 @@ namespace Game.GamePlay.Services
             {
                 var tower = _viewModel.GetTower();
                 _viewModel.Enable.Value = _placementService.CheckPlacementTower(position,
-                    tower.UniqueId, tower.IsOnRoad, tower.IsPlacement, exceptUniqueId: _originalTowerUniqueId);
+                    tower.UniqueId, tower.IsOnRoad, tower.IsPlacement);
             }
 
             if (_viewModel.IsRoad())
@@ -136,7 +135,6 @@ namespace Game.GamePlay.Services
             var onRoad = towerViewModel.IsOnRoad;
             var isPlacement = towerViewModel.IsPlacement;
             
-            _originalTowerUniqueId = towerViewModel.UniqueId;
             
             // Создаём новую сущность-копию для фрейма, чтобы не влиять на оригинал
             var frameTowerEntityId = _gameplayState.CreateEntityID();
@@ -156,7 +154,7 @@ namespace Game.GamePlay.Services
             _viewModel.AddItem(frameTowerViewModel);
             
             _viewModel.Enable.Value =
-                _placementService.CheckPlacementTower(position, frameTowerEntityId, onRoad, isPlacement, exceptUniqueId: _originalTowerUniqueId);
+                _placementService.CheckPlacementTower(position, frameTowerEntityId, onRoad, isPlacement);
             _currentFrame.Value = _viewModel;
         }
         
@@ -196,7 +194,6 @@ namespace Game.GamePlay.Services
             _viewModel.StartRemove().Where(x => x).Subscribe(e =>
                 {
                     _currentFrame.Value = null;
-                    _originalTowerUniqueId = -1;
                     _viewModel?.Dispose();
                     frameIsRemoveFull.Value = true;
                 }
@@ -211,7 +208,6 @@ namespace Game.GamePlay.Services
         public void RemoveFrame()
         {
             _currentFrame.Value = null;
-            _originalTowerUniqueId = -1;
             _viewModel?.Dispose();
         }
 

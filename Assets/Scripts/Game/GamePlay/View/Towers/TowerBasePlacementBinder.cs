@@ -14,12 +14,9 @@ namespace Game.GamePlay.View.Towers
     {
         [SerializeField] private TowerPlacementVisibleBinder visibleBinder;
         private ObservableDictionary<int, WarriorBinder> warriors = new();
-
-
-        private IDisposable _disposable;
+        
         protected override void OnBind(TowerPlacementViewModel viewModel)
         {
-            var d = Disposable.CreateBuilder();
             visibleBinder.Bind(viewModel);
             foreach (var warriorViewModel in viewModel.Warriors)
                 CreateWarrior(warriorViewModel);
@@ -29,7 +26,7 @@ namespace Game.GamePlay.View.Towers
             {
                 var warriorViewModel = e.Value;
                 CreateWarrior(warriorViewModel);
-            }).AddTo(ref d);
+            }).AddTo(ref _disposables);
             //При удалении модели запускаем анимацию и подписываемся на ее завершение, после удаляем из списка Binders
             viewModel.Warriors.ObserveRemove().Subscribe(e =>
             {
@@ -38,7 +35,7 @@ namespace Game.GamePlay.View.Towers
                 warriorBinder.StartDeadAnimation()
                     .Where(x => x)
                     .Subscribe(_ => warriors.Remove(warriorViewModel.UniqueId));
-            }).AddTo(ref d);
+            }).AddTo(ref _disposables);
 
             //Отдельно на удаление Binder, т.к. возможно будут удалятся в другом месте (при удалении башни и т.п.) 
             warriors.ObserveRemove().Subscribe(e =>
@@ -46,21 +43,19 @@ namespace Game.GamePlay.View.Towers
                 var warriorBinder = e.Value.Value;
                 Destroy(warriorBinder.gameObject);
                 Destroy(warriorBinder);
-            }).AddTo(ref d);
+            }).AddTo(ref _disposables);
             
             viewModel.EnabledPlacement.Subscribe(v =>
             {
                 ((AreaPlacementBinder)areaBinder).SetEnabledColor(v);
-            }).AddTo(ref d);
-
-            _disposable = d.Build();
+            }).AddTo(ref _disposables);
+            
             //MainCoroutine = StartCoroutine(PlacementUpdateTower());
         }
         
         protected override void RestartAfterUpdate()
         {
             //TODO Обновляем внешний вид воинов и запускаем эффекты
-            
         }
         
         private void CreateWarrior(WarriorViewModel warriorViewModel)
@@ -74,10 +69,11 @@ namespace Game.GamePlay.View.Towers
             warriors.Add(warriorViewModel.UniqueId, createdWarrior);
         }
 
-        protected override void OnAfterDestroy()
+        protected override void OnDestroy()
         {
             ViewModel.Dispose();
-            _disposable?.Dispose();
+            base.OnDestroy();
+            
         }
     }
 }

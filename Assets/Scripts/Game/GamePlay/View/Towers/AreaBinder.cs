@@ -34,6 +34,7 @@ namespace Game.GamePlay.View.Towers
             }
             _isShow = true;
         }
+        
 
         protected virtual Vector3 SetDimensions(Vector3 radius)
         {
@@ -42,18 +43,21 @@ namespace Game.GamePlay.View.Towers
 
         public void Hide(bool animate = true)
         {
-            if (!_isShow) return;
+            if (!_isShow)
+            {
+                if (area.localScale != Vector3.zero) area.transform.localScale = Vector3.zero;
+                _isShow = false;
+                return;
+            }
             if (animate)
             {
                 area.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InCirc).SetUpdate(true);    
             }
             else
             {
-                area.localScale = Vector3.zero;
+                area.transform.localScale = Vector3.zero;
             }
-            
             _isShow = false;
         }
-
     }
 }
