@@ -82,7 +82,13 @@ namespace Game.GamePlay.View.Towers
             ConfigId = towerEntity.ConfigId;
             Level = towerEntity.Level;
             Position = towerEntity.Position;
-            Position.Subscribe(v => PositionMap.Value = new Vector3(v.x, 0, v.y)).AddTo(ref _disposables);
+            Position
+                .Subscribe(v =>
+                {
+                    PositionMap.Value = new Vector3(v.x, 0, v.y);
+                    Debug.Log("Subscribe = " + v);
+                })
+                .AddTo(ref _disposables);
             SpeedShot = TowerEntity.SpeedShot;
             //Есть бустер на скорострельность
             var busters = TowersService.TowerBoosters[ConfigId];

@@ -82,9 +82,7 @@ namespace Game.GamePlay.View.UI.PanelBuild
                          
                     break;
                 case RewardType.TowerMove: InfoTowerMove(); break;
-                case RewardType.TowerReplace:
-                            
-                    break;
+                case RewardType.TowerReplace: InfoTowerReplace(); break;
                 default: throw new Exception("Неизвестное значение");
             }
         }

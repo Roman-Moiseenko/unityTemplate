@@ -170,8 +170,10 @@ namespace Game.GamePlay.Root.View
                 //Режим завершения строительства
                 if (newState.GetType() == typeof(FsmStateBuildEnd))
                 {
+                    Debug.Log(newState.GetType());
                     var card = ((FsmStateBuildEnd)newState).GetRewardCard();
                     var position = _fsmGameplay.GetPosition();
+                    Debug.Log(card.RewardType);
 
                     switch (card.RewardType)
                     {
@@ -213,24 +215,20 @@ namespace Game.GamePlay.Root.View
                                 .Subscribe(_ => _fsmGameplay.Fsm.SetState<FsmStateGamePlay>());
                             break;
                         case RewardType.TowerMove:
-                            //TODO Удалить Фрейм перемещения 
                             frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
                             {
-                                if (_fsmGameplay.SelectFirstTower.CurrentValue == null)
-                                {
-                                    throw new Exception("Ошибка");
-                                }
-                                else
-                                {
-                                    towersService.MoveTower((int)_fsmGameplay.SelectFirstTower.CurrentValue, position);
-                                }
-
+                                if (_fsmGameplay.SelectFirstTower.CurrentValue == null) throw new Exception("Ошибка");
+                                towersService.MoveTower((int)_fsmGameplay.SelectFirstTower.CurrentValue, position);
                                 _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             });
-                            
                             break;
                         case RewardType.TowerReplace:
-                            towersService.ReplaceTower(card.UniqueId, card.UniqueId2);
+                            Debug.Log(_fsmGameplay.SelectFirstTower.CurrentValue );
+                            Debug.Log(_fsmGameplay.SelectSecondTower.CurrentValue );
+                            if (_fsmGameplay.SelectFirstTower.CurrentValue == null ||
+                                _fsmGameplay.SelectSecondTower.CurrentValue == null
+                               ) throw new Exception("Ошибка");
+                            towersService.ReplaceTower((int)_fsmGameplay.SelectFirstTower.CurrentValue, (int)_fsmGameplay.SelectSecondTower.CurrentValue);
                             _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             break;
                         case RewardType.SkillLevelUp:
@@ -351,6 +349,34 @@ namespace Game.GamePlay.Root.View
                         _frameService.CreateFrameFromExistingTower(towerViewModel);
                     }
                     return;
+                }
+
+                //Режим обмена башнями
+                if (card.RewardType == RewardType.TowerReplace)
+                {
+                    Debug.Log(_fsmGameplay.SelectFirstTower.Value );
+                    if (_fsmGameplay.SelectFirstTower.Value == null) //Выделяем первую башню
+                    {
+                        if (_towersService.FindTowerByPosition(position, out var towerViewModel))
+                        {
+                            _fsmGameplay.SelectFirstTower.Value = towerViewModel.UniqueId;
+                            //TODO Отметить башни, которые можно выделить
+                            
+                            
+                        }
+                        return;
+                    }
+                    
+                    if (_fsmGameplay.SelectFirstTower.Value != null && _fsmGameplay.SelectSecondTower.Value == null) //Выделяем вторую башню
+                    {
+                        if (_towersService.FindTowerByPosition(position, out var towerViewModel))
+                        {
+                            if (_fsmGameplay.SelectFirstTower.Value == towerViewModel.UniqueId) return; 
+                            _fsmGameplay.SelectSecondTower.Value = towerViewModel.UniqueId;
+                            _fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(card);
+                        }
+                        return;
+                    }
                 }
                 
                 

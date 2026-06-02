@@ -150,6 +150,7 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandRewardKillMobHandler(gameplayState));
             cmd.RegisterHandler(new CommandDeleteTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
+            cmd.RegisterHandler(new CommandReplaceTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceRoadHandler(gameplayState));
             //var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
             var wayService = new WayService(); //Сервис обсчета дороги

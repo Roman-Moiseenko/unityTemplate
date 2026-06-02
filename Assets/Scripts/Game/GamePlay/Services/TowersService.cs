@@ -249,9 +249,10 @@ namespace Game.GamePlay.Services
         }
 
         
-        public void ReplaceTower(int cardUniqueId, object cardUniqueId2)
+        public bool ReplaceTower(int cardUniqueId, int cardUniqueId2)
         {
-            //TODO Меняем местами две башни
+            var command = new CommandReplaceTower(cardUniqueId, cardUniqueId2);
+            return _cmd.Process(command);
         }
 
         /**
