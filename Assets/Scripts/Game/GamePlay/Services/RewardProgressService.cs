@@ -183,11 +183,12 @@ namespace Game.GamePlay.Services
             List<Func<RewardsProgress, RewardCardData>> getReward = new()
             {
                 GetTower,
-           //     GetTowerUpgrade,
-            //    GetGround,
-           //     GetRoad,
-          //      GetSkillUpgrade,
-                GetTowerMovement,  //TODO Добавить перемещения башен, после реализации
+                GetTowerUpgrade,
+                GetGround,
+                GetRoad,
+                GetSkillUpgrade,
+                GetTowerMovement,  
+                //GetHeroUp, //TODO Добавить апгрейд героя, после реализации
             };
 
             var random = new System.Random();
@@ -212,6 +213,11 @@ namespace Game.GamePlay.Services
             return rewards;
         }
 
+        private RewardCardData GetHeroUp(RewardsProgress progress)
+        {
+            return null;
+        }
+        
         private RewardCardData GetRoad(RewardsProgress progress)
         {
             var listRoads = new List<string>();

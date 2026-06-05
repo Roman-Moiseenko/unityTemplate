@@ -26,8 +26,7 @@ namespace Game.GamePlay.Commands.TowerCommand
             }
 
             if (firstTower == null || secondTower == null) return false;
-            Debug.Log(firstTower.Position.CurrentValue);
-            Debug.Log(secondTower.Position.CurrentValue);
+
             var pos = firstTower.Position.CurrentValue;
             firstTower.Position.Value = secondTower.Position.CurrentValue;
             secondTower.Position.Value = pos;
