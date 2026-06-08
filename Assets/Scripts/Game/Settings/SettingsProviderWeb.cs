@@ -9,6 +9,7 @@ using Game.Settings.Gameplay.Enemies;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
+using Game.State.Parameter;
 using Game.State.Root;
 using MVVM.Storage;
 using Newtonsoft.Json;
@@ -51,7 +52,7 @@ namespace Game.Settings
                 TypeNameAssemblyFormatHandling = TypeNameAssemblyFormatHandling.Simple,
             };
             var state = new LoadingState();
-
+            
             _coroutines.StartCoroutine(StartLoadingProcess(state));
             /*
             _response.Skip(1).Subscribe(v =>
@@ -99,11 +100,16 @@ namespace Game.Settings
                 }
             }
 
+            
             //Настройки не загружены или версия не совпадает
             state.Set("Загружаем настройки с сервера");
             yield return LoadTextFromServer(WebConstants.WEB_SETTINGS, userToken, userId);
             state.Set("Конвертируем полученные настройки игры");
             _gameSettings = JsonConvert.DeserializeObject<GameSettings>(_response.Value);
+            //Debug.Log(JsonConvert.SerializeObject(_gameSettings.ParameterDefinitions, Formatting.Indented));
+            //yield return null;
+            //state.Set("Подготавливаем реестр параметров");
+            //_gameSettings.ParameterDefinitionMap = _gameSettings.ParameterDefinitions.ToDictionary();
             yield return null;
             state.Set("Сохраняем настройки локально");
             PlayerPrefs.SetString(GAME_SETTINGS_KEY, JsonConvert.SerializeObject(_response.Value));
@@ -120,6 +126,7 @@ namespace Game.Settings
             yield return null;
             var json = JsonConvert.DeserializeObject<string>(PlayerPrefs.GetString(GAME_SETTINGS_KEY));
             _gameSettings = JsonConvert.DeserializeObject<GameSettings>(json);
+            //_gameSettings.ParameterDefinitionMap = _gameSettings.ParameterDefinitions.ToDictionary();
             state.Loaded = true;
         }
 

@@ -67,7 +67,7 @@ namespace Game.MainMenu.Commands.InventoryCommands
             var skillCards = _gameSettings.InventoryInitialSettings.SkillCards;
             var skillPlans = _gameSettings.InventoryInitialSettings.SkillPlans;
             var configSkills = _gameSettings.SkillsSettings.AllSkills;
-            Debug.Log(JsonConvert.SerializeObject(skillCards, Formatting.Indented));
+//            Debug.Log(JsonConvert.SerializeObject(skillCards, Formatting.Indented));
             
             foreach (var skillPlan in skillPlans)
             {

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Game.Settings.Gameplay.Enemies;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.Settings.Gameplay.Initial;
 using Game.Settings.Gameplay.Maps;
+using Game.State.Parameter;
 
 namespace Game.Settings
 {
@@ -17,5 +20,11 @@ namespace Game.Settings
        public MobsSettings MobsSettings = new();
        public DateTime DateVersion = new();
 
+
+       //public List<ParameterDefinition> ParameterDefinitions = new();
+
+
+       //[NonSerialized]
+       //public Dictionary<string, ParameterDefinition> ParameterDefinitionMap;
     }
 }

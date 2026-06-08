@@ -169,6 +169,7 @@ namespace Scripts.Game.GameRoot
             //Загружаем данные по игре
             var settings = _rootContainer.Resolve<ISettingsProvider>();
             loadedSettings.Clear();
+            
             settings.LoadGameSettings().Subscribe(v => loadedSettings = v);
             while (!loadedSettings.Loaded)
             {

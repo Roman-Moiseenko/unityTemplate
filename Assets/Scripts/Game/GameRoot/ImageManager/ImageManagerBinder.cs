@@ -7,6 +7,7 @@ using Game.State.Inventory.Chests;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Skills;
 using Game.State.Maps.Towers;
+using Game.State.Parameter;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -30,6 +31,8 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageEpicData> epicMaps;
         [SerializeField] private List<ImageDefenceData> defenceMaps;
 
+        [SerializeField] private List<ImageItemByParameter> parameters;
+        
 
         public ImageDefenceData GetDefenceData(TypeDefence defence)
         {
@@ -76,7 +79,11 @@ namespace Game.GameRoot.ImageManager
             var items = towerCard.FirstOrDefault(t => t.ConfigId == configId)!.ByLevels;
             return items.FirstOrDefault(t => t.Level == level)!.Sprite;
         }
-
+        public Sprite GetParameter(ParameterType type)
+        {
+            return parameters.FirstOrDefault(t => t.Parameter == type)!.Sprite;
+        }
+        
         public Sprite GetTowerParameter(TowerParameterType type)
         {
             return towerParameters.FirstOrDefault(t => t.TypeParameter == type)!.Sprite;

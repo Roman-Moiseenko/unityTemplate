@@ -450,3 +450,48 @@ MonoBehaviour:
   - Defence: 3
     Icon: {fileID: 21300000, guid: 160b1d5fbd8f5db4badbc59d4abcd1b3, type: 3}
     Background: {fileID: 21300000, guid: 4566346da7bebbd46951b84957fd9897, type: 3}
+  parameters:
+  - Parameter: 0
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - Parameter: 1
+    Sprite: {fileID: 21300000, guid: 0c40822f2eb37f34ea81823da136dc8c, type: 3}
+  - Parameter: 2
+    Sprite: {fileID: 21300000, guid: dfdab5ed16ca802459ac151ede7c7aaf, type: 3}
+  - Parameter: 3
+    Sprite: {fileID: 21300000, guid: 67c64db9de17cf74383a10dda3f80cd9, type: 3}
+  - Parameter: 4
+    Sprite: {fileID: 21300000, guid: 0c45611a88989d04f927e539eadb9ab8, type: 3}
+  - Parameter: 5
+    Sprite: {fileID: 21300000, guid: 0db5c76208e2f9a44a24e647721827eb, type: 3}
+  - Parameter: 6
+    Sprite: {fileID: 21300000, guid: f5e18ed3ad4ff914788204989868576f, type: 3}
+  - Parameter: 7
+    Sprite: {fileID: 21300000, guid: 6f951cd9201bbd249bf26de6d006398e, type: 3}
+  - Parameter: 8
+    Sprite: {fileID: 21300000, guid: 70e692710dacb4e4bb706ad1c2570010, type: 3}
+  - Parameter: 9
+    Sprite: {fileID: 21300000, guid: 30c7ccacb6dfd9a44aff02ea4fb517d5, type: 3}
+  - Parameter: 10
+    Sprite: {fileID: 21300000, guid: 30a21bb3403de004e93e74056d5388b3, type: 3}
+  - Parameter: 11
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - Parameter: 12
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - Parameter: 13
+    Sprite: {fileID: 21300000, guid: 44d07b18600cf744087085195bc092ca, type: 3}
+  - Parameter: 14
+    Sprite: {fileID: 21300000, guid: f069e0960b2e48b48ab846715acc6327, type: 3}
+  - Parameter: 15
+    Sprite: {fileID: 21300000, guid: 0e5da563160c9e74293eb8830cb12137, type: 3}
+  - Parameter: 16
+    Sprite: {fileID: 21300000, guid: dfdab5ed16ca802459ac151ede7c7aaf, type: 3}
+  - Parameter: 17
+    Sprite: {fileID: 21300000, guid: adc65bca8d1a12e4e9e17a923df89300, type: 3}
+  - Parameter: 18
+    Sprite: {fileID: 21300000, guid: 70e692710dacb4e4bb706ad1c2570010, type: 3}
+  - Parameter: 19
+    Sprite: {fileID: 21300000, guid: 37f76305009983248b214e7ac8f97fb5, type: 3}
+  - Parameter: 20
+    Sprite: {fileID: 21300000, guid: 30a21bb3403de004e93e74056d5388b3, type: 3}
+  - Parameter: 21
+    Sprite: {fileID: 21300000, guid: d03218f7a0ce6874a87652c142a6c8bf, type: 3}

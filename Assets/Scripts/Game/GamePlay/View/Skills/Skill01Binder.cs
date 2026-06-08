@@ -26,7 +26,7 @@ namespace Game.GamePlay.View.Skills
                 _dps = paramDPS.Value;
             if (ViewModel.Parameters.TryGetValue(SkillParameterType.Duration, out var paramDuration))
                 _duration = paramDuration.Value;
-            if (ViewModel.Parameters.TryGetValue(SkillParameterType.Range, out var paramRange))
+            if (ViewModel.Parameters.TryGetValue(SkillParameterType.Radius, out var paramRange))
                 _range = paramRange.Value;
 
             _radius = _range / 2f;

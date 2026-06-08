@@ -10,7 +10,7 @@
                 SkillParameterType.Damage => "Урон",
                 SkillParameterType.Cooldown => "Перезарядка",
                 SkillParameterType.Duration => "Длительность",
-                SkillParameterType.Range => "Радиус",
+                SkillParameterType.Radius => "Радиус",
                 SkillParameterType.Health => "Макс.здоровье",
                 SkillParameterType.Warriors=> "Кол-во бойцов",
                 SkillParameterType.Cells=> "Кол-во клеток",

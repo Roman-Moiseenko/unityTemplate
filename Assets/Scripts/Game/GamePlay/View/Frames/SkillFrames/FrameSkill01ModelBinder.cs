@@ -10,7 +10,7 @@ namespace Game.GamePlay.View.Frames.SkillFrames
         [SerializeField] private VisualEffect bottomArea;
         protected override void OnBind()
         {
-            if (ViewModel.Parameters.TryGetValue(SkillParameterType.Range, out var range))
+            if (ViewModel.Parameters.TryGetValue(SkillParameterType.Radius, out var range))
             {
                 var currentRadius = range.Value / 2;
                 bottomArea.SetFloat("Radius", currentRadius);
