@@ -7,6 +7,7 @@ using Game.GamePlay.Root;
 using Game.MainMenu.Root;
 using Game.State;
 using Game.State.Common;
+using Game.State.Inventory.HeroCards;
 using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps.Mobs;
@@ -55,6 +56,43 @@ namespace Game.MainMenu.Services
             
             
             //TODO Переносим героя
+            
+            var heroCard = gameState.Inventory.Items.FirstOrDefault(item => item.UniqueId == deckCard.HeroCardId.CurrentValue);
+            if (heroCard == null)
+            {
+                //MAINDO Исключение throw new Exception($"Отсутствует в инвентаре герой с id = {deckCard.HeroCardId.CurrentValue}");
+                
+                var heroCardData = new HeroCardData
+                {
+                    Defence = TypeDefence.Advanced,
+                    EpicLevel = TypeEpic.Good,
+                    Level = 1,
+                    Rank = 1,
+                    Available = true,
+                    ConfigId = "Hero00",
+                    UniqueId = 9999999,
+                    Amount = 1,
+                    Name = "Герой"
+                };
+                heroCardData.Parameters.Add(ParameterType.Damage, new ParameterData
+                {
+                    ParameterType = ParameterType.Damage,
+                    Value = 100,
+                });
+                heroCardData.Parameters.Add(ParameterType.Critical, new ParameterData
+                {
+                    ParameterType = ParameterType.Critical,
+                    Value = 10,
+                });
+                heroCardData.Parameters.Add(ParameterType.Speed, new ParameterData
+                {
+                    ParameterType = ParameterType.Speed,
+                    Value = 1,
+                });
+                heroCard = new HeroCard(heroCardData);
+            }
+
+            gameplayEnterParams.HeroCard = (HeroCardData)heroCard.Origin;
 
             //Переносим коэффициенты из науки
 
@@ -70,11 +108,12 @@ namespace Game.MainMenu.Services
             Dictionary<ParameterType, float> boost = new();
             boost.Add(ParameterType.Damage, 2);
             boost.Add(ParameterType.Critical, 2);
-            gameplayEnterParams.GameplayBoosters.HeroTowerDefenceBust.Add(TypeDefence.Advanced, boost);
+            gameplayEnterParams.GameplayBoosters.TowerDefenceBust.Add(TypeDefence.Advanced, boost);
             
 
 
-            //TODO Передаем сохраненные настройки геймплея 
+            //TODO Передаем сохраненные настройки геймплея, скорость не передается 
+            
             gameplayEnterParams.GameSpeed = _gameState.GameSpeed.CurrentValue;
 
 

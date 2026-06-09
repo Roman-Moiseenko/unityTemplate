@@ -1,5 +1,6 @@
 using System;
 using Game.State.Common;
+using UnityEngine;
 
 namespace Game.State.Maps.Heroes
 {
@@ -7,19 +8,17 @@ namespace Game.State.Maps.Heroes
     {
         public int UniqueId { get; set; } //Уникальный ID сущности
         public string ConfigId { get; set; } //Идентификатор для поиска настроек сущности
-        public TypeDefence Defence { get; set; }
-        public int Rank { get; set; }
-        public int Level  { get; set; }
+        
+        public int Rank { get; set; } //Для информации
+        public int Level  { get; set; } //Для информации
+        public TypeEpic EpicLevel; //Неизменный, ни на что не влияет 
+        public int GameplayLevel  { get; set; } //
         public TypeTarget TypeTarget { get; set; }
+        public TypeDefence Defence { get; set; }
+        public Vector2Int Placement { get; set; } 
         
+        public bool IsSingleTarget { get; set; }
         //Вынести в Parameters
-        
-        public float Damage { get; set; }
-        public float Speed { get; set; }
-        public float Range { get; set; } //Дальность, по умолчанию 1-2
-        public float Crit { get; set; } //Шанс крита 
-        
-        
         
     }
 }

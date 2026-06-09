@@ -20,7 +20,7 @@ namespace Game.State.Maps.Towers
         public int UniqueId => Origin.UniqueId;
         public string ConfigId => Origin.ConfigId;
 
-        public readonly ReactiveProperty<int> Level;
+        public readonly ReactiveProperty<int> GameplayLevel;
         public bool IsOnRoad => Origin.IsOnRoad;
         public readonly ReactiveProperty<Vector2Int> Position;
         
@@ -34,7 +34,7 @@ namespace Game.State.Maps.Towers
         public TypeDefence Defence => Origin.Defence;
         
         public Dictionary<ParameterType, ParameterData> Parameters = new();
-        private DisposableBag _disposables = new();
+        private DisposableBag _disposables;
 
         public TowerEntity(TowerEntityData towerEntityData)
         {
@@ -47,10 +47,10 @@ namespace Game.State.Maps.Towers
             Placement = new ReactiveProperty<Vector2Int>(towerEntityData.Placement);
             Placement.Subscribe(v => towerEntityData.Placement = v).AddTo(ref _disposables);
             
-            Level = new ReactiveProperty<int>(towerEntityData.Level);
-            Level.Subscribe(newLevel =>
+            GameplayLevel = new ReactiveProperty<int>(towerEntityData.GameplayLevel);
+            GameplayLevel.Subscribe(newLevel =>
             {
-                towerEntityData.Level = newLevel;
+                towerEntityData.GameplayLevel = newLevel;
             }).AddTo(ref _disposables); //При изменении позиции Position.Value меняем в данных
         }
 
@@ -155,8 +155,7 @@ namespace Game.State.Maps.Towers
 
         public void Dispose()
         {
-            Debug.Log("TowerEntity Dispose");
-            Level?.Dispose();
+            GameplayLevel?.Dispose();
             Position?.Dispose();
             Placement?.Dispose();
             _disposables.Dispose();

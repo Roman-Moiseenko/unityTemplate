@@ -85,7 +85,7 @@ namespace Game.GamePlay.View.Towers
             TowerEntity = towerEntity;
             UniqueId = towerEntity.UniqueId;
             ConfigId = towerEntity.ConfigId;
-            Level = towerEntity.Level;
+            Level = towerEntity.GameplayLevel;
             Position = towerEntity.Position;
             Position
                 .Subscribe(v =>

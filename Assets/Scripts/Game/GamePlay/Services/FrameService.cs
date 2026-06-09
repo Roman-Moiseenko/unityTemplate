@@ -142,7 +142,7 @@ namespace Game.GamePlay.Services
             {
                 UniqueId = frameTowerEntityId,
                 Position = position,
-                Level = level,
+                GameplayLevel = level,
                 ConfigId = configId,
                 IsOnRoad = onRoad,
                 IsPlacement = isPlacement,
@@ -168,7 +168,7 @@ namespace Game.GamePlay.Services
             {
                 UniqueId = towerEntityId,
                 Position = position,
-                Level = level,
+                GameplayLevel = level,
                 ConfigId = configId,
                 IsOnRoad = _towerOnRoadMap[configId],
                 IsPlacement = settings.Placement,

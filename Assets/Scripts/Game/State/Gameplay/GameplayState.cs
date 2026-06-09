@@ -4,6 +4,7 @@ using Game.GamePlay.Root;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
+using Game.State.Maps.Heroes;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Skills;
@@ -30,6 +31,7 @@ namespace Game.State.Gameplay
         //Список наград
         //Список Мобов
         public CastleEntityData CastleData { get; set; } 
+        public HeroEntityData HeroData { get; set; }
         
         public StatisticGameData StatisticGameData { get; set; }
         public int Id { get; set; }
@@ -53,7 +55,7 @@ namespace Game.State.Gameplay
         
         public int CreateEntityID()
         {
-            return GlobalEntityId++;
+            return ++GlobalEntityId;
         }
 
         

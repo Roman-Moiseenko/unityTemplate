@@ -37,15 +37,14 @@ namespace Game.GamePlay.Services
           */
         public CastleService(
             DIContainer container,
-            CastleEntity castleEntity,
             GameplayStateProxy gameplayState,
             GameplayEnterParams gameplayEnterParams
         )
         {
             _coroutines = GameObject.Find(AppConstants.COROUTINES).GetComponent<Coroutines>();
             _castleEntity = gameplayState.Castle;
-            CurrenHealth = castleEntity.CurrenHealth;
-            CastleViewModel = new CastleViewModel(castleEntity, gameplayState);
+            CurrenHealth = _castleEntity.CurrenHealth;
+            CastleViewModel = new CastleViewModel(_castleEntity, gameplayState);
             //TODO Увеличить урон, скорость и HP от CastleResearch
             _gameplayBoosters = gameplayEnterParams.GameplayBoosters;
 

@@ -21,6 +21,7 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByConfigLevel> towerCard;
         [SerializeField] private List<ImageItemByConfig> skillPlan;
         [SerializeField] private List<ImageItemByConfig> skillCard;
+        [SerializeField] private List<ImageItemByConfig> heroCard;
         //[SerializeField] private List<ImageItemByTowerParameter> towerParameters;
         //[SerializeField] private List<ImageItemBySkillParameter> skillParameters;
         //[SerializeField] private List<ImageItemByDefence> defences;

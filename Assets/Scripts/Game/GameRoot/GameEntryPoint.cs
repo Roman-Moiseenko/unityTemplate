@@ -188,7 +188,7 @@ namespace Scripts.Game.GameRoot
             _uiRoot.TextLoadingFirst("Регистрируем настройки");
             yield return null;
             //Контейнер
-            var sceneEntryPoint = Object.FindFirstObjectByType<MainMenuEntryPoint>();
+            var sceneEntryPoint = Object.FindAnyObjectByType<MainMenuEntryPoint>();
             var mainMenuContainer = _cachedSceneContainer = new DIContainer(_rootContainer);
             sceneEntryPoint.Run(mainMenuContainer, null).Subscribe(mainMenuExitParams =>
             {
@@ -229,7 +229,7 @@ namespace Scripts.Game.GameRoot
             // yield return new WaitUntil(() => isGameStateLoaded);
             //    Debug.Log("3");
             //Контейнер
-            var sceneEntryPoint = Object.FindFirstObjectByType<GameplayEntryPoint>();
+            var sceneEntryPoint = Object.FindAnyObjectByType<GameplayEntryPoint>();
             var gameplayContainer = _cachedSceneContainer = new DIContainer(_rootContainer);
 
             sceneEntryPoint.Run(gameplayContainer, enterParams).Subscribe(gameplayExitParams =>
@@ -260,7 +260,7 @@ namespace Scripts.Game.GameRoot
             //   yield return new WaitForSeconds(1);
 
             //Контейнер
-            var sceneEntryPoint = Object.FindFirstObjectByType<MainMenuEntryPoint>();
+            var sceneEntryPoint = Object.FindAnyObjectByType<MainMenuEntryPoint>();
             var mainMenuContainer = _cachedSceneContainer = new DIContainer(_rootContainer);
             sceneEntryPoint.Run(mainMenuContainer, enterParams).Subscribe(mainMenuExitParams =>
             {

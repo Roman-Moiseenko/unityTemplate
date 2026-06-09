@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Game.GamePlay.Classes;
 using Game.GameRoot;
+using Game.State.Inventory.HeroCards;
 using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.TowerCards;
 using Game.State.Research;
@@ -19,6 +20,8 @@ namespace Game.GamePlay.Root
         public List<TowerCardData> Towers { get; } = new();
         
         public List<SkillCardData> Skills { get; } = new();
+        
+        public HeroCardData HeroCard { get; set; } = new();
 
         public GameplayBoosters GameplayBoosters;
 

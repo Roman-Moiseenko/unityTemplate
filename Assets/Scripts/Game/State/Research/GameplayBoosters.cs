@@ -18,18 +18,19 @@ namespace Game.State.Research
 
         public float HeroDamage { get; set; }
         public int CastleHealth { get; set; }
-        public float CastleDamage{ get; set; }
+        public float CastleDamage { get; set; }
         public float CastleSpeed { get; set; }
         
         public float CastleRegenerate { get; set; }
 
         //TODO Доработать
         
-        //Бустеры на башню от героя, по типам башни 
-        public Dictionary<TypeDefence, Dictionary<ParameterType, float>> HeroTowerDefenceBust = new();
-        public Dictionary<TypeDefence, Dictionary<ParameterType, float>> HeroSkillDefenceBust = new();
-        //Бустеры на башню от героя
-        public readonly Dictionary<ParameterType, float> HeroTowerBust = new();
-        public readonly Dictionary<ParameterType, float> HeroSkillBust = new();
+        //Бустеры по типам Defence 
+        public Dictionary<TypeDefence, Dictionary<ParameterType, float>> TowerDefenceBust = new();
+        public Dictionary<TypeDefence, Dictionary<ParameterType, float>> SkillDefenceBust = new();
+        //Бустеры общие
+        public readonly Dictionary<ParameterType, float> TowerBust = new();
+        public readonly Dictionary<ParameterType, float> HeroBust = new();
+        public readonly Dictionary<ParameterType, float> SkillBust = new();
     }
 }

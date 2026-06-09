@@ -232,8 +232,7 @@ namespace Game.GamePlay.Root
             container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();
 
 
-            var castleService = new CastleService(container,
-                gameplayState.Castle, gameplayState, gameplayEnterParams);
+            var castleService = new CastleService(container, gameplayState, gameplayEnterParams);
             container.RegisterInstance(castleService);
             container.RegisterDisposableOnSceneExit(castleService);
 

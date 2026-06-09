@@ -5,6 +5,7 @@ using Game.GamePlay.Root;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
+using Game.State.Maps.Heroes;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Rewards;
 using Game.State.Maps.Roads;
@@ -39,6 +40,7 @@ namespace Game.State.Gameplay
         //Для отслеживания за игровой процесс
 
         public readonly CastleEntity Castle;
+        public HeroEntity Hero;
         public readonly StatisticGame StatisticGame;
 
         public ObservableList<RewardEntityData> RewardEntities { get; } = new();
@@ -71,6 +73,7 @@ namespace Game.State.Gameplay
         {
             Origin = origin;
             Castle = new CastleEntity(origin.CastleData);
+            Hero = new HeroEntity(origin.HeroData);
 
             StatisticGame = new StatisticGame(origin.StatisticGameData);
             _previousGameSpeed = Origin.GameSpeed;
@@ -327,6 +330,7 @@ namespace Game.State.Gameplay
             GateWaveSecond?.Dispose();
             StatisticGame?.Dispose();
             Castle?.Dispose();
+            Hero?.Dispose();
         }
     }
 }

@@ -8,8 +8,10 @@ using Game.GamePlay.Commands.RoadCommand;
 using Game.GamePlay.Commands.TowerCommand;
 using Game.GamePlay.Commands.WaveCommands;
 using Game.Settings;
+using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Gameplay.Statistics;
+using Game.State.Maps.Heroes;
 using Game.State.Maps.Skills;
 using Game.State.Root;
 using MVVM.CMD;
@@ -101,7 +103,28 @@ namespace Game.GamePlay.Commands.MapCommand
                 _gameplayState.StatisticGame.Add(skillCardData.ConfigId, TypeEntityStatisticDamage.Skill);
             }
             
-            //TODO Создаем Героя из базовых настроек            
+            //TODO Создаем Героя из базовых настроек
+            var heroCard = _gameplayState.EnterParams.HeroCard;
+            var heroSettings = _gameSettings.HeroesSettings.AllHero
+                .Find(h => h.ConfigId == heroCard.ConfigId);
+
+            //MAINDO Переделать из настроек 
+            var heroEntityData = new HeroEntityData
+            {
+                UniqueId = _gameplayState.CreateEntityID(),
+                ConfigId = heroCard.ConfigId,
+                Defence = heroCard.Defence,
+                TypeTarget = TypeTarget.Ground, // heroSettings.TypeTarget,
+                EpicLevel = heroCard.EpicLevel, // heroSettings.EpicLevel,
+                Level =  heroCard.Level,
+                Rank =  heroCard.Rank,
+                GameplayLevel = 1,
+                IsSingleTarget = true, //heroSettings.IsSingleTarget
+                Placement = new Vector2Int(2, 0),
+                
+            };
+            _gameplayState.Hero = new HeroEntity(heroEntityData);
+            _gameplayState.StatisticGame.Add(heroCard.ConfigId, TypeEntityStatisticDamage.Hero);
             
             /*
              _gameplayState.CurrentWave.Value = 0;

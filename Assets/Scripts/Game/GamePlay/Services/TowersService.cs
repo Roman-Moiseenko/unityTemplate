@@ -81,7 +81,7 @@ namespace Game.GamePlay.Services
             //Кешируем уровень башни по конфигу, если башня этого типа есть на карте
             foreach (var towerEntity in towerEntities)
             {
-                Levels[towerEntity.ConfigId] = towerEntity.Level.CurrentValue;
+                Levels[towerEntity.ConfigId] = towerEntity.GameplayLevel.CurrentValue;
             }
 
             foreach (var towerCardData in _baseTowerCards)
@@ -109,7 +109,7 @@ namespace Game.GamePlay.Services
             towerEntities.ObserveAdd().Subscribe(e =>
             {
                 var towerEntity = e.Value;
-                towerEntity.Level.Value = Levels[towerEntity.ConfigId]; //Устанавливаем уровень апгрейда
+                towerEntity.GameplayLevel.Value = Levels[towerEntity.ConfigId]; //Устанавливаем уровень апгрейда
                 towerEntity.Parameters = TowerParametersMap[towerEntity.ConfigId];
                 CreateTowerViewModel(towerEntity); //Создаем View Model
             });
@@ -125,7 +125,7 @@ namespace Game.GamePlay.Services
                 foreach (var towerEntity in towerEntities)
                 {
                     if (towerEntity.ConfigId != configId) continue;
-                    towerEntity.Level.OnNext(newLevel);
+                    towerEntity.GameplayLevel.OnNext(newLevel);
                 }
             }).AddTo(ref _disposables);
             //Кешируем бустеры для башен по типам Defence
@@ -341,13 +341,13 @@ namespace Game.GamePlay.Services
             var speedBooster = _gameplayBoosters.TowerSpeed;
             var distanceBooster = _gameplayBoosters.TowerDistance;
             //бустеры общие от героя
-            if (_gameplayBoosters.HeroTowerBust.TryGetValue(ParameterType.Damage, out var damage))
+            if (_gameplayBoosters.TowerBust.TryGetValue(ParameterType.Damage, out var damage))
                 damageBooster += damage;
-            if (_gameplayBoosters.HeroTowerBust.TryGetValue(ParameterType.Critical, out var critical))
+            if (_gameplayBoosters.TowerBust.TryGetValue(ParameterType.Critical, out var critical))
                 criticalBooster += critical;
-            if (_gameplayBoosters.HeroTowerBust.TryGetValue(ParameterType.Speed, out var speed))
+            if (_gameplayBoosters.TowerBust.TryGetValue(ParameterType.Speed, out var speed))
                 speedBooster += speed;
-            if (_gameplayBoosters.HeroTowerBust.TryGetValue(ParameterType.Distance, out var distance))
+            if (_gameplayBoosters.TowerBust.TryGetValue(ParameterType.Distance, out var distance))
                 distanceBooster += distance;
             
             //бустеры от типа защиты и от наличия параметра в карточке
@@ -367,7 +367,7 @@ namespace Game.GamePlay.Services
                 var distanceBoosterTower = distanceBooster;
                 
                 //бустеры от типа Defence о героя
-                if (_gameplayBoosters.HeroTowerDefenceBust.TryGetValue(towerCard.Defence, out var parameterDatas))
+                if (_gameplayBoosters.TowerDefenceBust.TryGetValue(towerCard.Defence, out var parameterDatas))
                 {
                     if (parameterDatas.TryGetValue(ParameterType.Damage, out var damageDefence))
                         damageBoosterTower += damageDefence;

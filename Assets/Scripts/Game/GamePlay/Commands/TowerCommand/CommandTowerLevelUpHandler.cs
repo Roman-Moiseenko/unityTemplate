@@ -24,7 +24,7 @@ namespace Game.GamePlay.Commands.TowerCommand
                 if (entity.ConfigId == command.ConfigId)
                 {
 
-                    entity.Level.Value += 1;
+                    entity.GameplayLevel.Value += 1;
                 }
             }
 

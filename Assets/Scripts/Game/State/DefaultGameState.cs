@@ -3,6 +3,7 @@ using Game.State.Gameplay;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Castle;
 using Game.State.Maps.Grounds;
+using Game.State.Maps.Heroes;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Skills;
 using Game.State.Maps.Towers;
@@ -29,6 +30,7 @@ namespace Game.State
                 Progress = 0,
                 ProgressLevel = 0,
                 CastleData = new CastleEntityData(),
+                HeroData = new HeroEntityData(),
                 Way = new List<RoadEntityData>(),
                 WaySecond = new List<RoadEntityData>(),
                 WayDisabled = new List<RoadEntityData>(),

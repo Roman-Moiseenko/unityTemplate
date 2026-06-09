@@ -265,7 +265,7 @@ namespace Game.GamePlay.Services
             var damageBooster = _gameplayBoosters.SkillDamage;
 
             //бустеры общие от героя
-            if (_gameplayBoosters.HeroSkillBust.TryGetValue(ParameterType.Damage, out var damage))
+            if (_gameplayBoosters.SkillBust.TryGetValue(ParameterType.Damage, out var damage))
                 damageBooster += damage;
 
 
@@ -280,7 +280,7 @@ namespace Game.GamePlay.Services
 
 
                 //бустеры от типа Defence о героя
-                if (_gameplayBoosters.HeroSkillDefenceBust.TryGetValue(skillCard.Defence, out var parameterDatas))
+                if (_gameplayBoosters.SkillDefenceBust.TryGetValue(skillCard.Defence, out var parameterDatas))
                 {
                     if (parameterDatas.TryGetValue(ParameterType.Damage, out var damageDefence))
                         damageBoosterSkill += damageDefence;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Game.Settings.Gameplay.Enemies;
+using Game.Settings.Gameplay.Entities.Heroes;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.Settings.Gameplay.Initial;
@@ -14,6 +15,7 @@ namespace Game.Settings
        public MapsSettings MapsSettings = new();
        public TowersSettings TowersSettings = new();
        public SkillsSettings SkillsSettings = new();
+       public HeroesSettings HeroesSettings = new();
        public CastleInitialSettings CastleInitialSettings = new();
        public InventoryInitialSettings InventoryInitialSettings = new();
        public MobsSettings MobsSettings = new();

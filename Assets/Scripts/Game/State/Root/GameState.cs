@@ -10,6 +10,7 @@ using Game.State.Inventory.Common;
 using Game.State.Inventory.Deck;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps;
+using UnityEngine;
 
 namespace Game.State.Root
 {
@@ -33,7 +34,7 @@ namespace Game.State.Root
        public DateTime DateVersion { get; set; } = new();
         public int CreateInventoryID()
         {
-            return GlobalInventoryId++;
+            return ++GlobalInventoryId;
         }
     }    
 }
