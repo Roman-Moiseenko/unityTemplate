@@ -15,7 +15,6 @@ namespace Game.GamePlay.View.Castle
         [SerializeField] private CastleShotBinder shot;
         public ReactiveProperty<bool> IsShotComplete => shot.IsShotComplete;
         private Sequence Sequence { get; set; }
-
         public void Bind(CastleViewModel viewModel)
         {
             shot.Bind(viewModel);

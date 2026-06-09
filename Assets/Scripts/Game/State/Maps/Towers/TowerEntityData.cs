@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using Game.State.Common;
-using Game.State.Entities;
-using Game.State.Maps.Mobs;
+﻿using Game.State.Common;
 using UnityEngine;
 
 namespace Game.State.Maps.Towers

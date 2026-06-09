@@ -135,7 +135,15 @@ namespace Game.GamePlay.View.Mobs
                     IsAttack.OnNext(true);
                 }
 
-                _pullTargetsDisposables.Add(targetViewModel.UniqueId, disposable);
+                // Используем TryAdd для защиты от дублирования
+                if (!_pullTargetsDisposables.ContainsKey(targetViewModel.UniqueId))
+                {
+                    _pullTargetsDisposables.Add(targetViewModel.UniqueId, disposable);
+                }
+                else
+                {
+                    disposable?.Dispose();
+                }
             }).AddTo(ref _disposables);
 
             PullTargets.ObserveRemove().Subscribe(e =>
@@ -156,28 +164,36 @@ namespace Game.GamePlay.View.Mobs
                 {
                     IsMoving.Value = true;
                     IsAttack.Value = false;
-                    _target.Value = null;
+                    // _target уже null (сброшен выше), не дублируем вызов
                 }
             }).AddTo(ref _disposables);
 
+            // Выбор новой цели когда текущая стала null
             _target.Skip(1).Subscribe(target =>
             {
-                if (target == null)
+                if (target != null)
                 {
-                    foreach (var targetViewModel in PullTargets)
+                    // Новая цель назначена - запускаем атаку
+                    if (_coroutines != null)
+                        _attackCoroutine = _coroutines.StartCoroutine(AttackTarget());
+                    return;
+                }
+                
+                // target == null - ищем новую живую цель
+                foreach (var targetViewModel in PullTargets)
+                {
+                    if (targetViewModel != null && !targetViewModel.IsDead.CurrentValue)
                     {
                         _target.OnNext(targetViewModel);
                         IsMoving.Value = false;
                         IsAttack.Value = true;
                         return;
                     }
-
-                    IsMoving.Value = true;
-                    IsAttack.Value = false;
-                    return;
                 }
-                if (_coroutines != null)
-                    _attackCoroutine = _coroutines.StartCoroutine(AttackTarget());
+
+                // Живых целей нет
+                IsMoving.Value = true;
+                IsAttack.Value = false;
             }).AddTo(ref _disposables);
         }
 
@@ -225,12 +241,15 @@ namespace Game.GamePlay.View.Mobs
         
         public IEnumerator AttackTarget()
         {
-//            Debug.Log(" AttackTarget " + Target.CurrentValue.UniqueId);
             if (_mobEntity.IsDead.CurrentValue) yield break;
+            if (_target.CurrentValue == null) yield break;
+            
             _target.CurrentValue.DamageReceived(Damage, _mobEntity.Defence);
             yield return new WaitForSeconds(_mobEntity.SpeedAttack / AppConstants.MOB_SPEED_ATTACK);
 
+            // Проверяем после паузы - жив ли моб и жива ли цель
             if (_target.CurrentValue == null) yield break;
+            if (_mobEntity.IsDead.CurrentValue) yield break;
             if (!_target.CurrentValue.IsDead.CurrentValue && _coroutines != null) 
                 _attackCoroutine = _coroutines.StartCoroutine(AttackTarget());
         }
@@ -263,6 +282,13 @@ namespace Game.GamePlay.View.Mobs
                 // Coroutines уже уничтожен (при выгрузке сцены)
             }
             
+            // Очищаем все подписки на цели до диспоуза
+            foreach (var disposable in _pullTargetsDisposables.Values)
+            {
+                disposable?.Dispose();
+            }
+            _pullTargetsDisposables.Clear();
+            
             // Очищаем PullTargets до диспоуза подписок, чтобы избежать вызова колбэков
             PullTargets.Clear();
             
@@ -271,6 +297,7 @@ namespace Game.GamePlay.View.Mobs
             FinishCurrentAnimation?.Dispose();
             AnimationDelete?.Dispose();
             PositionTargetForShot?.Dispose();
+            _target?.Dispose();
             _disposables.Dispose();
         }
     }

@@ -18,7 +18,6 @@ namespace Game.GamePlay.View.Castle
         public CastleViewModel ViewModel;
         private Coroutine _coroutine;
         private Coroutine _mainCoroutine;
-        
         public void Bind(CastleViewModel viewModel)
         {
             ViewModel = viewModel;
@@ -51,20 +50,35 @@ namespace Game.GamePlay.View.Castle
             _mainCoroutine = StartCoroutine(FireUpdateCastle());
         }
 
+
         private IEnumerator FireUpdateCastle()
         {
             while (true)
             {
                 yield return null;
                 //Обходим все цели в модели
-                if (ViewModel.MobTarget.CurrentValue == null) continue;
-                gunLeft.Fire(ViewModel.MobTarget.CurrentValue);
-                gunCenter.Fire(ViewModel.MobTarget.CurrentValue);
-                gunRight.Fire(ViewModel.MobTarget.CurrentValue);
+                if (ViewModel.MobTarget.CurrentValue == null)
+                {
+                    continue;
+                }
+                var target = ViewModel.MobTarget.CurrentValue;
+
+                // Проверка: если цель мертва (но по какой-то причине не удалена из пула),
+                // принудительно удаляем её из пула и пропускаем выстрел
+                if (target.IsDead.CurrentValue)
+                {
+                    ViewModel.PullTargets.Remove(target);
+                    continue;
+                }
+
+                gunLeft.Fire(target);
+                gunCenter.Fire(target);
+                gunRight.Fire(target);
                 yield return new WaitForSeconds(ViewModel.Speed);
             }
         }
-        
+
+
         private void OnDestroy()
         {
             StopCoroutine(_mainCoroutine);

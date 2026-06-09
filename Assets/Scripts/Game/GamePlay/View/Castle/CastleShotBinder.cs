@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using Game.GamePlay.View.Mobs;
-using Game.State.Maps.Mobs;
+﻿using Game.GamePlay.View.Mobs;
 using R3;
 using UnityEngine;
 
@@ -38,7 +35,7 @@ namespace Game.GamePlay.View.Castle
             _isMoving = true;
         }
 
-        public void FireFinish()
+        private void FireFinish()
         {
             _isMoving = false;
             _timeElapsed = 0f;
@@ -48,25 +45,25 @@ namespace Game.GamePlay.View.Castle
         private void Update()
         {
             if (!_isMoving) return;
+
             //движение снаряда и поворот
             if (_timeElapsed < _duration)
             {
                 var direction = _target.CurrentValue - transform.position;
                 if (direction != Vector3.zero)
-                    transform.rotation = Quaternion.LookRotation(direction);   
-                
+                    transform.rotation = Quaternion.LookRotation(direction);
+
                 transform.position = Vector3.Lerp(transform.position, _target.CurrentValue,
                     _timeElapsed / _duration);
                 _timeElapsed += Time.deltaTime;
             }
             else
             {
-//                Debug.Log("Принудительное попадание");
                 FireFinish();
                 IsShotComplete.OnNext(true);
             }
         }
-        
+
         private void OnTriggerEnter(Collider other)
         {
             if (other.gameObject.CompareTag("Mob"))

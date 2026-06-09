@@ -22,6 +22,7 @@ namespace Game.GamePlay.View.Castle
         {
             if (!other.gameObject.CompareTag("Mob")) return; //Обрабатываем только мобов
             var mobBinder = other.gameObject.GetComponent<MobBinder>();
+            if (mobBinder == null || mobBinder.ViewModel == null) return;
             _viewModel.PullTargets.Add(mobBinder.ViewModel); 
         }
         
@@ -33,10 +34,11 @@ namespace Game.GamePlay.View.Castle
             {
                 //Когда моб выходит из зоны видимости, удаляем из Пула
                 var mobBinder = other.gameObject.GetComponent<MobBinder>();
+                if (mobBinder == null || mobBinder.ViewModel == null) return;
                 if (mobBinder.ViewModel.IsDead.CurrentValue) return; //Лаг задержки удаления модели
+                
                 _viewModel.PullTargets.Remove(mobBinder.ViewModel);
             }
-
         }
     }
 }
