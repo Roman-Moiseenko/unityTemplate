@@ -206,6 +206,14 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(skillsService);
             container.RegisterDisposableOnSceneExit(skillsService);
             
+            var heroService = new HeroService(
+                container,
+                gameplayState,
+                gameplayEnterParams
+            );
+            container.RegisterInstance(heroService);
+            container.RegisterDisposableOnSceneExit(heroService);
+            
             var frameSkillService = new FrameSkillService(
                 gameplayState, 
                 placementService,
