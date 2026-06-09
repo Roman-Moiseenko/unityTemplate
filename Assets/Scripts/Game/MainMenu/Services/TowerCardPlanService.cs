@@ -19,6 +19,7 @@ using Game.State.Inventory.Deck;
 using Game.State.Inventory.TowerCards;
 using Game.State.Inventory.TowerPlans;
 using Game.State.Maps.Towers;
+using Game.State.Parameters;
 using MVVM.CMD;
 using Newtonsoft.Json;
 using ObservableCollections;
@@ -335,7 +336,7 @@ namespace Game.MainMenu.Services
                 EpicLevel = epicLevel,
                 ConfigId = configId,
                 Level = level,
-                Parameters = new Dictionary<TowerParameterType, TowerParameterData>(),
+                Parameters = new Dictionary<ParameterType, ParameterData>(),
                 Defence = towerSetting.Defence,
             };
 

@@ -7,12 +7,14 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Root;
 using Game.GamePlay.View.Towers;
 using Game.GameRoot.Commands;
+using Game.Settings.Gameplay.Entities;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
+using Game.State.Parameters;
 using Game.State.Research;
 using MVVM.CMD;
 using ObservableCollections;
@@ -24,7 +26,7 @@ namespace Game.GamePlay.Services
     public class TowersService : IDisposable
     {
         public readonly Dictionary<string,
-            Dictionary<TowerParameterType, TowerParameterData>> TowerParametersMap = new();
+            Dictionary<ParameterType, ParameterData>> TowerParametersMap = new();
         public IObservableCollection<TowerViewModel> AllTowers =>
             _allTowers; //Интерфейс менять нельзя, возвращаем через динамический массив
         
@@ -38,12 +40,12 @@ namespace Game.GamePlay.Services
         private readonly ObservableList<TowerViewModel> _allTowers = new();
         private readonly Dictionary<int, TowerViewModel> _towersMap = new();
         //Кешируем параметры башен на карте
-        private readonly Dictionary<string, List<TowerLevelSettings>> _towerSettingsMap = new();
+        private readonly Dictionary<string, List<LevelSettings>> _towerSettingsMap = new();
         private readonly GameplayStateProxy _gameplayState;
         private readonly DIContainer _container;
         private readonly GameplayBoosters _gameplayBoosters;
 
-        public readonly Dictionary<string, Dictionary<TowerParameterType, float>> TowerBoosters = new();
+        public readonly Dictionary<string, Dictionary<ParameterType, float>> TowerBoosters = new();
         private DisposableBag _disposables = new();
 
         /**
@@ -84,7 +86,7 @@ namespace Game.GamePlay.Services
 
             foreach (var towerCardData in _baseTowerCards)
             {
-                var param = new Dictionary<TowerParameterType, TowerParameterData>(); //Базовые параметры из колоды
+                var param = new Dictionary<ParameterType, ParameterData>(); //Базовые параметры из колоды
                 //Делаем копию параметров
                 foreach (var parameterData in towerCardData.Parameters)
                 {
@@ -305,8 +307,8 @@ namespace Game.GamePlay.Services
             var criticalBooster = 0f;
             var boosters = TowerBoosters[towerEntity.ConfigId];
 
-            if (boosters.TryGetValue(TowerParameterType.Damage, out var damage)) damageBooster = damage;
-            if (boosters.TryGetValue(TowerParameterType.Critical, out var critical)) criticalBooster = critical;
+            if (boosters.TryGetValue(ParameterType.Damage, out var damage)) damageBooster = damage;
+            if (boosters.TryGetValue(ParameterType.Critical, out var critical)) criticalBooster = critical;
             
             return towerEntity.ShotCalculation(typeDefence, damageBooster, criticalBooster);
         }
@@ -339,25 +341,25 @@ namespace Game.GamePlay.Services
             var speedBooster = _gameplayBoosters.TowerSpeed;
             var distanceBooster = _gameplayBoosters.TowerDistance;
             //бустеры общие от героя
-            if (_gameplayBoosters.HeroTowerBust.TryGetValue(TowerParameterType.Damage, out var damage))
+            if (_gameplayBoosters.HeroTowerBust.TryGetValue(ParameterType.Damage, out var damage))
                 damageBooster += damage;
-            if (_gameplayBoosters.HeroTowerBust.TryGetValue(TowerParameterType.Critical, out var critical))
+            if (_gameplayBoosters.HeroTowerBust.TryGetValue(ParameterType.Critical, out var critical))
                 criticalBooster += critical;
-            if (_gameplayBoosters.HeroTowerBust.TryGetValue(TowerParameterType.Speed, out var speed))
+            if (_gameplayBoosters.HeroTowerBust.TryGetValue(ParameterType.Speed, out var speed))
                 speedBooster += speed;
-            if (_gameplayBoosters.HeroTowerBust.TryGetValue(TowerParameterType.Distance, out var distance))
+            if (_gameplayBoosters.HeroTowerBust.TryGetValue(ParameterType.Distance, out var distance))
                 distanceBooster += distance;
             
             //бустеры от типа защиты и от наличия параметра в карточке
             foreach (var towerCard in _baseTowerCards)
             {
                 //Фильтруем по наличию параметра в карточке башни
-                var isDamage = towerCard.Parameters.TryGetValue(TowerParameterType.Damage, out _) ||
-                               towerCard.Parameters.TryGetValue(TowerParameterType.DamageArea, out _);
-                var isCritical = towerCard.Parameters.TryGetValue(TowerParameterType.Critical, out _);
-                var isSpeed = towerCard.Parameters.TryGetValue(TowerParameterType.Speed, out _);
-                var isDistance = towerCard.Parameters.TryGetValue(TowerParameterType.Distance, out _) || 
-                                 towerCard.Parameters.TryGetValue(TowerParameterType.MaxDistance, out _);
+                var isDamage = towerCard.Parameters.TryGetValue(ParameterType.Damage, out _) ||
+                               towerCard.Parameters.TryGetValue(ParameterType.DamageArea, out _);
+                var isCritical = towerCard.Parameters.TryGetValue(ParameterType.Critical, out _);
+                var isSpeed = towerCard.Parameters.TryGetValue(ParameterType.Speed, out _);
+                var isDistance = towerCard.Parameters.TryGetValue(ParameterType.Distance, out _) || 
+                                 towerCard.Parameters.TryGetValue(ParameterType.MaxDistance, out _);
                 
                 var damageBoosterTower = damageBooster;
                 var criticalBoosterTower = criticalBooster;
@@ -367,22 +369,22 @@ namespace Game.GamePlay.Services
                 //бустеры от типа Defence о героя
                 if (_gameplayBoosters.HeroTowerDefenceBust.TryGetValue(towerCard.Defence, out var parameterDatas))
                 {
-                    if (parameterDatas.TryGetValue(TowerParameterType.Damage, out var damageDefence))
+                    if (parameterDatas.TryGetValue(ParameterType.Damage, out var damageDefence))
                         damageBoosterTower += damageDefence;
-                    if (parameterDatas.TryGetValue(TowerParameterType.Critical, out var criticalDefence))
+                    if (parameterDatas.TryGetValue(ParameterType.Critical, out var criticalDefence))
                         criticalBoosterTower += criticalDefence;   
-                    if (parameterDatas.TryGetValue(TowerParameterType.Speed, out var speedDefence))
+                    if (parameterDatas.TryGetValue(ParameterType.Speed, out var speedDefence))
                         speedBoosterTower += speedDefence;
-                    if (parameterDatas.TryGetValue(TowerParameterType.Distance, out var distanceDefence))
+                    if (parameterDatas.TryGetValue(ParameterType.Distance, out var distanceDefence))
                         distanceBoosterTower += distanceDefence;
                 }
 
-                Dictionary<TowerParameterType, float> boosters = new(); 
+                Dictionary<ParameterType, float> boosters = new(); 
                 
-                if (isDamage && damageBoosterTower != 0) boosters.Add(TowerParameterType.Damage, damageBoosterTower);    
-                if (isCritical && criticalBoosterTower != 0) boosters.Add(TowerParameterType.Critical, criticalBoosterTower);
-                if (isSpeed && speedBoosterTower != 0) boosters.Add(TowerParameterType.Speed, speedBoosterTower);
-                if (isDistance && distanceBoosterTower != 0) boosters.Add(TowerParameterType.Distance, distanceBoosterTower);
+                if (isDamage && damageBoosterTower != 0) boosters.Add(ParameterType.Damage, damageBoosterTower);    
+                if (isCritical && criticalBoosterTower != 0) boosters.Add(ParameterType.Critical, criticalBoosterTower);
+                if (isSpeed && speedBoosterTower != 0) boosters.Add(ParameterType.Speed, speedBoosterTower);
+                if (isDistance && distanceBoosterTower != 0) boosters.Add(ParameterType.Distance, distanceBoosterTower);
                 TowerBoosters.Add(towerCard.ConfigId, boosters);
             }
         }

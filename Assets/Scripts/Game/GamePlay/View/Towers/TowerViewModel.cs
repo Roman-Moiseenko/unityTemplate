@@ -18,6 +18,7 @@ using Game.State.Inventory;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Towers;
+using Game.State.Parameters;
 using Game.State.Research;
 using Game.State.Root;
 using MVVM.CMD;
@@ -40,7 +41,7 @@ namespace Game.GamePlay.View.Towers
         protected GameplayBoosters GameplayBoosters;
         private readonly DIContainer _container;
         public bool IsPlacement => TowerEntity.IsPlacement;
-        public Dictionary<TowerParameterType, TowerParameterData> Parameters => TowerEntity.Parameters;
+        public Dictionary<ParameterType, ParameterData> Parameters => TowerEntity.Parameters;
         public readonly int UniqueId;
         public ReactiveProperty<int> Level { get; set; }
         public readonly string ConfigId;
@@ -96,7 +97,7 @@ namespace Game.GamePlay.View.Towers
             SpeedShot = TowerEntity.SpeedShot;
             //Есть бустер на скорострельность
             var busters = TowersService.TowerBoosters[ConfigId];
-            if (busters.TryGetValue(TowerParameterType.Speed, out float value))
+            if (busters.TryGetValue(ParameterType.Speed, out float value))
             {
                 SpeedShot -= SpeedShot * value / 100f;
             }
@@ -148,11 +149,11 @@ namespace Game.GamePlay.View.Towers
             if (TowerEntity.IsPlacement) return new Vector3(5, 5, 1); //Scale для модели
 
             var radius = Vector3.zero; //Zero для башен без области
-            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var min))
+            if (TowerEntity.Parameters.TryGetValue(ParameterType.MinDistance, out var min))
                 radius.y = min.Value;
-            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var max))
+            if (TowerEntity.Parameters.TryGetValue(ParameterType.MaxDistance, out var max))
                 radius.x = max.Value;
-            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Distance, out var parameter))
+            if (TowerEntity.Parameters.TryGetValue(ParameterType.Distance, out var parameter))
                 radius.x = parameter.Value;
 
             //TODO Если к башне применен параметр Высота (+дистанции) то вычисляем radius.z = %% от radius.x

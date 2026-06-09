@@ -2,6 +2,7 @@
 using Game.State.Common;
 using Game.State.Inventory.Common;
 using Game.State.Maps.Skills;
+using Game.State.Parameters;
 
 namespace Game.State.Inventory.SkillCards
 {
@@ -14,6 +15,6 @@ namespace Game.State.Inventory.SkillCards
         public TypeEpic EpicLevel;
         public TypeTarget TypeTarget;
         public int Level;
-        public Dictionary<SkillParameterType, SkillParameterData> Parameters;
+        public Dictionary<ParameterType, ParameterData> Parameters;
     }
 }

@@ -6,7 +6,6 @@ using Game.Settings.Gameplay.Entities.Skill;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.Settings.Gameplay.Initial;
 using Game.Settings.Gameplay.Maps;
-using Game.State.Parameter;
 
 namespace Game.Settings
 {

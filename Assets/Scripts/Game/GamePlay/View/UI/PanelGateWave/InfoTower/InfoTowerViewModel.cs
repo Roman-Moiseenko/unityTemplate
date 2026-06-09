@@ -14,6 +14,7 @@ using Game.State.Common;
 using Game.State.Inventory;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
+using Game.State.Parameters;
 using Game.State.Research;
 using ObservableCollections;
 using R3;
@@ -28,8 +29,8 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
         public readonly ReactiveProperty<Vector3> PositionInfoTower = new(Vector3.zero);
         private readonly GameplayCamera _cameraService;
         
-        public readonly Dictionary<TowerParameterType, Vector2> BaseParameters = new(); 
-        public readonly Dictionary<TowerParameterType, float> BoosterParameters = new();
+        public readonly Dictionary<ParameterType, Vector2> BaseParameters = new(); 
+        public readonly Dictionary<ParameterType, float> BoosterParameters = new();
         
         private Vector2Int _towerPrevious = Vector2Int.zero;
        // public TowerViewModel TowerViewModel;
@@ -42,7 +43,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
         private readonly GameSettings _gameSettings;
         private readonly List<TowerSettings> _settingsTowers;
         private readonly GameplayBoosters _gameplayBooster;
-        private readonly Dictionary<string,Dictionary<TowerParameterType,float>> _towerBoosters;
+        private readonly Dictionary<string,Dictionary<ParameterType, float>> _towerBoosters;
 
         private DisposableBag _disposables;
         public InfoTowerViewModel(DIContainer container)
@@ -114,12 +115,12 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
                 foreach (var (parameterType, value) in _towerBoosters[towerViewModel.ConfigId])
                 {
                     //TODO Для всех Damage сделать проверка
-                    if (parameterType == TowerParameterType.Damage)
+                    if (parameterType == ParameterType.Damage)
                     {
-                        if (towerViewModel.Parameters.TryGetValue(TowerParameterType.Damage, out _))
-                            BoosterParameters.Add(TowerParameterType.Damage, value);
-                        if (towerViewModel.Parameters.TryGetValue(TowerParameterType.DamageArea, out _))
-                            BoosterParameters.Add(TowerParameterType.DamageArea, value);
+                        if (towerViewModel.Parameters.TryGetValue(ParameterType.Damage, out _))
+                            BoosterParameters.Add(ParameterType.Damage, value);
+                        if (towerViewModel.Parameters.TryGetValue(ParameterType.DamageArea, out _))
+                            BoosterParameters.Add(ParameterType.DamageArea, value);
                     }
                     else
                     {
@@ -130,47 +131,47 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
                 
                 
                 //Урон, все 3
-                if (towerViewModel.Parameters.TryGetValue(TowerParameterType.Damage, out var damage))
+                if (towerViewModel.Parameters.TryGetValue(ParameterType.Damage, out var damage))
                 {
                     var paramVector = new Vector2(damage.Value, 0);
                     //проверка на бустер
-                    if (BoosterParameters.TryGetValue(TowerParameterType.Damage, out var damageBooster)) paramVector.y = damageBooster;
-                    BaseParameters.Add(TowerParameterType.Damage, paramVector);
+                    if (BoosterParameters.TryGetValue(ParameterType.Damage, out var damageBooster)) paramVector.y = damageBooster;
+                    BaseParameters.Add(ParameterType.Damage, paramVector);
                 }
-                if (towerViewModel.Parameters.TryGetValue(TowerParameterType.DamageArea, out var damageArea))
+                if (towerViewModel.Parameters.TryGetValue(ParameterType.DamageArea, out var damageArea))
                 {
                     var paramVector = new Vector2(damageArea.Value, 0);
                     //проверка на бустер
-                    if (BoosterParameters.TryGetValue(TowerParameterType.DamageArea, out var damageBooster)) paramVector.y = damageBooster;
-                    BaseParameters.Add(TowerParameterType.DamageArea, paramVector);
+                    if (BoosterParameters.TryGetValue(ParameterType.DamageArea, out var damageBooster)) paramVector.y = damageBooster;
+                    BaseParameters.Add(ParameterType.DamageArea, paramVector);
                 }
                 //TODO Добавить Высокий урон, низкий урон
                 
                 //Частота
-                if (towerViewModel.Parameters.TryGetValue(TowerParameterType.Speed, out var speed))
+                if (towerViewModel.Parameters.TryGetValue(ParameterType.Speed, out var speed))
                 {
                     var paramVector = new Vector2(speed.Value, 0);
                     //проверка на бустер
-                    if (BoosterParameters.TryGetValue(TowerParameterType.Speed, out var speedBooster)) paramVector.y = speedBooster;
-                    BaseParameters.Add(TowerParameterType.Speed, paramVector);
+                    if (BoosterParameters.TryGetValue(ParameterType.Speed, out var speedBooster)) paramVector.y = speedBooster;
+                    BaseParameters.Add(ParameterType.Speed, paramVector);
                 }
                 
                 //Крит, Замедление, Оглушение, Здоровье, Перезарядка  если кол-во иконок меньше 3х
                 if (BaseParameters.Count < 3 
-                    && towerViewModel.Parameters.TryGetValue(TowerParameterType.Critical, out var critical))
+                    && towerViewModel.Parameters.TryGetValue(ParameterType.Critical, out var critical))
                 {
                     var paramVector = new Vector2(critical.Value, 0);
                     //проверка на бустер
-                    if (BoosterParameters.TryGetValue(TowerParameterType.Critical, out var criticalBooster)) paramVector.y = criticalBooster;
-                    BaseParameters.Add(TowerParameterType.Critical, paramVector);
+                    if (BoosterParameters.TryGetValue(ParameterType.Critical, out var criticalBooster)) paramVector.y = criticalBooster;
+                    BaseParameters.Add(ParameterType.Critical, paramVector);
                 }
                 
                 if (BaseParameters.Count < 3 
-                    && towerViewModel.Parameters.TryGetValue(TowerParameterType.SlowingDown, out var slow))
-                    BaseParameters.Add(TowerParameterType.SlowingDown, new Vector2(slow.Value, 0));
+                    && towerViewModel.Parameters.TryGetValue(ParameterType.SlowingDown, out var slow))
+                    BaseParameters.Add(ParameterType.SlowingDown, new Vector2(slow.Value, 0));
                 if (BaseParameters.Count < 3 
-                    && towerViewModel.Parameters.TryGetValue(TowerParameterType.Health, out var health))
-                    BaseParameters.Add(TowerParameterType.Health, new Vector2(health.Value, 0));
+                    && towerViewModel.Parameters.TryGetValue(ParameterType.Health, out var health))
+                    BaseParameters.Add(ParameterType.Health, new Vector2(health.Value, 0));
                 
                 //TODO Добавить Оглушение, Перезарядка
 

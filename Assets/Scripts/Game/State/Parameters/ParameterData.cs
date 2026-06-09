@@ -1,25 +1,24 @@
-using System.Collections.Generic;
 using Game.Settings.Gameplay.Entities;
 
-namespace Game.State.Parameter
+namespace Game.State.Parameters
 {
 
     public class ParameterData
     {
-        public ParameterType TypeId;   // "Damage", "Health", "Distance"
+        public ParameterType ParameterType;   // "Damage", "Health", "Distance"
         public float Value;
 
         public ParameterData() { }
 
-        public ParameterData(ParameterType typeId, float value)
+        public ParameterData(ParameterType parameterType, float value)
         {
-            TypeId = typeId;
+            ParameterType = parameterType;
             Value = value;
         }
 
         public ParameterData(ParameterSettings parameterSettings)
         {
-            TypeId = parameterSettings.ParameterType;
+            ParameterType = parameterSettings.ParameterType;
             Value = parameterSettings.Value;
         }
 
@@ -28,7 +27,7 @@ namespace Game.State.Parameter
             return new ParameterData
             {
                 Value = this.Value,
-                TypeId = this.TypeId,
+                ParameterType = this.ParameterType,
             };
         }
         

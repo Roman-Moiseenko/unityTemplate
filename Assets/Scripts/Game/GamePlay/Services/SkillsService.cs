@@ -6,11 +6,13 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.SkillStates;
 using Game.GamePlay.Root;
 using Game.GamePlay.View.Skills;
+using Game.Settings.Gameplay.Entities;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Inventory.SkillCards;
 using Game.State.Maps.Skills;
+using Game.State.Parameters;
 using Game.State.Research;
 using MVVM.CMD;
 using Newtonsoft.Json;
@@ -23,7 +25,7 @@ namespace Game.GamePlay.Services
     public class SkillsService : IDisposable
     {
         public readonly Dictionary<string,
-            Dictionary<SkillParameterType, SkillParameterData>> SkillParametersMap = new();
+            Dictionary<ParameterType, ParameterData>> SkillParametersMap = new();
 
         public IObservableCollection<SkillViewModel> AllSkills =>
             _allSkills; //Интерфейс менять нельзя, возвращаем через динамический массив
@@ -41,12 +43,12 @@ namespace Game.GamePlay.Services
         public SkillViewModel SkillOne;
         public SkillViewModel SkillTwo;
 
-        private readonly Dictionary<string, List<SkillLevelSettings>> _skillSettingsMap = new();
+        private readonly Dictionary<string, List<LevelSettings>> _skillSettingsMap = new();
         private readonly GameplayStateProxy _gameplayState;
         private readonly DIContainer _container;
         private readonly GameplayBoosters _gameplayBoosters;
 
-        public Dictionary<string, Dictionary<SkillParameterType, float>> SkillBoosters = new();
+        public Dictionary<string, Dictionary<ParameterType, float>> SkillBoosters = new();
         private readonly FsmSkill _fsmSkill;
         private DisposableBag _disposables = new();
 
@@ -79,7 +81,7 @@ namespace Game.GamePlay.Services
 
             foreach (var skillCardData in _baseSkillCards)
             {
-                var param = new Dictionary<SkillParameterType, SkillParameterData>();
+                var param = new Dictionary<ParameterType, ParameterData>();
                 foreach (var parameterData in skillCardData.Parameters)
                 {
                     param.Add(parameterData.Key, parameterData.Value.GetCopy());
@@ -202,7 +204,7 @@ namespace Game.GamePlay.Services
             return skills;
         }
 
-        public Dictionary<SkillParameterType, SkillParameterData> GetParameters(string configId)
+        public Dictionary<ParameterType, ParameterData> GetParameters(string configId)
         {
             var skillViewModel = _skillsMap.FirstOrDefault(v => v.ConfigId == configId);
             if (skillViewModel == null) return null;
@@ -263,7 +265,7 @@ namespace Game.GamePlay.Services
             var damageBooster = _gameplayBoosters.SkillDamage;
 
             //бустеры общие от героя
-            if (_gameplayBoosters.HeroSkillBust.TryGetValue(SkillParameterType.Damage, out var damage))
+            if (_gameplayBoosters.HeroSkillBust.TryGetValue(ParameterType.Damage, out var damage))
                 damageBooster += damage;
 
 
@@ -271,8 +273,8 @@ namespace Game.GamePlay.Services
             foreach (var skillCard in _baseSkillCards)
             {
                 //Фильтруем по наличию параметра в карточке навыка
-                var isDamage = skillCard.Parameters.TryGetValue(SkillParameterType.Damage, out _) ||
-                               skillCard.Parameters.TryGetValue(SkillParameterType.DPS, out _);
+                var isDamage = skillCard.Parameters.TryGetValue(ParameterType.Damage, out _) ||
+                               skillCard.Parameters.TryGetValue(ParameterType.DPS, out _);
 
                 var damageBoosterSkill = damageBooster;
 
@@ -280,16 +282,16 @@ namespace Game.GamePlay.Services
                 //бустеры от типа Defence о героя
                 if (_gameplayBoosters.HeroSkillDefenceBust.TryGetValue(skillCard.Defence, out var parameterDatas))
                 {
-                    if (parameterDatas.TryGetValue(SkillParameterType.Damage, out var damageDefence))
+                    if (parameterDatas.TryGetValue(ParameterType.Damage, out var damageDefence))
                         damageBoosterSkill += damageDefence;
                 }
 
-                Dictionary<SkillParameterType, float> boosters = new();
+                Dictionary<ParameterType, float> boosters = new();
 
                 if (isDamage && damageBoosterSkill != 0)
                 {
-                    boosters.Add(SkillParameterType.Damage, damageBoosterSkill);
-                    boosters.Add(SkillParameterType.DPS, damageBoosterSkill);
+                    boosters.Add(ParameterType.Damage, damageBoosterSkill);
+                    boosters.Add(ParameterType.DPS, damageBoosterSkill);
                 }
 
                 SkillBoosters.Add(skillCard.ConfigId, boosters);

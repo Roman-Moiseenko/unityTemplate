@@ -11,6 +11,7 @@ using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
+using Game.State.Parameters;
 using Game.State.Research;
 using Game.State.Root;
 using Newtonsoft.Json;
@@ -66,9 +67,9 @@ namespace Game.MainMenu.Services
                 //TowerDistance = 10,
             };
 
-            Dictionary<TowerParameterType, float> boost = new();
-            boost.Add(TowerParameterType.Damage, 2);
-            boost.Add(TowerParameterType.Critical, 2);
+            Dictionary<ParameterType, float> boost = new();
+            boost.Add(ParameterType.Damage, 2);
+            boost.Add(ParameterType.Critical, 2);
             gameplayEnterParams.GameplayBoosters.HeroTowerDefenceBust.Add(TypeDefence.Advanced, boost);
             
 

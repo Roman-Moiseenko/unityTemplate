@@ -5,14 +5,13 @@ using Game.Common;
 using Game.GameRoot.ImageManager;
 using Game.MainMenu.View.ScreenInventory.Parameters;
 using Game.State.Common;
-using Game.State.Inventory;
 using Game.State.Inventory.TowerCards;
-using Game.State.Maps.Towers;
 using MVVM.UI;
 using R3;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Game.State.Parameters;
 
 namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
 {
@@ -96,13 +95,13 @@ namespace Game.MainMenu.View.ScreenInventory.PopupTowerCard
             //textCost.text = towerCardViewModel.TowerCard.GetCostCurrencyLevelUpTowerCard().ToString();
 
             var index = 0;
-            foreach (var parameter in towerCardViewModel.TowerCard.Parameters)
+            foreach (var (typeParam, param) in towerCardViewModel.TowerCard.Parameters)
             {
                 _parameterBinders[index].Bind(
-                    imageManager.GetTowerParameter(parameter.Key),
-                    parameter.Key.GetString(),
-                    parameter.Key.GetMeasure(),
-                    parameter.Value.Value
+                    imageManager.GetParameter(typeParam),
+                    typeParam.GetString(),
+                    typeParam.GetMeasure(),
+                    param.Value
                     );
                 index++;
             }

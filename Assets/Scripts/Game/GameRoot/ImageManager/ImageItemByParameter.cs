@@ -1,7 +1,7 @@
 ﻿using System;
 using Game.State.Maps.Skills;
 using Game.State.Maps.Towers;
-using Game.State.Parameter;
+using Game.State.Parameters;
 using UnityEngine;
 
 namespace Game.GameRoot.ImageManager

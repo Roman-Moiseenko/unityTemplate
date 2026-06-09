@@ -4,6 +4,7 @@ using System.Linq;
 using Game.Settings;
 using Game.State.Inventory.SkillCards;
 using Game.State.Maps.Skills;
+using Game.State.Parameters;
 using Game.State.Root;
 using MVVM.CMD;
 
@@ -33,14 +34,14 @@ namespace Game.MainMenu.Commands.SkillCommands
                 EpicLevel = command.EpicLevel,
                 Level = command.Level,
                 Amount = 1, 
-                Parameters = new Dictionary<SkillParameterType, SkillParameterData>(),
+                Parameters = new Dictionary<ParameterType, ParameterData>(),
                 Defence = skillConfig.Defence,
                 TypeTarget = skillConfig.TypeTarget,
             };
                
             foreach (var baseParameter in skillConfig.BaseParameters)
             {
-                initialSkillCard.Parameters.Add(baseParameter.ParameterType, new SkillParameterData(baseParameter));
+                initialSkillCard.Parameters.Add(baseParameter.ParameterType, new ParameterData(baseParameter));
             }
             
             _gameState.Inventory.AddItem(initialSkillCard);

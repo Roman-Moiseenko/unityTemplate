@@ -6,6 +6,7 @@ using Game.State.Gameplay;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Shots;
 using Game.State.Maps.Skills;
+using Game.State.Parameters;
 using R3;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ namespace Game.GamePlay.View.Skills
         public ReactiveProperty<Vector2Int> EffectDirection = new(Vector2Int.zero);
         //  public FsmSkill FsmSkill;
 
-        public Dictionary<SkillParameterType, SkillParameterData> Parameters => _skillEntity.Parameters;
+        public Dictionary<ParameterType, ParameterData> Parameters => _skillEntity.Parameters;
         
         public readonly ReactiveProperty<bool> IsCooldown = new(false);
         public readonly float Cooldown = 0f;
@@ -47,7 +48,7 @@ namespace Game.GamePlay.View.Skills
             Level =  skillEntity.Level;
             //Время отката
 
-            if (skillEntity.Parameters.TryGetValue(SkillParameterType.Cooldown, out var parameterData)) 
+            if (skillEntity.Parameters.TryGetValue(ParameterType.Cooldown, out var parameterData)) 
                 Cooldown = parameterData.Value;
             
         }

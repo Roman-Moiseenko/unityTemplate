@@ -1,5 +1,5 @@
 using System;
-using Game.State.Parameter;
+using Game.State.Parameters;
 
 namespace Game.Settings.Gameplay.Entities
 {

@@ -1,9 +1,7 @@
 using System;
-using System.Collections.Generic;
-using Game.State.Common;
 using R3;
 
-namespace Game.State.Parameter
+namespace Game.State.Parameters
 {
     /// <summary>
     /// Реактивная обёртка над ParameterData.
@@ -12,14 +10,14 @@ namespace Game.State.Parameter
     public class Parameter : IDisposable
     {
         public ParameterData Origin;
-        public ParameterType TypeId;
+        public ParameterType ParameterType;
         public ReactiveProperty<float> Value;
         private DisposableBag _disposables;
 
         public Parameter(ParameterData data)
         {
             Origin = data;
-            TypeId = data.TypeId;
+            ParameterType = data.ParameterType;
             Value = new ReactiveProperty<float>(data.Value);
             Value.Subscribe(newValue => data.Value = newValue).AddTo(ref _disposables);
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.GamePlay.Services;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.State.Maps.Skills;
+using Game.State.Parameters;
 using R3;
 using UnityEngine;
 
@@ -21,13 +22,13 @@ namespace Game.GamePlay.View.Frames.SkillFrames
 
         public ReadOnlyReactiveProperty<bool> IsPlacement;
         public ReadOnlyReactiveProperty<Vector2Int> Direction;
-        public Dictionary<SkillParameterType, SkillParameterData> Parameters;
+        public Dictionary<ParameterType, ParameterData> Parameters;
         
         public FrameSkillViewModel(
             string configId, 
             SkillSettings skillSettings, 
             FrameSkillService service, 
-            Dictionary<SkillParameterType, SkillParameterData> parameters)
+            Dictionary<ParameterType, ParameterData> parameters)
         {
             ConfigId = configId;
             Parameters = parameters;
@@ -35,18 +36,14 @@ namespace Game.GamePlay.View.Frames.SkillFrames
             IsEnable = new ReactiveProperty<bool>(false);
             _skillSettings = skillSettings;
             OnRoad = skillSettings.OnRoad;
-            var cells = skillSettings.BaseParameters.Find(p => p.ParameterType == SkillParameterType.Cells);
-            if (cells != null)
-            {
-                MultiCells = (int)(cells.Value - 1) / 2;
-            }
+            var cells = skillSettings.BaseParameters
+                .Find(p => p.ParameterType == ParameterType.Cells);
+            
+            if (cells != null) MultiCells = (int)(cells.Value - 1) / 2;
+            
             
             IsPlacement = service.IsPlacement;
-
             Direction = service.Direction;
-
-
-
         }
         
         public void MoveFrame(Vector2 position)

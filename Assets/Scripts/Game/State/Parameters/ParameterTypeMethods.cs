@@ -1,6 +1,4 @@
-﻿using Game.State.Maps.Towers;
-
-namespace Game.State.Parameter
+﻿namespace Game.State.Parameters
 {
     /**
      * Расширяем класс перечисления Типы параметров для башен

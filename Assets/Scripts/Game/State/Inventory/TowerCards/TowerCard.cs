@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Linq;
-using Cysharp.Threading.Tasks;
-using Game.Settings.Gameplay.Entities.Tower;
+using Game.Settings.Gameplay.Entities;
 using Game.State.Common;
 using Game.State.Inventory.Common;
-using Game.State.Maps.Mobs;
-using Game.State.Maps.Towers;
-using Newtonsoft.Json;
+using Game.State.Parameters;
 using ObservableCollections;
 using R3;
-using UnityEngine;
+
 
 namespace Game.State.Inventory.TowerCards
 {
@@ -17,7 +14,7 @@ namespace Game.State.Inventory.TowerCards
     {
         public ReactiveProperty<TypeEpic> EpicLevel;
         public readonly ReactiveProperty<int> Level;
-        public ObservableDictionary<TowerParameterType, TowerParameter> Parameters;
+        public ObservableDictionary<ParameterType, Parameter> Parameters;
      //   public TypeDefence Defence;
        // public ObservableDictionary<TowerParameterType, TowerParameter> BaseParameters;
         
@@ -30,11 +27,11 @@ namespace Game.State.Inventory.TowerCards
             Level = new ReactiveProperty<int>(data.Level);
             Level.Subscribe(newAmount => data.Level = newAmount).AddTo(ref _disposables);
             
-            Parameters = new ObservableDictionary<TowerParameterType, TowerParameter>();
+            Parameters = new ObservableDictionary<ParameterType, Parameter>();
             //Debug.Log(JsonConvert.SerializeObject(data, Formatting.Indented));
             foreach (var parameter in data.Parameters)
             {
-                Parameters.Add(parameter.Key, new TowerParameter(parameter.Value));
+                Parameters.Add(parameter.Key, new Parameter(parameter.Value));
             }
 
             Parameters.ObserveAdd().Subscribe(e =>
@@ -69,11 +66,11 @@ namespace Game.State.Inventory.TowerCards
             //     TowerType = data.TowerType;
         }
 
-        public void AddParameter(TowerParameterSettings parameterSettings)
+        public void AddParameter(ParameterSettings parameterSettings)
         {
             Parameters.Add(
                 parameterSettings.ParameterType,
-                new TowerParameter(new TowerParameterData(parameterSettings))
+                new Parameter(new ParameterData(parameterSettings))
                 );
         }
 

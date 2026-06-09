@@ -9,7 +9,6 @@ using Game.Settings.Gameplay.Enemies;
 using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Towers;
-using Game.State.Parameter;
 using Game.State.Root;
 using MVVM.Storage;
 using Newtonsoft.Json;

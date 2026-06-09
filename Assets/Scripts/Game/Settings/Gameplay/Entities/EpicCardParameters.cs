@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Game.State.Parameters;
 
-using Game.State.Maps.Skills;
-
-namespace Game.Settings.Gameplay.Entities.Skill
+namespace Game.Settings.Gameplay.Entities
 {
     [Serializable]
     public class EpicCardParameters
     {
-        public SkillParameterType ParameterType;
+        public ParameterType ParameterType;
         public List<EpicParameters> EpicParameters;
     }
 }

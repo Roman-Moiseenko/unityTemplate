@@ -12,6 +12,7 @@ using Game.State.Common;
 using Game.State.Maps.Roads;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
+using Game.State.Parameters;
 using Game.State.Root;
 using ObservableCollections;
 using R3;
@@ -145,13 +146,13 @@ namespace Game.GamePlay.View.Towers
 
         private void UpdateParameterWarrior()
         {
-            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
+            if (TowerEntity.Parameters.TryGetValue(ParameterType.Speed, out var towerSpeed))
                 Speed = towerSpeed.Value;
-            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Damage, out var towerDamage))
+            if (TowerEntity.Parameters.TryGetValue(ParameterType.Damage, out var towerDamage))
                 Damage = towerDamage.Value;
-            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Health, out var towerHealth))
+            if (TowerEntity.Parameters.TryGetValue(ParameterType.Health, out var towerHealth))
                 Health = towerHealth.Value;
-            if (TowerEntity.Parameters.TryGetValue(TowerParameterType.Range, out var towerRange))
+            if (TowerEntity.Parameters.TryGetValue(ParameterType.Range, out var towerRange))
                 Range = towerRange.Value;
         }
 

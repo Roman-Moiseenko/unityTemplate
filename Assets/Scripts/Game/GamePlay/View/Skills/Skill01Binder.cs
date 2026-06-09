@@ -4,6 +4,7 @@ using Game.GamePlay.View.Mobs;
 using Game.State.Maps.Skills;
 using UnityEngine;
 using UnityEngine.VFX;
+using Game.State.Parameters;
 
 namespace Game.GamePlay.View.Skills
 {
@@ -22,11 +23,11 @@ namespace Game.GamePlay.View.Skills
         {
             _position = new Vector3(ViewModel.EffectPosition.Value.x, 0, ViewModel.EffectPosition.Value.y);
 
-            if (ViewModel.Parameters.TryGetValue(SkillParameterType.DPS, out var paramDPS))
+            if (ViewModel.Parameters.TryGetValue(ParameterType.DPS, out var paramDPS))
                 _dps = paramDPS.Value;
-            if (ViewModel.Parameters.TryGetValue(SkillParameterType.Duration, out var paramDuration))
+            if (ViewModel.Parameters.TryGetValue(ParameterType.Duration, out var paramDuration))
                 _duration = paramDuration.Value;
-            if (ViewModel.Parameters.TryGetValue(SkillParameterType.Radius, out var paramRange))
+            if (ViewModel.Parameters.TryGetValue(ParameterType.Radius, out var paramRange))
                 _range = paramRange.Value;
 
             _radius = _range / 2f;

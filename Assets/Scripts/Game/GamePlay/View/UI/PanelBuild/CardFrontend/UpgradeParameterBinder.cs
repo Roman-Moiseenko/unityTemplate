@@ -1,5 +1,6 @@
 using Game.State.Maps.Skills;
 using Game.State.Maps.Towers;
+using Game.State.Parameters;
 using TMPro;
 using UnityEngine;
 
@@ -10,19 +11,9 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardFrontend
         [SerializeField] private TMP_Text textValue;
         [SerializeField] private TMP_Text textName;
 
-        public void Bind(float value, TowerParameterType parameter)
+        public void Bind(float value, ParameterType parameter)
         {
             textName.text = parameter.GetString();
-            _Bind(value);
-        }
-        public void Bind(float value, SkillParameterType parameter)
-        {
-            textName.text = parameter.GetString();
-            _Bind(value);
-        }
-
-        private void _Bind(float value)
-        {
             textValue.text = $"{value}%";
             transform.gameObject.SetActive(true);
         }

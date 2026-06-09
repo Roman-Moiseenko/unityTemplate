@@ -1,5 +1,6 @@
 ﻿using System;
 using Game.State.Maps.Towers;
+using Game.State.Parameters;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,7 +15,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoTower
         public string colorBoss = "FF5353";
         public string colorBooster = "#487F1E";
         
-        public void Bind(Sprite sprite, TowerParameterType parameter, Vector2 valueParam)
+        public void Bind(Sprite sprite, ParameterType parameter, Vector2 valueParam)
         {
             image.GetComponentInChildren<Image>().sprite = sprite;
             nameField.text = parameter.GetString();

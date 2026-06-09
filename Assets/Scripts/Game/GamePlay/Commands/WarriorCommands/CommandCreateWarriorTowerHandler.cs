@@ -5,6 +5,7 @@ using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Maps.Towers;
 using Game.State.Maps.Warriors;
+using Game.State.Parameters;
 using Game.State.Root;
 using MVVM.CMD;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace Game.GamePlay.Commands.WarriorCommands
     public class CommandCreateWarriorTowerHandler : ICommandHandler<CommandCreateWarriorTower>
     {
         private readonly GameplayStateProxy _gameplayState;
-        private readonly Dictionary<string,Dictionary<TowerParameterType,TowerParameterData>> _towerParametersMap;
+        private readonly Dictionary<string,Dictionary<ParameterType, ParameterData>> _towerParametersMap;
 
         public CommandCreateWarriorTowerHandler(GameplayStateProxy gameplayState, TowersService towersService)
         {
@@ -25,10 +26,10 @@ namespace Game.GamePlay.Commands.WarriorCommands
         {
             var parameters = _towerParametersMap[command.ConfigId];
 
-            parameters.TryGetValue(TowerParameterType.Damage, out var damage);
-            parameters.TryGetValue(TowerParameterType.Speed, out var speed);
-            parameters.TryGetValue(TowerParameterType.Health, out var health);
-            parameters.TryGetValue(TowerParameterType.Range, out var range);
+            parameters.TryGetValue(ParameterType.Damage, out var damage);
+            parameters.TryGetValue(ParameterType.Speed, out var speed);
+            parameters.TryGetValue(ParameterType.Health, out var health);
+            parameters.TryGetValue(ParameterType.Range, out var range);
             
             for (var i = 1; i <= 3; i++)
             {

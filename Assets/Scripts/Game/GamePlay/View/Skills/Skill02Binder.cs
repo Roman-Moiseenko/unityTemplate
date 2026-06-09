@@ -1,6 +1,7 @@
 using System;
 using Game.State.Common;
 using Game.State.Maps.Skills;
+using Game.State.Parameters;
 using R3;
 using UnityEngine;
 
@@ -33,7 +34,7 @@ namespace Game.GamePlay.View.Skills
             var vector = new Vector3(ViewModel.EffectDirection.Value.x, 0, ViewModel.EffectDirection.Value.y);
             transform.rotation = Quaternion.LookRotation(vector);
 
-            if (ViewModel.Parameters.TryGetValue(SkillParameterType.Health, out var paramHealth))
+            if (ViewModel.Parameters.TryGetValue(ParameterType.Health, out var paramHealth))
             {
                 _maxHealth = paramHealth.Value;
                 _health = _maxHealth;
@@ -43,7 +44,7 @@ namespace Game.GamePlay.View.Skills
                 throw new Exception("Отсутствует параметр здоровье");
             }
 
-            if (ViewModel.Parameters.TryGetValue(SkillParameterType.Duration, out var paramDuration))
+            if (ViewModel.Parameters.TryGetValue(ParameterType.Duration, out var paramDuration))
             {
                 _maxDuration = paramDuration.Value;
                 _duration = _maxDuration;

@@ -1,12 +1,12 @@
 ﻿using System;
-using Game.State.Maps.Towers;
+using Game.State.Parameters;
 
-namespace Game.Settings.Gameplay.Entities.Tower
+namespace Game.Settings.Gameplay.Entities
 {
     [Serializable]
     public class LevelCardParameters
     {
-        public TowerParameterType ParameterType;
+        public ParameterType ParameterType;
         public float BaseValue;
         public float PowEpic;
     }

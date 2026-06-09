@@ -6,6 +6,7 @@ using Game.GamePlay.Services;
 using Game.GamePlay.View.Mobs;
 using Game.State.Common;
 using Game.State.Maps.Towers;
+using Game.State.Parameters;
 using Game.State.Root;
 using ObservableCollections;
 using R3;
@@ -30,20 +31,20 @@ namespace Game.GamePlay.View.Towers
 
         public TowerAttackViewModel(TowerEntity towerEntity, DIContainer container) : base(towerEntity, container)
         {
-            if (towerEntity.Parameters.TryGetValue(TowerParameterType.Speed, out var towerSpeed))
+            if (towerEntity.Parameters.TryGetValue(ParameterType.Speed, out var towerSpeed))
                 Speed = towerSpeed.Value;
 
             if (Speed != 0f)
             {
                 //TODO Бустер на скорость
             }
-            if (towerEntity.Parameters.TryGetValue(TowerParameterType.MinDistance, out var towerMinDistance))
+            if (towerEntity.Parameters.TryGetValue(ParameterType.MinDistance, out var towerMinDistance))
                 MinDistance = towerMinDistance.Value;
             Level.Subscribe(level =>
             {
-                if (towerEntity.Parameters.TryGetValue(TowerParameterType.Distance, out var towerDistance))
+                if (towerEntity.Parameters.TryGetValue(ParameterType.Distance, out var towerDistance))
                     MaxDistance.Value = towerDistance.Value;
-                if (towerEntity.Parameters.TryGetValue(TowerParameterType.MaxDistance, out var towerMaxDistance))
+                if (towerEntity.Parameters.TryGetValue(ParameterType.MaxDistance, out var towerMaxDistance))
                     MaxDistance.Value = towerMaxDistance.Value;
             }).AddTo(ref _disposables);
             

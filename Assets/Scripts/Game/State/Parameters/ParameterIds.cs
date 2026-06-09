@@ -1,4 +1,4 @@
-namespace Game.State.Parameter
+namespace Game.State.Parameters
 {
     /// <summary>
     /// Строковые константы typeId для всех используемых параметров.

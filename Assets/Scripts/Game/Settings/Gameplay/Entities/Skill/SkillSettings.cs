@@ -13,12 +13,12 @@ namespace Game.Settings.Gameplay.Entities.Skill
         public bool OnRoad; // Размещается на дороге
         
         
-        public List<SkillParameterSettings> BaseParameters { get; set; }
+        public List<ParameterSettings> BaseParameters { get; set; }
 
         public TypeDefence Defence { get; set; }
 
         //Характеристики, которые зависят от уровня (звездочек) в гейплее - не влияют на карточку башни
-        public List<SkillLevelSettings> GameplayLevels = new();
+        public List<LevelSettings> GameplayLevels = new();
 
         //Базовые значения всех доступных характеристик для карты башни
         // [field: SerializeField] public List<TowerEpicLevelCard> EpicLevels { get; private set; } = new();

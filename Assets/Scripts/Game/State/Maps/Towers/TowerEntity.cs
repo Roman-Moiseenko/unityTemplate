@@ -5,6 +5,7 @@ using Game.State.Common;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Shots;
+using Game.State.Parameters;
 using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
@@ -32,7 +33,7 @@ namespace Game.State.Maps.Towers
         
         public TypeDefence Defence => Origin.Defence;
         
-        public Dictionary<TowerParameterType, TowerParameterData> Parameters = new();
+        public Dictionary<ParameterType, ParameterData> Parameters = new();
         private DisposableBag _disposables = new();
 
         public TowerEntity(TowerEntityData towerEntityData)
@@ -88,11 +89,11 @@ namespace Game.State.Maps.Towers
         {
             var d = Vector2.Distance(mobPosition, Position.CurrentValue) - 0.5f; //Отнимаем радиус башни
             //У башни мин. и макс. дистанция
-            if (Parameters.TryGetValue(TowerParameterType.MinDistance, out var distanceMin) &&
-                Parameters.TryGetValue(TowerParameterType.MaxDistance, out var distanceMax))
+            if (Parameters.TryGetValue(ParameterType.MinDistance, out var distanceMin) &&
+                Parameters.TryGetValue(ParameterType.MaxDistance, out var distanceMax))
                 return distanceMin.Value <= d && d <= distanceMax.Value;
             // у башни стандартная дистанция 
-            if (Parameters.TryGetValue(TowerParameterType.Distance, out var distance))
+            if (Parameters.TryGetValue(ParameterType.Distance, out var distance))
             {
                 return d <= distance.Value;
             }
@@ -103,17 +104,17 @@ namespace Game.State.Maps.Towers
         public ShotData ShotCalculation(TypeDefence typeDefence, float damageBooster, float criticalBooster)
         {
             var damage = 0f;
-            if (Parameters.TryGetValue(TowerParameterType.Damage, out var parameter)) damage = parameter.Value;
+            if (Parameters.TryGetValue(ParameterType.Damage, out var parameter)) damage = parameter.Value;
             
             MobDebuff debuff = null;
-            if (Parameters.TryGetValue(TowerParameterType.DamageArea, out parameter))
+            if (Parameters.TryGetValue(ParameterType.DamageArea, out parameter))
                 damage = parameter.Value;
 
             //Добавляем дебафф к выстрелу
-            if (Parameters.TryGetValue(TowerParameterType.SlowingDown, out var slowParameter))
+            if (Parameters.TryGetValue(ParameterType.SlowingDown, out var slowParameter))
             {
                 var speedTower = 1f;
-                if (Parameters.TryGetValue(TowerParameterType.Speed, out var speedParameter))
+                if (Parameters.TryGetValue(ParameterType.Speed, out var speedParameter))
                     speedTower = speedParameter.Value; //Скорость выстрела == время действия дебафа
                 
                 debuff = new MobDebuff
@@ -127,7 +128,7 @@ namespace Game.State.Maps.Towers
             damage += damage * damageBooster / 100; //Добавляем бустер урона
             
             var damageType = IsSingleTarget ? DamageType.Normal : DamageType.MassDamage; 
-            if (Parameters.TryGetValue(TowerParameterType.Critical, out var criticalParameter))
+            if (Parameters.TryGetValue(ParameterType.Critical, out var criticalParameter))
             {
                 var shans = Mathf.FloorToInt(100 / (criticalParameter.Value + criticalBooster)); //Добавляем бустер крита
                 if (Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % shans == 0)

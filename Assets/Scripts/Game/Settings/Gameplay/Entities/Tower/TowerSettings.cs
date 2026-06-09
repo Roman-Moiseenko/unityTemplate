@@ -25,10 +25,10 @@ namespace Game.Settings.Gameplay.Entities.Tower
         public int AvailableWave;
         
         //Характеристики, которые зависят от уровня (звездочек) в гейплее - не влияют на карточку башни
-        public List<TowerLevelSettings> GameplayLevels = new();
+        public List<LevelSettings> GameplayLevels = new();
 
         //Базовые значения всех доступных характеристик для карты башни
-        public List<TowerParameterSettings> BaseParameters = new();
+        public List<ParameterSettings> BaseParameters = new();
         // [field: SerializeField] public List<TowerEpicLevelCard> EpicLevels { get; private set; } = new();
         
         //Характеристики, которые растут от уровня карты башни, скорость роста зависит от Эпичности

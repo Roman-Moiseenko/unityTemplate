@@ -3,6 +3,7 @@ using Game.State.Common;
 using Game.State.Maps.Mobs;
 using Game.State.Maps.Skills;
 using Game.State.Maps.Towers;
+using Game.State.Parameters;
 
 namespace Game.State.Research
 {
@@ -25,10 +26,10 @@ namespace Game.State.Research
         //TODO Доработать
         
         //Бустеры на башню от героя, по типам башни 
-        public Dictionary<TypeDefence, Dictionary<TowerParameterType, float>> HeroTowerDefenceBust = new();
-        public Dictionary<TypeDefence, Dictionary<SkillParameterType, float>> HeroSkillDefenceBust = new();
+        public Dictionary<TypeDefence, Dictionary<ParameterType, float>> HeroTowerDefenceBust = new();
+        public Dictionary<TypeDefence, Dictionary<ParameterType, float>> HeroSkillDefenceBust = new();
         //Бустеры на башню от героя
-        public readonly Dictionary<TowerParameterType, float> HeroTowerBust = new();
-        public readonly Dictionary<SkillParameterType, float> HeroSkillBust = new();
+        public readonly Dictionary<ParameterType, float> HeroTowerBust = new();
+        public readonly Dictionary<ParameterType, float> HeroSkillBust = new();
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using Game.State.Common;
 using Game.State.Inventory.Common;
 using Game.State.Maps.Skills;
+using Game.State.Parameters;
 using ObservableCollections;
 using R3;
 
@@ -12,7 +13,7 @@ namespace Game.State.Inventory.SkillCards
     {
         public ReactiveProperty<TypeEpic> EpicLevel;
         public readonly ReactiveProperty<int> Level;
-        public ObservableDictionary<SkillParameterType, SkillParameter> Parameters;
+        public ObservableDictionary<ParameterType, Parameter> Parameters;
 
         public SkillCard(SkillCardData data) : base(data)
         {
@@ -27,11 +28,11 @@ namespace Game.State.Inventory.SkillCards
                 .Subscribe(newAmount => data.Level = newAmount)
                 .AddTo(ref _disposables);
 
-            Parameters = new ObservableDictionary<SkillParameterType, SkillParameter>();
+            Parameters = new ObservableDictionary<ParameterType, Parameter>();
             //Debug.Log(JsonConvert.SerializeObject(data, Formatting.Indented));
             foreach (var parameter in data.Parameters)
             {
-                Parameters.Add(parameter.Key, new SkillParameter(parameter.Value));
+                Parameters.Add(parameter.Key, new Parameter(parameter.Value));
             }
 
             Parameters.ObserveAdd().Subscribe(e =>

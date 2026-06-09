@@ -7,7 +7,7 @@ namespace Game.GameRoot.ImageManager
     [Serializable]
     public class ImageItemByTowerParameter
     {
-        public TowerParameterType TypeParameter;
+      //  public TowerParameterType TypeParameter;
         public Sprite Sprite;
     }
 }

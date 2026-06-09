@@ -4,6 +4,7 @@ using System.Linq;
 using Game.Settings;
 using Game.State.Inventory.TowerCards;
 using Game.State.Maps.Towers;
+using Game.State.Parameters;
 using Game.State.Root;
 using MVVM.CMD;
 using UnityEngine;
@@ -34,13 +35,13 @@ namespace Game.MainMenu.Commands.TowerCommands
                 EpicLevel = command.EpicLevel,
                 Level = command.Level,
                 Amount = 1, //towerCard.Amount,
-                Parameters = new Dictionary<TowerParameterType, TowerParameterData>(),
+                Parameters = new Dictionary<ParameterType, ParameterData>(),
                 Defence = towerConfig.Defence,
             };
                
             foreach (var baseParameter in towerConfig.BaseParameters)
             {
-                initialTowerCard.Parameters.Add(baseParameter.ParameterType, new TowerParameterData(baseParameter));
+                initialTowerCard.Parameters.Add(baseParameter.ParameterType, new ParameterData(baseParameter));
             }
             
             _gameState.Inventory.AddItem(initialTowerCard);

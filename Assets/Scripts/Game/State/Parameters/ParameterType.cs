@@ -1,14 +1,26 @@
-﻿namespace Game.State.Maps.Skills
+namespace Game.State.Parameters
 {
-    public enum SkillParameterType
+    public enum ParameterType
     {
-        DPS, //УВС
         Damage,
+        DamageArea,
+        Distance,
+        MaxDistance,
+        MinDistance,
+        Speed,
+        Critical,
+        Health,
+        SlowingDown,
+        Range,
+        Warriors,
+        MiddleDamage,
+        HighDamage,
+        
+        //Навыки
+        DPS, //УВС
         Cooldown, //Перезарядка
         Duration, //Длительность
         Radius, //Радиус
-        Health, //Макс.здоровье
-        Warriors, //Кол-во бойцов
         Cells, //Кол-во клеток
         Slow, //Замедление в %
         Stun, //Длительность оглушения

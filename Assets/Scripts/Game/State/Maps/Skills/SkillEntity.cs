@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.State.Common;
+using Game.State.Parameters;
 using R3;
 
 namespace Game.State.Maps.Skills
@@ -15,7 +16,7 @@ namespace Game.State.Maps.Skills
         public bool OnRoad => Origin.OnRoad;
         public TypeDefence Defence => Origin.Defence;
         
-        public Dictionary<SkillParameterType, SkillParameterData> Parameters = new();
+        public Dictionary<ParameterType, ParameterData> Parameters = new();
         private DisposableBag _disposables = new();
       
         public SkillEntity(SkillEntityData entityData)

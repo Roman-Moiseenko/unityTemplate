@@ -8,7 +8,7 @@ namespace Game.GameRoot.ImageManager
     [Serializable]
     public class ImageItemBySkillParameter
     {
-        public SkillParameterType TypeParameter;
+       // public SkillParameterType TypeParameter;
         public Sprite Sprite;
     }
 }

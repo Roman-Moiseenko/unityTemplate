@@ -16,6 +16,7 @@ using Game.State.Inventory.Deck;
 using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.SkillPlans;
 using Game.State.Maps.Skills;
+using Game.State.Parameters;
 using MVVM.CMD;
 using Newtonsoft.Json;
 using ObservableCollections;
@@ -232,7 +233,7 @@ namespace Game.MainMenu.Services
             skillCard.Parameters.Clear();
             foreach (var baseParameter in settings.BaseParameters)
             {
-                skillCard.Parameters.Add(baseParameter.ParameterType, new SkillParameter(new SkillParameterData(baseParameter)));
+                skillCard.Parameters.Add(baseParameter.ParameterType, new Parameter(new ParameterData(baseParameter)));
             }
             
 
@@ -280,12 +281,12 @@ namespace Game.MainMenu.Services
                 EpicLevel = epicLevel,
                 ConfigId = configId,
                 Level = level,
-                Parameters = new Dictionary<SkillParameterType, SkillParameterData>(),
+                Parameters = new Dictionary<ParameterType, ParameterData>(),
                 Defence = skillSettings.Defence,
             };
             foreach (var baseParameter in skillSettings.BaseParameters)
             {
-                skillCardData.Parameters.Add(baseParameter.ParameterType, new SkillParameterData(baseParameter));
+                skillCardData.Parameters.Add(baseParameter.ParameterType, new ParameterData(baseParameter));
             }
 
             var skillCard = new SkillCard(skillCardData);

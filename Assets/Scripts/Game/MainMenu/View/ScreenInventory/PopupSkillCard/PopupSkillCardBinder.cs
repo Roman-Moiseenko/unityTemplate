@@ -6,6 +6,7 @@ using Game.MainMenu.View.ScreenInventory.Parameters;
 using Game.State.Common;
 using Game.State.Inventory.SkillCards;
 using Game.State.Maps.Skills;
+using Game.State.Parameters;
 using MVVM.UI;
 using R3;
 using TMPro;
@@ -94,13 +95,13 @@ namespace Game.MainMenu.View.ScreenInventory.PopupSkillCard
             
 
             var index = 0;
-            foreach (var parameter in skillCardViewModel.SkillCard.Parameters)
+            foreach (var (typeParam, param) in skillCardViewModel.SkillCard.Parameters)
             {
                 _parameterBinders[index].Bind(
-                    imageManager.GetSkillParameter(parameter.Key),
-                    parameter.Key.GetString(),
-                    parameter.Key.GetMeasure(),
-                    parameter.Value.Value
+                    imageManager.GetParameter(typeParam),
+                    typeParam.GetString(),
+                    typeParam.GetMeasure(),
+                    param.Value
                     );
                 index++;
             }

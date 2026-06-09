@@ -48,18 +48,11 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardFrontend
 
                 var index = 0;
                 //один список UpgradeTowerParameters или UpgradeSkillParameters всегда пуст
-                foreach (var (parameter, value) in viewModel.UpgradeTowerParameters)
+                foreach (var (parameter, value) in viewModel.UpgradeParameters)
                 {
                     parameterBinders[index].Bind(value, parameter);
                     index++;
                 }
-
-                foreach (var (parameter, value) in viewModel.UpgradeSkillParameters)
-                {
-                    parameterBinders[index].Bind(value, parameter);
-                    index++;
-                }
-                
 
                 upgradeLevel.gameObject.SetActive(true);
                 //
