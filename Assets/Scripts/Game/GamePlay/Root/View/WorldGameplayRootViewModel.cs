@@ -13,6 +13,7 @@ using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Frames.SkillFrames;
 using Game.GamePlay.View.Grounds;
+using Game.GamePlay.View.Hero;
 using Game.GamePlay.View.Map;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
@@ -45,6 +46,7 @@ namespace Game.GamePlay.Root.View
         public readonly IObservableCollection<FramePlacementViewModel> FramePlacementViewModels;
         public readonly IObservableCollection<FrameSkillViewModel> FrameSkillViewModels;
         public CastleViewModel CastleViewModel { get; private set; }
+        public HeroViewModel HeroViewModel { get; }
         public GateWaveViewModel GateWaveViewModel { get; private set; }
 
         public GateWaveViewModel GateWaveSecondViewModel { get; private set; }
@@ -88,6 +90,7 @@ namespace Game.GamePlay.Root.View
             GameplayCamera cameraService,
             DamageService damageService,
             SkillsService skillsService,
+            HeroService heroService,
             //WarriorService warriorService,
             DIContainer container
         )
@@ -123,6 +126,7 @@ namespace Game.GamePlay.Root.View
             CastleViewModel = castleService.CastleViewModel;
             GateWaveViewModel = waveService.GateWaveViewModel;
             GateWaveSecondViewModel = waveService.GateWaveSecondViewModel;
+            HeroViewModel = heroService.HeroViewModel;
 
             //AreaViewModel = new AttackAreaViewModel();
             MapFogViewModel = new MapFogViewModel(groundsService);

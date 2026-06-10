@@ -29,8 +29,6 @@ namespace Game.State
                 SoftCurrency = 0,
                 Progress = 0,
                 ProgressLevel = 0,
-                CastleData = new CastleEntityData(),
-                HeroData = new HeroEntityData(),
                 Way = new List<RoadEntityData>(),
                 WaySecond = new List<RoadEntityData>(),
                 WayDisabled = new List<RoadEntityData>(),
@@ -40,9 +38,6 @@ namespace Game.State
                 
                 SkillOne = new SkillEntityData(),
                 SkillTwo = new SkillEntityData(),
-                
-                //GateWave = Vector2.zero,
-                //GateWaveSecond = Vector2.zero,
             };
             return new GameplayStateProxy(_gameplayStateOrigin);
         }

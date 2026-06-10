@@ -44,6 +44,7 @@ namespace Game.GamePlay.Root.View
                 container.Resolve<GameplayCamera>(),
                 container.Resolve<DamageService>(),
                 container.Resolve<SkillsService>(),
+                container.Resolve<HeroService>(),
                 //c.Resolve<WarriorService>(),
                 //c.Resolve<ShotService>(),
                 container

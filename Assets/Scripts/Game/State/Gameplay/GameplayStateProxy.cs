@@ -39,9 +39,9 @@ namespace Game.State.Gameplay
         public int CountWaves;
         //Для отслеживания за игровой процесс
 
-        public readonly CastleEntity Castle;
+        public CastleEntity Castle;
         public HeroEntity Hero;
-        public readonly StatisticGame StatisticGame;
+        public StatisticGame StatisticGame;
 
         public ObservableList<RewardEntityData> RewardEntities { get; } = new();
         public ObservableList<TowerEntity> Towers { get; } = new();
@@ -72,9 +72,9 @@ namespace Game.State.Gameplay
         public GameplayStateProxy(GameplayState origin)
         {
             Origin = origin;
-            Castle = new CastleEntity(origin.CastleData);
-            Hero = new HeroEntity(origin.HeroData);
-
+            if (origin.CastleData != null) Castle = new CastleEntity(origin.CastleData);
+            if (origin.HeroData != null) Hero = new HeroEntity(origin.HeroData);
+            
             StatisticGame = new StatisticGame(origin.StatisticGameData);
             _previousGameSpeed = Origin.GameSpeed;
 
@@ -332,5 +332,6 @@ namespace Game.State.Gameplay
             Castle?.Dispose();
             Hero?.Dispose();
         }
+        
     }
 }

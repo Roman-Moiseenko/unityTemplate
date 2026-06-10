@@ -19,7 +19,7 @@ namespace Game.GamePlay.Commands.CastleCommands
         }
         public bool Handle(CommandCastleCreate command)
         {
-            var castle = new CastleEntityData()
+            var castleData = new CastleEntityData()
             {
                 ConfigId = "Castle",
                 Position = new Vector2Int(0, 0),
@@ -32,8 +32,15 @@ namespace Game.GamePlay.Commands.CastleCommands
                 CurrenHealth = _gameSettings.CastleInitialSettings.FullHealth,
             };
             
-            _gameplayState.Castle.CastleEntityInitialization(castle);
-            
+            if (_gameplayState.Castle != null)
+            {
+                _gameplayState.Castle.CastleEntityInitialization(castleData);
+            }
+            else
+            {
+                _gameplayState.Castle = new CastleEntity(castleData);
+            }
+
             return false;
         }
     }

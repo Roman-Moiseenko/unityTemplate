@@ -152,6 +152,40 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandMoveTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandReplaceTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceRoadHandler(gameplayState));
+            
+            //Загружаем уровень из настроек ДО создания сервисов
+            if (!gameplayState.Towers.Any())
+            {
+                var success = false;
+                switch (gameplayEnterParams.TypeGameplay)
+                {
+                    case TypeGameplay.Infinity:
+                    {
+                        var command = new CommandCreateInfinity(gameplayEnterParams.MapId);
+                        success = cmd.Process(command);
+                        break;
+                    }
+                    case TypeGameplay.Levels:
+                    {
+                        var command = new CommandCreateLevel(gameplayEnterParams.MapId);
+                        success = cmd.Process(command);
+                        break;
+                    }
+                    case TypeGameplay.Event:
+                        break;
+                    case TypeGameplay.Resume:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                if (!success) throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
+                fsmGameplay.Fsm.SetState<FsmStateBuildBegin>(); //Устанавливаем начальный режим строительства
+            }
+
+            //Заполняем статистику данными
+            gameplayState.StatisticGame.Add("Castle", TypeEntityStatisticDamage.Castle);
+
             //var newMapSettings = gameSettings.MapsSettings.Maps.First(m => m.MapId == gameplayEnterParams.MapId);
             var wayService = new WayService(); //Сервис обсчета дороги
             container.RegisterInstance(wayService);
@@ -265,40 +299,6 @@ namespace Game.GamePlay.Root
             var damageService = new DamageService(gameplayState, settingsState);
             container.RegisterInstance(damageService);
             container.RegisterDisposableOnSceneExit(damageService);
-            //Загружаем уровень из настроек, если gameplayState пуст.
-            if (!gameplayState.Towers.Any())
-            {
-                var success = false;
-                switch (gameplayEnterParams.TypeGameplay)
-                {
-                    case TypeGameplay.Infinity:
-                    {
-                        var command = new CommandCreateInfinity(gameplayEnterParams.MapId);
-                        success = cmd.Process(command);
-                        break;
-                    }
-                    case TypeGameplay.Levels:
-                    {
-                        var command = new CommandCreateLevel(gameplayEnterParams.MapId);
-                        success = cmd.Process(command);
-                        break;
-                    }
-                    case TypeGameplay.Event:
-                        break;
-                    case TypeGameplay.Resume:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                if (!success) throw new Exception($"Карта не создалась с id = {gameplayEnterParams.MapId}");
-                fsmGameplay.Fsm.SetState<FsmStateBuildBegin>(); //Устанавливаем начальный режим строительства
-            }
-
-            
-            //Заполняем статистику данными
-            gameplayState.StatisticGame.Add("Castle", TypeEntityStatisticDamage.Castle);
-            
             //В последнюю очередь создаем сервис волн мобов
             var waveService = new WaveService(container, gameplayState, cmd);
             container.RegisterInstance(waveService);

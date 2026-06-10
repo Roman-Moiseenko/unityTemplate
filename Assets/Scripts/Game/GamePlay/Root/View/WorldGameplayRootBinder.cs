@@ -6,6 +6,7 @@ using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
 using Game.GamePlay.View.Frames.SkillFrames;
 using Game.GamePlay.View.Grounds;
+using Game.GamePlay.View.Hero;
 using Game.GamePlay.View.Map;
 using Game.GamePlay.View.Mobs;
 using Game.GamePlay.View.Roads;
@@ -36,6 +37,7 @@ namespace Game.GamePlay.Root.View
         private readonly Dictionary<int, MobBinder> _createMobsMap = new();
         private readonly List<GateWaveBinder> _createGateMap = new();
         private CastleBinder _castleBinder;
+        private HeroBinder _heroBinder;
         // private AttackAreaBinder _attackAreaBinder;
 
         private DisposableBag _disposables;
@@ -114,6 +116,9 @@ namespace Game.GamePlay.Root.View
 
             //Замок
             CreateCastle(viewModel.CastleViewModel);
+            
+            //Герой
+            CreateHero(viewModel.HeroViewModel);
 
             //Дорога
             foreach (var roadViewModel in viewModel.AllRoads) CreateRoad(roadViewModel);
@@ -181,6 +186,8 @@ namespace Game.GamePlay.Root.View
         private void OnDestroy()
         {
             if (_castleBinder != null) Destroy(_castleBinder.gameObject);
+            if (_heroBinder != null) Destroy(_heroBinder.gameObject);
+            
             //   if (_attackAreaBinder != null) Destroy(_attackAreaBinder.gameObject);
             _createGateMap.ForEach(item => Destroy(item.gameObject));
             _disposables.Dispose();
@@ -254,6 +261,16 @@ namespace Game.GamePlay.Root.View
             createdCastle.Bind(castleViewModel);
             _castleBinder = createdCastle;
         }
+        
+        private void CreateHero(HeroViewModel heroViewModel)
+        {
+            var prefabPath = $"Prefabs/Gameplay/Heroes/{heroViewModel.ConfigId}"; 
+            Debug.Log(prefabPath);
+            var heroPrefab = Resources.Load<HeroBinder>(prefabPath);
+            var createdHero = Instantiate(heroPrefab, transform);
+            createdHero.Bind(heroViewModel);
+            _heroBinder = createdHero;
+        }        
 
 /*
         private void CreateAttackArea(AttackAreaViewModel attackAreaViewModel)

@@ -123,7 +123,9 @@ namespace Game.GamePlay.Commands.MapCommand
                 Placement = new Vector2Int(2, 0),
                 
             };
+            
             _gameplayState.Hero = new HeroEntity(heroEntityData);
+            
             _gameplayState.StatisticGame.Add(heroCard.ConfigId, TypeEntityStatisticDamage.Hero);
             
             /*
