@@ -36,7 +36,7 @@ namespace Game.MainMenu.View.ScreenInventory.TowerCards
         public ReactiveProperty<int> CostPlan = new();
         public ReactiveProperty<int> CostCurrency = new();
         public ReactiveProperty<bool> IsCanUpdate = new();
-        private DisposableBag _disposables = new();
+        private DisposableBag _disposables;
 
         public TowerCardViewModel(
             TowerCard towerCardEntity, 

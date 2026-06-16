@@ -17,13 +17,13 @@ namespace Game.State.Inventory.Deck
         public readonly DeckCardData Origin;
         public readonly ObservableList<int> TowerCardIds = new();
         public readonly ObservableList<int> SkillCardIds = new();
-        public readonly ReactiveProperty<int> HeroCardId;
+        public readonly ReactiveProperty<string> HeroConfigId;
 
         public DeckCard(DeckCardData deckCardData)
         {
             Origin = deckCardData;
-            HeroCardId = new ReactiveProperty<int>(deckCardData.HeroCardId);
-            HeroCardId.Subscribe(newValue => deckCardData.HeroCardId = newValue);
+            HeroConfigId = new ReactiveProperty<string>(deckCardData.HeroConfigId);
+            HeroConfigId.Subscribe(newValue => deckCardData.HeroConfigId = newValue);
             foreach (var towerCardId in deckCardData.TowerCardIds)
             {
                 TowerCardIds.Add(towerCardId);

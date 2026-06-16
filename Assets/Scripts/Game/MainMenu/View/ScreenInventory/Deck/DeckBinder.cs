@@ -64,6 +64,9 @@ namespace Game.MainMenu.View.ScreenInventory.Deck
                 DestroySkillCard(e.Value);
                 CreateSkillCell();
             }).AddTo(ref d);
+            //MAINDO Добавить героя
+            
+            
             _disposable = d.Build();
         }
 

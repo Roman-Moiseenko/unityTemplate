@@ -1,0 +1,7512 @@
+{
+  "MapsSettings": {
+    "Maps": [
+      {
+        "MapId": 1,
+        "InitialStateSettings": {
+          "Towers": [],
+          "Waves": [
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 6,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 8,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 8,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 11,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 6,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 7,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 6,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 9,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 8,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 10,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "BossTroll"
+                }
+              ]
+            }
+          ],
+          "WavesSecond": [],
+          "groundDefault": "Grass02",
+          "smallMap": 0,
+          "hasWaySecond": 0,
+          "hasWayDisabled": 0,
+          "obstacle": 0,
+          "collapse": 0,
+          "roadDefault": "Road",
+          "TitleLid": "\u0414\u0438\u043a\u0438\u0439 \u0432\u0435\u0442\u0435\u0440",
+          "UrlImage": "\/uploads\/map\/1\/map01.jpg"
+        },
+        "InfoStateSettings": {
+          "PrefabName": "",
+          "CountMobs": 15,
+          "RewardSoftCurrency": 10
+        },
+        "MapRewardSetting": {
+          "RewardOnWave": {
+            "10": [
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 999
+              }
+            ],
+            "20": [
+              {
+                "ConfigId": "Tower01",
+                "RewardType": 1,
+                "Amount": 3
+              },
+              {
+                "ConfigId": "Crystal",
+                "RewardType": 6,
+                "Amount": 20
+              }
+            ]
+          },
+          "RewardChest": {
+            "Silver": [
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 6
+              },
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 6000
+              }
+            ]
+          },
+          "RewardChanceChest": {
+            "Silver": [
+              {
+                "ConfigId": "",
+                "RewardType": 0,
+                "Amount": 3
+              }
+            ]
+          }
+        }
+      },
+      {
+        "MapId": 2,
+        "InitialStateSettings": {
+          "Towers": [],
+          "Waves": [
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 9,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 9,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 7,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "BossTroll"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 6,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 10,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 7,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 12,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 8,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 10,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 11,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 11,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 15,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 6,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 12,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 14,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 9,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 15,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 6,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 5,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 10,
+                  "Level": 6,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 7,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 8,
+                  "Level": 5,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 12,
+                  "Level": 6,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 10,
+                  "Level": 6,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 9,
+                  "Level": 7,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 6,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 7,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 11,
+                  "Level": 5,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 6,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 7,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 6,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 7,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 9,
+                  "Level": 6,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 6,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 7,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 6,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 7,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "BossMurderer"
+                }
+              ]
+            }
+          ],
+          "WavesSecond": [],
+          "groundDefault": "Grass02",
+          "smallMap": 0,
+          "hasWaySecond": 0,
+          "hasWayDisabled": 0,
+          "obstacle": 0,
+          "collapse": 0,
+          "roadDefault": "Road",
+          "TitleLid": "\u0420\u0430\u0439\u0441\u043a\u0438\u0439 \u043e\u0441\u0442\u0440\u043e\u0432",
+          "UrlImage": "\/uploads\/map\/2\/map02.jpg"
+        },
+        "InfoStateSettings": {
+          "PrefabName": "",
+          "CountMobs": 15,
+          "RewardSoftCurrency": 10
+        },
+        "MapRewardSetting": {
+          "RewardOnWave": {
+            "10": [
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 10000
+              }
+            ],
+            "20": [
+              {
+                "ConfigId": "Tower07",
+                "RewardType": 1,
+                "Amount": 7
+              },
+              {
+                "ConfigId": "Tower07",
+                "RewardType": 0,
+                "Amount": 1
+              }
+            ],
+            "30": [
+              {
+                "ConfigId": "Crystal",
+                "RewardType": 6,
+                "Amount": 30
+              }
+            ],
+            "40": [
+              {
+                "ConfigId": "Crystal",
+                "RewardType": 6,
+                "Amount": 80
+              }
+            ]
+          },
+          "RewardChest": {
+            "Silver": [
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 10500
+              },
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 8
+              }
+            ],
+            "Gold": [
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 15600
+              },
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 13
+              }
+            ]
+          },
+          "RewardChanceChest": {
+            "Silver": [],
+            "Gold": [
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 3
+              }
+            ]
+          }
+        }
+      },
+      {
+        "MapId": 3,
+        "InitialStateSettings": {
+          "Towers": [],
+          "Waves": [
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 6,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 2,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 9,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 2,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 7,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 8,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 8,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 8,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 12,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 8,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 2,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 12,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 4,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 13,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 0,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 12,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 6,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "BossMurderer"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 9,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 16,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 6,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 11,
+                  "Level": 5,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 8,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 16,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 10,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 9,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 13,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 4,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 8,
+                  "Level": 3,
+                  "MobConfigId": "Hammer"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 5,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 14,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 10,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 7,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 8,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 5,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 14,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 5,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 15,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 11,
+                  "Level": 6,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 15,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 10,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 5,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 11,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 21,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 12,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 12,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 12,
+                  "Level": 6,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 22,
+                  "Level": 5,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 16,
+                  "Level": 6,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 5,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 15,
+                  "Level": 6,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 5,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 15,
+                  "Level": 6,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 5,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 11,
+                  "Level": 6,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 5,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 6,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 7,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 6,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 20,
+                  "Level": 7,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 8,
+                  "Level": 5,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 6,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 6,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 6,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 15,
+                  "Level": 6,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 4,
+                  "MobConfigId": "BossTroll"
+                }
+              ]
+            }
+          ],
+          "WavesSecond": [],
+          "groundDefault": "Grass02",
+          "smallMap": 0,
+          "hasWaySecond": 0,
+          "hasWayDisabled": 0,
+          "obstacle": 0,
+          "collapse": 0,
+          "roadDefault": "Road",
+          "TitleLid": "\u0417\u0435\u043b\u0435\u043d\u044b\u0439 \u0432\u0435\u0442\u0435\u0440\u043e\u043a",
+          "UrlImage": "\/uploads\/map\/3\/map03.jpg"
+        },
+        "InfoStateSettings": {
+          "PrefabName": "",
+          "CountMobs": 15,
+          "RewardSoftCurrency": 10
+        },
+        "MapRewardSetting": {
+          "RewardOnWave": {
+            "10": [
+              {
+                "ConfigId": "Crystal",
+                "RewardType": 6,
+                "Amount": 20
+              }
+            ],
+            "20": [
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 999
+              }
+            ],
+            "30": [
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 15000
+              }
+            ],
+            "40": [
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 999
+              }
+            ]
+          },
+          "RewardChest": {
+            "Silver": [
+              {
+                "ConfigId": "",
+                "RewardType": 5,
+                "Amount": 15000
+              },
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 9
+              }
+            ],
+            "Gold": [
+              {
+                "ConfigId": "",
+                "RewardType": 5,
+                "Amount": 21500
+              },
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 14
+              }
+            ]
+          },
+          "RewardChanceChest": {
+            "Silver": [],
+            "Gold": [
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 3
+              },
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 25000
+              },
+              {
+                "ConfigId": "Crystal",
+                "RewardType": 6,
+                "Amount": 25
+              }
+            ]
+          }
+        }
+      },
+      {
+        "MapId": 4,
+        "InitialStateSettings": {
+          "Towers": [],
+          "Waves": [
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 1,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 2,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 2,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 2,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 2,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 8,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "BossTroll"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 10,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 8,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 9,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 9,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 4,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 8,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 11,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 4,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 6,
+                  "Level": 4,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 4,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 4,
+                  "MobConfigId": "BossTroll"
+                }
+              ]
+            }
+          ],
+          "WavesSecond": [
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 7,
+                  "Level": 2,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 1,
+                  "MobConfigId": "Fire"
+                },
+                {
+                  "Quantity": 5,
+                  "Level": 2,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 2,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 7,
+                  "Level": 2,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 2,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 2,
+                  "MobConfigId": "Infantry"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 8,
+                  "Level": 3,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 4,
+                  "Level": 3,
+                  "MobConfigId": "HeavyInfantry"
+                },
+                {
+                  "Quantity": 3,
+                  "Level": 3,
+                  "MobConfigId": "Fire"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 3,
+                  "MobConfigId": "BossMurderer"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": ""
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 1,
+                  "Level": 1,
+                  "MobConfigId": "BossStarCrach"
+                }
+              ]
+            }
+          ],
+          "groundDefault": "Snow01",
+          "smallMap": 0,
+          "hasWaySecond": 1,
+          "hasWayDisabled": 0,
+          "obstacle": 0,
+          "collapse": 0,
+          "roadDefault": "Road",
+          "TitleLid": "\u0417\u0430\u043c\u0435\u0440\u0437\u0448\u0438\u0435 \u043a\u043e\u0441\u0442\u0438",
+          "UrlImage": "\/uploads\/map\/4\/map04.jpg"
+        },
+        "InfoStateSettings": {
+          "PrefabName": "",
+          "CountMobs": 15,
+          "RewardSoftCurrency": 10
+        },
+        "MapRewardSetting": {
+          "RewardOnWave": {
+            "10": [
+              {
+                "ConfigId": "Crystal",
+                "RewardType": 6,
+                "Amount": 40
+              }
+            ],
+            "20": [
+              {
+                "ConfigId": "Tower03",
+                "RewardType": 1,
+                "Amount": 5
+              }
+            ],
+            "30": [
+              {
+                "ConfigId": "Crystal",
+                "RewardType": 6,
+                "Amount": 80
+              }
+            ]
+          },
+          "RewardChest": {
+            "Silver": [
+              {
+                "ConfigId": "",
+                "RewardType": 5,
+                "Amount": 19500
+              },
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 10
+              }
+            ],
+            "Gold": [
+              {
+                "ConfigId": "",
+                "RewardType": 5,
+                "Amount": 27400
+              },
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 15
+              }
+            ],
+            "Epic": [
+              {
+                "ConfigId": "",
+                "RewardType": 5,
+                "Amount": 34100
+              },
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 23
+              }
+            ]
+          },
+          "RewardChanceChest": {
+            "Silver": [],
+            "Gold": [
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 3
+              },
+              {
+                "ConfigId": "Crystal",
+                "RewardType": 6,
+                "Amount": 30
+              },
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 25000
+              }
+            ],
+            "Epic": [
+              {
+                "ConfigId": "",
+                "RewardType": 0,
+                "Amount": 1
+              },
+              {
+                "ConfigId": "",
+                "RewardType": 1,
+                "Amount": 3
+              }
+            ]
+          }
+        }
+      },
+      {
+        "MapId": 5,
+        "InitialStateSettings": {
+          "Towers": [],
+          "Waves": [
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 5,
+                  "Level": 1,
+                  "MobConfigId": "AirShooter"
+                },
+                {
+                  "Quantity": 2,
+                  "Level": 1,
+                  "MobConfigId": "Infantry"
+                },
+                {
+                  "Quantity": 20,
+                  "Level": 1,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            },
+            {
+              "WaveItems": [
+                {
+                  "Quantity": 99,
+                  "Level": 1,
+                  "MobConfigId": "AirShooter"
+                }
+              ]
+            }
+          ],
+          "WavesSecond": [],
+          "groundDefault": "Grass01",
+          "smallMap": 0,
+          "hasWaySecond": 0,
+          "hasWayDisabled": 0,
+          "obstacle": 0,
+          "collapse": 0,
+          "roadDefault": "Road",
+          "TitleLid": "\u0422\u0435\u0441\u0442\u043e\u0432\u0430\u044f",
+          "UrlImage": "\/uploads\/map\/5\/btn_red.png"
+        },
+        "InfoStateSettings": {
+          "PrefabName": "",
+          "CountMobs": 15,
+          "RewardSoftCurrency": 10
+        },
+        "MapRewardSetting": {
+          "RewardOnWave": {
+            "1": [
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 9999
+              }
+            ]
+          },
+          "RewardChest": {
+            "Silver": [
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 9999
+              }
+            ]
+          },
+          "RewardChanceChest": {
+            "Silver": [
+              {
+                "ConfigId": "Currency",
+                "RewardType": 5,
+                "Amount": 9999
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "GroundConfigIds": [
+      "Grass01",
+      "Snow01",
+      "Grass02"
+    ],
+    "RoadConfigIds": [
+      "Road"
+    ],
+    "InfinitySetting": {
+      "ratioCurveWave": 1,
+      "ratioCurveMobs": 2,
+      "rateLevelMob": 10,
+      "rateBoss": 10,
+      "ratioPower": 1.2
+    },
+    "CommonSetting": {
+      "rateRewardEntity": 5
+    }
+  },
+  "TowersSettings": {
+    "AllTowers": [
+      {
+        "ConfigId": "Tower01",
+        "TitleLid": "\u041f\u0443\u043b\u0435\u043c\u0435\u0442",
+        "DescriptionLid": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u0440\u0435\u043b\u044c\u043d\u0430\u044f \u0431\u0430\u0448\u043d\u044f \u0441 \u043c\u0430\u043b\u0435\u043d\u044c\u043a\u0438\u043c \u0443\u0440\u043e\u043d\u043e\u043c, \u043f\u043e \u043d\u0430\u0437\u0435\u043c\u043d\u044b\u043c \u0438 \u0432\u043e\u0437\u0434\u0443\u0448\u043d\u044b\u043c \u0446\u0435\u043b\u044f\u043c",
+        "PrefabPath": "",
+        "OnRoad": 0,
+        "Placement": 0,
+        "Buffs": 0,
+        "MultiShot": 0,
+        "TypeTarget": "Universal",
+        "Defence": "Fast",
+        "Shot": {
+          "Speed": 2,
+          "LineTrajectory": true,
+          "Single": true,
+          "NotPrefab": false
+        },
+        "AvailableWave": 1,
+        "GameplayLevels": [
+          {
+            "Level": 1,
+            "Parameters": []
+          },
+          {
+            "Level": 2,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 3,
+            "Parameters": [
+              {
+                "ParameterType": "Critical",
+                "Value": 20
+              },
+              {
+                "ParameterType": "Distance",
+                "Value": 19
+              }
+            ]
+          },
+          {
+            "Level": 4,
+            "Parameters": [
+              {
+                "ParameterType": "Distance",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 5,
+            "Parameters": [
+              {
+                "ParameterType": "Critical",
+                "Value": 40
+              },
+              {
+                "ParameterType": "Distance",
+                "Value": 29
+              }
+            ]
+          },
+          {
+            "Level": 6,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 20
+              }
+            ]
+          }
+        ],
+        "BaseParameters": [
+          {
+            "ParameterType": "Damage",
+            "Value": 30
+          },
+          {
+            "ParameterType": "Speed",
+            "Value": 0.2
+          },
+          {
+            "ParameterType": "Critical",
+            "Value": 20
+          },
+          {
+            "ParameterType": "Distance",
+            "Value": 0.9
+          }
+        ],
+        "LevelCardParameters": [
+          {
+            "ParameterType": "Damage",
+            "BaseValue": 2.25,
+            "PowEpic": 1.21
+          }
+        ],
+        "EpicCardParameters": [
+          {
+            "ParameterType": "Speed",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": -2
+              },
+              {
+                "Level": "Rare",
+                "Percent": -5
+              },
+              {
+                "Level": "Epic",
+                "Percent": -7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Legend",
+                "Percent": -7
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": -10
+              },
+              {
+                "Level": "Cult",
+                "Percent": -5
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Excellent",
+                "Percent": -7
+              }
+            ]
+          },
+          {
+            "ParameterType": "Damage",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": 3
+              },
+              {
+                "Level": "Rare",
+                "Percent": 5
+              },
+              {
+                "Level": "Epic",
+                "Percent": 7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 13
+              },
+              {
+                "Level": "Legend",
+                "Percent": 21
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": 28
+              },
+              {
+                "Level": "Cult",
+                "Percent": 35
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": 45
+              },
+              {
+                "Level": "Excellent",
+                "Percent": 100
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ConfigId": "Tower02",
+        "TitleLid": "\u041f\u0443\u0448\u043a\u0430",
+        "DescriptionLid": "\u0411\u0430\u0448\u043d\u044f \u0441 \u0431\u043e\u043b\u044c\u0448\u0438\u043c \u0440\u0430\u0437\u043e\u0432\u044b\u043c \u0443\u0440\u043e\u043d\u043e\u043c \u043f\u043e \u043d\u0430\u0437\u0435\u043c\u043d\u044b\u043c \u0446\u0435\u043b\u044f\u043c",
+        "PrefabPath": "",
+        "OnRoad": 0,
+        "Placement": 0,
+        "Buffs": 0,
+        "MultiShot": 0,
+        "TypeTarget": "Ground",
+        "Defence": "Advanced",
+        "Shot": {
+          "Speed": 1.2,
+          "LineTrajectory": true,
+          "Single": true,
+          "NotPrefab": false
+        },
+        "AvailableWave": 1,
+        "GameplayLevels": [
+          {
+            "Level": 1,
+            "Parameters": []
+          },
+          {
+            "Level": 2,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 15
+              }
+            ]
+          },
+          {
+            "Level": 3,
+            "Parameters": [
+              {
+                "ParameterType": "Critical",
+                "Value": 2
+              },
+              {
+                "ParameterType": "Distance",
+                "Value": 30
+              }
+            ]
+          },
+          {
+            "Level": 4,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 15.5
+              }
+            ]
+          },
+          {
+            "Level": 5,
+            "Parameters": [
+              {
+                "ParameterType": "Critical",
+                "Value": 4
+              },
+              {
+                "ParameterType": "Distance",
+                "Value": 40
+              }
+            ]
+          },
+          {
+            "Level": 6,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 16.3
+              }
+            ]
+          }
+        ],
+        "BaseParameters": [
+          {
+            "ParameterType": "Damage",
+            "Value": 156.3
+          },
+          {
+            "ParameterType": "Speed",
+            "Value": 1.25
+          },
+          {
+            "ParameterType": "Critical",
+            "Value": 10
+          },
+          {
+            "ParameterType": "Distance",
+            "Value": 1
+          }
+        ],
+        "LevelCardParameters": [
+          {
+            "ParameterType": "Damage",
+            "BaseValue": 19.5,
+            "PowEpic": 1.21
+          }
+        ],
+        "EpicCardParameters": [
+          {
+            "ParameterType": "Speed",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": -2
+              },
+              {
+                "Level": "Rare",
+                "Percent": -5
+              },
+              {
+                "Level": "Epic",
+                "Percent": -7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Legend",
+                "Percent": -7
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": -10
+              },
+              {
+                "Level": "Cult",
+                "Percent": -5
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Excellent",
+                "Percent": -7
+              }
+            ]
+          },
+          {
+            "ParameterType": "Damage",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": 3
+              },
+              {
+                "Level": "Rare",
+                "Percent": 5
+              },
+              {
+                "Level": "Epic",
+                "Percent": 7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 15
+              },
+              {
+                "Level": "Legend",
+                "Percent": 21
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": 28
+              },
+              {
+                "Level": "Cult",
+                "Percent": 35
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": 45
+              },
+              {
+                "Level": "Excellent",
+                "Percent": 100
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ConfigId": "Tower03",
+        "TitleLid": "\u0422\u0435\u0441\u043b\u0430",
+        "DescriptionLid": "\u041c\u0430\u0441\u0441\u043e\u0432\u044b\u0439 \u0443\u0440\u043e\u043d \u043f\u043e \u043e\u0431\u043b\u0430\u0441\u0442\u0438, \u043f\u043e \u043d\u0430\u0437\u0435\u043c\u043d\u044b\u043c \u0438 \u0432\u043e\u0437\u0434\u0443\u0448\u043d\u044b\u043c \u0446\u0435\u043b\u044f\u043c",
+        "PrefabPath": "",
+        "OnRoad": 0,
+        "Placement": 0,
+        "Buffs": 0,
+        "MultiShot": 1,
+        "TypeTarget": "Universal",
+        "Defence": "Elemental",
+        "Shot": {
+          "Speed": 0.1,
+          "LineTrajectory": true,
+          "Single": true,
+          "NotPrefab": false
+        },
+        "AvailableWave": 1,
+        "GameplayLevels": [
+          {
+            "Level": 1,
+            "Parameters": []
+          },
+          {
+            "Level": 2,
+            "Parameters": [
+              {
+                "ParameterType": "DamageArea",
+                "Value": 19.2
+              }
+            ]
+          },
+          {
+            "Level": 3,
+            "Parameters": [
+              {
+                "ParameterType": "Critical",
+                "Value": 2
+              },
+              {
+                "ParameterType": "Distance",
+                "Value": 25
+              }
+            ]
+          },
+          {
+            "Level": 4,
+            "Parameters": [
+              {
+                "ParameterType": "DamageArea",
+                "Value": 19.36
+              }
+            ]
+          },
+          {
+            "Level": 5,
+            "Parameters": [
+              {
+                "ParameterType": "Critical",
+                "Value": 2
+              },
+              {
+                "ParameterType": "Distance",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 6,
+            "Parameters": [
+              {
+                "ParameterType": "DamageArea",
+                "Value": 20
+              }
+            ]
+          }
+        ],
+        "BaseParameters": [
+          {
+            "ParameterType": "DamageArea",
+            "Value": 22.9
+          },
+          {
+            "ParameterType": "Speed",
+            "Value": 0.57
+          },
+          {
+            "ParameterType": "Critical",
+            "Value": 2
+          },
+          {
+            "ParameterType": "Distance",
+            "Value": 1
+          }
+        ],
+        "LevelCardParameters": [
+          {
+            "ParameterType": "DamageArea",
+            "BaseValue": 1.14,
+            "PowEpic": 1.21
+          }
+        ],
+        "EpicCardParameters": [
+          {
+            "ParameterType": "Speed",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": -2
+              },
+              {
+                "Level": "Rare",
+                "Percent": -5
+              },
+              {
+                "Level": "Epic",
+                "Percent": -7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Legend",
+                "Percent": -10
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": -7
+              },
+              {
+                "Level": "Cult",
+                "Percent": -3
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": -5
+              },
+              {
+                "Level": "Excellent",
+                "Percent": -10
+              }
+            ]
+          },
+          {
+            "ParameterType": "DamageArea",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": 3
+              },
+              {
+                "Level": "Rare",
+                "Percent": 5
+              },
+              {
+                "Level": "Epic",
+                "Percent": 7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 13
+              },
+              {
+                "Level": "Legend",
+                "Percent": 21
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": 28
+              },
+              {
+                "Level": "Cult",
+                "Percent": 35
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": 45
+              },
+              {
+                "Level": "Excellent",
+                "Percent": 100
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ConfigId": "Tower04",
+        "TitleLid": "\u041c\u043e\u0440\u0442\u0438\u0440\u0430",
+        "DescriptionLid": "\u041c\u0430\u0441\u0441\u043e\u0432\u044b\u0439 \u0443\u0440\u043e\u043d \u043f\u043e \u043e\u0431\u043b\u0430\u0441\u0442\u0438 \u043f\u043e \u043d\u0430\u0437\u0435\u043c\u043d\u044b\u043c \u0446\u0435\u043b\u044f\u043c",
+        "PrefabPath": "",
+        "OnRoad": 0,
+        "Placement": 0,
+        "Buffs": 0,
+        "MultiShot": 0,
+        "TypeTarget": "Ground",
+        "Defence": "Advanced",
+        "Shot": {
+          "Speed": 0.8,
+          "LineTrajectory": false,
+          "Single": false,
+          "NotPrefab": false
+        },
+        "AvailableWave": 1,
+        "GameplayLevels": [
+          {
+            "Level": 1,
+            "Parameters": []
+          },
+          {
+            "Level": 2,
+            "Parameters": [
+              {
+                "ParameterType": "DamageArea",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 3,
+            "Parameters": [
+              {
+                "ParameterType": "Critical",
+                "Value": 2
+              },
+              {
+                "ParameterType": "MaxDistance",
+                "Value": 16
+              }
+            ]
+          },
+          {
+            "Level": 4,
+            "Parameters": [
+              {
+                "ParameterType": "DamageArea",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 5,
+            "Parameters": [
+              {
+                "ParameterType": "Critical",
+                "Value": 2
+              },
+              {
+                "ParameterType": "MaxDistance",
+                "Value": 14
+              }
+            ]
+          },
+          {
+            "Level": 6,
+            "Parameters": [
+              {
+                "ParameterType": "DamageArea",
+                "Value": 20
+              }
+            ]
+          }
+        ],
+        "BaseParameters": [
+          {
+            "ParameterType": "DamageArea",
+            "Value": 87.5
+          },
+          {
+            "ParameterType": "Speed",
+            "Value": 2.5
+          },
+          {
+            "ParameterType": "Critical",
+            "Value": 10
+          },
+          {
+            "ParameterType": "MaxDistance",
+            "Value": 2.5
+          },
+          {
+            "ParameterType": "MinDistance",
+            "Value": 1
+          }
+        ],
+        "LevelCardParameters": [
+          {
+            "ParameterType": "DamageArea",
+            "BaseValue": 11,
+            "PowEpic": 1.21
+          }
+        ],
+        "EpicCardParameters": [
+          {
+            "ParameterType": "Speed",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": -2
+              },
+              {
+                "Level": "Rare",
+                "Percent": -5
+              },
+              {
+                "Level": "Epic",
+                "Percent": -7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Legend",
+                "Percent": -7
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": -10
+              },
+              {
+                "Level": "Cult",
+                "Percent": -5
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Excellent",
+                "Percent": -7
+              }
+            ]
+          },
+          {
+            "ParameterType": "DamageArea",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": 3
+              },
+              {
+                "Level": "Rare",
+                "Percent": 5
+              },
+              {
+                "Level": "Epic",
+                "Percent": 7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 15
+              },
+              {
+                "Level": "Legend",
+                "Percent": 21
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": 28
+              },
+              {
+                "Level": "Cult",
+                "Percent": 35
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": 45
+              },
+              {
+                "Level": "Excellent",
+                "Percent": 100
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ConfigId": "Tower05",
+        "TitleLid": "\u0428\u0438\u043f\u044b",
+        "DescriptionLid": "\u041f\u043e\u0441\u0442\u043e\u044f\u043d\u043d\u044b\u0439 \u0443\u0440\u043e\u043d \u043f\u043e \u043e\u0431\u043b\u0430\u0441\u0442\u0438 \u043f\u043e \u043d\u0430\u0437\u0435\u043c\u043d\u044b\u043c \u0446\u0435\u043b\u044f\u043c",
+        "PrefabPath": "",
+        "OnRoad": 1,
+        "Placement": 0,
+        "Buffs": 0,
+        "MultiShot": 1,
+        "TypeTarget": "Ground",
+        "Defence": "Fast",
+        "Shot": {
+          "Speed": 11000,
+          "LineTrajectory": true,
+          "Single": true,
+          "NotPrefab": true
+        },
+        "AvailableWave": 1,
+        "GameplayLevels": [
+          {
+            "Level": 1,
+            "Parameters": []
+          },
+          {
+            "Level": 2,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 3,
+            "Parameters": [
+              {
+                "ParameterType": "SlowingDown",
+                "Value": 3
+              }
+            ]
+          },
+          {
+            "Level": 4,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 5,
+            "Parameters": [
+              {
+                "ParameterType": "SlowingDown",
+                "Value": 3
+              }
+            ]
+          },
+          {
+            "Level": 6,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 20
+              }
+            ]
+          }
+        ],
+        "BaseParameters": [
+          {
+            "ParameterType": "Damage",
+            "Value": 26.7
+          },
+          {
+            "ParameterType": "Speed",
+            "Value": 0.33
+          },
+          {
+            "ParameterType": "SlowingDown",
+            "Value": 3
+          }
+        ],
+        "LevelCardParameters": [
+          {
+            "ParameterType": "Damage",
+            "BaseValue": 4,
+            "PowEpic": 1.31
+          }
+        ],
+        "EpicCardParameters": [
+          {
+            "ParameterType": "Speed",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": -2
+              },
+              {
+                "Level": "Rare",
+                "Percent": -5
+              },
+              {
+                "Level": "Epic",
+                "Percent": -7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Legend",
+                "Percent": -7
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": -10
+              },
+              {
+                "Level": "Cult",
+                "Percent": -5
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Excellent",
+                "Percent": -7
+              }
+            ]
+          },
+          {
+            "ParameterType": "Damage",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": 3
+              },
+              {
+                "Level": "Rare",
+                "Percent": 5
+              },
+              {
+                "Level": "Epic",
+                "Percent": 7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 20
+              },
+              {
+                "Level": "Legend",
+                "Percent": 27
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": 36
+              },
+              {
+                "Level": "Cult",
+                "Percent": 45
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": 55
+              },
+              {
+                "Level": "Excellent",
+                "Percent": 100
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ConfigId": "Tower06",
+        "TitleLid": "\u0413\u0430\u0440\u043d\u0438\u0437\u043e\u043d",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "OnRoad": 0,
+        "Placement": 1,
+        "Buffs": 0,
+        "MultiShot": 0,
+        "TypeTarget": "Ground",
+        "Defence": "Fast",
+        "Shot": {
+          "Speed": 1,
+          "LineTrajectory": true,
+          "Single": true,
+          "NotPrefab": true
+        },
+        "AvailableWave": 1,
+        "GameplayLevels": [
+          {
+            "Level": 1,
+            "Parameters": []
+          },
+          {
+            "Level": 2,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 19
+              }
+            ]
+          },
+          {
+            "Level": 3,
+            "Parameters": [
+              {
+                "ParameterType": "Health",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 4,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 19
+              }
+            ]
+          },
+          {
+            "Level": 5,
+            "Parameters": [
+              {
+                "ParameterType": "Health",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 6,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 19
+              }
+            ]
+          }
+        ],
+        "BaseParameters": [
+          {
+            "ParameterType": "Damage",
+            "Value": 60
+          },
+          {
+            "ParameterType": "Speed",
+            "Value": 1.33
+          },
+          {
+            "ParameterType": "Health",
+            "Value": 300
+          },
+          {
+            "ParameterType": "Range",
+            "Value": 5
+          }
+        ],
+        "LevelCardParameters": [
+          {
+            "ParameterType": "Damage",
+            "BaseValue": 6,
+            "PowEpic": 1.05
+          },
+          {
+            "ParameterType": "Health",
+            "BaseValue": 22.5,
+            "PowEpic": 1.05
+          }
+        ],
+        "EpicCardParameters": [
+          {
+            "ParameterType": "Speed",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": -2
+              },
+              {
+                "Level": "Rare",
+                "Percent": -5
+              },
+              {
+                "Level": "Epic",
+                "Percent": -7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Legend",
+                "Percent": -7
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": -10
+              },
+              {
+                "Level": "Cult",
+                "Percent": -5
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Excellent",
+                "Percent": -7
+              }
+            ]
+          },
+          {
+            "ParameterType": "Damage",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": 3
+              },
+              {
+                "Level": "Rare",
+                "Percent": 5
+              },
+              {
+                "Level": "Epic",
+                "Percent": 7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 2
+              },
+              {
+                "Level": "Legend",
+                "Percent": 10
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": 15
+              },
+              {
+                "Level": "Cult",
+                "Percent": 21
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": 31
+              },
+              {
+                "Level": "Excellent",
+                "Percent": 45
+              }
+            ]
+          },
+          {
+            "ParameterType": "Health",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": 2
+              },
+              {
+                "Level": "Rare",
+                "Percent": 5
+              },
+              {
+                "Level": "Epic",
+                "Percent": 7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 3
+              },
+              {
+                "Level": "Legend",
+                "Percent": 10
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": 15
+              },
+              {
+                "Level": "Cult",
+                "Percent": 21
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": 28
+              },
+              {
+                "Level": "Excellent",
+                "Percent": 31
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ConfigId": "Tower07",
+        "TitleLid": "\u041d\u0435\u0431\u0435\u0441\u043d\u044b\u0439 \u0441\u0442\u0440\u0430\u0436",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "OnRoad": 0,
+        "Placement": 0,
+        "Buffs": 0,
+        "MultiShot": 0,
+        "TypeTarget": "Air",
+        "Defence": "Advanced",
+        "Shot": {
+          "Speed": 0.51,
+          "LineTrajectory": true,
+          "Single": true,
+          "NotPrefab": false
+        },
+        "AvailableWave": 11,
+        "GameplayLevels": [
+          {
+            "Level": 1,
+            "Parameters": []
+          },
+          {
+            "Level": 2,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 3,
+            "Parameters": [
+              {
+                "ParameterType": "Critical",
+                "Value": 5
+              },
+              {
+                "ParameterType": "Distance",
+                "Value": 40
+              }
+            ]
+          },
+          {
+            "Level": 4,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 5,
+            "Parameters": [
+              {
+                "ParameterType": "Critical",
+                "Value": 5
+              },
+              {
+                "ParameterType": "Distance",
+                "Value": 29
+              }
+            ]
+          },
+          {
+            "Level": 6,
+            "Parameters": [
+              {
+                "ParameterType": "Damage",
+                "Value": 20
+              }
+            ]
+          }
+        ],
+        "BaseParameters": [
+          {
+            "ParameterType": "Damage",
+            "Value": 203.3
+          },
+          {
+            "ParameterType": "Speed",
+            "Value": 1.11
+          },
+          {
+            "ParameterType": "Critical",
+            "Value": 10
+          },
+          {
+            "ParameterType": "Distance",
+            "Value": 1.25
+          }
+        ],
+        "LevelCardParameters": [
+          {
+            "ParameterType": "Damage",
+            "BaseValue": 20.3,
+            "PowEpic": 1.35
+          }
+        ],
+        "EpicCardParameters": [
+          {
+            "ParameterType": "Speed",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": -2
+              },
+              {
+                "Level": "Rare",
+                "Percent": -5
+              },
+              {
+                "Level": "Epic",
+                "Percent": -7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": -3
+              },
+              {
+                "Level": "Legend",
+                "Percent": -10
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": -5
+              },
+              {
+                "Level": "Cult",
+                "Percent": -3
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": -7
+              },
+              {
+                "Level": "Excellent",
+                "Percent": -5
+              }
+            ]
+          },
+          {
+            "ParameterType": "Damage",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": 3
+              },
+              {
+                "Level": "Rare",
+                "Percent": 5
+              },
+              {
+                "Level": "Epic",
+                "Percent": 7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 2
+              },
+              {
+                "Level": "Legend",
+                "Percent": 36
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": 28
+              },
+              {
+                "Level": "Cult",
+                "Percent": 35
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": 45
+              },
+              {
+                "Level": "Excellent",
+                "Percent": 55
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "HeroesSettings": {
+    "AllHeroes": [
+      {
+        "ConfigId": "Hero01",
+        "TitleLid": "\u0422\u0438\u0442\u0430\u043d",
+        "PrefabPath": "",
+        "DescriptionLid": "",
+        "TypeTarget": "Ground",
+        "Defence": "Advanced",
+        "Epic": "Good",
+        "ShotSettings": {
+          "Speed": 1000,
+          "LineTrajectory": true,
+          "Single": true,
+          "NotPrefab": false
+        },
+        "BaseParameters": [
+          {
+            "ParameterType": "DamageArea",
+            "Value": 218
+          },
+          {
+            "ParameterType": "Distance",
+            "Value": 0.5
+          },
+          {
+            "ParameterType": "Critical",
+            "Value": 10
+          },
+          {
+            "ParameterType": "Speed",
+            "Value": 1.813
+          }
+        ],
+        "GameplayLevels": [
+          {
+            "Level": 1,
+            "Parameters": []
+          },
+          {
+            "Level": 2,
+            "Parameters": [
+              {
+                "ParameterType": "Critical",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 3,
+            "Parameters": [
+              {
+                "ParameterType": "DamageArea",
+                "Value": 25
+              }
+            ]
+          }
+        ],
+        "LevelCardParameters": [
+          {
+            "ParameterType": "DamageArea",
+            "BaseValue": 16,
+            "PowEpic": 1.1875
+          }
+        ],
+        "RankCardParameters": [
+          {
+            "ParameterType": "Damage",
+            "BaseValue": 6,
+            "PowEpic": 21.83
+          },
+          {
+            "ParameterType": "Speed",
+            "BaseValue": -0.04,
+            "PowEpic": 2
+          }
+        ],
+        "LevelEntityParameters": [
+          {
+            "Name": "",
+            "Description": "\u0423\u0440\u043e\u043d \u043f\u0435\u0440\u0435\u0434\u043e\u0432\u044b\u0445 \u0431\u0430\u0448\u0435\u043d",
+            "Entity": "Tower",
+            "Defence": "Advanced",
+            "Parameter": "Damage",
+            "Value": 30,
+            "Index": 20
+          },
+          {
+            "Name": "",
+            "Description": "\u0423\u0440\u043e\u043d",
+            "Entity": "Hero",
+            "Defence": "",
+            "Parameter": "Damage",
+            "Value": 20,
+            "Index": 40
+          },
+          {
+            "Name": "",
+            "Description": "\u0417\u043e\u043d\u0430 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f \u043f\u0435\u0440\u0435\u0434\u043e\u0432\u044b\u0445 \u0431\u0430\u0448\u0435\u043d",
+            "Entity": "Tower",
+            "Defence": "Advanced",
+            "Parameter": "Distance",
+            "Value": 10,
+            "Index": 60
+          },
+          {
+            "Name": "",
+            "Description": "\u0414\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0432\u0441\u0435\u0445 \u043d\u0430\u0432\u044b\u043a\u043e\u0432",
+            "Entity": "Hero",
+            "Defence": "",
+            "Parameter": "Duration",
+            "Value": 25,
+            "Index": 80
+          },
+          {
+            "Name": "",
+            "Description": "\u0423\u0440\u043e\u043d \u0432\u0441\u0435\u0445 \u0431\u0430\u0448\u0435\u043d",
+            "Entity": "Tower",
+            "Defence": "",
+            "Parameter": "Damage",
+            "Value": 20,
+            "Index": 100
+          }
+        ],
+        "RankEntityParameters": [
+          {
+            "Name": "\u0412\u0441\u043f\u043b\u0435\u0441\u043a \u0433\u0435\u0440\u043e\u044f",
+            "Description": "\u041a\u0440\u0438\u0442.\u0443\u0440\u043e\u043d",
+            "Entity": "Hero",
+            "Defence": "",
+            "Parameter": "Critical",
+            "Value": 25,
+            "Index": 2
+          },
+          {
+            "Name": "\u041f\u0435\u0440\u0435\u0434\u043e\u0432\u0430\u044f \u043f\u0435\u0440\u0435\u0437\u0430\u0440\u044f\u0434\u043a\u0430",
+            "Description": "\u041f\u0435\u0440\u0435\u0437\u0430\u0440\u044f\u0434\u043a\u0430 \u043f\u0435\u0440\u0435\u0434\u043e\u0432\u044b\u0445 \u043d\u0430\u0432\u044b\u043a\u043e\u0432",
+            "Entity": "Skill",
+            "Defence": "Advanced",
+            "Parameter": "Cooldown",
+            "Value": -30,
+            "Index": 3
+          },
+          {
+            "Name": "\u041f\u0440\u043e\u0432\u043e\u0440\u0441\u0442\u0432\u043e \u0433\u0435\u0440\u043e\u044f",
+            "Description": "\u0427\u0430\u0441\u0442\u043e\u0442\u0430 \u0430\u0442\u0430\u043a\u0438",
+            "Entity": "Hero",
+            "Defence": "",
+            "Parameter": "Speed",
+            "Value": -15,
+            "Index": 4
+          },
+          {
+            "Name": "\u041f\u0435\u0440\u0435\u0434\u043e\u0432\u043e\u0435 \u043f\u0440\u043e\u0441\u0442\u0440\u0430\u043d\u0441\u0442\u0432\u043e",
+            "Description": "\u0420\u0430\u0434\u0438\u0443\u0441 \u043f\u0435\u0440\u0435\u0434\u043e\u0432\u044b\u0445 \u043d\u0430\u0432\u044b\u043a\u043e\u0432",
+            "Entity": "Skill",
+            "Defence": "Advanced",
+            "Parameter": "Radius",
+            "Value": 30,
+            "Index": 5
+          },
+          {
+            "Name": "\u041c\u043e\u0449\u044c \u0433\u0435\u0440\u043e\u044f",
+            "Description": "\u0423\u0440\u043e\u043d",
+            "Entity": "Hero",
+            "Defence": "",
+            "Parameter": "Damage",
+            "Value": 20,
+            "Index": 6
+          },
+          {
+            "Name": "\u041f\u0435\u0440\u0435\u0434\u043e\u0432\u043e\u0435 \u043c\u0430\u0441\u0442\u0435\u0440\u0441\u0442\u0432\u043e",
+            "Description": "\u0414\u043b\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u043f\u0435\u0440\u0435\u0434\u043e\u0432\u044b\u0445 \u043d\u0430\u0432\u044b\u043a\u043e\u0432",
+            "Entity": "Skill",
+            "Defence": "Advanced",
+            "Parameter": "Duration",
+            "Value": 50,
+            "Index": 7
+          }
+        ]
+      }
+    ]
+  },
+  "SkillsSettings": {
+    "AllSkills": [
+      {
+        "ConfigId": "Skill01",
+        "TitleLid": "\u0412\u0437\u0440\u044b\u0432\u043d\u043e\u0439 \u0434\u043e\u0436\u0434\u044c",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "OnRoad": 0,
+        "TypeTarget": "Universal",
+        "Defence": "Fast",
+        "GameplayLevels": [
+          {
+            "Level": 1,
+            "Parameters": []
+          },
+          {
+            "Level": 2,
+            "Parameters": [
+              {
+                "ParameterType": "DPS",
+                "Value": 40
+              },
+              {
+                "ParameterType": "Duration",
+                "Value": 0.5
+              },
+              {
+                "ParameterType": "Cooldown",
+                "Value": -10
+              }
+            ]
+          },
+          {
+            "Level": 3,
+            "Parameters": [
+              {
+                "ParameterType": "DPS",
+                "Value": 40
+              },
+              {
+                "ParameterType": "Radius",
+                "Value": 25
+              },
+              {
+                "ParameterType": "Cooldown",
+                "Value": -15
+              }
+            ]
+          }
+        ],
+        "BaseParameters": [
+          {
+            "ParameterType": "DPS",
+            "Value": 60
+          },
+          {
+            "ParameterType": "Cooldown",
+            "Value": 60
+          },
+          {
+            "ParameterType": "Duration",
+            "Value": 3
+          },
+          {
+            "ParameterType": "Radius",
+            "Value": 0.75
+          }
+        ],
+        "LevelCardParameters": [
+          {
+            "ParameterType": "DPS",
+            "BaseValue": 6,
+            "PowEpic": 1.21
+          }
+        ],
+        "EpicCardParameters": [
+          {
+            "ParameterType": "DPS",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": 5
+              },
+              {
+                "Level": "Rare",
+                "Percent": 10
+              },
+              {
+                "Level": "Epic",
+                "Percent": 15
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 18
+              },
+              {
+                "Level": "Legend",
+                "Percent": 21
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": 28
+              },
+              {
+                "Level": "Cult",
+                "Percent": 35
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": 45
+              },
+              {
+                "Level": "Excellent",
+                "Percent": 55
+              }
+            ]
+          },
+          {
+            "ParameterType": "Cooldown",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": -5
+              },
+              {
+                "Level": "Rare",
+                "Percent": -5
+              },
+              {
+                "Level": "Epic",
+                "Percent": -6
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 0
+              },
+              {
+                "Level": "Legend",
+                "Percent": -5
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": -5
+              },
+              {
+                "Level": "Cult",
+                "Percent": 0
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": -6
+              },
+              {
+                "Level": "Excellent",
+                "Percent": -6
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ConfigId": "Skill02",
+        "TitleLid": "\u041a\u0440\u0435\u043f\u043a\u0430\u044f \u0441\u0442\u0435\u043d\u0430",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "OnRoad": 1,
+        "TypeTarget": "Ground",
+        "Defence": "Support",
+        "GameplayLevels": [
+          {
+            "Level": 1,
+            "Parameters": []
+          },
+          {
+            "Level": 2,
+            "Parameters": [
+              {
+                "ParameterType": "Duration",
+                "Value": 15
+              },
+              {
+                "ParameterType": "Cooldown",
+                "Value": -10
+              },
+              {
+                "ParameterType": "Health",
+                "Value": 20
+              }
+            ]
+          },
+          {
+            "Level": 3,
+            "Parameters": [
+              {
+                "ParameterType": "Cooldown",
+                "Value": -15
+              },
+              {
+                "ParameterType": "Health",
+                "Value": 20
+              }
+            ]
+          }
+        ],
+        "BaseParameters": [
+          {
+            "ParameterType": "Health",
+            "Value": 1700
+          },
+          {
+            "ParameterType": "Duration",
+            "Value": 45
+          },
+          {
+            "ParameterType": "Cooldown",
+            "Value": 100
+          }
+        ],
+        "LevelCardParameters": [
+          {
+            "ParameterType": "Health",
+            "BaseValue": 85,
+            "PowEpic": 1.21
+          }
+        ],
+        "EpicCardParameters": [
+          {
+            "ParameterType": "Health",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": -5
+              },
+              {
+                "Level": "Rare",
+                "Percent": -5
+              },
+              {
+                "Level": "Epic",
+                "Percent": -6
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 0
+              },
+              {
+                "Level": "Legend",
+                "Percent": -5
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": -5
+              },
+              {
+                "Level": "Cult",
+                "Percent": 0
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": -6
+              },
+              {
+                "Level": "Excellent",
+                "Percent": -6
+              }
+            ]
+          },
+          {
+            "ParameterType": "Cooldown",
+            "EpicParameters": [
+              {
+                "Level": "Normal",
+                "Percent": 0
+              },
+              {
+                "Level": "Good",
+                "Percent": 2
+              },
+              {
+                "Level": "Rare",
+                "Percent": 5
+              },
+              {
+                "Level": "Epic",
+                "Percent": 7
+              },
+              {
+                "Level": "EpicPlus",
+                "Percent": 10
+              },
+              {
+                "Level": "Legend",
+                "Percent": 21
+              },
+              {
+                "Level": "LegendPlus",
+                "Percent": 28
+              },
+              {
+                "Level": "Cult",
+                "Percent": 35
+              },
+              {
+                "Level": "CultPlus",
+                "Percent": 45
+              },
+              {
+                "Level": "Excellent",
+                "Percent": 55
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "CastleInitialSettings": {
+    "FullHealth": 1000,
+    "ReduceHealth": 10,
+    "Damage": 10,
+    "Speed": 0.6,
+    "ConfigId": "Castle",
+    "TitleLid": "\u041a\u0440\u0435\u043f\u043e\u0441\u0442\u044c",
+    "DescriptionLid": "2qqwwwddqswws e sswrfffww eree",
+    "PrefabPath": ""
+  },
+  "InventoryInitialSettings": {
+    "TowerCards": [
+      {
+        "ConfigId": "Tower01",
+        "epicCardLevel": "0",
+        "Level": 1
+      },
+      {
+        "ConfigId": "Tower02",
+        "epicCardLevel": "1",
+        "Level": 1
+      },
+      {
+        "ConfigId": "Tower03",
+        "epicCardLevel": "2",
+        "Level": 1
+      },
+      {
+        "ConfigId": "Tower04",
+        "epicCardLevel": "5",
+        "Level": 1
+      },
+      {
+        "ConfigId": "Tower05",
+        "epicCardLevel": "8",
+        "Level": 1
+      },
+      {
+        "ConfigId": "Tower06",
+        "epicCardLevel": "9",
+        "Level": 1
+      },
+      {
+        "ConfigId": "Tower01",
+        "epicCardLevel": "0",
+        "Level": 1
+      }
+    ],
+    "TowerPlans": [
+      {
+        "ConfigId": "Tower01",
+        "Amount": 1
+      },
+      {
+        "ConfigId": "Tower02",
+        "Amount": 1
+      },
+      {
+        "ConfigId": "Tower03",
+        "Amount": 1
+      }
+    ],
+    "SkillCards": [
+      {
+        "ConfigId": "Skill01",
+        "epicCardLevel": "0",
+        "Level": 1
+      },
+      {
+        "ConfigId": "Skill02",
+        "epicCardLevel": "0",
+        "Level": 1
+      }
+    ],
+    "SkillPlans": [
+      {
+        "ConfigId": "Skill01",
+        "Amount": 12
+      }
+    ]
+  },
+  "MobsSettings": {
+    "AllMobs": [
+      {
+        "ConfigId": "AirShooter",
+        "TitleLid": "\u0412\u043e\u0437\u0434\u0443\u0448\u043d\u044b\u0439 \u0441\u043d\u0430\u0439\u043f\u0435\u0440",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 1.25,
+        "SpeedAttack": 90,
+        "IsFly": 1,
+        "AvailableWave": 10,
+        "RewardCurrency": 15,
+        "Defence": "Fast",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            240,
+            569.8,
+            1133.4,
+            1935.6,
+            2980,
+            4269.3,
+            5805.7,
+            7591.3,
+            9627.6,
+            11916,
+            14458,
+            17225,
+            20308,
+            23618,
+            27186,
+            31012,
+            35098,
+            39445,
+            44052,
+            48922,
+            54054,
+            59449,
+            65108,
+            71031,
+            77219,
+            83673,
+            90393,
+            97379,
+            104632,
+            112153,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            77.8,
+            77.8,
+            77.8,
+            101.1,
+            101.1,
+            101.1,
+            124.4,
+            124.4,
+            124.4,
+            147.8,
+            147.8,
+            147.8,
+            171.1,
+            171.1,
+            171.1,
+            194.4,
+            194.4,
+            194.4,
+            217.8,
+            217.8,
+            217.8,
+            241.1,
+            241.1,
+            241.1,
+            264.4,
+            264.4,
+            264.4,
+            287.8,
+            287.8,
+            287.8,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "Bike",
+        "TitleLid": "\u0411\u0430\u0439\u043a\u0435\u0440\u044b",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 0.8,
+        "SpeedAttack": 115,
+        "IsFly": 0,
+        "AvailableWave": 20,
+        "RewardCurrency": 50,
+        "Defence": "Advanced",
+        "Count": 2,
+        "Parameters": {
+          "Health": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "Bomber",
+        "TitleLid": "\u0411\u043e\u043c\u0431\u0430\u0440\u0434\u0438\u0440\u043e\u0432\u0449\u0438\u043a",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 0.75,
+        "SpeedAttack": 40,
+        "IsFly": 1,
+        "AvailableWave": 30,
+        "RewardCurrency": 55,
+        "Defence": "Advanced",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "Fire",
+        "TitleLid": "\u041e\u0433\u043d\u0435\u043d\u043d\u044b\u0439 \u0431\u043b\u0430\u0441\u0442\u0435\u0440",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 1,
+        "SpeedAttack": 475,
+        "IsFly": 0,
+        "AvailableWave": 20,
+        "RewardCurrency": 25,
+        "Defence": "Elemental",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            230,
+            591.2,
+            1208.4,
+            2087.1,
+            3230.9,
+            4643,
+            6325.8,
+            8281.4,
+            10512,
+            13018,
+            15802,
+            18866,
+            22209,
+            25834,
+            29742,
+            33933,
+            38408,
+            43168,
+            48215,
+            53548,
+            59169,
+            65078,
+            71276,
+            77763,
+            84541,
+            91609,
+            98969,
+            106620,
+            114564,
+            122801,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            12.6,
+            12.6,
+            12.6,
+            17.5,
+            17.5,
+            17.5,
+            22.3,
+            22.3,
+            22.3,
+            27.2,
+            27.2,
+            27.2,
+            32,
+            32,
+            32,
+            36.8,
+            36.8,
+            36.8,
+            41.7,
+            41.7,
+            41.7,
+            46.5,
+            46.5,
+            46.5,
+            51.4,
+            51.4,
+            51.4,
+            56.2,
+            56.2,
+            56.2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Burn": [
+            2.53,
+            2.53,
+            2.53,
+            3.49,
+            3.49,
+            3.49,
+            4.46,
+            4.46,
+            4.46,
+            5.43,
+            5.43,
+            5.43,
+            6.4,
+            6.4,
+            6.4,
+            7.37,
+            7.37,
+            7.37,
+            8.34,
+            8.34,
+            8.34,
+            9.31,
+            9.31,
+            9.31,
+            10.3,
+            10.3,
+            10.3,
+            11.2,
+            11.2,
+            11.2,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "Guardian",
+        "TitleLid": "\u0421\u0442\u0440\u0430\u0436",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 1.2,
+        "SpeedAttack": 105,
+        "IsFly": 0,
+        "AvailableWave": 30,
+        "RewardCurrency": 20,
+        "Defence": "Fast",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "Hammer",
+        "TitleLid": "\u041f\u043e\u0432\u0435\u043b\u0438\u0442\u0435\u043b\u044c \u043c\u043e\u043b\u043e\u0442\u0430",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 0.7,
+        "SpeedAttack": 85,
+        "IsFly": 0,
+        "AvailableWave": 50,
+        "RewardCurrency": 100,
+        "Defence": "Advanced",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "HeavyInfantry",
+        "TitleLid": "\u0422\u044f\u0436\u0435\u043b\u044b\u0439 \u043f\u0435\u0445\u043e\u0442\u0438\u043d\u0435\u0446",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 0.8,
+        "SpeedAttack": 80,
+        "IsFly": 0,
+        "AvailableWave": 2,
+        "RewardCurrency": 20,
+        "Defence": "Advanced",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            600,
+            1385.3,
+            2727.1,
+            4637.1,
+            7123.7,
+            10194,
+            13852,
+            18103,
+            22951,
+            28400,
+            34453,
+            41113,
+            48381,
+            56262,
+            64756,
+            73867,
+            83595,
+            93944,
+            104915,
+            116509,
+            128728,
+            141573,
+            155047,
+            169150,
+            183884,
+            199250,
+            215250,
+            231884,
+            249153,
+            267060,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            85.7,
+            85.7,
+            85.7,
+            108.6,
+            108.6,
+            108.6,
+            131.4,
+            131.4,
+            131.4,
+            154.3,
+            154.3,
+            154.3,
+            177.1,
+            177.1,
+            177.1,
+            200,
+            200,
+            200,
+            222.9,
+            222.9,
+            222.9,
+            245.7,
+            245.7,
+            245.7,
+            268.6,
+            268.6,
+            268.6,
+            291.4,
+            291.4,
+            291.4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "Infantry",
+        "TitleLid": "\u041f\u0435\u0445\u043e\u0442\u0438\u043d\u0435\u0446",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 1.2,
+        "SpeedAttack": 85,
+        "IsFly": 0,
+        "AvailableWave": 1,
+        "RewardCurrency": 10,
+        "Defence": "Fast",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            260,
+            652.6,
+            1323.5,
+            2278.5,
+            3521.9,
+            5056.8,
+            6885.9,
+            9011.6,
+            11436,
+            14160,
+            17187,
+            20516,
+            24151,
+            28091,
+            32338,
+            36893,
+            41758,
+            46932,
+            52417,
+            58214,
+            64324,
+            70747,
+            77484,
+            84535,
+            91902,
+            99585,
+            107585,
+            115902,
+            124537,
+            133490,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            94.1,
+            94.1,
+            94.1,
+            115.3,
+            115.3,
+            115.3,
+            136.5,
+            136.5,
+            136.5,
+            157.6,
+            157.6,
+            157.6,
+            178.8,
+            178.8,
+            178.8,
+            200,
+            200,
+            200,
+            221.2,
+            221.2,
+            221.2,
+            242.4,
+            242.4,
+            242.4,
+            263.5,
+            263.5,
+            263.5,
+            284.7,
+            284.7,
+            284.7,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "LaserDrone",
+        "TitleLid": "\u041b\u0430\u0437\u0435\u0440\u043d\u044b\u0439 \u0434\u0440\u043e\u043d",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 1.25,
+        "SpeedAttack": 1000,
+        "IsFly": 0,
+        "AvailableWave": 40,
+        "RewardCurrency": 55,
+        "Defence": "Elemental",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "Mechanoid",
+        "TitleLid": "\u041c\u0435\u0445\u0430\u043d\u043e\u0438\u0434",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 1.5,
+        "SpeedAttack": 85,
+        "IsFly": 0,
+        "AvailableWave": 40,
+        "RewardCurrency": 20,
+        "Defence": "Fast",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "Poisonous",
+        "TitleLid": "\u042f\u0434\u043e\u0432\u0438\u0442\u044b\u0439 \u0443\u0436\u0430\u0441",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 0.8,
+        "SpeedAttack": 75,
+        "IsFly": 0,
+        "AvailableWave": 10,
+        "RewardCurrency": 50,
+        "Defence": "Elemental",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "ShadowKiller",
+        "TitleLid": "\u0422\u0435\u043d\u0435\u0432\u043e\u0439 \u0443\u0431\u0438\u0439\u0446\u0430",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 1.25,
+        "SpeedAttack": 300,
+        "IsFly": 1,
+        "AvailableWave": 50,
+        "RewardCurrency": 50,
+        "Defence": "Fast",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "Shooter",
+        "TitleLid": "\u0421\u0442\u0440\u0435\u043b\u043e\u043a",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 1,
+        "SpeedAttack": 80,
+        "IsFly": 0,
+        "AvailableWave": 10,
+        "RewardCurrency": 12,
+        "Defence": "Fast",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    ],
+    "AllBosses": [
+      {
+        "ConfigId": "BossMurderer",
+        "TitleLid": "\u0414\u0443\u0448\u0435\u0433\u0443\u0431",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 1.5,
+        "SpeedAttack": 180,
+        "IsFly": 0,
+        "AvailableWave": 1,
+        "RewardCurrency": 100,
+        "Defence": "Advanced",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "BossStarCrach",
+        "TitleLid": "\u0417\u0432\u0435\u0437\u0434\u043e\u043a\u0440\u0430\u0445",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 1,
+        "SpeedAttack": 66.5,
+        "IsFly": 0,
+        "AvailableWave": 1,
+        "RewardCurrency": 1000,
+        "Defence": "Elemental",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            6000,
+            8794.1,
+            14753,
+            24600,
+            38941,
+            58309,
+            83185,
+            114012,
+            151200,
+            195137,
+            246187,
+            304698,
+            371003,
+            445419,
+            528253,
+            619800,
+            720347,
+            830169,
+            949538,
+            1078713,
+            1217950,
+            1367497,
+            1527597,
+            1698487,
+            1880400,
+            2073562,
+            2278197,
+            2494523,
+            2722754,
+            2963102,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            1015,
+            1097.7,
+            1180.5,
+            1263.2,
+            1345.9,
+            1428.6,
+            1511.3,
+            1594,
+            1676.7,
+            1759.4,
+            1842.1,
+            1924.8,
+            2007.5,
+            2090.2,
+            2172.9,
+            2255.6,
+            2338.3,
+            2421.1,
+            2503.8,
+            2586.5,
+            2669.2,
+            2751.9,
+            2834.6,
+            2917.3,
+            3000,
+            3082.7,
+            3165.4,
+            3248.1,
+            3330.8,
+            3413.5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "ConfigId": "BossTroll",
+        "TitleLid": "\u0417\u0434\u043e\u0440\u043e\u0432\u044f\u043a",
+        "DescriptionLid": "",
+        "PrefabPath": "",
+        "SpeedMove": 0.5,
+        "SpeedAttack": 50,
+        "IsFly": 0,
+        "AvailableWave": 1,
+        "RewardCurrency": 200,
+        "Defence": "Advanced",
+        "Count": 1,
+        "Parameters": {
+          "Health": [
+            3000,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "Damage": [
+            500,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    ]
+  },
+  "DateVersion": "2026-06-14T11:17:42.381147+02:00"
+}

@@ -48,7 +48,7 @@ namespace Game.MainMenu.Services
 
         public IObservableCollection<TowerPlanViewModel> AllTowerPlans =>
             _allTowerPlans; //Интерфейс менять нельзя, возвращаем через динамический массив
-        private DisposableBag _disposables = new();
+        private DisposableBag _disposables;
         public TowerCardPlanService(
             InventoryRoot inventoryRoot,
             TowersSettings towersSettings,
@@ -71,19 +71,12 @@ namespace Game.MainMenu.Services
                 _towerSettingsMap[towerSettings.ConfigId] = towerSettings;
             }
 
-
+            
             foreach (var item in _items)
             {
                 if (item is TowerCard towerCard)
                 {
-                    towerCard.EpicLevel.Skip(1)
-                        .Subscribe(e => UpdateParameterTowerCard(towerCard))
-                        .AddTo(ref _disposables);
-                    towerCard.Level
-                        .Subscribe(e => UpdateParameterTowerCard(towerCard))
-                        .AddTo(ref _disposables);
-                    UpdateParameterTowerCard(towerCard);
-                    CreateTowerCardViewModel(towerCard);
+                    CreateAndSubscribeViewModel(towerCard);
                 }
 
                 if (item is TowerPlan towerPlan)
@@ -99,13 +92,7 @@ namespace Game.MainMenu.Services
             {
                 if (e.Value is TowerCard towerCard)
                 {
-                    towerCard.EpicLevel
-                        .Subscribe(_ => UpdateParameterTowerCard(towerCard))
-                        .AddTo(ref _disposables);
-                    towerCard.Level
-                        .Subscribe(_ => UpdateParameterTowerCard(towerCard))
-                        .AddTo(ref _disposables);
-                    CreateTowerCardViewModel(towerCard); //Создаем View Model
+                    CreateAndSubscribeViewModel(towerCard);
                 }
 
                 if (e.Value is TowerPlan towerPlan)
@@ -125,6 +112,23 @@ namespace Game.MainMenu.Services
                 var towerView = _allTowerCards.FirstOrDefault(t => t.IdTowerCard == deckTowerCardId);
                 towerView?.IsDeck.OnNext(true);
             }
+        }
+
+        /**
+         * Обсчитываем параметры для TowerCard
+         * Подписываемся на Epic/Level для пересчета параметров
+         * Создаем ViewModel Карточки
+         */
+        private void CreateAndSubscribeViewModel(TowerCard towerCard)
+        {
+            towerCard.EpicLevel.Skip(1)
+                .Subscribe(_ => UpdateParameterTowerCard(towerCard))
+                .AddTo(ref _disposables);
+            towerCard.Level.Skip(1)
+                .Subscribe(_ => UpdateParameterTowerCard(towerCard))
+                .AddTo(ref _disposables);
+            UpdateParameterTowerCard(towerCard);
+            CreateTowerCardViewModel(towerCard); //Создаем View Model
         }
 
         public bool ChangeDeckTowerCard(int uniqueId)
@@ -224,98 +228,35 @@ namespace Game.MainMenu.Services
             //    var level = towerCard.Level.Value;
 
             var settings = _towerSettingsMap[towerCard.ConfigId];
-
-
+            //Возвращаем базовые значения параметров
             towerCard.Parameters.Clear();
             foreach (var baseParameter in settings.BaseParameters)
-            {
                 towerCard.AddParameter(baseParameter);
-                //Parameters.Add(baseParameter.ParameterType, new TowerParameter(new TowerParameterData(baseParameter)));
-            }
-
-            //Debug.Log(JsonConvert.SerializeObject(towerCard.Parameters, Formatting.Indented));
 
             //TODO Пересчет от базовых параметров 
-            foreach (var keyValue in towerCard.Parameters)
+            foreach (var (typeParam, towerParam)  in towerCard.Parameters)
             {
-                //  Debug.Log(keyValue.Key);
-                var towerParam = keyValue.Value;
-                //Возвращаем базовое значение
-                towerParam.Value.Value =
-                    settings.BaseParameters.FirstOrDefault(p => p.ParameterType == towerParam.ParameterType)!.Value;
-                //   Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
-
-                //   Debug.Log(towerCard.EpicLevel.CurrentValue);
                 //Обсчет эпичности
                 var epicCardParam = settings.EpicCardParameters.Find(p => p.ParameterType == towerParam.ParameterType);
                 if (epicCardParam != null)
                 {
-//                    Debug.Log(JsonConvert.SerializeObject(epicCardParam, Formatting.Indented));
+                    
                     foreach (var epicParameter in epicCardParam.EpicParameters)
                     {
                         if (towerCard.EpicLevel.CurrentValue.Index() < epicParameter.Level.Index()) break;
-                        //      Debug.Log(epicParameter.Level);
                         towerParam.Value.Value *= (1 + epicParameter.Percent / 100);
-                        //      Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
                         if (epicParameter.Level == towerCard.EpicLevel.CurrentValue) break;
                     }
                 }
-
-                //    Debug.Log("2 towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
-                //Увеличиваем значения от уровня карты, если параметр изменчив
+                
+                //Обсчет уровня
                 var levelParam = settings.LevelCardParameters.Find(p => p.ParameterType == towerParam.ParameterType);
                 if (levelParam != null)
                 {
-                    // Debug.Log(JsonConvert.SerializeObject(levelParam, Formatting.Indented));
-
                     var rateEpic = Mathf.Pow(levelParam.PowEpic, towerCard.EpicLevel.Value.Index()); //Коэф.роста
-                    //         Debug.Log("rateEpic = " + rateEpic);
-                    //         Debug.Log("towerCard.Level.Value = " + towerCard.Level.Value);
                     towerParam.Value.Value += rateEpic * levelParam.BaseValue * (towerCard.Level.Value - 1);
-                    //          Debug.Log("towerParam.Value.CurrentValue = " + towerParam.Value.CurrentValue);
                 }
-                /*
-                if (towerCard.Parameters.TryGetValue(keyValue.Key, out var towerParameter))
-                {
-                    //Возвращаем базовое значение
-                    towerParameter.Value.Value = settings.BaseParameters.FirstOrDefault(
-                        param => param.ParameterType == keyValue.Key
-                    )!.Value;
-                    //Проходим все эпичные уровни и обсчитываем значения
-
-                    foreach (TypeEpicCard typeEpic in Enum.GetValues(typeof(TypeEpicCard)))
-                    {
-                        //Получаем настройки для уровня typeEpic
-                        var epicSettings = settings.EpicLevels.FirstOrDefault(e => e.Level == typeEpic);
-
-                        var epicUpgrade =
-                            epicSettings?.UpgradeParameters.FirstOrDefault(e => e.ParameterType == keyValue.Key);
-                        if (epicUpgrade != null)
-                        {
-                            //Debug.Log("epicUpgrade.Value  =  " + epicUpgrade.Value);
-                            towerParameter.Value.Value =
-                                towerParameter.Value.CurrentValue * (1 + epicUpgrade.Value / 100);
-                        }
-
-                        if (typeEpic == epic) break; //Совпал уровень эпичности, следующие не грузим
-                    }
-
-                    //Рассчитываем для уровня Level
-
-
-                    var levelUpgrade = settings.EpicLevels.FirstOrDefault(e => e.Level == epic)?.LevelCardParameters
-                        .FirstOrDefault(e => e.ParameterType == keyValue.Key);
-                    if (levelUpgrade != null)
-                    {
-                        towerParameter.Value.Value += levelUpgrade.Value * (level - 1);
-                    }
-                }
-
-*/
             }
-
-            //     Debug.Log("UpdateParameterTowerCard для " + towerCard.UniqueId + $" ({towerCard.ConfigId})");
-            //      Debug.Log(JsonConvert.SerializeObject(towerCard.Parameters, Formatting.Indented));
         }
 
 

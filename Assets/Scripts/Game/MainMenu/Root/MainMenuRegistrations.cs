@@ -2,6 +2,7 @@
 using System.Linq;
 using DI;
 using Game.MainMenu.Commands.ChestCommands;
+using Game.MainMenu.Commands.HeroCommands;
 using Game.MainMenu.Commands.InventoryCommands;
 using Game.MainMenu.Commands.ResourceCommands;
 using Game.MainMenu.Commands.SkillCommands;
@@ -86,6 +87,8 @@ namespace Game.MainMenu.Root
             cmd.RegisterHandler(new CommandSkillCardLevelUpHandler(gameState));
             cmd.RegisterHandler(new CommandSkillCardAddHandler(gameState, gameSettings));
             cmd.RegisterHandler(new CommandSkillPlanAddHandler(gameState));
+            //HERO
+            cmd.RegisterHandler(new CommandHeroCardAddHandler(gameState, gameSettings));
             
             //cmd.RegisterHandler(new CommandSkillPlanSpendHandler(gameState));
 
@@ -131,6 +134,15 @@ namespace Game.MainMenu.Root
                 );
             container.RegisterInstance(skillCardService);
             container.RegisterDisposableOnSceneExit(skillCardService);
+
+            var heroCardService = new HeroCardService(
+                gameState.Inventory,
+                gameSettings.HeroesSettings,
+                cmd,
+                container
+                );
+            container.RegisterInstance(heroCardService);
+            container.RegisterDisposableOnSceneExit(heroCardService);
             
             var chestService = new ChestService(gameState, cmd, gameSettings);
             container.RegisterInstance(chestService);

@@ -10,5 +10,6 @@ namespace Game.Settings.Gameplay.Initial
         public List<TowerPlanSettings> TowerPlans = new();
         public List<SkillCardSettings> SkillCards = new();
         public List<SkillPlanSettings> SkillPlans = new();
+        public string HeroDefault = ""; //Hero01
     }
 }

@@ -265,7 +265,6 @@ namespace Game.GamePlay.Root.View
         private void CreateHero(HeroViewModel heroViewModel)
         {
             var prefabPath = $"Prefabs/Gameplay/Heroes/{heroViewModel.ConfigId}"; 
-            Debug.Log(prefabPath);
             var heroPrefab = Resources.Load<HeroBinder>(prefabPath);
             var createdHero = Instantiate(heroPrefab, transform);
             createdHero.Bind(heroViewModel);

@@ -38,8 +38,6 @@ namespace Game.State.Maps.Heroes
             Placement = new ReactiveProperty<Vector2Int>(heroEntityData.Placement); //Базовое размещение, к которому возвращается Position в конце волны
             Placement.Subscribe(v => heroEntityData.Placement = v).AddTo(ref _disposables);
             
-            Debug.Log("Сущность героя");
-            
             GameplayLevel = new ReactiveProperty<int>(heroEntityData.GameplayLevel);
             GameplayLevel.Subscribe(newLevel =>
             {

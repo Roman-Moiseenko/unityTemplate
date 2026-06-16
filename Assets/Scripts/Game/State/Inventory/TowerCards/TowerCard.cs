@@ -15,6 +15,7 @@ namespace Game.State.Inventory.TowerCards
         public ReactiveProperty<TypeEpic> EpicLevel;
         public readonly ReactiveProperty<int> Level;
         public ObservableDictionary<ParameterType, Parameter> Parameters;
+        public TypeDefence Defence => ((TowerCardData)Origin).Defence;
      //   public TypeDefence Defence;
        // public ObservableDictionary<TowerParameterType, TowerParameter> BaseParameters;
         
@@ -59,11 +60,9 @@ namespace Game.State.Inventory.TowerCards
             {
                 var ket = newValue.NewItem.Key;
                 var value = newValue.NewItem.Value;
-               // Debug.Log($"{ket} + {value}");
                 //TODO Протестить, может и не понадобится
             }).AddTo(ref _disposables);
 
-            //     TowerType = data.TowerType;
         }
 
         public void AddParameter(ParameterSettings parameterSettings)

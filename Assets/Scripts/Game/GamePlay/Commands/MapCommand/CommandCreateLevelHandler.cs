@@ -15,6 +15,7 @@ using Game.State.Maps.Heroes;
 using Game.State.Maps.Skills;
 using Game.State.Root;
 using MVVM.CMD;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Game.GamePlay.Commands.MapCommand
@@ -40,8 +41,6 @@ namespace Game.GamePlay.Commands.MapCommand
          */
         public bool Handle(CommandCreateLevel command)
         {
-         //   Debug.Log("Создаем уровень");
-            
             if (_gameplayState.Towers.Any())
             {
                 Debug.Log($"Map id={command.MapId} already exist");
@@ -103,29 +102,26 @@ namespace Game.GamePlay.Commands.MapCommand
                 _gameplayState.StatisticGame.Add(skillCardData.ConfigId, TypeEntityStatisticDamage.Skill);
             }
             
-            //TODO Создаем Героя из базовых настроек
+            //Создаем Героя из базовых настроек
             var heroCard = _gameplayState.EnterParams.HeroCard;
-            var heroSettings = _gameSettings.HeroesSettings.AllHero
+            var heroSettings = _gameSettings.HeroesSettings.AllHeroes
                 .Find(h => h.ConfigId == heroCard.ConfigId);
-
-            //MAINDO Переделать из настроек 
+            
             var heroEntityData = new HeroEntityData
             {
                 UniqueId = _gameplayState.CreateEntityID(),
                 ConfigId = heroCard.ConfigId,
-                Defence = heroCard.Defence,
-                TypeTarget = TypeTarget.Ground, // heroSettings.TypeTarget,
-                EpicLevel = heroCard.EpicLevel, // heroSettings.EpicLevel,
+                Defence = heroSettings.Defence,
+                TypeTarget = heroSettings.TypeTarget,
+                EpicLevel = heroSettings.Epic,
                 Level =  heroCard.Level,
                 Rank =  heroCard.Rank,
                 GameplayLevel = 1,
-                IsSingleTarget = true, //heroSettings.IsSingleTarget
+                IsSingleTarget = heroSettings.Shot.Single,
                 Placement = new Vector2Int(2, 0),
-                
             };
             
             _gameplayState.Hero = new HeroEntity(heroEntityData);
-            
             _gameplayState.StatisticGame.Add(heroCard.ConfigId, TypeEntityStatisticDamage.Hero);
             
             /*

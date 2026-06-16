@@ -65,6 +65,10 @@ namespace Game.Settings
         }
 
 
+        /**
+         * Проверка версии настроек (по DateVersion)
+         * и загрузка настроек локально или с сервера
+         */
         private IEnumerator StartLoadingProcess(LoadingState state)
         {
             state.Set("Проверяем настройки игры");
@@ -74,7 +78,8 @@ namespace Game.Settings
 
             yield return CheckWeb(state); //Запускаем корутину Которая проверяет соединение,
 
-            if (!WebAvailable.CurrentValue) //Связи нет
+            //Связи нет, загружаем локальные настройки
+            if (!WebAvailable.CurrentValue) 
             {
                 if (!PlayerPrefs.HasKey(GAME_SETTINGS_KEY))
                 {
@@ -86,9 +91,11 @@ namespace Game.Settings
                 yield break;
             }
 
-            yield return SettingsVersion(state); //Загружаем с сервера номер версии настроек
+            //Загружаем с сервера номер версии настроек
+            yield return SettingsVersion(state); 
 
-            if (PlayerPrefs.HasKey(GAME_SETTINGS_VERSION)) //Локальная версия сохранена
+            //Если есть локальная версия, и версия с сервера не обновлялась, берем локальные
+            if (PlayerPrefs.HasKey(GAME_SETTINGS_VERSION)) 
             {
                 var localDate = JsonConvert
                     .DeserializeObject<DateTime>(PlayerPrefs.GetString(GAME_SETTINGS_VERSION));
@@ -98,17 +105,22 @@ namespace Game.Settings
                     yield break;
                 }
             }
-
             
             //Настройки не загружены или версия не совпадает
             state.Set("Загружаем настройки с сервера");
             yield return LoadTextFromServer(WebConstants.WEB_SETTINGS, userToken, userId);
             state.Set("Конвертируем полученные настройки игры");
             _gameSettings = JsonConvert.DeserializeObject<GameSettings>(_response.Value);
-            //Debug.Log(JsonConvert.SerializeObject(_gameSettings.ParameterDefinitions, Formatting.Indented));
-            //yield return null;
-            //state.Set("Подготавливаем реестр параметров");
-            //_gameSettings.ParameterDefinitionMap = _gameSettings.ParameterDefinitions.ToDictionary();
+          //  Debug.Log(JsonConvert.SerializeObject(_response.Value, Formatting.Indented));
+            
+          /*
+            string path = Application.persistentDataPath + "/debug_config.json";
+            System.IO.File.WriteAllText(path, _response.Value);
+            Debug.Log($"JSON сохранён в {path}");
+            
+            */
+           // Debug.Log(JsonConvert.SerializeObject(_gameSettings.HeroesSettings.AllHeroes, Formatting.Indented));
+
             yield return null;
             state.Set("Сохраняем настройки локально");
             PlayerPrefs.SetString(GAME_SETTINGS_KEY, JsonConvert.SerializeObject(_response.Value));

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.MainMenu.Commands.HeroCommands;
 using Game.MainMenu.Commands.SkillCommands;
 using Game.MainMenu.Commands.TowerCommands;
 using Game.Settings;
 using Game.State.Inventory;
 using Game.State.Inventory.Deck;
+using Game.State.Inventory.HeroCards;
 using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.TowerCards;
 using Game.State.Root;
@@ -36,7 +38,7 @@ namespace Game.MainMenu.Commands.InventoryCommands
             var towerCards = _gameSettings.InventoryInitialSettings.TowerCards;
             var towerPlans = _gameSettings.InventoryInitialSettings.TowerPlans;
             var configTowers = _gameSettings.TowersSettings.AllTowers;
-
+            var heroHero = _gameSettings.InventoryInitialSettings.HeroDefault;
             
 
             foreach (var towerPlan in towerPlans)
@@ -61,8 +63,7 @@ namespace Game.MainMenu.Commands.InventoryCommands
                 };
                 _cmd.Process(commandTowerCard, false);
             }
-
-
+            
             //Начальные навыки из настроек
             var skillCards = _gameSettings.InventoryInitialSettings.SkillCards;
             var skillPlans = _gameSettings.InventoryInitialSettings.SkillPlans;
@@ -103,11 +104,25 @@ namespace Game.MainMenu.Commands.InventoryCommands
                     initialDeck.SkillCardIds.Add(skillCard.UniqueId); //Добавляем начальные навыки в колоду  
                 
             }
+            //TODO Начальный герой из настроек
+
+            var heroCommand = new CommandHeroCardAdd
+            {
+                ConfigId = heroHero,
+                Available = true,
+                Level = 1,
+                Rank = 1,
+            };
+            _cmd.Process(heroCommand, false);
+            
+            //var heroCard = _gameState.Inventory.Items.FirstOrDefault(item => item.ConfigId == heroHero);
+            
+            initialDeck.HeroConfigId = heroHero;
 
             _gameState.Inventory.DeckCards.Add(1, new DeckCard(initialDeck));
 
 
-            //TODO Начальный герой из настроек
+            
 
 
             _gameState.HardCurrency.OnNext(5000);

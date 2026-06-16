@@ -13,7 +13,7 @@ namespace Game.GamePlay.View.Hero
 
         public HeroViewModel(HeroEntity heroEntity, GameplayStateProxy gameplayState)
         {
-            Debug.Log(heroEntity.ConfigId);
+            Debug.Log($"HeroViewModel {heroEntity.ConfigId}");
             _heroEntity = heroEntity;
             
             

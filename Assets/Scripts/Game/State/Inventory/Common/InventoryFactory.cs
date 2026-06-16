@@ -1,4 +1,5 @@
 ﻿using System;
+using Game.State.Inventory.HeroCards;
 using Game.State.Inventory.SkillCards;
 using Game.State.Inventory.SkillPlans;
 using Game.State.Inventory.TowerCards;
@@ -23,7 +24,8 @@ namespace Game.State.Inventory.Common
                     return new SkillCard(inventoryItemData as SkillCardData);
                 case InventoryType.SkillPlan:
                     return new SkillPlan(inventoryItemData as SkillPlanData);
-
+                case InventoryType.HeroCard:
+                    return new HeroCard(inventoryItemData as HeroCardData);
                 default:
                     throw new Exception($"Unsupported entity type: " + inventoryItemData.TypeItem);
             }

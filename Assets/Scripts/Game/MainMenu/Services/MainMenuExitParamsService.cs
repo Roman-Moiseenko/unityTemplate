@@ -55,43 +55,13 @@ namespace Game.MainMenu.Services
             }
             
             
-            //TODO Переносим героя
+            //Переносим героя
+            //Героя ищем по ConfigId
+            var heroCard = gameState.Inventory.Items.FirstOrDefault(item => item.ConfigId == deckCard.HeroConfigId.CurrentValue);
             
-            var heroCard = gameState.Inventory.Items.FirstOrDefault(item => item.UniqueId == deckCard.HeroCardId.CurrentValue);
             if (heroCard == null)
-            {
-                //MAINDO Исключение throw new Exception($"Отсутствует в инвентаре герой с id = {deckCard.HeroCardId.CurrentValue}");
-                
-                var heroCardData = new HeroCardData
-                {
-                    Defence = TypeDefence.Advanced,
-                    EpicLevel = TypeEpic.Good,
-                    Level = 1,
-                    Rank = 1,
-                    Available = true,
-                    ConfigId = "Hero00",
-                    UniqueId = 9999999,
-                    Amount = 1,
-                    Name = "Герой"
-                };
-                heroCardData.Parameters.Add(ParameterType.Damage, new ParameterData
-                {
-                    ParameterType = ParameterType.Damage,
-                    Value = 100,
-                });
-                heroCardData.Parameters.Add(ParameterType.Critical, new ParameterData
-                {
-                    ParameterType = ParameterType.Critical,
-                    Value = 10,
-                });
-                heroCardData.Parameters.Add(ParameterType.Speed, new ParameterData
-                {
-                    ParameterType = ParameterType.Speed,
-                    Value = 1,
-                });
-                heroCard = new HeroCard(heroCardData);
-            }
-
+                throw new Exception($"Отсутствует в инвентаре герой с id = {deckCard.HeroConfigId.CurrentValue}");
+            
             gameplayEnterParams.HeroCard = (HeroCardData)heroCard.Origin;
 
             //Переносим коэффициенты из науки

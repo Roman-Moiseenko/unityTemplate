@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DI;
 using Game.MainMenu.Services;
+using Game.MainMenu.View.ScreenInventory.HeroCards;
 using Game.MainMenu.View.ScreenInventory.PopupTowerCard;
 using Game.MainMenu.View.ScreenInventory.SkillCards;
 using Game.MainMenu.View.ScreenInventory.SkillPlans;
@@ -22,69 +23,58 @@ namespace Game.MainMenu.View.ScreenInventory
     public class ScreenInventoryViewModel : WindowViewModel
     {
         private readonly MainMenuUIManager _uiManager;
-        
-        // private readonly Subject<Unit> _exitSceneRequest;
+
         public override string Id => "ScreenInventory";
         public override string Path => "MainMenu/ScreenInventory/";
-        //public readonly ObservableList<TowerCardViewModel> TowerCards;
 
-        public GameStateProxy GameState;
-
-        private readonly IObservableCollection<TowerCardViewModel> towerCards;
-        
+        //Публичные данные для Binder
+        //Tower Cards
         public readonly ObservableList<TowerCardViewModel> TowerCardsDeck = new();
         public readonly ObservableList<TowerCardViewModel> TowerCardsInventory = new();
-        
         public readonly IObservableCollection<TowerPlanViewModel> TowerPlansInventory;
-        
-        private readonly IObservableCollection<SkillCardViewModel> skillCards;
-        
+        //Skill Cards
         public readonly ObservableList<SkillCardViewModel> SkillCardsDeck = new();
         public readonly ObservableList<SkillCardViewModel> SkillCardsInventory = new();
+        public readonly IObservableCollection<SkillPlanViewModel> SkillPlansInventory;
+        //Hero Cards
+        public readonly ReactiveProperty<HeroCardViewModel> HeroCardDeck = new(null);
         
-        public IObservableCollection<SkillPlanViewModel> SkillPlansInventory;
-
+        private readonly IObservableCollection<TowerCardViewModel> towerCards;
+        private readonly IObservableCollection<SkillCardViewModel> skillCards;
+        private readonly IObservableCollection<HeroCardViewModel> heroCards;
+        
         private readonly InventoryUIManager _inventoryUIManager;
         private Dictionary<int, IDisposable> _disposableMap = new();
 
         public ScreenInventoryViewModel(MainMenuUIManager uiManager, DIContainer container) : base(container)
         {
             _uiManager = uiManager;
-            GameState = container.Resolve<IGameStateProvider>().GameState;
             _inventoryUIManager = container.Resolve<InventoryUIManager>();
-            
-            
+
             var towerCardPlanService = container.Resolve<TowerCardPlanService>();
             towerCards = towerCardPlanService.AllTowerCards;
             TowerPlansInventory = towerCardPlanService.AllTowerPlans;
             TowerCardsUpload();
-            
+
             var skillCardPlanService = container.Resolve<SkillCardPlanService>();
             skillCards = skillCardPlanService.AllSkillCards;
             SkillPlansInventory = skillCardPlanService.AllSkillPlans;
             SkillCardsUpload();
-            
-            
 
-/*
-            foreach (var inventoryItem in GameState.InventoryItems)
-            {
-                if (inventoryItem is TowerCard towerCardEntity)
-                {
-                    var towerCardViewModel = new TowerCardViewModel(towerCardEntity);
-                    TowerCards.Add(towerCardViewModel);
-                }
-            }
-            */
-            //     _exitSceneRequest = exitSceneRequest;
+            var heroCardService = container.Resolve<HeroCardService>();
+            heroCards = heroCardService.AllHeroCards;
+            HeroCardsUpload();
         }
-/*
+
+        
+        
+        /*
         public void RequestOpenPopupTowerCard(TowerCardViewModel viewModel)
         {
             _uiManager.OpenPopupTowerCard(viewModel);
         }
 */
-    
+
 
         public void RequestPopupBlacksmith()
         {
@@ -93,7 +83,7 @@ namespace Game.MainMenu.View.ScreenInventory
 
         private void TowerCardsUpload()
         {
-            foreach (var towerCardViewModel  in towerCards)
+            foreach (var towerCardViewModel in towerCards)
             {
                 TowerDeckSubscription(towerCardViewModel);
             }
@@ -138,13 +128,25 @@ namespace Game.MainMenu.View.ScreenInventory
             {
                 TowerCardsInventory.Remove(towerCardViewModel);
             }
+
             _disposableMap[towerCardViewModel.IdTowerCard].Dispose();
             _disposableMap.Remove(towerCardViewModel.IdTowerCard);
         }
-        
+
+        private void HeroCardsUpload()
+        {
+            foreach (var heroCardViewModel in heroCards)
+            {
+                heroCardViewModel.IsDeck
+                    .Where(x => x)
+                    .Subscribe(_ => HeroCardDeck.Value = heroCardViewModel)
+                    .AddTo(ref _disposables);
+            }
+        }
+
         private void SkillCardsUpload()
         {
-            foreach (var skillCardViewModel  in skillCards)
+            foreach (var skillCardViewModel in skillCards)
             {
                 skillCardViewModel.IsDeck.Subscribe(x =>
                 {

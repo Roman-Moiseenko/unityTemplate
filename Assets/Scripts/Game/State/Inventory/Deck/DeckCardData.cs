@@ -9,7 +9,7 @@ namespace Game.State.Inventory.Deck
     {
         public readonly List<int> TowerCardIds = new();
         public readonly List<int> SkillCardIds = new();
-        public int HeroCardId ;
+        public string HeroConfigId ; //Каждый ConfigID уникален, т.к. карточка героя всегда 1
         
     }
 }
