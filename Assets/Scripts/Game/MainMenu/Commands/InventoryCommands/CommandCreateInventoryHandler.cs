@@ -118,13 +118,8 @@ namespace Game.MainMenu.Commands.InventoryCommands
             //var heroCard = _gameState.Inventory.Items.FirstOrDefault(item => item.ConfigId == heroHero);
             
             initialDeck.HeroConfigId = heroHero;
-
             _gameState.Inventory.DeckCards.Add(1, new DeckCard(initialDeck));
-
-
             
-
-
             _gameState.HardCurrency.OnNext(5000);
             _gameState.SoftCurrency.OnNext(45000);
             return true;

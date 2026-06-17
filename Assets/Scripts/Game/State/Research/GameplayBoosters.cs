@@ -9,21 +9,7 @@ namespace Game.State.Research
 {
     public class GameplayBoosters
     {
-        public float TowerDamage { get; set; }
-        public float TowerCritical { get; set; }
-        public float TowerDistance { get; set; }
-        public float TowerSpeed { get; set; }
         public float RewardCurrency { get; set; }
-        public float SkillDamage { get; set; }
-
-        public float HeroDamage { get; set; }
-        public int CastleHealth { get; set; }
-        public float CastleDamage { get; set; }
-        public float CastleSpeed { get; set; }
-        
-        public float CastleRegenerate { get; set; }
-
-        //TODO Доработать
         
         //Бустеры по типам Defence 
         public Dictionary<TypeDefence, Dictionary<ParameterType, float>> TowerDefenceBust = new();
@@ -32,5 +18,7 @@ namespace Game.State.Research
         public readonly Dictionary<ParameterType, float> TowerBust = new();
         public readonly Dictionary<ParameterType, float> HeroBust = new();
         public readonly Dictionary<ParameterType, float> SkillBust = new();
+        //TODO Реализовать и добавить параметр - CastleRegenerate
+        public readonly Dictionary<ParameterType, float> CastleBust = new();
     }
 }

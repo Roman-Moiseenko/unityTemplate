@@ -261,13 +261,11 @@ namespace Game.GamePlay.Services
 
         private void CalculateBoosters()
         {
+            //MAINDO Проийти по списку все бустеры, и если есть совпадание с параметрами Навыка, увеличить
+            var damageBooster = 0f;
             //бустеры общие
-            var damageBooster = _gameplayBoosters.SkillDamage;
-
-            //бустеры общие от героя
             if (_gameplayBoosters.SkillBust.TryGetValue(ParameterType.Damage, out var damage))
                 damageBooster += damage;
-
 
             //бустеры от типа защиты и от наличия параметра в карточке
             foreach (var skillCard in _baseSkillCards)

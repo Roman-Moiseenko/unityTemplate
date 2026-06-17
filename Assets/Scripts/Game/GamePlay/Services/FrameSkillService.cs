@@ -4,8 +4,8 @@ using System.Linq;
 using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.SkillStates;
-using Game.GamePlay.Queries.SkillQueries;
 using Game.GamePlay.View.Frames.SkillFrames;
+using Game.GameRoot.Queries.SkillQueries;
 using Game.Settings.Gameplay.Entities.Skill;
 using Game.State.Gameplay;
 using Game.State.Maps.Roads;
@@ -149,7 +149,7 @@ namespace Game.GamePlay.Services
         {
             if (_viewModels.Count > 0) ClearViewModel();
 
-            var query = new QueryInfoSkill { ConfigId = configId };
+            var query = new QueryInfoSkill(configId);
             var settings = _qrc.Request<QueryInfoSkill, SkillSettings>(query);
             var param = _skillService.GetParameters(configId);
             _viewModel = new FrameSkillViewModel(configId, settings, this, param);

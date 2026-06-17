@@ -78,6 +78,7 @@ namespace Game.GamePlay.View.Towers
             var fsmTower = container.Resolve<FsmTower>();
             GameplayState = container.Resolve<IGameStateProvider>().GameplayState;
             TowersService = container.Resolve<TowersService>();
+            // container.Resolve<>
             GameplayBoosters = container.Resolve<GameplayEnterParams>().GameplayBoosters;
             _container = container;
             
@@ -156,11 +157,15 @@ namespace Game.GamePlay.View.Towers
             if (TowerEntity.Parameters.TryGetValue(ParameterType.Distance, out var parameter))
                 radius.x = parameter.Value;
 
-            //TODO Если к башне применен параметр Высота (+дистанции) то вычисляем radius.z = %% от radius.x
+            //MAINDO Если к башне применен параметр Высота (+дистанции) то вычисляем radius.z = %% от radius.x
 
-            radius.z += radius.x * GameplayBoosters.TowerDistance /
-                        100; //Если есть бустер на дистанцию, то добавить в radius.z
-            //TODO Добавить бустер от Героя, если есть на дистанцию для определенного типа башен
+            //Если есть бустер на дистанцию, то добавить в radius.z 
+            if (TowersService.TowerBoosters.TryGetValue(ConfigId, out var boosters))
+            {
+                if (boosters.TryGetValue(ParameterType.Distance, out var distance))
+                    radius.z += radius.x * distance / 100;    
+            }
+            
 
             return radius;
         }

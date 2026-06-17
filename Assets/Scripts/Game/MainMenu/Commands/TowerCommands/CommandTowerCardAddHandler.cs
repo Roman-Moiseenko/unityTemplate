@@ -34,7 +34,7 @@ namespace Game.MainMenu.Commands.TowerCommands
                 ConfigId = command.ConfigId,
                 EpicLevel = command.EpicLevel,
                 Level = command.Level,
-                Amount = 1, //towerCard.Amount,
+                Amount = 1, 
                 Parameters = new Dictionary<ParameterType, ParameterData>(),
                 Defence = towerConfig.Defence,
             };

@@ -45,8 +45,11 @@ namespace Game.GamePlay.Services
         private readonly DIContainer _container;
         private readonly GameplayBoosters _gameplayBoosters;
 
+        /// <summary>
+        /// float - процент роста (от 0 до 99%)
+        /// </summary>
         public readonly Dictionary<string, Dictionary<ParameterType, float>> TowerBoosters = new();
-        private DisposableBag _disposables = new();
+        private DisposableBag _disposables;
 
         /**
          * При загрузке создаем все view-модели из реактивного списка всех строений.
@@ -334,12 +337,12 @@ namespace Game.GamePlay.Services
 
         private void CalculateBoosters()
         {
-
-            //бустеры общие
-            var damageBooster = _gameplayBoosters.TowerDamage;
-            var criticalBooster = _gameplayBoosters.TowerCritical;
-            var speedBooster = _gameplayBoosters.TowerSpeed;
-            var distanceBooster = _gameplayBoosters.TowerDistance;
+            
+            //MAINDO Проийти по списку все бустеры, и если есть совпадание с параметрами Башни, увеличить
+            var damageBooster = 0f;
+            var criticalBooster = 0f;
+            var speedBooster = 0f;
+            var distanceBooster = 0f;
             //бустеры общие от героя
             if (_gameplayBoosters.TowerBust.TryGetValue(ParameterType.Damage, out var damage))
                 damageBooster += damage;

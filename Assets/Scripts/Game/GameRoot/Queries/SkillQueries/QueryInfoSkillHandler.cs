@@ -2,7 +2,7 @@ using Game.Settings;
 using Game.Settings.Gameplay.Entities.Skill;
 using MVVM.CMD;
 
-namespace Game.GamePlay.Queries.SkillQueries
+namespace Game.GameRoot.Queries.SkillQueries
 {
     public class QueryInfoSkillHandler : IQueryHandler<QueryInfoSkill, SkillSettings>
     {

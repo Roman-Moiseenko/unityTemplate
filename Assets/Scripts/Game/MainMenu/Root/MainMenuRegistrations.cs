@@ -35,41 +35,35 @@ namespace Game.MainMenu.Root
             var settingsProvider = container.Resolve<ISettingsProvider>();
             var gameSettings = settingsProvider.GameSettings;
 
-            //container.RegisterInstance(new PlayUIManager(container));
             //РЕГИСТРИРУЕМ СОБЫТИЯ
             var subjectExitParams = new Subject<MainMenuExitParams>();
             //Открыть окна о карточках в меню по их клику
             container.RegisterFactory(_ => new Subject<TowerCardViewModel>()).AsSingle();
             container.RegisterFactory(_ => new Subject<TowerPlanViewModel>()).AsSingle();
-            
+
             container.RegisterFactory(_ => new Subject<SkillCardViewModel>()).AsSingle();
             container.RegisterFactory(_ => new Subject<SkillPlanViewModel>()).AsSingle();
 
 
             // new Subject<Unit>()); //Событие, требующее смены сцены
             container.RegisterInstance(subjectExitParams); //Событие, требующее смены сцены
-
-            //  var cmd = container.Resolve<ICommandProcessor>();
+            
             var cmd = container.Resolve<ICommandProcessor>();
-
-
             //команды работы с инвентарем
             //CHEST
             cmd.RegisterHandler(new CommandChestOpeningHandler(gameState));
             cmd.RegisterHandler(new CommandChestAddHandler(gameState));
             cmd.RegisterHandler(new CommandChestOpenedHandler(gameState));
             cmd.RegisterHandler(new CommandChestOpenHandler(gameState, cmd));
-            
-            
-            
+
             cmd.RegisterHandler(new CommandChestForcedHandler(gameState));
             //INVENTORY
             cmd.RegisterHandler(new CommandCreateInventoryHandler(gameState, gameSettings, cmd));
             cmd.RegisterHandler(new CommandInventoryItemAddHandler(gameState));
             cmd.RegisterHandler(new CommandInventoryItemSpendHandler(gameState));
             cmd.RegisterHandler(new CommandInventoryFromRewardHandler(cmd));
-           // cmd.RegisterHandler(new CommandInventoryAddRewardHandler(gameState, cmd));
-            
+            // cmd.RegisterHandler(new CommandInventoryAddRewardHandler(gameState, cmd));
+
             //RESOURCE
             cmd.RegisterHandler(new CommandResourcesAddHandler(gameState));
             cmd.RegisterHandler(new CommandResourcesSpendHandler(gameState));
@@ -89,33 +83,21 @@ namespace Game.MainMenu.Root
             cmd.RegisterHandler(new CommandSkillPlanAddHandler(gameState));
             //HERO
             cmd.RegisterHandler(new CommandHeroCardAddHandler(gameState, gameSettings));
-            
-            //cmd.RegisterHandler(new CommandSkillPlanSpendHandler(gameState));
-
 
             container.RegisterFactory(c => new MainMenuExitParamsService(container)).AsSingle();
             //container.RegisterFactory(_ => new ResourcesService(gameState.Resources, cmd)).AsSingle();
 
             //  Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.TowerCardBag.Items, Formatting.Indented));
             //Для нового игрока загружаем базовый инвентарь
-          //  Debug.Log("MainMenuRegistrations");
             if (gameState.Inventory.Items.Any() != true)
             {
-              //  Debug.Log("gameState.Inventory.Items.Any");
-                // Debug.Log("Загружаем Инвентарь из Настроек");
                 var command = new CommandCreateInventory();
                 var success = cmd.Process(command);
-                if (!success)
-                {
-                    throw new Exception($"Инвентарь не создался");
-                }
-                //Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.DeckCards, Formatting.Indented));
-                //Debug.Log(JsonConvert.SerializeObject(gameState.Inventory.BattleDeck, Formatting.Indented));
+                if (!success) throw new Exception($"Инвентарь не создался");
             }
-            //TODO Загружаем настройки и другое с сервера. Либо перенести в GameRoot 
             
+            //Загружаем настройки и другое с сервера. Либо перенести в GameRoot 
             //Сервисы для play screen
-
             //Сервисы карточек
             var towerCardService = new TowerCardPlanService(
                 gameState.Inventory,
@@ -131,7 +113,7 @@ namespace Game.MainMenu.Root
                 gameSettings.SkillsSettings,
                 cmd,
                 container
-                );
+            );
             container.RegisterInstance(skillCardService);
             container.RegisterDisposableOnSceneExit(skillCardService);
 
@@ -140,20 +122,20 @@ namespace Game.MainMenu.Root
                 gameSettings.HeroesSettings,
                 cmd,
                 container
-                );
+            );
             container.RegisterInstance(heroCardService);
             container.RegisterDisposableOnSceneExit(heroCardService);
-            
+
             var chestService = new ChestService(gameState, cmd, gameSettings);
             container.RegisterInstance(chestService);
             container.RegisterDisposableOnSceneExit(chestService);
-            
+
             container.RegisterFactory(_ => new InventoryService(cmd, gameState, chestService)).AsSingle();
-            
-            
+
+
             //TODO Запускаем первоначальные проверки
             chestService.StartOpeningChests(); //Проверка на открывающиеся и открытые сундуки, меняем TimerLeft
-            
+
             //var commandOpened = new CommandChestOpened();
             //cmd.Process(commandOpened);
         }

@@ -5,8 +5,6 @@ using Game.State.Inventory.SkillPlans;
 using Game.State.Inventory.TowerCards;
 using Game.State.Inventory.TowerPlans;
 
-//using Game.State.Inventory.TowerPlan;
-
 namespace Game.State.Inventory.Common
 {
     public static class InventoryFactory
@@ -26,20 +24,10 @@ namespace Game.State.Inventory.Common
                     return new SkillPlan(inventoryItemData as SkillPlanData);
                 case InventoryType.HeroCard:
                     return new HeroCard(inventoryItemData as HeroCardData);
+                
                 default:
                     throw new Exception($"Unsupported entity type: " + inventoryItemData.TypeItem);
             }
-        }
-
-        public static InventoryItem Create(InventoryItemData inventoryItemData)
-        {
-            var type = inventoryItemData.GetType();
-
-            if (type == typeof(TowerCardData)) return new TowerCard(inventoryItemData as TowerCardData);
-            if (type == typeof(TowerPlanData)) return new TowerPlan(inventoryItemData as TowerPlanData);
-
-
-            throw new Exception($"Unsupported entity type: " + type);
         }
     }
 }

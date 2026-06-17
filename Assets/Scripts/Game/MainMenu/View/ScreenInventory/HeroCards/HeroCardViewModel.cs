@@ -3,6 +3,7 @@ using DI;
 using Game.Settings.Gameplay.Entities.Heroes;
 using Game.State.Inventory.HeroCards;
 using R3;
+using UnityEngine;
 
 namespace Game.MainMenu.View.ScreenInventory.HeroCards
 {
@@ -20,6 +21,8 @@ namespace Game.MainMenu.View.ScreenInventory.HeroCards
             )
         {
             _heroCardEntity = heroCardEntity;
+//            Debug.Log("HeroCardViewModel создана " + IsDeck.Value);
+ //           IsDeck.Subscribe(v => Debug.Log($"IsDeck = " + v)).AddTo(ref _disposables);
         }
 
         

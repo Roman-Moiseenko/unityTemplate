@@ -14,14 +14,11 @@ namespace Game.State.Inventory.TowerCards
     {
         public ReactiveProperty<TypeEpic> EpicLevel;
         public readonly ReactiveProperty<int> Level;
-        public ObservableDictionary<ParameterType, Parameter> Parameters;
+        public readonly ObservableDictionary<ParameterType, Parameter> Parameters;
         public TypeDefence Defence => ((TowerCardData)Origin).Defence;
-     //   public TypeDefence Defence;
-       // public ObservableDictionary<TowerParameterType, TowerParameter> BaseParameters;
         
         public TowerCard(TowerCardData data) : base(data)
         {
-         //   Defence = data.Defence;
             EpicLevel = new ReactiveProperty<TypeEpic>(data.EpicLevel);
             EpicLevel.Subscribe(newValue => data.EpicLevel = newValue).AddTo(ref _disposables);
             
@@ -29,7 +26,7 @@ namespace Game.State.Inventory.TowerCards
             Level.Subscribe(newAmount => data.Level = newAmount).AddTo(ref _disposables);
             
             Parameters = new ObservableDictionary<ParameterType, Parameter>();
-            //Debug.Log(JsonConvert.SerializeObject(data, Formatting.Indented));
+            
             foreach (var parameter in data.Parameters)
             {
                 Parameters.Add(parameter.Key, new Parameter(parameter.Value));
@@ -92,13 +89,7 @@ namespace Game.State.Inventory.TowerCards
 
         public override void Dispose()
         {
-            //TODO Очистить параметры
             EpicLevel?.Dispose();
-           /* foreach (var (key, parameter) in Parameters)
-            {
-                parameter?.Dispose();
-            }
-            */
             Parameters.Clear(); //Dispose вызывается в подписке
             Level?.Dispose();
             base.Dispose();

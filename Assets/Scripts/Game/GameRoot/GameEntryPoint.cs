@@ -6,9 +6,15 @@ using Game.GameRoot;
 using Game.GameRoot.Commands;
 using Game.GameRoot.Commands.HardCurrency;
 using Game.GameRoot.ImageManager;
+using Game.GameRoot.Queries.HeroQueries;
+using Game.GameRoot.Queries.SkillQueries;
+using Game.GameRoot.Queries.TowerQueries;
 using Game.GameRoot.Services;
 using Game.MainMenu.Root;
 using Game.Settings;
+using Game.Settings.Gameplay.Entities.Heroes;
+using Game.Settings.Gameplay.Entities.Skill;
+using Game.Settings.Gameplay.Entities.Tower;
 using Game.State;
 using Game.State.Root;
 using MVVM.CMD;
@@ -50,7 +56,7 @@ namespace Scripts.Game.GameRoot
             //Возможность запуска корутины из не монобехевиара
             _coroutines = new GameObject("[COROUTINES]").AddComponent<Coroutines>();
             Object.DontDestroyOnLoad(_coroutines.gameObject);
-            //  _coroutines.StartCoroutine(LoadFirstBoot());
+            
 
             //Находим прехаб UIRoot и присоединяем его к проекту
             var prefabUIRoot = Resources.Load<UIRootView>("UIRoot");
@@ -66,26 +72,7 @@ namespace Scripts.Game.GameRoot
 
             var storageManager = new StorageManager();
             _rootContainer.RegisterInstance(storageManager);
-
-            /*
-                string userId;
-                string userToken;
-                var webService = new WebService();
-                //Проверяем игрока первый запуск?
-                if (!PlayerPrefs.HasKey(AppConstants.USER_ID))
-                {
-                    userId = Path.GetRandomFileName();
-                    PlayerPrefs.SetString(AppConstants.USER_ID, userId);
-                    webService.FirstAuthorization(userId);
-    
-                }
-                else
-                {
-                    userId = PlayerPrefs.GetString(AppConstants.USER_ID);
-                    userToken = PlayerPrefs.GetString(AppConstants.USER_TOKEN);
-                }
-                */
-            //
+            
             //var gameStateProvider = new PlayerPrefsGameStateProvider(); //Заменить конструктор на другой - из облака
             var gameStateProvider = new WebGameStateProvider();
             // gameStateProvider.LoadSettingsState(); //Загрузили настройки игры  
@@ -104,6 +91,9 @@ namespace Scripts.Game.GameRoot
             var qrc = new QueryProcessor(settingsProvider);
             _rootContainer.RegisterInstance<IQueryProcessor>(qrc);
             
+            qrc.RegisterHandler<QueryInfoTower, TowerSettings>(new QueryInfoTowerHandler());
+            qrc.RegisterHandler<QueryInfoSkill, SkillSettings>(new QueryInfoSkillHandler());           
+            qrc.RegisterHandler<QueryInfoHero, HeroSettings>(new QueryInfoHeroHandler());
             //Регистрируем общие команды для всей игры.
             //Потратить валюту.
             // Debug.Log(JsonConvert.SerializeObject());

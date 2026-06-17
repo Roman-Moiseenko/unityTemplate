@@ -6,22 +6,17 @@ using Game.GameRoot.Commands;
 using Game.MainMenu.Commands.InventoryCommands;
 using Game.MainMenu.Commands.SoftCurrency;
 using Game.MainMenu.Commands.TowerCommands;
-using Game.MainMenu.View;
 using Game.MainMenu.View.ScreenInventory.PopupBlacksmith.PrefabBinders;
 using Game.MainMenu.View.ScreenInventory.TowerCards;
 using Game.MainMenu.View.ScreenInventory.TowerPlans;
 using Game.Settings.Gameplay.Entities.Tower;
-using Game.State;
 using Game.State.Common;
-using Game.State.Inventory;
 using Game.State.Inventory.Common;
 using Game.State.Inventory.Deck;
 using Game.State.Inventory.TowerCards;
 using Game.State.Inventory.TowerPlans;
-using Game.State.Maps.Towers;
 using Game.State.Parameters;
 using MVVM.CMD;
-using Newtonsoft.Json;
 using ObservableCollections;
 using R3;
 using UnityEngine;
@@ -58,7 +53,6 @@ namespace Game.MainMenu.Services
         {
             //     var gameStateProvider = container.Resolve<IGameStateProvider>(); //Получаем репозиторий
             //   var gameState = gameStateProvider.GameState;
-
             _inventoryRoot = inventoryRoot;
             _items = inventoryRoot.Items;
             _cmd = cmd;
@@ -70,7 +64,6 @@ namespace Game.MainMenu.Services
             {
                 _towerSettingsMap[towerSettings.ConfigId] = towerSettings;
             }
-
             
             foreach (var item in _items)
             {
@@ -84,8 +77,7 @@ namespace Game.MainMenu.Services
                     CreateTowerPlanViewModel(towerPlan);
                 }
             }
-
-
+            
             var command = new CommandSaveGameState();
             cmd.Process(command);
             _items.ObserveAdd().Subscribe(e =>
@@ -155,7 +147,6 @@ namespace Game.MainMenu.Services
         }
 
         //ПУБЛИЧНЫЕ МЕТОДЫ ИЗМЕНЕНИЯ TowerCardEntity
-
         public void LevelUpTowerCard(int uniqueId)
         {
             var towerCardEntity = _inventoryRoot.Get<TowerCard>(uniqueId);
@@ -180,10 +171,10 @@ namespace Game.MainMenu.Services
                 _towerSettingsMap[towerCard.ConfigId],
                 this,
                 _container
-            ); //3
+            ); 
 
             //TODO Проверить находится ли карта в колоде
-            _allTowerCards.Add(towerCardViewModel); //4
+            _allTowerCards.Add(towerCardViewModel);
             _towerCardsMap[towerCard.UniqueId] = towerCardViewModel;
         }
 
@@ -224,16 +215,13 @@ namespace Game.MainMenu.Services
          */
         private void UpdateParameterTowerCard(TowerCard towerCard)
         {
-            //    var epic = towerCard.EpicLevel.Value;
-            //    var level = towerCard.Level.Value;
-
             var settings = _towerSettingsMap[towerCard.ConfigId];
             //Возвращаем базовые значения параметров
             towerCard.Parameters.Clear();
             foreach (var baseParameter in settings.BaseParameters)
                 towerCard.AddParameter(baseParameter);
 
-            //TODO Пересчет от базовых параметров 
+            //Пересчет от базовых параметров 
             foreach (var (typeParam, towerParam)  in towerCard.Parameters)
             {
                 //Обсчет эпичности
@@ -287,7 +275,6 @@ namespace Game.MainMenu.Services
             foreach (var baseParameter in towerSetting.BaseParameters)
             {
                 towerCard.AddParameter(baseParameter);
-                //towerCardData.Parameters.Add(baseParameter.ParameterType, new TowerParameterData(baseParameter));
             }            
             towerCardData.EpicLevel = towerCardData.EpicLevel.Next();
             var towerCardAfter = new TowerCard(towerCardData);
@@ -325,7 +312,6 @@ namespace Game.MainMenu.Services
                 towerPlanViewModel.Dispose();
             }
             _allTowerPlans.Clear();
-            
             _disposables.Dispose();
         }
     }

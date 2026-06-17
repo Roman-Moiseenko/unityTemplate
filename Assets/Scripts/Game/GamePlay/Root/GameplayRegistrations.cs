@@ -15,10 +15,10 @@ using Game.GamePlay.Commands.WaveCommands;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Queries.Classes;
-using Game.GamePlay.Queries.SkillQueries;
-using Game.GamePlay.Queries.TowerQueries;
 using Game.GamePlay.Queries.WaveQueries;
 using Game.GamePlay.Services;
+using Game.GameRoot.Queries.SkillQueries;
+using Game.GameRoot.Queries.TowerQueries;
 using Game.GameRoot.Services;
 using Game.Settings;
 using Game.Settings.Gameplay.Entities.Skill;
@@ -114,8 +114,7 @@ namespace Game.GamePlay.Root
 
             var qrc = container.Resolve<IQueryProcessor>();
             qrc.RegisterHandler<QueryInfoWave, List<EnemyDataInfo>>(new QueryInfoWaveHandler(gameplayState.MapId.CurrentValue));
-            qrc.RegisterHandler<QueryInfoTower, TowerSettings>(new QueryInfoTowerHandler());
-            qrc.RegisterHandler<QueryInfoSkill, SkillSettings>(new QueryInfoSkillHandler());
+
             
             
             // var subjectExitParams = new Subject<GameplayExitParams>();

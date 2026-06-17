@@ -21,7 +21,10 @@ namespace Game.MainMenu.Services
         private readonly ChestService _chestService;
         private readonly DIContainer _container;
 
-        public InventoryService(ICommandProcessor cmd, GameStateProxy gameState, ChestService chestService)
+        public InventoryService(
+            ICommandProcessor cmd,
+            GameStateProxy gameState,
+            ChestService chestService)
         {
             _cmd = cmd;
             _gameState = gameState;
@@ -33,12 +36,12 @@ namespace Game.MainMenu.Services
          */
         public void InfinityRewardGamePlay(MainMenuEnterParams enterParams)
         {
-           // Debug.Log(" MainMenuEnterParams " + JsonConvert.SerializeObject(enterParams, Formatting.Indented));
+            // Debug.Log(" MainMenuEnterParams " + JsonConvert.SerializeObject(enterParams, Formatting.Indented));
             //Монетки
             _gameState.SoftCurrency.Value += enterParams.SoftCurrency;
             //Карты и чертежи (итемсы)
             enterParams.RewardCards.ForEach(RewardToItem);
-            
+
             enterParams.TypeChest = _chestService.AddChestInfinity(enterParams.LastWave);
         }
 
@@ -49,7 +52,7 @@ namespace Game.MainMenu.Services
             enterParams.RewardOnWave.ForEach(RewardToItem);
             enterParams.NotCellChest = _chestService.AddChestLevel(enterParams);
         }
-        
+
         public void RewardToItem(RewardEntityData rewardEntityData)
         {
             var command = new CommandInventoryFromReward()
@@ -59,11 +62,10 @@ namespace Game.MainMenu.Services
                 Amount = rewardEntityData.Amount
             };
             _cmd.Process(command);
-
         }
-        
+
         //TODO Сервис работы с инвентарем
-        
+
         //
     }
 }
