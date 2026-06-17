@@ -73,7 +73,8 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardBackend
                 //Показываем Инво блок, что это Улучшение
                 upgradeInfo.gameObject.SetActive(viewModel.RewardType.IsUpgrade());
                 
-                if (viewModel.RewardType is RewardType.Tower or RewardType.TowerLevelUp or RewardType.SkillLevelUp)
+                if (viewModel.RewardType is RewardType.Tower 
+                    or RewardType.TowerLevelUp or RewardType.SkillLevelUp or RewardType.HeroLevelUp)
                 {
                     _imageCardBackTransform.localPosition = _positionCardTower;
                     _imageCardBackTransform.sizeDelta = _sizeCardTower;
@@ -100,7 +101,7 @@ namespace Game.GamePlay.View.UI.PanelBuild.CardBackend
                     RewardType.TowerLevelUp => _imageManager.GetTowerCard(viewModel.ImageCard, viewModel.NumberModel),
                     RewardType.Tower => _imageManager.GetTowerCard(viewModel.ImageCard, viewModel.NumberModel),
                     RewardType.SkillLevelUp => _imageManager.GetSkillCard(viewModel.ImageCard),
-                    
+                    RewardType.HeroLevelUp => _imageManager.GetHeroCard(viewModel.ImageCard),
                     _ => _imageManager.GetOther(viewModel.ImageCard),
                 };
             }).AddTo(ref d);

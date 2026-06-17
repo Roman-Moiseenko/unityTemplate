@@ -21,7 +21,9 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageItemByConfigLevel> towerCard;
         [SerializeField] private List<ImageItemByConfig> skillPlan;
         [SerializeField] private List<ImageItemByConfig> skillCard;
+
         [SerializeField] private List<ImageItemByConfig> heroCard;
+
         //[SerializeField] private List<ImageItemByTowerParameter> towerParameters;
         //[SerializeField] private List<ImageItemBySkillParameter> skillParameters;
         //[SerializeField] private List<ImageItemByDefence> defences;
@@ -33,29 +35,29 @@ namespace Game.GameRoot.ImageManager
         [SerializeField] private List<ImageDefenceData> defenceMaps;
 
         [SerializeField] private List<ImageItemByParameter> parameters;
-        
+
 
         public ImageDefenceData GetDefenceData(TypeDefence defence)
         {
             return defenceMaps.FirstOrDefault(t => t.Defence == defence);
         }
-        
+
         public ImageEpicData GetEpicData(TypeEpic typeEpicCard)
         {
             return epicMaps.FirstOrDefault(t => t.Epic == typeEpicCard);
         }
-        
+
         //TODO Удалить 
         public Sprite GetEpicLevel(TypeEpic typeEpicCard)
         {
             return epicLevels.FirstOrDefault(t => t.TypeEpic == typeEpicCard)!.Sprite;
         }
-        
+
         public Sprite GetEpicSkillLevel(TypeEpic typeEpicCard)
         {
             return epicSkillLevels.FirstOrDefault(t => t.TypeEpic == typeEpicCard)!.Sprite;
         }
-        
+
         public Sprite GetEpicLevel(string indexEpic)
         {
             foreach (TypeEpic typeEpic in Enum.GetValues(typeof(TypeEpic)))
@@ -63,16 +65,17 @@ namespace Game.GameRoot.ImageManager
                 if (typeEpic.Index() == int.Parse(indexEpic))
                     return epicLevels.FirstOrDefault(t => t.TypeEpic == typeEpic)!.Sprite;
             }
+
             return null;
-        }        
-        
+        }
+
         public Sprite GetChest(TypeChest? typeChest)
         {
             if (typeChest == null) return GetOther("ChestNot");
-            
+
             return chests.FirstOrDefault(t => t.TypeChest == typeChest)!.Sprite;
         }
-        
+
         //public Dictionary<string> 
 
         public Sprite GetTowerCard(string configId, int level)
@@ -80,10 +83,12 @@ namespace Game.GameRoot.ImageManager
             var items = towerCard.FirstOrDefault(t => t.ConfigId == configId)!.ByLevels;
             return items.FirstOrDefault(t => t.Level == level)!.Sprite;
         }
+
         public Sprite GetParameter(ParameterType type)
         {
             return parameters.FirstOrDefault(t => t.Parameter == type)!.Sprite;
         }
+
         /*
         public Sprite GetTowerParameter(TowerParameterType type)
         {
@@ -98,14 +103,20 @@ namespace Game.GameRoot.ImageManager
         {
             return towerPlan.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
         }
+
         public Sprite GetSkillCard(string configId)
         {
             return skillCard.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
         }
+
+        public Sprite GetHeroCard(string configId)
+        {
+            return heroCard.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
+        }
+
         public Sprite GetSkillPlan(string configId)
         {
             return skillPlan.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
-
         }
 
         public Sprite GetOther(string configId)
@@ -117,12 +128,10 @@ namespace Game.GameRoot.ImageManager
         {
             return roads.FirstOrDefault(t => t.ConfigId == configId)!.Sprite;
         }
-        
+
         public Texture GetGround(string configId)
         {
             return grounds.FirstOrDefault(t => t.ConfigId == configId)!.Texture;
         }
-
-
     }
 }

@@ -90,7 +90,7 @@ namespace Game.GamePlay.Root.View
             GameplayCamera cameraService,
             DamageService damageService,
             SkillsService skillsService,
-            HeroService heroService,
+            HeroesService heroesService,
             //WarriorService warriorService,
             DIContainer container
         )
@@ -126,7 +126,7 @@ namespace Game.GamePlay.Root.View
             CastleViewModel = castleService.CastleViewModel;
             GateWaveViewModel = waveService.GateWaveViewModel;
             GateWaveSecondViewModel = waveService.GateWaveSecondViewModel;
-            HeroViewModel = heroService.HeroViewModel;
+            HeroViewModel = heroesService.HeroViewModel;
 
             //AreaViewModel = new AttackAreaViewModel();
             MapFogViewModel = new MapFogViewModel(groundsService);
@@ -142,7 +142,7 @@ namespace Game.GamePlay.Root.View
                     if (reward.RewardType == RewardType.Tower)
                     {
                         position = placementService.GetNewPositionTower(reward.OnRoad);
-                        var level = towersService.Levels[reward.ConfigId];
+                        var level = towersService.GameplayLevels[reward.ConfigId];
                         _entityClick.OnNext(Unit.Default);
                         frameService.CreateFrameTower(position, level, reward.ConfigId);
                     }
@@ -240,7 +240,7 @@ namespace Game.GamePlay.Root.View
                             _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             break;
                         case RewardType.HeroLevelUp:
-                            Debug.Log("Усиление героя. В разработке");
+                            heroesService.LevelUpHero();
                             _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             break;
                         default: throw new Exception($"Неверный тип награды {card.RewardType}");

@@ -72,7 +72,7 @@ namespace Game.GamePlay.Services
                 Levels[skillSettings.ConfigId] = 1;
             }
 
-            //Кешируем уровень навыков по конфигу, если башня этого типа есть на карте
+            //Кешируем уровень навыков по конфигу
             foreach (var skillEntity in _gameplayState.Skills)
             {
                 Levels[skillEntity.ConfigId] = skillEntity.Level.CurrentValue;

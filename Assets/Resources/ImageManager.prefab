@@ -241,7 +241,7 @@ MonoBehaviour:
     Sprite: {fileID: 21300000, guid: feb5bd0c7b097974db1da345b1a6516a, type: 3}
     Texture: {fileID: 0}
   heroCard:
-  - ConfigId: Hero00
+  - ConfigId: Hero01
     Sprite: {fileID: 21300000, guid: feb5bd0c7b097974db1da345b1a6516a, type: 3}
     Texture: {fileID: 0}
   otherSprite:

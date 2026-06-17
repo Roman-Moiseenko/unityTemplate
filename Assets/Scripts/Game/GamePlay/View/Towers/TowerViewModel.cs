@@ -35,8 +35,8 @@ namespace Game.GamePlay.View.Towers
      */
     public class TowerViewModel : IMovingEntityViewModel, IDisposable
     {
-        protected GameplayStateProxy GameplayState;
-        protected TowersService TowersService;
+        protected readonly GameplayStateProxy GameplayState;
+        protected readonly TowersService TowersService;
         protected readonly TowerEntity TowerEntity;
         protected GameplayBoosters GameplayBoosters;
         private readonly DIContainer _container;
@@ -53,10 +53,10 @@ namespace Game.GamePlay.View.Towers
         public readonly ReactiveProperty<int> NumberModel = new(0);
         public float SpeedShot { get; private set; }
         public TypeEpic EpicLevel { get; set; }
-        public ReactiveProperty<bool> FinishEffectLevelUp = new(false);
-        public ReactiveProperty<bool> ShowArea = new(false);
+        public readonly ReactiveProperty<bool> FinishEffectLevelUp = new(false);
+        public readonly ReactiveProperty<bool> ShowArea = new(false);
         public TypeTarget TypeTarget => TowerEntity.TypeTarget;
-        protected DisposableBag _disposables = new();
+        protected DisposableBag _disposables;
 
         //Отображение на карте для обмена башнями
 

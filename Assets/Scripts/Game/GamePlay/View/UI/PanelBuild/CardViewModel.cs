@@ -5,6 +5,7 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
 using Game.GamePlay.Services;
 using Game.Settings;
+using Game.Settings.Gameplay.Entities.Tower;
 using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Gameplay.Rewards;
@@ -15,6 +16,7 @@ using Game.State.Maps.Towers;
 using Game.State.Parameters;
 using R3;
 using UnityEngine;
+using Object = System.Object;
 
 namespace Game.GamePlay.View.UI.PanelBuild
 {
@@ -44,13 +46,20 @@ namespace Game.GamePlay.View.UI.PanelBuild
         //TODO Объединить списки после рефакторинга
         public readonly Dictionary<ParameterType, float> UpgradeParameters = new(); //Параметры которые увеличиваются на текущем уровне
         private readonly SkillsService _skillsService;
+        private readonly HeroesService _heroesService;
 
-        public CardViewModel(GameSettings gameSettings, FsmGameplay fsmGameplay, TowersService towersService, SkillsService skillsService)
+        public CardViewModel(
+            GameSettings gameSettings, 
+            FsmGameplay fsmGameplay, 
+            TowersService towersService, 
+            SkillsService skillsService,
+            HeroesService heroesService)
         {
             _gameSettings = gameSettings;
             _fsmGameplay = fsmGameplay;
             _towersService = towersService;
             _skillsService = skillsService;
+            _heroesService = heroesService;
         }
 
         private void ClearViewModel()
@@ -78,15 +87,54 @@ namespace Game.GamePlay.View.UI.PanelBuild
                 case RewardType.Road: InfoRoad(); break;
                 case RewardType.TowerLevelUp: InfoTowerUp(); break;
                 case RewardType.SkillLevelUp: InfoSkillUp(); break;
-                case RewardType.HeroLevelUp:
-                         
-                    break;
+                case RewardType.HeroLevelUp: InfoHeroUp(); break;
                 case RewardType.TowerMove: InfoTowerMove(); break;
                 case RewardType.TowerReplace: InfoTowerReplace(); break;
                 default: throw new Exception("Неизвестное значение");
             }
         }
 
+        private void InfoHeroUp()
+        {
+            var config = _gameSettings.HeroesSettings.AllHeroes.Find(s => s.ConfigId == _rewardData.ConfigId);
+            Level = _rewardData.Level;
+            Caption= "УЛУЧШЕНИЕ";
+            DescriptionBack = Caption;
+            ImageCard = _rewardData.ConfigId;
+            ImageBack = "UpgradeCard";
+            List<ParameterType> listUpgradeParameter = new(); //Временный список всех параметров по всем геймплей уровням
+            foreach (var configGameplayLevel in config.GameplayLevels)
+            {
+                foreach (var param in configGameplayLevel.Parameters)
+                {
+                    listUpgradeParameter.Add(param.ParameterType);
+                }
+            }
+            List<ParameterType> allUpgradeParameter = listUpgradeParameter.Distinct().ToList(); //Уникальный список
+            var gameplayParameters = config.GameplayLevels.Find(v => v.Level == Level + 1).Parameters;
+            foreach (var parameter in gameplayParameters)
+                UpgradeParameters.Add(parameter.ParameterType, parameter.Value);
+            var settingsParameters = _heroesService.HeroParameterMap;
+            foreach (var parameterType in allUpgradeParameter)
+            {
+                var data = new Vector2();
+
+                //Основная характеристика
+                if (settingsParameters.TryGetValue(parameterType, out var value))
+                    data.x = value.Value;
+                
+                var  heroParameter = gameplayParameters.Find(p => p.ParameterType == parameterType);
+                //Процент роста
+                if (heroParameter != null)
+                    data.y = heroParameter.Value;
+                
+                InfoCardParameters.Add(parameterType, data);
+            }
+            
+            Updated.OnNext(true);
+            
+        }
+        
         private void InfoSkillUp()
         {
             var config = _gameSettings.SkillsSettings.AllSkills.Find(s => s.ConfigId == _rewardData.ConfigId);

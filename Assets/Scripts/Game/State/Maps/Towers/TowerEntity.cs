@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using Game.Common;
 using Game.State.Common;
 using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Mobs;
@@ -129,9 +130,8 @@ namespace Game.State.Maps.Towers
             
             var damageType = IsSingleTarget ? DamageType.Normal : DamageType.MassDamage; 
             if (Parameters.TryGetValue(ParameterType.Critical, out var criticalParameter))
-            {
-                var shans = Mathf.FloorToInt(100 / (criticalParameter.Value + criticalBooster)); //Добавляем бустер крита
-                if (Mathf.FloorToInt(Mathf.Abs(Random.insideUnitSphere.x) * 999) % shans == 0)
+            {//Добавляем бустер крита
+                if (MyFunc.IsChance(criticalParameter.Value + criticalBooster))
                 {
                     damageType = DamageType.Critical;
                     damage *= 2.0f;

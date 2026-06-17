@@ -5,6 +5,7 @@ using DI;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Commands.CastleCommands;
 using Game.GamePlay.Commands.GroundCommands;
+using Game.GamePlay.Commands.HeroCommand;
 using Game.GamePlay.Commands.MapCommand;
 using Game.GamePlay.Commands.MobCommands;
 using Game.GamePlay.Commands.RewardCommand;
@@ -152,6 +153,8 @@ namespace Game.GamePlay.Root
             cmd.RegisterHandler(new CommandReplaceTowerHandler(gameplayState));
             cmd.RegisterHandler(new CommandPlaceRoadHandler(gameplayState));
             
+            cmd.RegisterHandler(new CommandHeroLevelUpHandler(gameplayState));
+            cmd.RegisterHandler(new CommandPlaceHeroHandler(gameplayState));
             //Загружаем уровень из настроек ДО создания сервисов
             if (!gameplayState.Towers.Any())
             {
@@ -239,7 +242,7 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(skillsService);
             container.RegisterDisposableOnSceneExit(skillsService);
             
-            var heroService = new HeroService(
+            var heroService = new HeroesService(
                 container,
                 gameplayState,
                 gameplayEnterParams

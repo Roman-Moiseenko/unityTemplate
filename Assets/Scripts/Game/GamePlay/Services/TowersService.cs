@@ -30,7 +30,7 @@ namespace Game.GamePlay.Services
         public IObservableCollection<TowerViewModel> AllTowers =>
             _allTowers; //Интерфейс менять нельзя, возвращаем через динамический массив
         
-        public readonly ObservableDictionary<string, int> Levels = new(); //Уровни башен по типам ConfigId
+        public readonly ObservableDictionary<string, int> GameplayLevels = new(); //Уровни башен по типам ConfigId
 
         private readonly List<TowerCardData> _baseTowerCards; //
         private readonly ICommandProcessor _cmd;
@@ -79,12 +79,12 @@ namespace Game.GamePlay.Services
             foreach (var towerSettings in towersSettings.AllTowers)
             {
                 _towerSettingsMap[towerSettings.ConfigId] = towerSettings.GameplayLevels;
-                Levels[towerSettings.ConfigId] = 1;
+                GameplayLevels[towerSettings.ConfigId] = 1;
             }
             //Кешируем уровень башни по конфигу, если башня этого типа есть на карте
             foreach (var towerEntity in towerEntities)
             {
-                Levels[towerEntity.ConfigId] = towerEntity.GameplayLevel.CurrentValue;
+                GameplayLevels[towerEntity.ConfigId] = towerEntity.GameplayLevel.CurrentValue;
             }
 
             foreach (var towerCardData in _baseTowerCards)
@@ -96,7 +96,7 @@ namespace Game.GamePlay.Services
                     param.Add(parameterData.Key, parameterData.Value.GetCopy());
                 }
                 TowerParametersMap.Add(towerCardData.ConfigId, param);
-                for (var i = 1; i <= Levels[towerCardData.ConfigId]; i++)
+                for (var i = 1; i <= GameplayLevels[towerCardData.ConfigId]; i++)
                 {
                     UpdateParams(towerCardData.ConfigId, i); //Увеличиваем параметры по геймплей уровню башни
                 }
@@ -112,14 +112,14 @@ namespace Game.GamePlay.Services
             towerEntities.ObserveAdd().Subscribe(e =>
             {
                 var towerEntity = e.Value;
-                towerEntity.GameplayLevel.Value = Levels[towerEntity.ConfigId]; //Устанавливаем уровень апгрейда
+                towerEntity.GameplayLevel.Value = GameplayLevels[towerEntity.ConfigId]; //Устанавливаем уровень апгрейда
                 towerEntity.Parameters = TowerParametersMap[towerEntity.ConfigId];
                 CreateTowerViewModel(towerEntity); //Создаем View Model
             });
             //Если у сущности изменился уровень, меняем его и во вью-модели
             towerEntities.ObserveRemove().Subscribe(e => RemoveTowerViewModel(e.Value));
 
-            Levels.ObserveChanged().Subscribe(x =>
+            GameplayLevels.ObserveChanged().Subscribe(x =>
             {
                 var configId = x.NewItem.Key;
                 var newLevel = x.NewItem.Value;
@@ -146,7 +146,7 @@ namespace Game.GamePlay.Services
             {
                 if (parameters.TryGetValue(settingsParameter.ParameterType, out var parameter))
                 {
-                    parameter.Value *= 1 + settingsParameter.Value / 100;
+                    parameter.Value *= (1 + settingsParameter.Value / 100);
                 }
             }
         }
@@ -249,7 +249,7 @@ namespace Game.GamePlay.Services
             var command = new CommandTowerLevelUp(configId);
             //Если команда не выполнилась, выйти за паузы сразу
             if (!_cmd.Process(command)) return new ReactiveProperty<bool>(true);
-            Levels[configId] += 1;
+            GameplayLevels[configId] += 1;
             return model.FinishEffectLevelUp;
         }
 
@@ -283,8 +283,8 @@ namespace Game.GamePlay.Services
             var towers = new Dictionary<string, int>();
             foreach (var towerViewModel in _allTowers) //Все построенные башни
             {
-                if (Levels[towerViewModel.ConfigId] < 6)
-                    towers.TryAdd(towerViewModel.ConfigId, Levels[towerViewModel.ConfigId]); //Добавлять один раз
+                if (GameplayLevels[towerViewModel.ConfigId] < 6)
+                    towers.TryAdd(towerViewModel.ConfigId, GameplayLevels[towerViewModel.ConfigId]); //Добавлять один раз
             }
             return towers;
         }

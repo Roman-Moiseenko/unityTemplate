@@ -53,7 +53,7 @@ namespace Game.GamePlay.View.UI.PopupStatistics
 
                     stat.Name = towerSetting.TitleLid;
                     stat.Defence = towerSetting.Defence;
-                    stat.Level = towersService.Levels[entityDamage.ConfigId];
+                    stat.Level = towersService.GameplayLevels[entityDamage.ConfigId];
                     stat.EpicCard = towersService.GetAvailableTowers()[entityDamage.ConfigId];
                     stat.MaxLevel = 6;
                 }

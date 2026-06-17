@@ -37,6 +37,13 @@ namespace Game.Common
         {
             return new Vector2(vector.x, vector.z);
         }
-        
+
+        public static bool IsChance(float percent)
+        {
+            var random = new System.Random();
+            return percent < random.Next(0, 100) + 1;
+            
+            
+        }
     }
 }

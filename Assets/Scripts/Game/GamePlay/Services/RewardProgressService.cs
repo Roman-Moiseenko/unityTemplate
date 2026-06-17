@@ -34,6 +34,7 @@ namespace Game.GamePlay.Services
         private DisposableBag _disposables = new();
         private readonly SkillsService _skillService;
         private readonly SkillsSettings _skillsSettings;
+        private readonly HeroesService heroesService;
 
         public RewardProgressService(
             GameplayStateProxy gameplayState,
@@ -51,6 +52,7 @@ namespace Game.GamePlay.Services
             _skillService = container.Resolve<SkillsService>();
             _towersSettings = gameSettings.TowersSettings;
             _skillsSettings = gameSettings.SkillsSettings;
+            heroesService = container.Resolve<HeroesService>();
             
             var fsmGameplay = container.Resolve<FsmGameplay>();
             
@@ -144,16 +146,6 @@ namespace Game.GamePlay.Services
             //_gameplayState.RewardEntities.Add(reward);
         }
         
-  /*      public void StartRewardCard()
-        {
-            var fsm = _container.Resolve<FsmGameplay>();
-            var rewards = new RewardsProgress();
-            rewards.Cards.Add(1, GetTower(rewards));
-            rewards.Cards.Add(2, GetTower(rewards));
-            rewards.Cards.Add(3, GetTower(rewards));
-            fsm.Fsm.SetState<FsmStateBuildBegin>(rewards);
-        }
-*/
         public RewardsProgress StartRewardProgress()
         {
             var rewards = new RewardsProgress();
@@ -188,7 +180,7 @@ namespace Game.GamePlay.Services
                 GetRoad,
                 GetSkillUpgrade,
                 GetTowerMovement,  
-                //GetHeroUp, //TODO Добавить апгрейд героя, после реализации
+                GetHeroUp,
             };
 
             var random = new System.Random();
@@ -215,7 +207,16 @@ namespace Game.GamePlay.Services
 
         private RewardCardData GetHeroUp(RewardsProgress progress)
         {
-            return null;
+            if (progress.Cards
+                .Any(progressCard => progressCard.Value.RewardType == RewardType.HeroLevelUp)
+               )
+                return null;
+            return new RewardCardData
+            {
+                RewardType = RewardType.HeroLevelUp,
+                Level = heroesService.HeroViewModel.GameplayLevel.Value,
+                ConfigId = heroesService.HeroViewModel.ConfigId,
+            };
         }
         
         private RewardCardData GetRoad(RewardsProgress progress)
@@ -284,7 +285,7 @@ namespace Game.GamePlay.Services
                     {
                         RewardType = RewardType.Tower,
                         ConfigId = tower.Key,
-                        Level = _towersService.Levels[tower.Key], //текущий уровень, для звездочек
+                        Level = _towersService.GameplayLevels[tower.Key], //текущий уровень, для звездочек
                         OnRoad = towerSetting.OnRoad,
                         EpicLevel = tower.Value,
                     };
@@ -315,15 +316,15 @@ namespace Game.GamePlay.Services
             
             
             var i = 0;
-            foreach (var tower in availableUpgradeTowers)
+            foreach (var (towerConfigId, towerLevel) in availableUpgradeTowers)
             {
                 if (i == index)
                 {
                     return new RewardCardData
                     {
                         RewardType = RewardType.TowerLevelUp,
-                        ConfigId = tower.Key,
-                        Level = tower.Value, //текущий уровень, для звездочек
+                        ConfigId = towerConfigId,
+                        Level = towerLevel, //текущий уровень, для звездочек
                     };
                 }
                 i++;
@@ -370,15 +371,15 @@ namespace Game.GamePlay.Services
             var random = new System.Random();
             var index = random.Next(0, availableUpgradeSkills.Count);
             var i = 0;
-            foreach (var skill in availableUpgradeSkills)
+            foreach (var (skillConfigId, skillLevel) in availableUpgradeSkills)
             {
                 if (i == index)
                 {
                     return new RewardCardData
                     {
                         RewardType = RewardType.SkillLevelUp,
-                        ConfigId = skill.Key,
-                        Level = skill.Value, //текущий уровень, для звездочек
+                        ConfigId = skillConfigId,
+                        Level = skillLevel //текущий уровень, для звездочек
                     };
                 }
                 i++;
