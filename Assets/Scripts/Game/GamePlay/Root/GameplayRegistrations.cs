@@ -72,6 +72,10 @@ namespace Game.GamePlay.Root
             container.RegisterInstance(fsmSkill);
             container.RegisterDisposableOnSceneExit(fsmSkill);
 
+            var fsmHero = new FsmHero(container);
+            container.RegisterInstance(fsmHero);
+            container.RegisterDisposableOnSceneExit(fsmHero);
+            
             //Инициализируем данные из настроек карты, до создания Сервисов
             gameplayState.MapId.OnNext(gameplayEnterParams.MapId);
             gameplayState.TypeGameplay.OnNext(gameplayEnterParams.TypeGameplay);
@@ -243,10 +247,7 @@ namespace Game.GamePlay.Root
             container.RegisterDisposableOnSceneExit(skillsService);
             
             var heroService = new HeroesService(
-                container,
-                gameplayState,
-                gameplayEnterParams
-            );
+                cmd, qrc, fsmHero, fsmWave, gameplayState, gameplayEnterParams);
             container.RegisterInstance(heroService);
             container.RegisterDisposableOnSceneExit(heroService);
             
@@ -272,6 +273,9 @@ namespace Game.GamePlay.Root
                 new FramePlacementService(gameplayState, placementService, fsmTower, towersService);
             container.RegisterInstance(framePlacementService);
             container.RegisterDisposableOnSceneExit(framePlacementService);
+            var frameHeroService = new FrameHeroService(gameplayState, placementService, fsmHero, heroService);
+            container.RegisterInstance(frameHeroService);
+            container.RegisterDisposableOnSceneExit(frameHeroService);
             
             container.RegisterFactory(_ => new GameplayCamera(container)).AsSingle();
 

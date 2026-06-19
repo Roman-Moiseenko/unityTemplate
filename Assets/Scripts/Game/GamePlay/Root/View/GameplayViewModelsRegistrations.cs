@@ -30,25 +30,7 @@ namespace Game.GamePlay.Root.View
             container.RegisterInstance(gameplayUIManager);
             container.RegisterDisposableOnSceneExit(gameplayUIManager);
             //Всегда последний
-            var worldRoot =  new WorldGameplayRootViewModel(
-                //   c.Resolve<BuildingsService>(),
-                container.Resolve<GroundsService>(),
-                container.Resolve<TowersService>(),
-                container.Resolve<CastleService>(),
-                container.Resolve<FrameService>(),
-                container.Resolve<FramePlacementService>(),
-                container.Resolve<FrameSkillService>(),
-                container.Resolve<PlacementService>(),
-                container.Resolve<RoadsService>(),
-                container.Resolve<WaveService>(),
-                container.Resolve<GameplayCamera>(),
-                container.Resolve<DamageService>(),
-                container.Resolve<SkillsService>(),
-                container.Resolve<HeroesService>(),
-                //c.Resolve<WarriorService>(),
-                //c.Resolve<ShotService>(),
-                container
-            );
+            var worldRoot =  new WorldGameplayRootViewModel(container);
             container.RegisterInstance(worldRoot);
             container.RegisterDisposableOnSceneExit(worldRoot);
         }

@@ -61,7 +61,7 @@ namespace Game.GamePlay.View.UI.PanelActions
             viewModel.IsCooldown.Where(x => x).Subscribe(v =>
             {
                 imageCooldown.fillAmount = 1f;
-                txtCooldown.text = Mathf.RoundToInt(_viewModel.Cooldown).ToString();
+                txtCooldown.text = Mathf.RoundToInt(_viewModel.Cooldown.Value).ToString();
                 
                 imageCooldown.gameObject.SetActive(true);
                 txtCooldown.gameObject.SetActive(true);
@@ -76,7 +76,7 @@ namespace Game.GamePlay.View.UI.PanelActions
         {
             yield return new WaitForSeconds(1f);
             _viewModel.TimeOut--;
-            imageCooldown.fillAmount = _viewModel.TimeOut / _viewModel.Cooldown;
+            imageCooldown.fillAmount = _viewModel.TimeOut / _viewModel.Cooldown.Value;
             txtCooldown.text = Mathf.RoundToInt(_viewModel.TimeOut).ToString();
             if (_viewModel.TimeOut > 0)
             {

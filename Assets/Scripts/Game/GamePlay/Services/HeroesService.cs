@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DI;
 using Game.Common;
 using Game.GamePlay.Commands.HeroCommand;
+using Game.GamePlay.Fsm;
 using Game.GamePlay.Root;
 using Game.GamePlay.View.Hero;
 using Game.GameRoot.Queries.HeroQueries;
@@ -21,28 +22,33 @@ namespace Game.GamePlay.Services
 {
     public class HeroesService : IDisposable
     {
-        private readonly HeroEntity _heroEntity;
-
-        private HeroSettings _heroSettings;
-
         public HeroViewModel HeroViewModel { get; }
-
         public Dictionary<ParameterType, ParameterData> HeroParameterMap => _heroEntity.Parameters;
-
-        private DisposableBag _disposables;
         public readonly Dictionary<ParameterType, float> HeroBoosters;
-        private readonly ICommandProcessor _cmd;
 
-        public HeroesService(DIContainer container,
+        private FsmHero _fsmHero;
+        private readonly HeroEntity _heroEntity;
+        private HeroSettings _heroSettings;
+        private DisposableBag _disposables;
+        private readonly ICommandProcessor _cmd;
+        private readonly GameplayStateProxy _gameplayState;
+
+        public HeroesService(
+            ICommandProcessor cmd,
+            IQueryProcessor qrc,
+            FsmHero fsmHero,
+            FsmWave fsmWave,
             GameplayStateProxy gameplayState,
             GameplayEnterParams gameplayEnterParams)
         {
             _heroEntity = gameplayState.Hero;
-
-            _cmd = container.Resolve<ICommandProcessor>();
-            var qrc = container.Resolve<IQueryProcessor>();
+            _gameplayState = gameplayState;
+            _cmd = cmd;
+            _fsmHero = fsmHero;
+            
             var query = new QueryInfoHero(_heroEntity.ConfigId);
             _heroSettings = qrc.Request<QueryInfoHero, HeroSettings>(query);
+            
 
             //Параметры для героя храним в сущности, т.к. она единственная на Геймплей
             foreach (var (paramType, paramData) in gameplayEnterParams.HeroCard.Parameters)
@@ -52,7 +58,7 @@ namespace Game.GamePlay.Services
 
             UpdateParams(_heroEntity.GameplayLevel.Value);
 
-            HeroViewModel = new HeroViewModel(_heroEntity, _heroSettings);
+            HeroViewModel = new HeroViewModel(_heroEntity, _heroSettings, this, fsmWave, _fsmHero);
             _heroEntity.GameplayLevel
                 .Skip(1)
                 .Subscribe(UpdateParams)
@@ -118,6 +124,14 @@ namespace Game.GamePlay.Services
                 TypeEntity = TypeEntityStatisticDamage.Skill,
             };
             return shotData;
+        }
+
+
+        public void SetDamageAfterShot(TypeDefence defence, int mobId)
+        {
+            var shot = ShotCalculation(defence);
+            shot.MobEntityId = mobId;
+            _gameplayState.Shots.Add(shot);
         }
 
 

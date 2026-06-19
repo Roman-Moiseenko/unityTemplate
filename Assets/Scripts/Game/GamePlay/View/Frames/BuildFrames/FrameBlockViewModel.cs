@@ -8,7 +8,7 @@ using Game.GamePlay.View.Towers;
 using R3;
 using UnityEngine;
 
-namespace Game.GamePlay.View.Frames
+namespace Game.GamePlay.View.Frames.BuildFrames
 {
     public class FrameBlockViewModel : IDisposable
     {

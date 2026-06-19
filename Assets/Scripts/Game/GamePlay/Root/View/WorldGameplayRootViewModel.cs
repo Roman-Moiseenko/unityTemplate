@@ -6,12 +6,16 @@ using Game.Common;
 using Game.GamePlay.Classes;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
+using Game.GamePlay.Fsm.HeroStates;
 using Game.GamePlay.Fsm.SkillStates;
 using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
+using Game.GamePlay.View.Frames.BuildFrames;
+using Game.GamePlay.View.Frames.HeroFrames;
 using Game.GamePlay.View.Frames.SkillFrames;
+using Game.GamePlay.View.Frames.TowerFrames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Hero;
 using Game.GamePlay.View.Map;
@@ -42,9 +46,14 @@ namespace Game.GamePlay.Root.View
         public readonly IObservableCollection<RoadViewModel> AllRoads;
         public readonly IObservableCollection<SkillViewModel> AllSkills;
         
+        
         public readonly ReadOnlyReactiveProperty<FrameBlockViewModel> FrameBlockViewModel;
+        //TODO Переделать на ReactiveProperty
         public readonly IObservableCollection<FramePlacementViewModel> FramePlacementViewModels;
         public readonly IObservableCollection<FrameSkillViewModel> FrameSkillViewModels;
+
+        public readonly ReadOnlyReactiveProperty<FrameHeroViewModel> FrameHeroViewModel;
+        
         public CastleViewModel CastleViewModel { get; private set; }
         public HeroViewModel HeroViewModel { get; }
         public GateWaveViewModel GateWaveViewModel { get; private set; }
@@ -71,40 +80,42 @@ namespace Game.GamePlay.Root.View
         private readonly GameplayStateProxy _gameplayState;
         private readonly FsmSkill _fsmSkill;
         private readonly FrameSkillService _frameSkillService;
-
-        private DisposableBag _disposables;
-
+        
         private readonly TowersService _towersService;
+        private readonly HeroesService _heroesService;
+        private readonly FsmHero _fsmHero;
+        private readonly FrameHeroService _frameHeroService;
+        
+        private DisposableBag _disposables;
         //  private readonly Coroutines _coroutines;
 
-        public WorldGameplayRootViewModel(
-            GroundsService groundsService,
-            TowersService towersService,
-            CastleService castleService,
-            FrameService frameService,
-            FramePlacementService framePlacementService,
-            FrameSkillService frameSkillService,
-            PlacementService placementService,
-            RoadsService roadsService,
-            WaveService waveService,
-            GameplayCamera cameraService,
-            DamageService damageService,
-            SkillsService skillsService,
-            HeroesService heroesService,
-            //WarriorService warriorService,
-            DIContainer container
-        )
+        public WorldGameplayRootViewModel(DIContainer container)
         {
+            var groundsService = container.Resolve<GroundsService>();
+            var castleService =container.Resolve<CastleService>();
+                        var placementService = container.Resolve<PlacementService>();
+                        var roadsService = container.Resolve<RoadsService>();
+                        var skillsService = container.Resolve<SkillsService>();
+                        
             _fsmGameplay = container.Resolve<FsmGameplay>();
             _fsmTower = container.Resolve<FsmTower>();
             _fsmSkill = container.Resolve<FsmSkill>();
-            _frameService = frameService;
-            _framePlacementService = framePlacementService;
-            _frameSkillService = frameSkillService;
-            _waveService = waveService;
-            _cameraService = cameraService;
-            _damageService = damageService;
-            _towersService = towersService;
+            _fsmHero = container.Resolve<FsmHero>();
+            
+            _towersService = container.Resolve<TowersService>();
+            
+            _frameService = container.Resolve<FrameService>();
+            _framePlacementService = container.Resolve<FramePlacementService>();
+            _frameSkillService = container.Resolve<FrameSkillService>();
+            _frameHeroService = container.Resolve<FrameHeroService>();
+
+            _waveService = container.Resolve<WaveService>();
+            _cameraService = container.Resolve<GameplayCamera>();
+            _damageService = container.Resolve<DamageService>();
+            
+            _heroesService = container.Resolve<HeroesService>();
+            
+            
             //клики по объектам игрового мира, не UI 
             _entityClick = container.Resolve<Subject<Unit>>(AppConstants.CLICK_WORLD_ENTITY);
             _towerClick = container.Resolve<Subject<TowerViewModel>>();
@@ -114,19 +125,20 @@ namespace Game.GamePlay.Root.View
             AllRoads = roadsService.AllRoads;
             AllGrounds = groundsService.AllGrounds;
             AllBoards = groundsService.AllBoards;
-            AllTowers = towersService.AllTowers;
-            AllMobs = waveService.AllMobsOnWay;
+            AllTowers = _towersService.AllTowers;
+            AllMobs = _waveService.AllMobsOnWay;
             AllSkills = skillsService.AllSkills;
             
             //AllWarriors = warriorService.AllWarriors;
 
-            FrameBlockViewModel = frameService.CurrentFrame;
-            FramePlacementViewModels = framePlacementService.ViewModels;
-            FrameSkillViewModels = frameSkillService.ViewModels;
+            FrameBlockViewModel = _frameService.CurrentFrame;
+            FramePlacementViewModels = _framePlacementService.ViewModels;
+            FrameSkillViewModels = _frameSkillService.ViewModels;
             CastleViewModel = castleService.CastleViewModel;
-            GateWaveViewModel = waveService.GateWaveViewModel;
-            GateWaveSecondViewModel = waveService.GateWaveSecondViewModel;
-            HeroViewModel = heroesService.HeroViewModel;
+            GateWaveViewModel = _waveService.GateWaveViewModel;
+            GateWaveSecondViewModel = _waveService.GateWaveSecondViewModel;
+            HeroViewModel = _heroesService.HeroViewModel;
+            FrameHeroViewModel = _frameHeroService.ViewModel;
 
             //AreaViewModel = new AttackAreaViewModel();
             MapFogViewModel = new MapFogViewModel(groundsService);
@@ -142,21 +154,21 @@ namespace Game.GamePlay.Root.View
                     if (reward.RewardType == RewardType.Tower)
                     {
                         position = placementService.GetNewPositionTower(reward.OnRoad);
-                        var level = towersService.GameplayLevels[reward.ConfigId];
+                        var level = _towersService.GameplayLevels[reward.ConfigId];
                         _entityClick.OnNext(Unit.Default);
-                        frameService.CreateFrameTower(position, level, reward.ConfigId);
+                        _frameService.CreateFrameTower(position, level, reward.ConfigId);
                     }
 
                     if (reward.RewardType == RewardType.Road)
                     {
                         position = placementService.GetNewPositionRoad();
-                        frameService.CreateFrameRoad(position, reward.ConfigId, placementService.GetNewDirectionRoad());
+                        _frameService.CreateFrameRoad(position, reward.ConfigId, placementService.GetNewDirectionRoad());
                     }
 
                     if (reward.RewardType == RewardType.Ground)
                     {
                         position = placementService.GetNewPositionGround();
-                        frameService.CreateFrameGround(position);
+                        _frameService.CreateFrameGround(position);
                     }
 
                     if (reward.RewardType == RewardType.TowerMove)
@@ -181,16 +193,16 @@ namespace Game.GamePlay.Root.View
                     {
                         case RewardType.Tower:
                             //Как только завершится удаления фрейма, размещаем элементы
-                            frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
+                            _frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
                             {
-                                towersService.PlaceTower(card.ConfigId, position);
+                                _towersService.PlaceTower(card.ConfigId, position);
                                 _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             });
                             break;
                         case RewardType.Ground:
                             //Без пыли
-                            frameService.RemoveFrame();
-                            foreach (var groundPosition in frameService.GetGrounds())
+                            _frameService.RemoveFrame();
+                            foreach (var groundPosition in _frameService.GetGrounds())
                             {
                                 groundsService.PlaceGround(groundPosition);
                             }
@@ -199,10 +211,10 @@ namespace Game.GamePlay.Root.View
                             _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             break;
                         case RewardType.Road:
-                            frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
+                            _frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
                             {
-                                var isMainPath = frameService.IsMainPath();
-                                foreach (var road in frameService.GetRoadsForBuild())
+                                var isMainPath = _frameService.IsMainPath();
+                                foreach (var road in _frameService.GetRoadsForBuild())
                                 {
                                     roadsService.PlaceRoad(road.Position, road.IsTurn, road.Rotate, isMainPath);
                                     groundsService.PlaceGround(road.Position);
@@ -212,15 +224,15 @@ namespace Game.GamePlay.Root.View
                             });
                             break;
                         case RewardType.TowerLevelUp:
-                            towersService.LevelUpTower(card.ConfigId)
+                            _towersService.LevelUpTower(card.ConfigId)
                                 .Where(x => x)
                                 .Subscribe(_ => _fsmGameplay.Fsm.SetState<FsmStateGamePlay>());
                             break;
                         case RewardType.TowerMove:
-                            frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
+                            _frameService.RemoveFrameAnimation().Where(x => x).Subscribe(_ =>
                             {
                                 if (_fsmGameplay.SelectFirstTower.CurrentValue == null) throw new Exception("Ошибка");
-                                towersService.MoveTower(_fsmGameplay.SelectFirstTower.CurrentValue.UniqueId, position);
+                                _towersService.MoveTower(_fsmGameplay.SelectFirstTower.CurrentValue.UniqueId, position);
                                 _fsmGameplay.SelectFirstTower.Value = null;
                                 _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             });
@@ -229,10 +241,10 @@ namespace Game.GamePlay.Root.View
                             if (_fsmGameplay.SelectFirstTower.CurrentValue == null ||
                                 _fsmGameplay.SelectSecondTower.CurrentValue == null
                                ) throw new Exception("Ошибка");
-                            towersService.ReplaceTower(
+                            _towersService.ReplaceTower(
                                 _fsmGameplay.SelectFirstTower.CurrentValue.UniqueId,
                                 _fsmGameplay.SelectSecondTower.CurrentValue.UniqueId);
-                            towersService.UnSelectToReplace();
+                            _towersService.UnSelectToReplace();
                             _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             break;
                         case RewardType.SkillLevelUp:
@@ -240,7 +252,7 @@ namespace Game.GamePlay.Root.View
                             _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             break;
                         case RewardType.HeroLevelUp:
-                            heroesService.LevelUpHero();
+                            _heroesService.LevelUpHero();
                             _fsmGameplay.Fsm.SetState<FsmStateGamePlay>();
                             break;
                         default: throw new Exception($"Неверный тип награды {card.RewardType}");
@@ -252,7 +264,7 @@ namespace Game.GamePlay.Root.View
                 {
                     if (newState.Fsm.PreviousState.GetType() == typeof(FsmStateBuild)) //Возврат от режима строим
                     {
-                        frameService.RemoveFrame();
+                        _frameService.RemoveFrame();
                         _towersService.UnSelectToReplace();
                         _fsmGameplay.SelectFirstTower.Value = null;
                         _fsmGameplay.SelectSecondTower.Value = null;
@@ -265,7 +277,7 @@ namespace Game.GamePlay.Root.View
             {
                 if (_fsmGameplay.IsStateBuild())
                 {
-                    frameService.MoveFrame(newPosition); //Переносим объект
+                    _frameService.MoveFrame(newPosition); //Переносим объект
                 }
 
                 if (_fsmGameplay.IsStateGaming())
@@ -275,7 +287,12 @@ namespace Game.GamePlay.Root.View
 
                 if (_fsmTower.IsPlacement())
                 {
-                    framePlacementService.MoveFrame(newPosition);
+                    _framePlacementService.MoveFrame(newPosition);
+                }
+
+                if (_fsmHero.IsPlacement())
+                {
+                    _frameHeroService.MoveFrame(newPosition);
                 }
             }).AddTo(ref _disposables);
             
@@ -285,14 +302,14 @@ namespace Game.GamePlay.Root.View
         {
             var position = _cameraService.GetWorldPoint(mousePosition);
 
-            //TODO получить объект на который кликнули
+            //TODO Сделать проверку на пересечение состояний
 
             //Если Игра или Начало строительства
             //В этих же режим проходят все состояния FsmTower 
             if (_fsmGameplay.IsStateGaming() || _fsmGameplay.IsStateBuildBegin())
             {
-                //И с башней нет работы или выделена (для смены на другую)
-                if ((_fsmTower.IsNone() || _fsmTower.IsSelected()) && _fsmSkill.IsNone())
+                //И с башней нет работы или выделена (для смены на другую) или не работа с героем и навыками
+                if ((_fsmTower.IsNone() || _fsmTower.IsSelected()) && _fsmSkill.IsNone() && !_fsmHero.IsSelected())
                 {
                     if (_towersService.FindTowerByPosition(position, out var towerViewModel))
                     {
@@ -303,7 +320,15 @@ namespace Game.GamePlay.Root.View
                     }
                 }
 
+                //Перемещение фреймов по клику 
                 if (_fsmTower.IsPlacement())
+                {
+                    _fsmGameplay.SetPosition(new Vector2Int(
+                        Mathf.FloorToInt(position.x + 0.5f),
+                        Mathf.FloorToInt(position.y + 0.5f)
+                    ));
+                }
+                if (_fsmHero.IsPlacement())
                 {
                     _fsmGameplay.SetPosition(new Vector2Int(
                         Mathf.FloorToInt(position.x + 0.5f),
@@ -314,18 +339,31 @@ namespace Game.GamePlay.Root.View
                 if (CastleViewModel.IsPosition(position))
                     Debug.Log(" Это крепость " + CastleViewModel.ConfigId);
 
-                //Клик за пределами башен
-                //AreaViewModel.Hide();
-                _entityClick.OnNext(Unit.Default);
+                if (HeroViewModel.IsPosition(position) && !_fsmHero.IsSelected())
+                {
+                    _fsmHero.Fsm.SetState<FsmHeroSelected>();
+                    return;
+                }
+                
+                //Клик за пределами герой
+                if (_fsmHero.IsSelected() && !HeroViewModel.IsPosition(position))
+                {
+                    _fsmHero.Fsm.SetState<FsmHeroUnSelected>();
+                }
+                
                 if (_fsmTower.IsSelected())
                 {
                     _fsmTower.Fsm.SetState<FsmTowerNone>();
                 }
-
+                
+                //Клик за пределами башен
+                //AreaViewModel.Hide();
+                _entityClick.OnNext(Unit.Default);
                 //Обработать другие состояния _fsmTower
                 return;
             }
 
+            //В режиме строительства обработка только фреймов и перемещение камеры
             if (_fsmGameplay.IsStateBuild())
             {
                 _fsmGameplay.SetPosition(new Vector2Int(
@@ -366,11 +404,9 @@ namespace Game.GamePlay.Root.View
                         if (_towersService.FindTowerByPosition(position, out var towerViewModel))
                         {
                             if (_fsmGameplay.SelectFirstTower.Value == towerViewModel) return;
-
                             _fsmGameplay.SelectSecondTower.Value?.UnSelected();
-
                             _fsmGameplay.SelectSecondTower.Value = towerViewModel;
-                            //_fsmGameplay.Fsm.SetState<FsmStateBuildEnd>(card);
+
                             towerViewModel.Selected();
                         }
                         return;
@@ -413,6 +449,11 @@ namespace Game.GamePlay.Root.View
                 //Попытаться выделить, если совпали координаты
                 if (_framePlacementService.TrySelectedFrame(vectorInt)) return;
             }
+
+            if (_fsmHero.IsPlacement())
+            {
+                if (_frameHeroService.TrySelectedFrame(vectorInt)) return;
+            }
             
             if (_isFrameDownClick)
             {
@@ -446,11 +487,11 @@ namespace Game.GamePlay.Root.View
 
         public void FinishMoving(Vector2 mousePosition)
         {
-            if (_fsmTower.IsPlacement())
-            {
-                //Попытаться снять выделение, если был выделен
-                if (_framePlacementService.TryUnSelectedFrame()) return;
-            }
+            
+            //Попытаться снять выделение, если был выделен
+            if (_fsmTower.IsPlacement() && _framePlacementService.TryUnSelectedFrame()) return;
+            if (_fsmHero.IsPlacement() && _frameHeroService.TryUnSelectedFrame()) return;
+            
 
             if (_fsmSkill.IsTarget())
             {
@@ -491,6 +532,18 @@ namespace Game.GamePlay.Root.View
                 );
 
                 _framePlacementService.MoveFrame(vectorInt);
+                return;
+            }
+
+            if (_frameHeroService.IsSelected())
+            {
+                var position = _cameraService.GetWorldPoint(mousePosition);
+                var vectorInt = new Vector2Int(
+                    Mathf.FloorToInt(position.x + 0.5f),
+                    Mathf.FloorToInt(position.y + 0.5f)
+                );
+
+                _frameHeroService.MoveFrame(vectorInt);
                 return;
             }
             if (_fsmSkill.IsTarget())

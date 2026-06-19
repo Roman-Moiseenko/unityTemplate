@@ -1,5 +1,6 @@
 using Game.State.Gameplay;
 using MVVM.CMD;
+using UnityEngine;
 
 namespace Game.GamePlay.Commands.HeroCommand
 {
@@ -13,7 +14,7 @@ namespace Game.GamePlay.Commands.HeroCommand
         }
         public bool Handle(CommandPlaceHero command)
         {
-            _gameplayState.Hero.Position.Value = command.Position;
+            _gameplayState.Hero.Placement.Value = command.Position;
             return  true;
         }
     }

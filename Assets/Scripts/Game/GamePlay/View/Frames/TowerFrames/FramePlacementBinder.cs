@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using DG.Tweening;
-using Game.GamePlay.View.Grounds;
-using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
 using R3;
 using UnityEngine;
 
-namespace Game.GamePlay.View.Frames
+namespace Game.GamePlay.View.Frames.TowerFrames
 {
     public class FramePlacementBinder : MonoBehaviour
     {
         [SerializeField] private GameObject frame;
         
         private Vector3 _targetPosition;
-        private bool _isMoving;
         private const int Speed = 20;
         private const float SmoothTime = 0.3f;
         private Vector3 _velocity;
@@ -49,19 +44,6 @@ namespace Game.GamePlay.View.Frames
             );
             
             _disposable = d.Build();
-        }
-        
-        private void Update()
-        {
-            if (_isMoving)
-            {
-                transform.position = Vector3.SmoothDamp(transform.position, _targetPosition, ref _velocity, SmoothTime, Speed, Time.unscaledTime);
-                if (_velocity.magnitude < 0.0005)
-                {
-                    _isMoving = false;
-                    transform.position = _targetPosition;
-                }
-            }
         }
         
         private void OnDestroy()

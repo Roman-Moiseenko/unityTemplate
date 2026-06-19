@@ -303,8 +303,15 @@ namespace Game.GamePlay.Services
             }
         }
 
+        public void SetDamageAfterShot(TowerEntity towerEntity,TypeDefence defence, int mobId)
+        {
+            var shot = ShotCalculation(towerEntity, defence);
+            
+            shot.MobEntityId = mobId;
+            _gameplayState.Shots.Add(shot);
+        }
 
-        public ShotData ShotCalculation(TowerEntity towerEntity, TypeDefence typeDefence)
+        private ShotData ShotCalculation(TowerEntity towerEntity, TypeDefence typeDefence)
         {
             var damageBooster = 0f;
             var criticalBooster = 0f;

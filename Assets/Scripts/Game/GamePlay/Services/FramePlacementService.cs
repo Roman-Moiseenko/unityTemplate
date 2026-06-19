@@ -2,6 +2,7 @@
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.View.Frames;
+using Game.GamePlay.View.Frames.TowerFrames;
 using Game.GamePlay.View.Towers;
 using Game.State.Gameplay;
 using ObservableCollections;

@@ -421,6 +421,20 @@ namespace Game.GamePlay.Services
             return (null, null, -1);
         }
 
-        
+
+        public bool IsEdge(Vector2Int position)
+        {
+            var lengthWay = _gameplayState.Way.Count;
+            if (_gameplayState.Way[0].Position.CurrentValue == position) return  true;
+            if (_gameplayState.Way[lengthWay - 1].Position.CurrentValue == position) return  true;
+
+            if (!_gameplayState.HasWaySecond.Value) return false;
+            
+            var lengthWaySecond = _gameplayState.WaySecond.Count;
+            if (_gameplayState.WaySecond[0].Position.CurrentValue == position) return  true;
+            if (_gameplayState.WaySecond[lengthWaySecond - 1].Position.CurrentValue == position) return  true;
+            
+            return false;
+        }
     }
 }

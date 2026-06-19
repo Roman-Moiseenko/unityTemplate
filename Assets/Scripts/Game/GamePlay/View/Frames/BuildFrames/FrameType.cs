@@ -1,4 +1,4 @@
-﻿namespace Game.GamePlay.View.Frames
+﻿namespace Game.GamePlay.View.Frames.BuildFrames
 {
     public enum FrameType
     {

@@ -4,7 +4,10 @@ using System.Linq;
 using Game.GamePlay.Classes;
 using Game.GamePlay.View.Castle;
 using Game.GamePlay.View.Frames;
+using Game.GamePlay.View.Frames.BuildFrames;
+using Game.GamePlay.View.Frames.HeroFrames;
 using Game.GamePlay.View.Frames.SkillFrames;
+using Game.GamePlay.View.Frames.TowerFrames;
 using Game.GamePlay.View.Grounds;
 using Game.GamePlay.View.Hero;
 using Game.GamePlay.View.Map;
@@ -32,6 +35,7 @@ namespace Game.GamePlay.Root.View
         
         private FrameBlockBinder _frameBlockBinder;
         private FramePlacementBinder _framePlacementBinder;
+        private FrameHeroBinder _frameHeroBinder;
         private FrameSkillBinder _frameSkillBinder;
         private readonly Dictionary<int, RoadBinder> _createdRoadsMap = new();
         private readonly Dictionary<int, MobBinder> _createMobsMap = new();
@@ -169,7 +173,21 @@ namespace Game.GamePlay.Root.View
             viewModel.FrameSkillViewModels.ObserveClear()
                 .Subscribe(e => DestroyFrameSkill())
                 .AddTo(ref _disposables);
-
+            //4. Фрейм героя
+            viewModel.FrameHeroViewModel.Skip(1).Subscribe(model =>
+            {
+                if (model != null)
+                {
+                    CreateHeroPlacement(model);
+                }
+                else
+                {
+                    Destroy(_frameHeroBinder.gameObject);
+                    Destroy(_frameHeroBinder);
+                }
+            }).AddTo(ref  _disposables);
+            
+            
             //Создаем view-модель ворот из прехаба
             CreateGateWave(_viewModel.GateWaveViewModel);
             CreateGateWave(_viewModel.GateWaveSecondViewModel);
@@ -349,6 +367,15 @@ namespace Game.GamePlay.Root.View
             var createdFrame = Instantiate(framePrefab, transform);
             createdFrame.Bind(framePlacementViewModel);
             _framePlacementBinder = createdFrame;
+        }
+        
+        private void CreateHeroPlacement(FrameHeroViewModel frameHeroViewModel)
+        {
+            var prefabFrame = $"Prefabs/Gameplay/Frames/FrameHero";
+            var framePrefab = Resources.Load<FrameHeroBinder>(prefabFrame);
+            var createdFrame = Instantiate(framePrefab, transform);
+            createdFrame.Bind(frameHeroViewModel);
+            _frameHeroBinder = createdFrame;
         }
 
         private void CreateFrameSkill(FrameSkillViewModel frameSkillViewModel)

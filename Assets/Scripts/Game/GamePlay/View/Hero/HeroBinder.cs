@@ -1,15 +1,24 @@
 using System;
 using R3;
 using UnityEngine;
+using UnityEngine.VFX;
 
 namespace Game.GamePlay.View.Hero
 {
     public class HeroBinder : MonoBehaviour
     {
         [SerializeField] private Transform heroContainer;
-        private HeroViewModel _viewModel;
+        [SerializeField] protected VisualEffect levelUp;
+        [SerializeField] private Animator animator;
         
+        private HeroViewModel _viewModel;
         private DisposableBag _disposables;
+        
+        
+        private const string AnimationAwait = "hero_await";
+        private const string AnimationMoving = "hero_moving";
+        private const string AnimationAttack = "hero_attack";
+        
 
         public void Bind(HeroViewModel viewModel)
         {

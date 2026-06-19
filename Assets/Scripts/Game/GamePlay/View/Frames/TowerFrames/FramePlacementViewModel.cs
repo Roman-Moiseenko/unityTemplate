@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Game.GamePlay.Services;
-using Game.GamePlay.View.Grounds;
-using Game.GamePlay.View.Roads;
 using Game.GamePlay.View.Towers;
 using R3;
 using UnityEngine;
 
-
-namespace Game.GamePlay.View.Frames
+namespace Game.GamePlay.View.Frames.TowerFrames
 {
     public class FramePlacementViewModel : IDisposable
     {

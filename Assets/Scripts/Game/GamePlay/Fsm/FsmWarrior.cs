@@ -12,7 +12,7 @@ namespace Game.GamePlay.Fsm
     public class FsmWarrior : IDisposable
     {
         public FsmProxy Fsm;
-        private DisposableBag _disposables = new();
+        private DisposableBag _disposables;
 
         public bool IsMoving;
         public FsmWarrior()

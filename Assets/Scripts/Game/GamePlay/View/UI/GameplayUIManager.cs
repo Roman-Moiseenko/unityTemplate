@@ -1,6 +1,7 @@
 ﻿using DI;
 using Game.GamePlay.Fsm;
 using Game.GamePlay.Fsm.GameplayStates;
+using Game.GamePlay.Fsm.HeroStates;
 using Game.GamePlay.Fsm.TowerStates;
 using Game.GamePlay.Root;
 using Game.GamePlay.Services;
@@ -8,6 +9,8 @@ using Game.GamePlay.View.UI.PanelActions;
 using Game.GamePlay.View.UI.PanelBuild;
 using Game.GamePlay.View.UI.PanelConfirmation;
 using Game.GamePlay.View.UI.PanelGateWave;
+using Game.GamePlay.View.UI.PanelHeroAction;
+using Game.GamePlay.View.UI.PanelHeroPlacement;
 using Game.GamePlay.View.UI.PanelTowerAction;
 using Game.GamePlay.View.UI.PanelTowerPlacement;
 using Game.GamePlay.View.UI.PopupExitNotSave;
@@ -31,6 +34,7 @@ namespace Game.GamePlay.View.UI
         private readonly FsmGameplay _fsmGameplay;
         private ScreenGameplayViewModel _screenGameplayViewModel; //Кешируем главный экран геймплея - решение не очень, переделать
         private readonly FsmTower _fsmTower;
+        private readonly FsmHero _fsmHero;
 
         public GameplayUIManager(DIContainer container) : base(container)
         {
@@ -40,6 +44,7 @@ namespace Game.GamePlay.View.UI
             
             _fsmGameplay = container.Resolve<FsmGameplay>();
             _fsmTower = container.Resolve<FsmTower>();
+            _fsmHero = container.Resolve<FsmHero>();
             _exitSceneRequest = container.Resolve<Subject<GameplayExitParams>>();
             
             //Создаем панели, необходимые для Геймплея
@@ -49,6 +54,9 @@ namespace Game.GamePlay.View.UI
             rootUI.AddPanel(new PanelConfirmationViewModel(this, container));
             rootUI.AddPanel(new PanelTowerActionViewModel(this, container));
             rootUI.AddPanel(new PanelTowerPlacementViewModel(this, container));
+            //Hero Panels
+            rootUI.AddPanel(new PanelHeroPlacementViewModel(this, container));
+            rootUI.AddPanel(new PanelHeroActionViewModel(this, container));
             //Скрываем панель при первом вхождении в геймплей
             rootUI.HidePanel<PanelActionsViewModel>();            
 
@@ -92,7 +100,7 @@ namespace Game.GamePlay.View.UI
                     rootUI.HidePanel<PanelTowerPlacementViewModel>();
                     if (_fsmGameplay.IsStateGaming())
                     {
-                        rootUI.ShowPanel<PanelActionsViewModel>();
+                    rootUI.ShowPanel<PanelActionsViewModel>();
                     }
                 }
 
@@ -112,6 +120,35 @@ namespace Game.GamePlay.View.UI
                 }
             }).AddTo(ref _disposables);
             
+            //Панели Hero
+            _fsmHero.Fsm.StateCurrent.Subscribe(newState =>
+            {
+                if (newState.GetType() == typeof(FsmHeroSelected))
+                {
+                    rootUI.ShowPanel<PanelHeroActionViewModel>();
+                    rootUI.HidePanel<PanelActionsViewModel>();
+                }
+                
+                if (newState.GetType() == typeof(FsmHeroPlacement))
+                {
+                    rootUI.HidePanel<PanelHeroActionViewModel>();
+                    rootUI.ShowPanel<PanelHeroPlacementViewModel>();
+                }
+
+                if (newState.GetType() == typeof(FsmHeroPlacementEnd))
+                {
+                    rootUI.HidePanel<PanelHeroPlacementViewModel>();
+                    rootUI.ShowPanel<PanelActionsViewModel>();
+                }
+                
+                if (newState.GetType() == typeof(FsmHeroUnSelected))
+                {
+                    rootUI.HidePanel<PanelHeroActionViewModel>();
+                    rootUI.HidePanel<PanelHeroPlacementViewModel>();
+                    rootUI.ShowPanel<PanelActionsViewModel>();
+                }
+                
+            }).AddTo(ref _disposables);
             gameService.GameOver
                 .Where(x => x != null)
                 .Subscribe(exitParams =>

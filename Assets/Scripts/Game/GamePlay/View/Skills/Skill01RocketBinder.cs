@@ -10,9 +10,9 @@ namespace Game.GamePlay.View.Skills
         [SerializeField] private ParticleSystem trace;
         [SerializeField] private Transform missile;
 
-        internal const float StartY = 15f;
+        internal const float StartY = 10f;
         internal const float EndY = 0f;
-        internal const float Speed = 50f;
+        internal const float Speed = 80f;
         private const float ExplosionDuration = 0.5f;
 
         private Vector3 _startPosition;

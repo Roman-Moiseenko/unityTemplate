@@ -6,7 +6,9 @@ using Game.GamePlay.Fsm;
 using Game.GamePlay.Root;
 using Game.GamePlay.View.Castle;
 using Game.State.Gameplay;
+using Game.State.Gameplay.Statistics;
 using Game.State.Maps.Castle;
+using Game.State.Maps.Shots;
 using Game.State.Research;
 using MVVM.CMD;
 using ObservableCollections;
@@ -30,6 +32,7 @@ namespace Game.GamePlay.Services
         private DisposableBag _disposables = new();
         private Coroutine _repairCoroutine; // Ссылка на активную корутину восстановления
         private bool _isDisposed; // Флаг, что сервис уже уничтожен
+        private readonly GameplayStateProxy _gameplayState;
 
         /**
            * При загрузке создаем все view-модели из реактивного списка всех строений
@@ -42,9 +45,10 @@ namespace Game.GamePlay.Services
         )
         {
             _coroutines = GameObject.Find(AppConstants.COROUTINES).GetComponent<Coroutines>();
+            _gameplayState = gameplayState;
             _castleEntity = gameplayState.Castle;
             CurrenHealth = _castleEntity.CurrenHealth;
-            CastleViewModel = new CastleViewModel(_castleEntity, gameplayState);
+            CastleViewModel = new CastleViewModel(_castleEntity, this);
             //TODO Увеличить урон, скорость и HP от CastleResearch
             _gameplayBoosters = gameplayEnterParams.GameplayBoosters;
 
@@ -66,6 +70,20 @@ namespace Game.GamePlay.Services
                 }).AddTo(ref _disposables);
         }
 
+        public void SetDamageAfterShot(int mobId)
+        {
+            var shot = new ShotData
+            {
+                Damage = _castleEntity.Damage,
+                DamageType = DamageType.Normal,
+                //Position = MobTarget.CurrentValue.PositionTarget.CurrentValue,
+                Single = true,
+                MobEntityId = mobId,
+                TypeEntity = TypeEntityStatisticDamage.Castle,
+                ConfigId = "Castle",
+            };
+            _gameplayState.Shots.Add(shot);
+        }
         /**
          * Корутин восстановления здоровья
          */

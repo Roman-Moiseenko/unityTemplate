@@ -31,13 +31,14 @@ namespace Game.GamePlay.View.Skills
         public Dictionary<ParameterType, ParameterData> Parameters => _skillEntity.Parameters;
         
         public readonly ReactiveProperty<bool> IsCooldown = new(false);
-        public readonly float Cooldown = 0f;
+        public readonly ReactiveProperty<float> Cooldown = new(0f);
 
         public float TimeOut = 0f;
 
 //        public readonly ReactiveProperty<bool> IsEnabled = new(true);
         public readonly ReactiveProperty<bool> IsActive = new(false);
         private readonly SkillsService _service;
+        private DisposableBag _disposables;
 
         public SkillViewModel(SkillEntity skillEntity,
             SkillsService service, GameplayStateProxy gameplayState)
@@ -46,11 +47,15 @@ namespace Game.GamePlay.View.Skills
             GameplayState = gameplayState;
             _skillEntity = skillEntity;
             Level =  skillEntity.Level;
-            //Время отката
+            //Время отката - подписываемся на изменение уровня для пересчёта Cooldown
+            UpdateCooldown();
+            Level.Subscribe(_ => UpdateCooldown()).AddTo(ref _disposables);
+        }
 
-            if (skillEntity.Parameters.TryGetValue(ParameterType.Cooldown, out var parameterData)) 
-                Cooldown = parameterData.Value;
-            
+        private void UpdateCooldown()
+        {
+            if (_skillEntity.Parameters.TryGetValue(ParameterType.Cooldown, out var parameterData))
+                Cooldown.Value = parameterData.Value;
         }
 
         public void StartSkill()
@@ -62,7 +67,7 @@ namespace Game.GamePlay.View.Skills
 
         public void StartCooldown()
         {
-            TimeOut = Cooldown;
+            TimeOut = Cooldown.Value;
             IsCooldown.OnNext(true);
         }
 
@@ -70,8 +75,10 @@ namespace Game.GamePlay.View.Skills
         {
             ToDestroy?.Dispose();
             Level?.Dispose();
+            Cooldown?.Dispose();
             IsCooldown?.Dispose();
             IsActive?.Dispose();
+            _disposables.Dispose();
         }
 
         public void SetDamageShot(int mobUniqueId, float damage)

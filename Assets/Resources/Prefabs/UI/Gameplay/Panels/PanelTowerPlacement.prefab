@@ -73,6 +73,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: btnConfirmation
       objectReference: {fileID: 0}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 3282721162790283801}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.b
+      value: 0.50980395
+      objectReference: {fileID: 0}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.g
+      value: 0.50980395
+      objectReference: {fileID: 0}
+    - target: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.r
+      value: 0.50980395
+      objectReference: {fileID: 0}
     - target: {fileID: 9206070933231182775, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
       propertyPath: m_Pivot.x
       value: 1
@@ -158,6 +178,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+--- !u!114 &3282721162790283801 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3153637808634539463, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
+  m_PrefabInstance: {fileID: 454135005201991646}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!114 &5658147751590036870 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5244633113125028440, guid: 544bc449f74ccd2469bcff8715dd5d41, type: 3}
