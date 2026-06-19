@@ -1,23 +1,32 @@
 ﻿using DI;
+using Game.State;
 using MVVM.FSM;
+using UnityEngine;
 
 namespace Game.GamePlay.Fsm.HeroStates
 {
     public class FsmHeroPlacement : FSMState
     {
-        public FsmHeroPlacement(FsmProxy fsm) : base(fsm)
+        public FsmHeroPlacement(FsmProxy fsm, DIContainer container) : base(fsm, container)
         {
-            
+
         }
 
         public override void Enter()
         {
-            
-            
+            //При размещении точки возрождения ставим на паузу
+            _container.Resolve<IGameStateProvider>().GameplayState.SetPauseGame();
         }
 
         public override bool Exit(FSMState next = null)
         {
+            var fsmGameplay = _container.Resolve<FsmGameplay>();
+            //При выходе из размещения точки возрождения снимаем с паузы, если был режим игры
+            if (fsmGameplay.IsStateGaming())
+            {
+                _container.Resolve<IGameStateProvider>().GameplayState.GameplayReturn();    
+            }
+            
             return true;
         }
 

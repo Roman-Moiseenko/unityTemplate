@@ -16,7 +16,7 @@ namespace Game.GamePlay.Fsm
             Fsm = new FsmProxy();
             Fsm.AddState(new FsmHeroAwait(Fsm));
             Fsm.AddState(new FsmHeroMoving(Fsm));
-            Fsm.AddState(new FsmHeroPlacement(Fsm));
+            Fsm.AddState(new FsmHeroPlacement(Fsm, container));
             Fsm.AddState(new FsmHeroPlacementEnd(Fsm));
             Fsm.AddState(new FsmHeroAttack(Fsm));
             Fsm.AddState(new FsmHeroSelected(Fsm, container));
