@@ -7,8 +7,10 @@ using Game.GamePlay.Fsm.WaveStates;
 using Game.GamePlay.Services;
 using Game.GamePlay.View.Mobs;
 using Game.Settings.Gameplay.Entities.Heroes;
+using Game.State.Common;
 using Game.State.Gameplay;
 using Game.State.Maps.Heroes;
+using Game.State.Parameters;
 using R3;
 using UnityEngine;
 using ObservableCollections;
@@ -26,6 +28,8 @@ namespace Game.GamePlay.View.Hero
         public ReactiveProperty<MobViewModel> MobTarget = new();
 
         public ObservableList<MobViewModel> PullTargets = new();
+        public TypeEpic EpicLevel => _heroEntity.EpicLevel;
+        public Dictionary<ParameterType, ParameterData> Parameters => _heroEntity.Parameters; 
 
         //Кеш подписок на смерть моба
         private readonly Dictionary<int, IDisposable> _mobDisposables = new();

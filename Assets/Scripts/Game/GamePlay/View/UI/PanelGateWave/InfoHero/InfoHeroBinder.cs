@@ -1,0 +1,144 @@
+﻿using System;
+using System.Collections.Generic;
+using DG.Tweening;
+using Game.Common;
+using Game.GamePlay.View.UI.PanelGateWave.InfoTower;
+using Game.GameRoot.ImageManager;
+using Game.GameRoot.View.Defence;
+using Game.State.Common;
+using R3;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Game.GamePlay.View.UI.PanelGateWave.InfoHero
+{
+    public class InfoHeroBinder : MonoBehaviour
+    {
+        [SerializeField] private Transform baseParameters;
+        [SerializeField] private Transform boosters;
+        
+        [SerializeField] private Image header;
+        [SerializeField] private Image output;
+        [SerializeField] private Image background;
+        [SerializeField] private TMP_Text nameEpic;
+        [SerializeField] private TMP_Text nameTower;
+
+        [SerializeField] private List<BaseParameterBinder> parameterBinders;
+        [SerializeField] private List<BoosterParameterBinder> boosterBinders;
+        [SerializeField] private DefenceBinder defenceBinder;
+        
+        [SerializeField] private Transform stars;
+        
+        private InfoHeroViewModel _viewModel;
+        private IDisposable _disposable;
+        private ImageManagerBinder _imageManager;
+        public void Bind(InfoHeroViewModel viewModel)
+        {
+            _viewModel = viewModel;
+            transform.gameObject.SetActive(false);
+            _imageManager = GameObject.Find(AppConstants.IMAGE_MANAGER).GetComponent<ImageManagerBinder>();
+            
+            var d = Disposable.CreateBuilder();
+            viewModel.ShowInfoHero.Subscribe(showHero =>
+            {
+                if (showHero)
+                {
+                    if (transform.gameObject.activeSelf)
+                    {
+                        transform.localScale = Vector3.one * 0.3f;
+                    }
+                    transform.gameObject.SetActive(true);
+                    transform.DOScale(1, 0.3f)
+                        .From(0.3f)
+                        .SetEase(Ease.OutBack)
+                        .SetUpdate(true)
+                        .OnComplete(() => transform.gameObject.SetActive(true));
+                }
+                else
+                {
+                    transform.DOScale(0f, 0.3f)
+                        .From(1)
+                        .SetEase(Ease.InBack)
+                        .SetUpdate(true)
+                        .OnComplete(() => transform.gameObject.SetActive(false));
+                }
+            }).AddTo(ref d);
+            //Перед показываением окна, обновляем его содержимое
+            viewModel.UpdateInfoBackgroundTower.Where(x => x).Subscribe(_ =>
+            {
+                //Фон от эпичности 
+                var epicImage = _imageManager.GetEpicData(viewModel.EpicLevel);
+                header.sprite = epicImage.Header;
+                output.sprite = epicImage.Output;
+                background.sprite = epicImage.Background;
+
+                nameEpic.text = viewModel.EpicLevel.GetString();
+                nameTower.text = viewModel.NameTower;
+                defenceBinder.Bind(viewModel.Defence);
+                
+                //Звездочки
+                for (var i = 1; i <= 6; i++)
+                {
+                    var star = stars.Find($"Container/Star{i}").GetComponent<Transform>();
+                    star.gameObject.SetActive(i <= viewModel.Level);
+                }
+                //Эффекты
+                InfoHeroBoosters();
+                //Параметры башни
+                InfoHeroParameters();
+                
+            }).AddTo(ref d);
+
+            viewModel.PositionInfoHero.Subscribe(p => transform.transform.position = p).AddTo(ref d);
+
+            _disposable = d.Build();
+        }
+        
+        private void InfoHeroBoosters()
+        {
+            if (_viewModel.BoosterParameters.Count == 0)
+            {
+                boosters.gameObject.SetActive(false);
+                return;
+            }
+            boosters.gameObject.SetActive(true);
+            
+            foreach (var boosterBinder in boosterBinders)
+                boosterBinder.gameObject.SetActive(false);
+
+            var index = 0;
+            
+            foreach (var (parameter, value) in _viewModel.BoosterParameters)
+            {
+                var image = _imageManager.GetParameter(parameter);
+                boosterBinders[index].Bind(image, value);
+                boosterBinders[index].gameObject.SetActive(true);
+                index++;
+            }
+        }
+
+        private void InfoHeroParameters()
+        {
+            foreach (var parameterBinder in parameterBinders)
+                parameterBinder.gameObject.SetActive(false);
+
+            var index = 0;
+
+            foreach (var (parameter, values) in _viewModel.BaseParameters)
+            {
+                var image = _imageManager.GetParameter(parameter);
+                
+                parameterBinders[index].Bind(image, parameter, values);
+                parameterBinders[index].gameObject.SetActive(true);
+                index++;
+            }
+        }
+        
+
+        public void OnDestroy()
+        {
+            _disposable.Dispose();
+        }
+    }
+}

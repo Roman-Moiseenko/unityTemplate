@@ -19,7 +19,7 @@ namespace Game.GamePlay.Fsm
             Fsm.AddState(new FsmHeroPlacement(Fsm));
             Fsm.AddState(new FsmHeroPlacementEnd(Fsm));
             Fsm.AddState(new FsmHeroAttack(Fsm));
-            Fsm.AddState(new FsmHeroSelected(Fsm));
+            Fsm.AddState(new FsmHeroSelected(Fsm, container));
             Fsm.AddState(new FsmHeroUnSelected(Fsm));
             Fsm.SetState<FsmHeroAwait>();
         }

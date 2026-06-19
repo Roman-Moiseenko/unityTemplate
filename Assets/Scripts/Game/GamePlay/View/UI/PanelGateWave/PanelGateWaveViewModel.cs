@@ -1,4 +1,5 @@
 ﻿using DI;
+using Game.GamePlay.View.UI.PanelGateWave.InfoHero;
 using Game.GamePlay.View.UI.PanelGateWave.InfoTower;
 using Game.GamePlay.View.UI.PanelGateWave.InfoWave;
 using Game.State;
@@ -11,6 +12,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         public InfoWaveViewModel InfoWaveViewModel;
         public InfoWaveViewModel InfoSecondWaveViewModel;
         public InfoTowerViewModel InfoTowerViewModel;
+        public InfoHeroViewModel InfoHeroViewModel;
         public bool HasSecondWay;
         public override string Id => "PanelGateWave";
         public override string Path => "Gameplay/Panels/GateWaveInfo/";
@@ -23,6 +25,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
 
             InfoWaveViewModel = new InfoWaveViewModel(container);
             InfoTowerViewModel = new InfoTowerViewModel(container);
+            InfoHeroViewModel = new InfoHeroViewModel(container);
             var gameplayState = container.Resolve<IGameStateProvider>().GameplayState;
             HasSecondWay = gameplayState.HasWaySecond.CurrentValue;
             if (HasSecondWay) InfoSecondWaveViewModel = new InfoWaveViewModel(container, false);
@@ -33,6 +36,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             InfoWaveViewModel?.Dispose();
             InfoSecondWaveViewModel?.Dispose();
             InfoTowerViewModel?.Dispose();
+            InfoHeroViewModel?.Dispose();
             base.Dispose();
         }
     }

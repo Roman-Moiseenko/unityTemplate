@@ -1,5 +1,6 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using Game.GamePlay.View.UI.PanelGateWave.InfoHero;
 using Game.GamePlay.View.UI.PanelGateWave.InfoTower;
 using Game.GamePlay.View.UI.PanelGateWave.InfoWave;
 using MVVM.UI;
@@ -13,6 +14,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
         [SerializeField] private InfoWaveBinder infoWave;
         [SerializeField] private InfoWaveBinder infoWaveSecond;
         [SerializeField] private InfoTowerBinder infoTower;
+        [SerializeField] private InfoHeroBinder infoHero;
         
         private IDisposable _disposableImplementation;
         
@@ -22,6 +24,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave
             infoWave.Bind(viewModel.InfoWaveViewModel);
 
             infoTower.Bind(viewModel.InfoTowerViewModel);
+            infoHero.Bind(viewModel.InfoHeroViewModel);
             if (viewModel.HasSecondWay)
             {
                 infoWaveSecond.gameObject.SetActive(true);
