@@ -8,7 +8,6 @@ using Game.GamePlay.Services;
 using Game.GamePlay.View.Mobs;
 using Game.Settings.Gameplay.Entities.Heroes;
 using Game.State.Common;
-using Game.State.Gameplay;
 using Game.State.Maps.Heroes;
 using Game.State.Parameters;
 using R3;
@@ -29,7 +28,9 @@ namespace Game.GamePlay.View.Hero
 
         public ObservableList<MobViewModel> PullTargets = new();
         public TypeEpic EpicLevel => _heroEntity.EpicLevel;
-        public Dictionary<ParameterType, ParameterData> Parameters => _heroEntity.Parameters; 
+        public Dictionary<ParameterType, ParameterData> Parameters => _heroEntity.Parameters;
+
+        public readonly ReactiveProperty<float> Speed;
 
         //Кеш подписок на смерть моба
         private readonly Dictionary<int, IDisposable> _mobDisposables = new();
@@ -46,6 +47,14 @@ namespace Game.GamePlay.View.Hero
             //Debug.Log($"HeroViewModel {heroEntity.ConfigId}");
             _heroEntity = heroEntity;
             _heroesService = heroesService;
+            if (Parameters.TryGetValue(ParameterType.Speed, out var speed))
+            {
+                Speed = new ReactiveProperty<float>(speed.Value);
+            }
+            else
+            {
+                throw new Exception($"Not existed Speed");
+            }
 
             //** Логика ведения целей **//
             PullTargets.ObserveAdd().Subscribe(e =>
@@ -55,6 +64,7 @@ namespace Game.GamePlay.View.Hero
                 var disposable = target.IsDead.Where(x => x).Subscribe(_ => { PullTargets.Remove(target); });
                 _mobDisposables.Add(target.UniqueId, disposable); //Кеш подписок на смерть моба
                 SetTarget(target); //Добавляем его цель (если мультишот, то добавляется, для одиночного идет проверка)
+
             }).AddTo(ref _disposables);
 
             //При удалении из пула (убит или вышел с дистанции) - удалить из цели
@@ -62,7 +72,6 @@ namespace Game.GamePlay.View.Hero
             {
                 var target = e.Value;
                 if (target == null) return;
-
                 // Если удаленный моб был текущей целью - сбрасываем
                 if (MobTarget.CurrentValue != null &&
                     MobTarget.CurrentValue.UniqueId == target.UniqueId) MobTarget.OnNext(null);

@@ -1,0 +1,70 @@
+﻿using DG.Tweening;
+using Game.GamePlay.View.Castle;
+using Game.GamePlay.View.Mobs;
+using R3;
+using UnityEngine;
+
+namespace Game.GamePlay.View.Hero
+{
+    public class HeroGunBinder : MonoBehaviour
+    {
+        //[SerializeField] private Transform turret;
+        //[SerializeField] private Transform barrel;
+        [SerializeField] private ParticleSystem fireEffect;
+        [SerializeField] private HeroShotBinder shot;
+        public ReactiveProperty<bool> IsShotComplete => shot.IsShotComplete;
+        private Sequence Sequence { get; set; }
+        public void Bind(HeroViewModel viewModel)
+        {
+            shot.Bind(viewModel);
+        }
+        
+        public void Fire(MobViewModel mobViewModel)
+        {
+            shot.FirePrepare(mobViewModel);
+            /*
+            var direction = mobViewModel.PositionTarget.CurrentValue - turret.position;
+            var targetRotation = Quaternion.LookRotation(direction);
+            
+            Sequence = DOTween.Sequence();
+            Sequence
+                .SetDelay(0.1f)
+                .Append(
+                    turret
+                        .DORotateQuaternion(targetRotation, 0.1f)
+                        )
+                .Append(
+                    turret
+                        .DOPunchPosition(new Vector3(0, 0, -0.1f), 0.1f, 1, 1)
+                        .From(false)) // 1. Откат орудия
+                .AppendCallback(() =>
+                {
+                    // 2. Пламя
+                    if (fireEffect != null) fireEffect.Play(); //Запуск эффекта выстрела
+                    // 3. Полет снаряда
+                    shot.Fire();
+                })
+                .OnComplete(() =>
+                {
+                    turret.localPosition = Vector3.zero;
+                    Sequence.Kill();
+                });
+            */
+        }
+
+        private void OnDestroy()
+        {
+       //     KillSequence();
+        }
+        /*
+        private void KillSequence()
+        { 
+            if (Sequence.IsActive())
+            {
+                Sequence.Kill();
+                Sequence = null;
+            }
+        }
+        */
+    }
+}

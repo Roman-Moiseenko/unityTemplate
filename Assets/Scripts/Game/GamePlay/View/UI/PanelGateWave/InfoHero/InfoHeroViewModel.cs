@@ -93,7 +93,7 @@ namespace Game.GamePlay.View.UI.PanelGateWave.InfoHero
 
         private void PrepareAndShowInfo()
         {
-            //MAINDO Заполнить инфу по герою
+            
             
             if (_towerPrevious == _heroViewModel.Position.CurrentValue)
             {
